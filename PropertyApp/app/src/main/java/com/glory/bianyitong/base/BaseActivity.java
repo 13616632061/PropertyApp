@@ -13,6 +13,7 @@ import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.util.ActivityUtils;
@@ -34,6 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         setContentView(getContentId());
         Database.currentActivity = this;
         ButterKnife.bind(this);  //自动化声明控件
+        Router.injectParams(this);
 //       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            Window window = getWindow();
 //            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS

@@ -33,6 +33,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.chenenyu.router.Router;
+import com.chenenyu.router.annotation.InjectParam;
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.AuthAreaInfo;
@@ -44,6 +47,7 @@ import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.jpush.ExampleUtil;
 import com.glory.bianyitong.ui.adapter.ConveniencePhoneAdapter;
 import com.glory.bianyitong.ui.adapter.FragmentTabAdapter;
@@ -91,6 +95,7 @@ import okhttp3.Call;
 import okhttp3.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
+@Route(value = RouterMapping.ROUTER_ACTIVITY_MAIN)
 public class MainActivity extends FragmentActivity implements View.OnClickListener {
     public static final String MESSAGE_RECEIVED_ACTION = "com.example.jpushdemo.MESSAGE_RECEIVED_ACTION";
     public static final String KEY_TITLE = "title";
@@ -125,8 +130,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     private int currentIndex = default_index;
     private OpenDoorPopuWindow picPopuWindow;//开门框
     private Handler mhandler;
-    private int TypeID; //推送来的
-    private int PushID;
+    @InjectParam(key = "TypeID" )
+     int TypeID; //推送来的
+    @InjectParam(key = "PushID" )
+     int PushID;
 
     //for receive customer msg from jpush server
     private MessageReceiver mMessageReceiver;
@@ -136,6 +143,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+        Router.injectParams(this);
         ButterKnife.bind(this);
         Database.registrationId = JPushInterface.getRegistrationID(getApplicationContext());
         //显示标题  内容的了
@@ -178,8 +186,8 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             }
         };
         copyImage2Data(R.drawable.logo_5);
-        TypeID = getIntent().getIntExtra("TypeID", 0);
-        PushID = getIntent().getIntExtra("PushID", 0);
+//        TypeID = getIntent().getIntExtra("TypeID", 0);
+//        PushID = getIntent().getIntExtra("PushID", 0);
         if (TypeID == 1) {
             Intent i = new Intent();
             i.setClass(MainActivity.this, BulletinDetailsActivity.class);

@@ -4,8 +4,10 @@ import android.app.Application;
 import android.app.Service;
 import android.os.Vibrator;
 
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.util.imgloader.AuthImageDownloader;
 import com.glory.bianyitong.util.imgloader.TilmImgLoaderUtil;
+import com.lzy.okgo.BuildConfig;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -37,6 +39,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Router.initialize(this, BuildConfig.DEBUG);
         Instance = this;
         //极光推送
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志

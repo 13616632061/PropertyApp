@@ -15,9 +15,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Constant;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.SharePreToolsKits;
 
 import java.io.File;
@@ -144,10 +146,14 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     private void gohome() {
-        Intent i = new Intent(WelcomeActivity.this, MainActivity.class);
-        i.putExtra("TypeID", TypeID);
-        i.putExtra("PushID", PushID);
-        startActivity(i);
+//        Intent i = new Intent(WelcomeActivity.this, MainActivity.class);
+//        i.putExtra("TypeID", TypeID);
+//        i.putExtra("PushID", PushID);
+//        startActivity(i);
+        Router.build(RouterMapping.ROUTER_ACTIVITY_MAIN)
+                .with("TypeID", TypeID)
+                .with("PushID", PushID)
+                .go(this);
         WelcomeActivity.this.finish();
 //        if (code.equals(Constant.VERSIONCODE)) {//版本号
 //            WelcomeActivity.this.startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
