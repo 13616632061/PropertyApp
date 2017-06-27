@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.glory.bianyitong.bean.AuthAreaInfo;
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.CommnunityInfo;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
@@ -27,6 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -139,24 +141,15 @@ public class AuthAreaActivity extends BaseActivity {
     }
 
     private void request() { //获取社区
-        String userID = RequestUtil.getuserid();
-
-        String json = "{\"userCommnunityMapping\": {\"userID\": 4},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"1\",\"pagerownum\": \"10\"," +
-                "\"controllerName\": \"UserCommnunityMapping\",\"actionName\": \"StructureQuery\"}";
-        Log.i("resultString", "json---------" + json);
-        String url = HttpURL.HTTP_LOGIN;
-
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("userCommnunityMapping",new Object());
+        String jsons=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
+
                 try {
                     JSONObject jo = new JSONObject(s);
-//                            String statuscode = jo.getString("statuscode");
-//                            String statusmessage = jo.getString("statusmessage");
                     AuthAreaInfo areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
                     if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
                         DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
@@ -168,17 +161,6 @@ public class AuthAreaActivity extends BaseActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-//                HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                });
-//                if (hashMap2 != null && hashMap2.get("listUserCommnunityMapping") != null) {
-//                    ArrayList<LinkedTreeMap<String, Object>> list = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listUserCommnunityMapping");
-//                    if (list != null && list.size() != 0) {
-//                        addcommunity(list);
-//                        ScrollViewLayout(AuthAreaActivity.this, Database.my_community_List, auth_area_list);
-//                    } else {
-//                        ToastUtils.showToast(AuthAreaActivity.this, "获取社区失败");
-//                    }
-//                }
             }
 
             @Override
@@ -197,7 +179,7 @@ public class AuthAreaActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url, json);
+        }).getEntityData("/ApiUserCommnunity/Query", jsons);
     }
 
 }

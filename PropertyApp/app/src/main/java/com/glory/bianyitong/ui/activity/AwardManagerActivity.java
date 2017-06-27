@@ -14,18 +14,22 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.MenuViewTypeAdapter;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.view.ListViewDecoration;
 import com.glory.bianyitong.widght.convenientbanner.listener.OnItemClickListener;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
@@ -40,6 +44,7 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -158,10 +163,15 @@ public class AwardManagerActivity extends BaseActivity {
         tv_add_award.setOnClickListener(new View.OnClickListener() { //添加授权
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AwardManagerActivity.this, AddAwardActivity.class);
-                intent.putExtra("from", "add");
-                intent.putExtra("authorizationUserID", 0);
-                startActivity(intent);
+//                Intent intent = new Intent(AwardManagerActivity.this, AddAwardActivity.class);
+//                intent.putExtra("from", "add");
+//                intent.putExtra("authorizationUserID", 0);
+//                startActivity(intent);
+                Router.build(RouterMapping.ROUTER_ACTIVITY_AddAWARD)
+                        .with("from","add")
+                        .with("authorizationUserID",0)
+                        .go(AwardManagerActivity.this);
+
             }
         });
 
@@ -184,77 +194,13 @@ public class AwardManagerActivity extends BaseActivity {
     }
 
     private void request() { //获取授权人
-        String userID = RequestUtil.getuserid();
-        int communityID = RequestUtil.getcommunityid();
 
-        String json = "{\"userLock\":{\"communityID\":" + communityID + "},\"controllerName\":\"News\",\"actionName\":\"StructureQuery\",\"nowpagenum\":\"1\"," +
-                "\"pagerownum\":\"10\",\"userID\":\"" + userID + "\"}";
-
-        Log.i("resultString", "json------------" + json);
-        String url = HttpURL.HTTP_LOGIN_AREA + "/UserLockMapping/StructureQuery";
-//        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/UserLockMapping/StructureQuery") //获取授权人列表
-//                .tag(this)//
-////                .headers("", "")//
-//                .params("request", json)
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onSuccess(String s, Call call, Response response) {
-//                        Log.i("resultString", "------------");
-//                        Log.i("resultString", s);
-//                        Log.i("resultString", "------------");
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("listUserLock") != null) {
-//                            list_man = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listUserLock");
-//                            if (list_man != null && list_man.size() > 0) {
-////                                awardPeopleAdapter = new AwardPeopleAdapter(AwardManagerActivity.this, list);
-////                                list_people.setAdapter(awardPeopleAdapter);
-//
-//                                awardPeopleAdapter = new MenuViewTypeAdapter(list_man);
-//                                awardPeopleAdapter.setOnItemClickListener(onItemClickListener);
-//                                list_people.setAdapter(awardPeopleAdapter);
-//                            } else {
-//                                lay_award_list.setVisibility(View.VISIBLE);
-//                                lay_no_list.setVisibility(View.GONE);
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Call call, Response response, Exception e) {
-//                        super.onError(call, response, e);
-//                        Log.i("resultString", "请求错误------");
-//                        ServiceDialog.showRequestFailed();
-//                    }
-//
-//                    @Override
-//                    public void parseError(Call call, Exception e) {
-//                        super.parseError(call, e);
-//                        Log.i("resultString", "网络解析错误------");
-//                    }
-//
-//                    @Override
-//                    public void onBefore(BaseRequest request) {
-//                        super.onBefore(request);
-//                        progressDialog = ProgressDialog.show(AwardManagerActivity.this, "", getString(R.string.load), true);//加载
-//                        progressDialog.setCanceledOnTouchOutside(true);
-//                    }
-//
-//                    @Override
-//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-//                        super.onAfter(s, e);
-//                        if (progressDialog != null) {
-//                            progressDialog.dismiss();
-//                            progressDialog = null;
-//                        }
-//                    }
-//                });
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("userLockMapping",new Object());
+        String jsons=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
                 HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
                 });
                 if (hashMap2 != null && hashMap2.get("listUserLock") != null) {
@@ -288,7 +234,7 @@ public class AwardManagerActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url,json);
+        }).getEntityData("/ApiUserLockMapping/Query",jsons);
     }
 
     //保存

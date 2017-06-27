@@ -13,6 +13,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.bean.GetSMSCheckInfo;
 import com.glory.bianyitong.bean.GetSMSCodeInfo;
 import com.glory.bianyitong.bean.LoginUserInfo;
@@ -21,6 +22,7 @@ import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.jpush.ExampleUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.DataUtils;
@@ -40,6 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -52,6 +56,7 @@ import okhttp3.Response;
  * Created by lucy on 2016/11/10.
  * 登录
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_LOGIN)
 public class LoginActivity extends BaseActivity {
     //没用的注释 方法去掉
     // e.printStackTrace(); 去掉
@@ -174,7 +179,7 @@ public class LoginActivity extends BaseActivity {
         String json = RequestUtil.getJson(LoginActivity.this, query);
 
 //        String url = HttpURL.HTTP_LOGIN_AREA + "/SMSCode/GetSMSCheck";
-        String url = HttpURL.HTTP_NEW_URL + "/SMSCode/GetSMSCheck";
+        String url = "/SMSCode/GetSMSCheck";
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -224,68 +229,96 @@ public class LoginActivity extends BaseActivity {
 
     //获取验证码
     private void getCode(String phone) {
-//        String json = "{\"phoneNumber\":\"" + phone + "\"}";
-        OkGo.post(HttpURL.HTTP_NEW_URL + "/SMSCode/GetVituralSMSCheckCode") //获取验证码
-                .tag(this)//
-//                .headers("", "")//
-                .params("phoneNumber", phone)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        try {
-                            JSONObject jo = new JSONObject(s);
-                            GetSMSCodeInfo getcodeinfo = new Gson().fromJson(jo.toString(), GetSMSCodeInfo.class);
-                            if(getcodeinfo!=null && getcodeinfo.getMsg()!=null){
-                                String code = getcodeinfo.getMsg();
-                                login_code.setText(code);
-                            }else if (getcodeinfo.getAlertMessage() != null) { //返回消息
-                                ToastUtils.showToast(LoginActivity.this, getcodeinfo.getAlertMessage());
-                            } else {
-                                ToastUtils.showToast(LoginActivity.this, getString(R.string.failed_to_generate_verification_code));//生成验证码失败
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+        String url="/SMSCode/GetVituralSMSCheckCode";
+        Map<String,String> map=new HashMap<>();
+        map.put("phoneNumber",phone);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                try {
+                    JSONObject jo = new JSONObject(s);
+                    GetSMSCodeInfo getcodeinfo = new Gson().fromJson(jo.toString(), GetSMSCodeInfo.class);
+                    if(getcodeinfo!=null && getcodeinfo.getMsg()!=null){
+                        String code = getcodeinfo.getMsg();
+                        login_code.setText(code);
+                    }else if (getcodeinfo.getAlertMessage() != null) { //返回消息
+                        ToastUtils.showToast(LoginActivity.this, getcodeinfo.getAlertMessage());
+                    } else {
+                        ToastUtils.showToast(LoginActivity.this, getString(R.string.failed_to_generate_verification_code));//生成验证码失败
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("msg") != null) {
-//                            String code = hashMap2.get("msg").toString();
-////                            login_code.setText(code);
-//                        } else if (hashMap2.get("alertmessage") != null) {
-//                            ToastUtils.showToast(LoginActivity.this, hashMap2.get("alertmessage").toString());
-//                        } else {
-//                            ToastUtils.showToast(LoginActivity.this, getString(R.string.failed_to_generate_verification_code));//生成验证码失败
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(url,map);
+//        OkGo.post(HttpURL.HTTP_NEW_URL + "/SMSCode/GetVituralSMSCheckCode") //获取验证码
+//                .params("phoneNumber", phone)
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onSuccess(String s, Call call, Response response) {
+//                        Log.i("resultString", "------------");
+//                        Log.i("resultString", s);
+//                        Log.i("resultString", "------------");
+//                        try {
+//                            JSONObject jo = new JSONObject(s);
+//                            GetSMSCodeInfo getcodeinfo = new Gson().fromJson(jo.toString(), GetSMSCodeInfo.class);
+//                            if(getcodeinfo!=null && getcodeinfo.getMsg()!=null){
+//                                String code = getcodeinfo.getMsg();
+//                                login_code.setText(code);
+//                            }else if (getcodeinfo.getAlertMessage() != null) { //返回消息
+//                                ToastUtils.showToast(LoginActivity.this, getcodeinfo.getAlertMessage());
+//                            } else {
+//                                ToastUtils.showToast(LoginActivity.this, getString(R.string.failed_to_generate_verification_code));//生成验证码失败
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
 //                        }
-                    }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-//                        ToastUtils.showToast(LoginActivity.this, "请求失败...");
-                        ServiceDialog.showRequestFailed();
-                    }
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
-
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                    }
-
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                    }
-                });
+//                    }
+//
+//                    @Override
+//                    public void onError(Call call, Response response, Exception e) {
+//                        super.onError(call, response, e);
+//                        Log.i("resultString", "请求错误------");
+//                    }
+//
+//                    @Override
+//                    public void parseError(Call call, Exception e) {
+//                        super.parseError(call, e);
+//                        Log.i("resultString", "网络解析错误------");
+//                    }
+//
+//                    @Override
+//                    public void onBefore(BaseRequest request) {
+//                        super.onBefore(request);
+//                    }
+//
+//                    @Override
+//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
+//                        super.onAfter(s, e);
+//                    }
+//                });
 
     }
 
@@ -301,7 +334,7 @@ public class LoginActivity extends BaseActivity {
         Log.i("resultString", "registrationId---------" + Database.registrationId);
         String query = "\"phoneNumber\":\""+phone+"\",\"smsCheckCode\":\""+code+"\"";
         String json = RequestUtil.getJson(LoginActivity.this, query);
-        String url = HttpURL.HTTP_NEW_URL + "/ApiLogin/AppLogin";
+        String url = "/ApiLogin/AppLogin";
 
 //        String json = "{\"phoneNumber\":\"" + phone + "\",\"smsCheckCode\":\"" + code + "\",\"DeviceType\": \"3\",\"jGPushID\":\"" + Database.registrationId + "\"}";
 //        String url = HttpURL.HTTP_LOGIN_AREA + "/Login/AppLogin";
@@ -315,38 +348,11 @@ public class LoginActivity extends BaseActivity {
                 Log.i("resultString", "------------");
                 try {
                     JSONObject jo = new JSONObject(s);
-//                    String statuscode = "";
-//                    String statusmessage = "";
-//                    if (jo.getString("statusCode") != null) {
-//                        statuscode = jo.getString("statusCode");
-//                    }
-//                    if (jo.getString("statusMessage") != null) {
-//                        statusmessage = jo.getString("statusMessage");
-//                    }
-//                    UserInfo userInfo = new Gson().fromJson(jo.toString(), UserInfo.class);
-//                    Log.i("resultString", "userInfo.getUser()-------" + userInfo.getUser());
-//                    if (userInfo != null && userInfo.getUser() != null) {
-//                        Database.islogin = true;
-//                        Database.USER_MAP = userInfo.getUser();
-//                        mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, Database.USER_MAP.getJGPushName()));
-//                        if (userInfo.getUserCommnunity() != null) {
-////                            Database.my_community_List = userInfo.getUserCommnunity();
-//                            DataUtils.getUesrCommunity(userInfo.getUserCommnunity());//社区列表
-//                            DataUtils.my_community(LoginActivity.this); //获取我的社区
-//                        }
-//                        SharePreToolsKits.putJsonDataString(LoginActivity.this, Constant.user, s); //缓存登录后信息
-//                        //登录成功
-//                        LoginActivity.this.finish();
-//                    } else if (statusmessage != null && !statusmessage.equals("")) {
-//                        ToastUtils.showToast(LoginActivity.this, statusmessage);
-//                    }else {
-//                        ToastUtils.showToast(LoginActivity.this, getString(R.string.login_failed));//登录失败
-//                    }
-
                     LoginUserInfo loginInfo = new Gson().fromJson(jo.toString(), LoginUserInfo.class);
                     if (loginInfo != null && loginInfo.getUser() != null) {
                         Database.islogin = true;
                         Database.USER_MAP = loginInfo.getUser();
+                        Database.accessToken=loginInfo.getAccessToken();
                         mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, Database.USER_MAP.getJgPushName()));
                         if (loginInfo.getUserCommnunity() != null) {
 //                            Database.my_community_List = userInfo.getUserCommnunity();

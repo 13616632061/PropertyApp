@@ -39,11 +39,11 @@ import java.util.List;
  */
 public class KeyListAdapter extends SwipeMenuAdapter<KeyListAdapter.DefaultViewHolder> {
     //    private List<LinkedTreeMap<String, Object>> titles;
-    private List<UserLockInfo.ListUserLockBean> titles;
+    private List<UserLockInfo.ListUserLockMappingBean> titles;
 
     private OnItemClickListener mOnItemClickListener;
 
-    public KeyListAdapter(List<UserLockInfo.ListUserLockBean> titles) {//List<LinkedTreeMap<String, Object>>
+    public KeyListAdapter(List<UserLockInfo.ListUserLockMappingBean> titles) {//List<LinkedTreeMap<String, Object>>
         this.titles = titles;
     }
 

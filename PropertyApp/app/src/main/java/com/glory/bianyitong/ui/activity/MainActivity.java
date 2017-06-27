@@ -39,6 +39,7 @@ import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.AuthAreaInfo;
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.LoginUserInfo;
 import com.glory.bianyitong.bean.UPVersionInfo;
 import com.glory.bianyitong.bean.UserInfo;
@@ -301,7 +302,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 //                        } else {
 //                            requestlist();
 //                        }
-                        if (Database.my_community.getApprovalStatus() == 1) {
+                        if (Database.my_community.getApprovalStatus() == 1) {//已审核
                             if (picPopuWindow == null) {
                                 picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
                             }
@@ -317,14 +318,18 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         startActivity(intent);
                     }
                 } else {//登录
-                    Intent intent_login = new Intent();
-                    intent_login.setClass(MainActivity.this, LoginActivity.class);
-                    startActivity(intent_login);
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                            .go(this);
+//                    Intent intent_login = new Intent();
+//                    intent_login.setClass(MainActivity.this, LoginActivity.class);
+//                    startActivity(intent_login);
                 }
                 break;
             case R.id.iv_pickup: //取件
-                Intent intent = new Intent(this, PickupActivity.class);
-                startActivity(intent);
+                Router.build(RouterMapping.ROUTER_ACTIVITY_PICKUP)
+                        .go(this);
+//                Intent intent = new Intent(this, PickupActivity.class);
+//                startActivity(intent);
                 break;
         }
     }
@@ -347,6 +352,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                 if (userInfo != null && userInfo.getUser() != null) {
                     Database.USER_MAP = userInfo.getUser();
                 }
+                Database.accessToken=userInfo.getAccessToken();
                 if (userInfo != null && userInfo.getUserCommnunity() != null) {
 //                    Database.my_community_List = userInfo.getUserCommnunity();
                     DataUtils.getUesrCommunity(userInfo.getUserCommnunity());//社区列表
@@ -377,7 +383,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         String userID = RequestUtil.getuserid();
         String json = "{\"settingkey\": \"WeiXinAppSecret\",\"controllerName\": \"\",\"actionName\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
                 "\"userID\": \"" + userID + "\"}";
-        String url = HttpURL.HTTP_LOGIN_AREA + "/Setting/SelectByKey";
+        String url ="/Setting/SelectByKey";
 
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -411,109 +417,62 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void requestlist() { //获取社区
-        String userID = RequestUtil.getuserid();
-        String json = "{\"userCommnunityMapping\": {\"userID\": 4},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"1\",\"pagerownum\": \"10\"," +
-                "\"controllerName\": \"UserCommnunityMapping\",\"actionName\": \"StructureQuery\"}";
-        Log.i("resultString", "json---------" + json);
-        OkGo.post(HttpURL.HTTP_LOGIN)
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        try {
-                            JSONObject jo = new JSONObject(s);
-                            AuthAreaInfo areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
-                            if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
-                                DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
-                                DataUtils.saveSharePreToolsKits(MainActivity.this);
-                                for (int i = 0; i < Database.my_community_List.size(); i++) {
-                                    if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
-                                            == Database.my_community.getUserCommunityID()) {
-                                        Database.my_community = Database.my_community_List.get(i);
-                                        if (Database.my_community.getApprovalStatus() == 1) {
-                                            if (picPopuWindow == null) {
-                                                picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
-                                            }
-                                            // 显示窗口
-                                            picPopuWindow.showAtLocation(MainActivity.this.findViewById(R.id.lay_activity_main),
-                                                    Gravity.NO_GRAVITY, 0, 0); // 设置layout在PopupWindow中显示的位置
-                                        } else {
-                                            ToastUtils.showToast(MainActivity.this, getResources().getString(R.string.the_district_is_still_under_review));
-                                        }
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("userCommnunityMapping",new Object());
+        String jsons=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                try {
+                    JSONObject jo = new JSONObject(s);
+                    AuthAreaInfo areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
+                    if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
+                        DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
+                        DataUtils.saveSharePreToolsKits(MainActivity.this);
+                        for (int i = 0; i < Database.my_community_List.size(); i++) {
+                            if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
+                                    == Database.my_community.getUserCommunityID()) {
+                                Database.my_community = Database.my_community_List.get(i);
+                                if (Database.my_community.getApprovalStatus() == 1) {
+                                    if (picPopuWindow == null) {
+                                        picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
                                     }
+                                    // 显示窗口
+                                    picPopuWindow.showAtLocation(MainActivity.this.findViewById(R.id.lay_activity_main),
+                                            Gravity.NO_GRAVITY, 0, 0); // 设置layout在PopupWindow中显示的位置
+                                } else {
+                                    ToastUtils.showToast(MainActivity.this, getResources().getString(R.string.the_district_is_still_under_review));
                                 }
-                            } else {
-                                ToastUtils.showToast(MainActivity.this, getResources().getString(R.string.the_district_is_still_under_review));
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("listUserCommnunityMapping") != null) {
-//                            ArrayList<LinkedTreeMap<String, Object>> communitylist = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listUserCommnunityMapping");
-//                            if (communitylist != null && communitylist.size() != 0) {
-//                                Database.my_community_List = null;
-//                                Database.my_community_List = communitylist;
-//                                HashMap<String, Object> hashMap3 = new HashMap<>();
-//                                hashMap3.put("user", Database.USER_MAP);
-//                                hashMap3.put("userCommnunity", Database.my_community_List);
-//                                String json = JsonHelper.toJson(hashMap3);
-//                                SharePreToolsKits.putJsonDataString(MainActivity.this, Constant.user, json); //缓存登录后信息 修改
-//                                for (int i = 0; i < communitylist.size(); i++) {
-//                                    if (communitylist.get(i) != null && communitylist.get(i).get("userCommunityID") != null &&
-//                                            communitylist.get(i).get("userCommunityID").toString().equals(Database.my_community.get("userCommunityID").toString())) {
-//                                        Database.my_community = communitylist.get(i);
-//                                        if (Database.my_community.get("approvalStatus") != null
-//                                                && Double.valueOf(Database.my_community.get("approvalStatus").toString()).intValue() == 1) {
-//                                            if (picPopuWindow == null) {
-//                                                picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
-//                                            }
-//                                            // 显示窗口
-//                                            picPopuWindow.showAtLocation(MainActivity.this.findViewById(R.id.lay_activity_main),
-//                                                    Gravity.NO_GRAVITY, 0, 0); // 设置layout在PopupWindow中显示的位置
-//                                        } else {
-//                                            ToastUtils.showToast(MainActivity.this, "该小区还在审核中");
-//                                        }
-//                                    }
-//                                }
-//                            } else {
-//                                ToastUtils.showToast(MainActivity.this, "该小区还在审核中");
-//                            }
-//                        } else {
-//                            ToastUtils.showToast(MainActivity.this, "该小区还在审核中");
-//                        }
+                    } else {
+                        ToastUtils.showToast(MainActivity.this, getResources().getString(R.string.the_district_is_still_under_review));
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-                    }
+            @Override
+            public void onError() {
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
+            }
 
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                    }
+            @Override
+            public void parseError() {
 
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                    }
-                });
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData("/ApiUserCommnunity/Query",jsons);
     }
 
     @Override
@@ -587,9 +546,10 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void requestUpdate() {
-        String json = "{\"version\":{},\"controllerName\": \"Version\",\"actionName\": \"StructureQuery\"," +
-                "\"userID\": \"" + RequestUtil.getuserid() + "\",\"datetime\": \"" + RequestUtil.getCurrentTime() + "\"}";
-        String url = HttpURL.HTTP_LOGIN_AREA + "/Version/StructureQuery";
+//        String json = "{\"version\":{},\"controllerName\": \"Version\",\"actionName\": \"StructureQuery\"," +
+//                "\"userID\": \"" + RequestUtil.getuserid() + "\",\"datetime\": \"" + RequestUtil.getCurrentTime() + "\"}";
+        String url = "/Version/StructureQuery";
+        String jsons=new Gson().toJson(new BaseRequestBean());
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -669,7 +629,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             @Override
             public void onAfter() {
             }
-        }).getEntityData(url, json);
+        }).getEntityData(url, jsons);
 
     }
 

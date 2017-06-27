@@ -34,7 +34,7 @@ public class Database {
 //    public static LinkedTreeMap<String, Object> USER_MAP = null;// 用户信息
 //    public static UserInfo.UserBean USER_MAP = null;// 用户信息
     public static LoginUserInfo.UserBean USER_MAP = null;// 用户信息
-
+    public static String accessToken="";
 //    public static ArrayList<LinkedTreeMap<String, Object>> my_community_List = null;// 小区列表
 //    public static LinkedTreeMap<String, Object> my_community = null;// 我的小区
 

@@ -33,6 +33,7 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.request.BaseRequest;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import cn.jpush.android.api.JPushInterface;
@@ -220,8 +221,9 @@ public class SettingActivity extends BaseActivity {
 
     //清除别名
     private void appExit(String phone) {
-        String url = HttpURL.HTTP_LOGIN_AREA + "/Login/AppExit";
-        String json = "{\"phoneNumber\":\"" + phone + "\"}";
+        String url = "/Login/AppExit";
+        Map<String,String> map=new HashMap<>();
+        map.put("phoneNumber",phone);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -237,7 +239,7 @@ public class SettingActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(url, json);
+        }).getEntityData(url, map);
 
     }
 }

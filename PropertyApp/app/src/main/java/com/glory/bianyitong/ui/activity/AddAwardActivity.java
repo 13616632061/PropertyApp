@@ -22,18 +22,24 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chenenyu.router.annotation.InjectParam;
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.UserLockMapping;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.AwardPeopleAdapter;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.timeselector.TimeSelector;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
@@ -42,6 +48,7 @@ import com.lzy.okgo.request.BaseRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -51,6 +58,7 @@ import okhttp3.Response;
  * Created by lucy on 2016/11/22.
  * 添加授权
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_AddAWARD,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class AddAwardActivity extends BaseActivity {
     @BindView(R.id.iv_title_text_right)
     TextView iv_title_text_right;
@@ -94,9 +102,12 @@ public class AddAwardActivity extends BaseActivity {
     private String nowdate;
 
     private ProgressDialog progressDialog = null;
-    private String from = "";
     private String str_time_start = "";
-    private int authorizationUserID = 0;
+
+    @InjectParam(key = "from")
+     String from ;
+    @InjectParam(key = "authorizationUserID")
+    int authorizationUserID = 0;
 
     @Override
     protected int getContentId() {
@@ -106,8 +117,8 @@ public class AddAwardActivity extends BaseActivity {
     @Override
     protected void init() {
         super.init();
-        from = getIntent().getStringExtra("from");
-        authorizationUserID = getIntent().getIntExtra("authorizationUserID", 0);
+//        from = getIntent().getStringExtra("from");
+//        authorizationUserID = getIntent().getIntExtra("authorizationUserID", 0);
         if (from.equals("add")) {
             inintTitle(getResources().getString(R.string.add_authorization), false, getResources().getString(R.string.carry_out));//添加授权   完成
         } else if (from.equals("edit")) {
@@ -299,40 +310,19 @@ public class AddAwardActivity extends BaseActivity {
     //type U 用户授权,T 临时授权 userIdentity 1 家人 2租客 3临时客人 timeLimit 1 限制 0 不限制
     //添加授权人
     private void request_add(String type, String name, String phone, int userIdentity, int timeLimit, String startDate, String endDate) {
-        String userID = RequestUtil.getuserid();
-        String userName = "";
-        if (Database.USER_MAP != null && Database.USER_MAP.getUserName() != null) {
-            userName = Database.USER_MAP.getUserName();
-        }
-        int communityID = RequestUtil.getcommunityid();
-//        String communityName = "";
-//        if (Database.my_community.get("communityName") != null) {
-//            communityName = Database.my_community.get("communityName").toString();
-//        }
-        String communityName = "";
-        if (Database.my_community.getCommunityName() != null) {
-            communityName = Database.my_community.getCommunityName();
-        }
-        //17588451111
-        String nowdate = DateUtil.formatTimesTampDate(DateUtil.getCurrentDate());//获取当前时间
         String url = "";
         String json = "";
-        if (from.equals("add")) {
-            url = HttpURL.HTTP_LOGIN_AREA + "/UserLockMapping/ADD";
-            json = "{\"userLock\":{\"userLockID\":2,\"userName\":\"" + userName + "\",\"communityID\":" + communityID + ",\"communityName\":\"" + communityName + "\",\"lockID\":5," +
-                    "\"lockName\":\"大门测试锁\",\"authorizationType\":\"" + type + "\",\"authorizationUserID\":2,\"authorizationUserName\":\"" + name + "\"," +
-                    "\"authorizationUserPhone\":\"" + phone + "\",\"authorizationDateTime\":\"" + nowdate + "\",\"status\":\"E\",\"lockSort\":0," +
-                    "\"userIdentity\":" + userIdentity + ",\"timeLimit\":" + timeLimit + ",\"startDate\":\"" + startDate + "\",\"endDate\":\"" + endDate + "\"}," +
-                    "\"controllerName\":\"News\",\"actionName\":\"StructureQuery\",\"nowpagenum\":\"2\",\"pagerownum\":\"10\"," +
-                    "\"userID\":\"" + userID + "\"}";
-        } else if (from.equals("edit")) {
-            url = HttpURL.HTTP_LOGIN_AREA + "/UserLockMapping/Edit";
-            json = "{\"userLock\":{\"userIdentity\":" + userIdentity + ",\"timeLimit\":" + timeLimit + ",\"startDate\":\"" + startDate + "\",\"endDate\":\"" + endDate + "\"," +
-                    "\"authorizationUserID\":" + authorizationUserID + ",\"communityID\":" + communityID + "},\"controllerName\":\"UserLockMapping\"," +
-                    "\"actionName\":\"Edit\",\"userID\":\"" + userID + "\"}";
-        }
-        Log.i("resultString", "json------------" + json);
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
 
+        if (from.equals("add")) {
+            url = "/ApiUserLockMapping/Add";
+            map.put("userLockMapping",new UserLockMapping(Database.USER_MAP.getUserID(),userIdentity,timeLimit,phone,name));
+        } else if (from.equals("edit")) {
+            url ="/ApiUserLockMapping/Edit";
+            map.put("userLockMapping",new UserLockMapping(authorizationUserID+"",userIdentity,timeLimit,phone,name));
+        }
+
+        json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {

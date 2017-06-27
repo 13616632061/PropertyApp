@@ -282,7 +282,7 @@ public class MyFragment extends BaseFragment {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(HttpURL.HTTP_LOGIN_AREA + "/Setting/GetShare", json);
+        }).getEntityData("/Setting/GetShare", json);
     }
 
     @Override

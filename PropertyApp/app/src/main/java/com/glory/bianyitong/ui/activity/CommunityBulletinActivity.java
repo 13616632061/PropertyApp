@@ -9,6 +9,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.listCommunityBulletinInfo;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
@@ -28,6 +29,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -281,14 +283,17 @@ public class CommunityBulletinActivity extends BaseActivity {
     }
 
     private void request() { //请求社区公告
-        String userID = RequestUtil.getuserid();
-        int communityID = RequestUtil.getcommunityid();
-
-        String json = "{\"communityBulletin\": {\"communityID\":" + communityID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\"" +
-                ",\"datetime\": \"\",\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\"" +
-                ",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
-                "\"controllerName\": \"CommunityBulletin\",\"actionName\": \"StructureQuery\"}";
-        String url = HttpURL.HTTP_LOGIN;
+//        String userID = RequestUtil.getuserid();
+//        int communityID = RequestUtil.getcommunityid();
+//
+//        String json = "{\"communityBulletin\": {\"communityID\":" + communityID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\"" +
+//                ",\"datetime\": \"\",\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\"" +
+//                ",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
+//                "\"controllerName\": \"CommunityBulletin\",\"actionName\": \"StructureQuery\"}";
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("communityBulletin","");
+        String json=new Gson().toJson(map);
+        String url = "/ApiCommunityBulletin/Query";
 //        OkGo.post(HttpURL.HTTP_LOGIN)
 //                .tag(this)//
 ////                .headers("", "")//

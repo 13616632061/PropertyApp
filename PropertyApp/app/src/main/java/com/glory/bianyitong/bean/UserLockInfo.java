@@ -5,171 +5,55 @@ import java.util.List;
 /**
  * Created by lucy on 2017/2/23.
  */
-public class UserLockInfo {
-    /**
-     * tableColumnPermission : []
-     * listUserLock : [{"userLockID":2,"userID":1,"userName":"Admin","communityID":1,"communityName":"西丽小区","lockID":10,"lockName":"荣耀大门","authorizationType":"A","authorizationUserID":25,"authorizationUserName":"里斯","authorizationUserPhone":null,"authorizationDateTime":"2016-12-23T20:26:01","userIdentity":1,"timeLimit":true,"startDate":"2016-12-23T00:00:00","endDate":"2017-01-01T00:00:00","status":"E","lockSort":1}]
-     * version : null
-     * datetime : null
-     * accesstoken : null
-     * statuscode : 1
-     * statusmessage : 消息处理成功
-     * alertmessage : 消息处理成功
-     * totalrownum : null
-     * totalpagenum : null
-     * nowpagenum : null
-     * pagerownum : 10
-     */
+public class UserLockInfo extends BaseResponseBean {
 
-    private Object version;
-    private Object datetime;
-    private Object accesstoken;
-    private int statuscode;
-    private String statusmessage;
-    private String alertmessage;
-    private Object totalrownum;
-    private Object totalpagenum;
-    private Object nowpagenum;
-    private String pagerownum;
-    private List<?> tableColumnPermission;
-    private List<ListUserLockBean> listUserLock;
 
-    public Object getVersion() {
-        return version;
+    private List<ListUserLockMappingBean> listUserLockMapping;
+
+    public List<ListUserLockMappingBean> getListUserLockMapping() {
+        return listUserLockMapping;
     }
 
-    public void setVersion(Object version) {
-        this.version = version;
+    public void setListUserLockMapping(List<ListUserLockMappingBean> listUserLockMapping) {
+        this.listUserLockMapping = listUserLockMapping;
     }
 
-    public Object getDatetime() {
-        return datetime;
-    }
-
-    public void setDatetime(Object datetime) {
-        this.datetime = datetime;
-    }
-
-    public Object getAccesstoken() {
-        return accesstoken;
-    }
-
-    public void setAccesstoken(Object accesstoken) {
-        this.accesstoken = accesstoken;
-    }
-
-    public int getStatuscode() {
-        return statuscode;
-    }
-
-    public void setStatuscode(int statuscode) {
-        this.statuscode = statuscode;
-    }
-
-    public String getStatusmessage() {
-        return statusmessage;
-    }
-
-    public void setStatusmessage(String statusmessage) {
-        this.statusmessage = statusmessage;
-    }
-
-    public String getAlertmessage() {
-        return alertmessage;
-    }
-
-    public void setAlertmessage(String alertmessage) {
-        this.alertmessage = alertmessage;
-    }
-
-    public Object getTotalrownum() {
-        return totalrownum;
-    }
-
-    public void setTotalrownum(Object totalrownum) {
-        this.totalrownum = totalrownum;
-    }
-
-    public Object getTotalpagenum() {
-        return totalpagenum;
-    }
-
-    public void setTotalpagenum(Object totalpagenum) {
-        this.totalpagenum = totalpagenum;
-    }
-
-    public Object getNowpagenum() {
-        return nowpagenum;
-    }
-
-    public void setNowpagenum(Object nowpagenum) {
-        this.nowpagenum = nowpagenum;
-    }
-
-    public String getPagerownum() {
-        return pagerownum;
-    }
-
-    public void setPagerownum(String pagerownum) {
-        this.pagerownum = pagerownum;
-    }
-
-    public List<?> getTableColumnPermission() {
-        return tableColumnPermission;
-    }
-
-    public void setTableColumnPermission(List<?> tableColumnPermission) {
-        this.tableColumnPermission = tableColumnPermission;
-    }
-
-    public List<ListUserLockBean> getListUserLock() {
-        return listUserLock;
-    }
-
-    public void setListUserLock(List<ListUserLockBean> listUserLock) {
-        this.listUserLock = listUserLock;
-    }
-
-    public static class ListUserLockBean {
+    public static class ListUserLockMappingBean {
         /**
-         * userLockID : 2
+         * userLockID : 339
          * userID : 1
-         * userName : Admin
          * communityID : 1
          * communityName : 西丽小区
-         * lockID : 10
+         * lockID : 42
          * lockName : 荣耀大门
          * authorizationType : A
-         * authorizationUserID : 25
-         * authorizationUserName : 里斯
-         * authorizationUserPhone : null
-         * authorizationDateTime : 2016-12-23T20:26:01
+         * authorizationUserID : 66
+         * authorizationUserPhone : 13510012206
+         * authorizationDateTime : 2017-06-26T17:47:38
          * userIdentity : 1
-         * timeLimit : true
-         * startDate : 2016-12-23T00:00:00
-         * endDate : 2017-01-01T00:00:00
+         * userIdentityName : 业主
+         * timeLimit : false
          * status : E
-         * lockSort : 1
+         * lockSort : 0
+         * authorizationUserName :
          */
 
         private int userLockID;
         private int userID;
-        private String userName;
         private int communityID;
         private String communityName;
         private int lockID;
         private String lockName;
         private String authorizationType;
         private int authorizationUserID;
-        private String authorizationUserName;
-        private Object authorizationUserPhone;
+        private String authorizationUserPhone;
         private String authorizationDateTime;
         private int userIdentity;
+        private String userIdentityName;
         private boolean timeLimit;
-        private String startDate;
-        private String endDate;
         private String status;
         private int lockSort;
+        private String authorizationUserName;
 
         public int getUserLockID() {
             return userLockID;
@@ -185,14 +69,6 @@ public class UserLockInfo {
 
         public void setUserID(int userID) {
             this.userID = userID;
-        }
-
-        public String getUserName() {
-            return userName;
-        }
-
-        public void setUserName(String userName) {
-            this.userName = userName;
         }
 
         public int getCommunityID() {
@@ -243,19 +119,11 @@ public class UserLockInfo {
             this.authorizationUserID = authorizationUserID;
         }
 
-        public String getAuthorizationUserName() {
-            return authorizationUserName;
-        }
-
-        public void setAuthorizationUserName(String authorizationUserName) {
-            this.authorizationUserName = authorizationUserName;
-        }
-
-        public Object getAuthorizationUserPhone() {
+        public String getAuthorizationUserPhone() {
             return authorizationUserPhone;
         }
 
-        public void setAuthorizationUserPhone(Object authorizationUserPhone) {
+        public void setAuthorizationUserPhone(String authorizationUserPhone) {
             this.authorizationUserPhone = authorizationUserPhone;
         }
 
@@ -275,28 +143,20 @@ public class UserLockInfo {
             this.userIdentity = userIdentity;
         }
 
+        public String getUserIdentityName() {
+            return userIdentityName;
+        }
+
+        public void setUserIdentityName(String userIdentityName) {
+            this.userIdentityName = userIdentityName;
+        }
+
         public boolean isTimeLimit() {
             return timeLimit;
         }
 
         public void setTimeLimit(boolean timeLimit) {
             this.timeLimit = timeLimit;
-        }
-
-        public String getStartDate() {
-            return startDate;
-        }
-
-        public void setStartDate(String startDate) {
-            this.startDate = startDate;
-        }
-
-        public String getEndDate() {
-            return endDate;
-        }
-
-        public void setEndDate(String endDate) {
-            this.endDate = endDate;
         }
 
         public String getStatus() {
@@ -313,6 +173,14 @@ public class UserLockInfo {
 
         public void setLockSort(int lockSort) {
             this.lockSort = lockSort;
+        }
+
+        public String getAuthorizationUserName() {
+            return authorizationUserName;
+        }
+
+        public void setAuthorizationUserName(String authorizationUserName) {
+            this.authorizationUserName = authorizationUserName;
         }
     }
 }

@@ -14,6 +14,14 @@ import java.util.Date;
  * Created by hyj on 2016/12/15.
  */
 public class RequestUtil {
+
+    public static String getToken(){
+        String token="";
+        if (Database.USER_MAP != null && Database.accessToken != null) {
+            token = Database.accessToken;
+        }
+        return token;
+    }
     /**
      * TODO 获取userID
      * 获取userID

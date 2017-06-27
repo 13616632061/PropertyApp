@@ -5,8 +5,10 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.PickupAdapter;
 import com.glory.bianyitong.view.NewPullToRefreshView;
 import com.google.gson.internal.LinkedTreeMap;
@@ -19,6 +21,7 @@ import butterknife.BindView;
  * Created by lucy on 2017/5/3.
  * 取件
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_PICKUP,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class PickupActivity extends BaseActivity {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;

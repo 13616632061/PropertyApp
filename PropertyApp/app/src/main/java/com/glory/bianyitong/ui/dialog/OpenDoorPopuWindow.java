@@ -21,8 +21,10 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.bean.AdvertisingInfo2;
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.UserLockInfo;
 import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.activity.KeyManagerActivity;
 import com.glory.bianyitong.ui.activity.SwitchAreaActivity;
@@ -42,6 +44,7 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -52,7 +55,7 @@ import okhttp3.Response;
  */
 public class OpenDoorPopuWindow extends PopupWindow implements View.OnClickListener {
 //    ArrayList<LinkedTreeMap<String, Object>> locklist;
-    List<UserLockInfo.ListUserLockBean> locklist;
+    List<UserLockInfo.ListUserLockMappingBean> locklist;
     ImageView iv_open_ad; //广告图
     TextView tv_switch_area_od;//切换小区
     TextView tv_key_manager; //钥匙管理
@@ -172,7 +175,7 @@ public class OpenDoorPopuWindow extends PopupWindow implements View.OnClickListe
     /**
      * 横向滑动布局
      */
-    public void horizontalScrollViewLayout(final Context context, final List<UserLockInfo.ListUserLockBean> list, LinearLayout lay_gallery) {//List<LinkedTreeMap<String, Object>>
+    public void horizontalScrollViewLayout(final Context context, final List<UserLockInfo.ListUserLockMappingBean> list, LinearLayout lay_gallery) {//List<LinkedTreeMap<String, Object>>
         lay_gallery.removeAllViews();
         LayoutInflater mInflater = LayoutInflater.from(context);
         if (list != null && list.size() != 0) {
@@ -225,126 +228,78 @@ public class OpenDoorPopuWindow extends PopupWindow implements View.OnClickListe
     private void request() { //钥匙查询
         String userID = RequestUtil.getuserid();
         int communityID = RequestUtil.getcommunityid();
-        String json = "{\"userLock\":{\"communityID\":" + communityID + "},\"controllerName\":\"FreshFeatured\",\"actionName\":\"StructureQuery\"," +
-                "\"nowpagenum\":\"2\",\"pagerownum\":\"10\",\"userID\":\"" + userID + "\"}";
+//        String json = "{\"userLock\":{\"communityID\":" + communityID + "},\"controllerName\":\"FreshFeatured\",\"actionName\":\"StructureQuery\"," +
+//                "\"nowpagenum\":\"2\",\"pagerownum\":\"10\",\"userID\":\"" + userID + "\"}";
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("userLockMapping",new Object());
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                    UserLockInfo uinfo = new Gson().fromJson(s.toString(), UserLockInfo.class);
+                if(uinfo==null){
 
-        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/UserKey/StructureQuery")
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("listUserLock") != null) {
-//                            locklist = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listUserLock");
-//                            if (locklist != null && locklist.size() > 0 && locklist.size() == 1) {
-//                                hs_open_door_lay.setVisibility(View.GONE);
-//                                ll_open_door_lay.setVisibility(View.VISIBLE);
-//                                lay_door2.setVisibility(View.GONE);
-//                                if (locklist != null && locklist.get(0) != null && locklist.get(0).get("lockName") != null) {
-//                                    tv_door_name1.setText(locklist.get(0).get("lockName").toString());
-//                                }
-//                                tv_key_manager.setVisibility(View.VISIBLE);
-//                            } else if (locklist != null && locklist.size() > 0 && locklist.size() == 2) {
-//                                hs_open_door_lay.setVisibility(View.GONE);
-//                                ll_open_door_lay.setVisibility(View.VISIBLE);
-//                                lay_door2.setVisibility(View.VISIBLE);
-//                                if (locklist != null && locklist.get(0) != null && locklist.get(0).get("lockName") != null) {
-//                                    tv_door_name1.setText(locklist.get(0).get("lockName").toString());
-//                                }
-//                                if (locklist != null && locklist.get(1) != null && locklist.get(1).get("lockName") != null) {
-//                                    tv_door_name2.setText(locklist.get(1).get("lockName").toString());
-//                                }
-//                                tv_key_manager.setVisibility(View.VISIBLE);
-//                            } else if (locklist != null && locklist.size() > 0 && locklist.size() > 3) {
-//                                hs_open_door_lay.setVisibility(View.VISIBLE);
-//                                ll_open_door_lay.setVisibility(View.GONE);
-//                                horizontalScrollViewLayout(context, locklist, ll_open_the_door);
-//                                tv_key_manager.setVisibility(View.VISIBLE);
-//                            }
-//                        }
-                        try {
-                            JSONObject jo = new JSONObject(s);
-                            String statuscode = jo.getString("statuscode");
-                            String statusmessage = jo.getString("statusmessage");
-                            UserLockInfo uinfo = new Gson().fromJson(jo.toString(), UserLockInfo.class);
-//                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
-                            if (uinfo != null && uinfo.getListUserLock() != null) {
-                                locklist = uinfo.getListUserLock();
-                                if (locklist != null && locklist.size() > 0 && locklist.size() == 1) {
-                                    hs_open_door_lay.setVisibility(View.GONE);
-                                    ll_open_door_lay.setVisibility(View.VISIBLE);
-                                    lay_door2.setVisibility(View.GONE);
+                    return;
+                }
+                    if (uinfo != null && uinfo.getStatusCode()==1) {
+                        locklist = uinfo.getListUserLockMapping();
+                        if (locklist != null && locklist.size() > 0 && locklist.size() == 1) {
+                            hs_open_door_lay.setVisibility(View.GONE);
+                            ll_open_door_lay.setVisibility(View.VISIBLE);
+                            lay_door2.setVisibility(View.GONE);
+                            if (locklist != null && locklist.get(0) != null && locklist.get(0).getLockName() != null) {
+                                tv_door_name1.setText(locklist.get(0).getLockName());
+                            }
+                            tv_key_manager.setVisibility(View.VISIBLE);
+                        } else if (locklist != null && locklist.size() > 0 && locklist.size() == 2) {
+                            hs_open_door_lay.setVisibility(View.GONE);
+                            ll_open_door_lay.setVisibility(View.VISIBLE);
+                            lay_door2.setVisibility(View.VISIBLE);
 //                                    if (locklist != null && locklist.get(0) != null && locklist.get(0).get("lockName") != null) {
 //                                        tv_door_name1.setText(locklist.get(0).get("lockName").toString());
 //                                    }
-                                    if (locklist != null && locklist.get(0) != null && locklist.get(0).getLockName() != null) {
-                                        tv_door_name1.setText(locklist.get(0).getLockName());
-                                    }
-                                    tv_key_manager.setVisibility(View.VISIBLE);
-                                } else if (locklist != null && locklist.size() > 0 && locklist.size() == 2) {
-                                    hs_open_door_lay.setVisibility(View.GONE);
-                                    ll_open_door_lay.setVisibility(View.VISIBLE);
-                                    lay_door2.setVisibility(View.VISIBLE);
-//                                    if (locklist != null && locklist.get(0) != null && locklist.get(0).get("lockName") != null) {
-//                                        tv_door_name1.setText(locklist.get(0).get("lockName").toString());
-//                                    }
-                                    if (locklist != null && locklist.get(0) != null && locklist.get(0).getLockName() != null) {
-                                        tv_door_name1.setText(locklist.get(0).getLockName());
-                                    }
+                            if (locklist != null && locklist.get(0) != null && locklist.get(0).getLockName() != null) {
+                                tv_door_name1.setText(locklist.get(0).getLockName());
+                            }
 //                                    if (locklist != null && locklist.get(1) != null && locklist.get(1).get("lockName") != null) {
 //                                        tv_door_name2.setText(locklist.get(1).get("lockName").toString());
 //                                    }
-                                    if (locklist != null && locklist.get(1) != null && locklist.get(1).getLockName() != null) {
-                                        tv_door_name2.setText(locklist.get(1).getLockName());
-                                    }
-                                    tv_key_manager.setVisibility(View.VISIBLE);
-                                } else if (locklist != null && locklist.size() > 0 && locklist.size() > 3) {
-                                    hs_open_door_lay.setVisibility(View.VISIBLE);
-                                    ll_open_door_lay.setVisibility(View.GONE);
-                                    horizontalScrollViewLayout(context, locklist, ll_open_the_door);
-                                    tv_key_manager.setVisibility(View.VISIBLE);
-                                }
+                            if (locklist != null && locklist.get(1) != null && locklist.get(1).getLockName() != null) {
+                                tv_door_name2.setText(locklist.get(1).getLockName());
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            tv_key_manager.setVisibility(View.VISIBLE);
+                        } else if (locklist != null && locklist.size() > 0 && locklist.size() > 3) {
+                            hs_open_door_lay.setVisibility(View.VISIBLE);
+                            ll_open_door_lay.setVisibility(View.GONE);
+                            horizontalScrollViewLayout(context, locklist, ll_open_the_door);
+                            tv_key_manager.setVisibility(View.VISIBLE);
                         }
+                    }else {
+
                     }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-                        ToastUtils.showToast(context, "未能连接到服务器");
-                    }
+            }
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
+            @Override
+            public void onError() {
 
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                        progressDialog = ProgressDialog.show(context, "", "", true);
-                        progressDialog.setCanceledOnTouchOutside(true);
-                    }
+            }
 
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                        if (progressDialog != null) {
-                            progressDialog.dismiss();
-                            progressDialog = null;
-                        }
-                    }
-                });
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData("/ApiUserKey/Query",json);
     }
 
     private void OpenLock(int lockID) { //开锁

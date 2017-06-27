@@ -15,4 +15,15 @@ public class RouterMapping  {
     public static final String ROUTER_ACTIVITY_INDEX="ROUTER_ACTIVITY_INDEX";//首页fragment
 
 
+    /**
+     * 快递
+     */
+    public static final String ROUTER_ACTIVITY_PICKUP="ROUTER_ACTIVITY_PICKUP";//取件
+
+    /**
+     * 授权
+     */
+    public static final String ROUTER_ACTIVITY_AddAWARD="ROUTER_ACTIVITY_AddAWARD";//授权添加
+
+
 }

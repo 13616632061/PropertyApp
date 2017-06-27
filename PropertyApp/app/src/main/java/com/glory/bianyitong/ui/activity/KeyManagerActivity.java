@@ -68,7 +68,7 @@ public class KeyManagerActivity extends BaseActivity {
     SwipeMenuRecyclerView key_recycler_view;
     KeyListAdapter keyListAdapter;
     //    private List<LinkedTreeMap<String, Object>> list_door;
-    private List<UserLockInfo.ListUserLockBean> list_door;
+    private List<UserLockInfo.ListUserLockMappingBean> list_door;
     private ProgressDialog progressDialog = null;
     private List<HashMap<String, Object>> list_sort; //排序后的list
     private String userID = "";
@@ -294,8 +294,8 @@ public class KeyManagerActivity extends BaseActivity {
                     String statusmessage = jo.getString("statusmessage");
                     UserLockInfo uinfo = new Gson().fromJson(jo.toString(), UserLockInfo.class);
 //                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
-                    if (uinfo != null && uinfo.getListUserLock() != null) {
-                        list_door = uinfo.getListUserLock();
+                    if (uinfo != null && uinfo.getStatusCode()==1) {
+                        list_door = uinfo.getListUserLockMapping();
                         if (list_door != null && list_door.size() > 0) {
                             keyListAdapter = new KeyListAdapter(list_door);
                             keyListAdapter.setOnItemClickListener(onItemClickListener);

@@ -17,14 +17,14 @@ public class ResponseBaseInfo {
      * pageRowNumber : 0
      */
 
-    private String version;    //版本号
-    private String timeStemp;  //时间戳
-    private String accessToken;//账户令牌
-    private int statusCode;    //状态码
-    private String statusMessage; //状态说明
-    private String alertMessage;  //提示信息
-    private int currentPageNumber;//当前页
-    private int pageRowNumber;    //每页记录数
+    protected String version;    //版本号
+    protected String timeStemp;  //时间戳
+    protected String accessToken;//账户令牌
+    protected int statusCode;    //状态码
+    protected String statusMessage; //状态说明
+    protected String alertMessage;  //提示信息
+    protected int currentPageNumber;//当前页
+    protected int pageRowNumber;    //每页记录数
 
     public String getVersion() {
         return version;

@@ -397,7 +397,7 @@ public class IndexFragment extends BaseFragment {
 
         int communityID = RequestUtil.getcommunityid();
 //        String url = HttpURL.HTTP_LOGIN_AREA + "/Advertising/StructureQuery";
-        String url = HttpURL.HTTP_NEW_URL + "/ApiIndex/Query";
+        String url = "/ApiIndex/Query";
 //        String json = "{\"advertising\": {\"communityID\":" + communityID + ",\"advertisingLocation\":\"1\"},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
 //                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\"," +
 //                "\"pagerownum\": \"\",\"controllerName\": \"Advertising\",\"actionName\": \"StructureQuery\"}";
