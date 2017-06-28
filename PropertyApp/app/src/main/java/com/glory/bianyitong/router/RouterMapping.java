@@ -26,4 +26,30 @@ public class RouterMapping  {
     public static final String ROUTER_ACTIVITY_AddAWARD="ROUTER_ACTIVITY_AddAWARD";//授权添加
 
 
+    /**
+     * 我的
+     */
+    public static final String ROUTER_ACTIVITY_PERSION="ROUTER_ACTIVITY_PERSION";//个人资料
+    public static final String ROUTER_ACTIVITY_AUTHAREA="ROUTER_ACTIVITY_AUTHAREA";//认证小区
+    public static final String ROUTER_ACTIVITY_AAWARD_MANAGER="ROUTER_ACTIVITY_AAWARD_MANAGER";//授权管理
+    public static final String ROUTER_ACTIVITY_AAWARD_MY_RELEASE="ROUTER_ACTIVITY_AAWARD_MY_RELEASE";//我的发布
+    public static final String ROUTER_ACTIVITY_SETTING="ROUTER_ACTIVITY_SETTING";//设置
+    public static final String ROUTER_ACTIVITY_FEEDBACK="ROUTER_ACTIVITY_FEEDBACK";//意见反馈
+
+    /**
+     * 个人信息
+     */
+    public static final String ROUTER_ACTIVITY_MY_UPDATE_NAME="ROUTER_ACTIVITY_MY_UPDATE_NAME";//修改昵称
+    public static final String ROUTER_ACTIVITY_MY_UPDATE_DESC="ROUTER_ACTIVITY_MY_UPDATE_DESC";//修改描述
+
+    /**
+     * 小区信息
+     *
+     */
+    public static final String ROUTER_ACTIVITY_AREA_ADD="ROUTER_ACTIVITY_AREA_ADD";//添加小区
+    public static final String ROUTER_ACTIVITY_AREA_LIST="ROUTER_ACTIVITY_AREA_LIST";//小区列表
+
+
+
+
 }

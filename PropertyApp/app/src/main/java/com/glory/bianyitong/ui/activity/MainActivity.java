@@ -317,6 +317,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
                         intent.putExtra("from", "");
                         startActivity(intent);
                     }
+
                 } else {//登录
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
                             .go(this);
@@ -361,20 +362,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-//            HashMap<String, Object> hashMap2 = JsonHelper.fromJson(Database.login_return, new TypeToken<HashMap<String, Object>>() {
-//            });
-//            if (hashMap2 != null && hashMap2.get("user") != null) {
-////                if (Database.USER_MAP != null) {
-////                    Database.USER_MAP = null;
-////                }
-////                Database.islogin = true;
-////                Database.USER_MAP = (LinkedTreeMap<String, Object>) hashMap2.get("user");
-////                getUserMap((LinkedTreeMap<String, Object>) hashMap2.get("user"));
-//                if (hashMap2.get("userCommnunity") != null) {
-//                    Database.my_community_List = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("userCommnunity");
-//                    my_community();
-//                }
-//            }
         }
         getWeiXin();
     }

@@ -15,10 +15,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chenenyu.router.Router;
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.UserLockInfo;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.exception.MyApplication;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
@@ -26,6 +30,7 @@ import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.MenuViewTypeAdapter;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.JsonHelper;
+import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.view.ListViewDecoration;
 import com.glory.bianyitong.widght.convenientbanner.listener.OnItemClickListener;
@@ -44,6 +49,7 @@ import com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -54,6 +60,7 @@ import okhttp3.Response;
  * Created by lucy on 2016/11/14.
  * 授权管理
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_AAWARD_MANAGER,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class AwardManagerActivity extends BaseActivity {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
@@ -70,7 +77,7 @@ public class AwardManagerActivity extends BaseActivity {
     SwipeMenuRecyclerView list_people;
     private ProgressDialog progressDialog = null;
     private MenuViewTypeAdapter awardPeopleAdapter;
-    private ArrayList<LinkedTreeMap<String, Object>> list_man;
+    private List<UserLockInfo.ListUserLockMappingBean> list_man=new ArrayList<>();
     /**
      * 菜单创建器。
      */
@@ -98,14 +105,10 @@ public class AwardManagerActivity extends BaseActivity {
         @Override
         public void onItemClick(int position) {
             Database.awardpeople = list_man.get(position);
-            Intent intent = new Intent(AwardManagerActivity.this, AddAwardActivity.class);
-            intent.putExtra("from", "edit");
-            if (list_man.get(position).get("authorizationUserID") != null) {
-                intent.putExtra("authorizationUserID", Double.valueOf(list_man.get(position).get("authorizationUserID").toString()).intValue());
-            } else {
-                intent.putExtra("authorizationUserID", 0);
-            }
-            startActivity(intent);
+            Router.build(RouterMapping.ROUTER_ACTIVITY_AddAWARD)
+                    .with("from","edit")
+                    .with("authorizationUserID", list_man.get(position).getAuthorizationUserID())
+                    .go(AwardManagerActivity.this);
         }
     };
     /**
@@ -118,7 +121,6 @@ public class AwardManagerActivity extends BaseActivity {
 
             if (direction == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
 //                Toast.makeText(mContext, "list第" + adapterPosition + "; 右侧菜单第" + menuPosition, Toast.LENGTH_SHORT).show();
-                if (list_man.get(adapterPosition).get("authorizationUserID") != null) {
                     final int index = adapterPosition;
                     AlertDialog.Builder builder = new AlertDialog.Builder(AwardManagerActivity.this);
                     builder.setMessage(getString(R.string.whether_to_delete_the_donor));//是否删除授权人
@@ -126,7 +128,7 @@ public class AwardManagerActivity extends BaseActivity {
                     builder.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {//删除
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            delete(Double.valueOf(list_man.get(index).get("authorizationUserID").toString()).intValue(), index);
+                            delete(list_man.get(index).getAuthorizationUserID(), index);
                             dialog.dismiss();
                         }
                     });
@@ -137,7 +139,6 @@ public class AwardManagerActivity extends BaseActivity {
                         }
                     });
                     builder.create().show();
-                }
             } else if (direction == SwipeMenuRecyclerView.LEFT_DIRECTION) {
 //                Toast.makeText(mContext, "list第" + adapterPosition + "; 左侧菜单第" + menuPosition, Toast.LENGTH_SHORT).show();
             }
@@ -163,10 +164,6 @@ public class AwardManagerActivity extends BaseActivity {
         tv_add_award.setOnClickListener(new View.OnClickListener() { //添加授权
             @Override
             public void onClick(View view) {
-//                Intent intent = new Intent(AwardManagerActivity.this, AddAwardActivity.class);
-//                intent.putExtra("from", "add");
-//                intent.putExtra("authorizationUserID", 0);
-//                startActivity(intent);
                 Router.build(RouterMapping.ROUTER_ACTIVITY_AddAWARD)
                         .with("from","add")
                         .with("authorizationUserID",0)
@@ -181,6 +178,10 @@ public class AwardManagerActivity extends BaseActivity {
         list_people.addItemDecoration(new ListViewDecoration());
         list_people.setSwipeMenuCreator(swipeMenuCreator);
         list_people.setSwipeMenuItemClickListener(menuItemClickListener);
+
+        awardPeopleAdapter = new MenuViewTypeAdapter(list_man);
+        awardPeopleAdapter.setOnItemClickListener(onItemClickListener);
+        list_people.setAdapter(awardPeopleAdapter);
         request();
     }
 
@@ -201,22 +202,26 @@ public class AwardManagerActivity extends BaseActivity {
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                });
-                if (hashMap2 != null && hashMap2.get("listUserLock") != null) {
-                    list_man = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listUserLock");
-                    if (list_man != null && list_man.size() > 0) {
-//                                awardPeopleAdapter = new AwardPeopleAdapter(AwardManagerActivity.this, list);
-//                                list_people.setAdapter(awardPeopleAdapter);
 
-                        awardPeopleAdapter = new MenuViewTypeAdapter(list_man);
-                        awardPeopleAdapter.setOnItemClickListener(onItemClickListener);
-                        list_people.setAdapter(awardPeopleAdapter);
-                    } else {
-                        lay_award_list.setVisibility(View.VISIBLE);
-                        lay_no_list.setVisibility(View.GONE);
-                    }
+                if(TextUtil.isEmpty(s)){
+                    ToastUtils.showShort(AwardManagerActivity.this,"获取授权人失败");
+                    return;
                 }
+                UserLockInfo baseResponseBean=new Gson().fromJson(s,UserLockInfo.class);
+                if(baseResponseBean.getStatusCode()==-105){
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                            .go(AwardManagerActivity.this);
+                    return;
+                }else if(baseResponseBean.getStatusCode()==1){
+                    list_man.clear();
+                    list_man.addAll(baseResponseBean.getListUserLockMapping());
+                    awardPeopleAdapter.notifyDataSetChanged();
+                }else {
+                    lay_award_list.setVisibility(View.VISIBLE);
+                    lay_no_list.setVisibility(View.GONE);
+                }
+
+
             }
             @Override
             public void onError() {}
@@ -234,76 +239,23 @@ public class AwardManagerActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData("/ApiUserLockMapping/Query",jsons);
+        }).getEntityData(HttpURL.HTTP_POST_LOCKMAPPING_QUERY,jsons);
     }
 
-    //保存
+    /**
+     * 删除授权
+     * @param authorizationUserID
+     * @param position
+     */
     private void delete(int authorizationUserID, final int position) {//
         String userID = RequestUtil.getuserid();
         int communityID = RequestUtil.getcommunityid();
 
         String json = "{\"userLock\":{\"authorizationUserID\":" + authorizationUserID + ",\"communityID\":" + communityID + "},\"controllerName\":\"UserLockMapping\"," +
                 "\"actionName\":\"Delete\",\"userID\":\"" + userID + "\"}";
-
-        Log.i("resultString", "json------------" + json);
-        String url = HttpURL.HTTP_LOGIN_AREA + "/UserLockMapping/Delete";
-//        OkGo.post(url) //删除
-//                .tag(this)//
-////                .headers("", "")//
-//                .params("request", json)
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onSuccess(String s, Call call, Response response) {
-//                        Log.i("resultString", "------------");
-//                        Log.i("resultString", s);
-//                        Log.i("resultString", "------------");
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-//                                Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
-//                            list_man.remove(position);
-//                            awardPeopleAdapter.notifyDataSetChanged();
-//                            ToastUtils.showToast(AwardManagerActivity.this, getString(R.string.successfully_deleted));//删除成功
-//                        } else {
-//                            ToastUtils.showToast(AwardManagerActivity.this, getString(R.string.failed_to_delete));//删除失败
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Call call, Response response, Exception e) {
-//                        super.onError(call, response, e);
-//                        Log.i("resultString", "请求错误------");
-//                        ServiceDialog.showRequestFailed();
-//                    }
-//
-//                    @Override
-//                    public void parseError(Call call, Exception e) {
-//                        super.parseError(call, e);
-//                        Log.i("resultString", "网络解析错误------");
-//                    }
-//
-//                    @Override
-//                    public void onBefore(BaseRequest request) {
-//                        super.onBefore(request);
-//                        progressDialog = ProgressDialog.show(AwardManagerActivity.this, "", getString(R.string.delete), true);//删除..
-//                        progressDialog.setCanceledOnTouchOutside(true);
-//                    }
-//
-//                    @Override
-//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-//                        super.onAfter(s, e);
-//                        if (progressDialog != null) {
-//                            progressDialog.dismiss();
-//                            progressDialog = null;
-//                        }
-//                    }
-//                });
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
                 HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
                 });
                 if (hashMap2 != null && hashMap2.get("statuscode") != null &&
@@ -332,7 +284,7 @@ public class AwardManagerActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url,json);
+        }).getEntityData(HttpURL.HTTP_POST_LOCKMAPPING_DELETE,json);
     }
 
 }

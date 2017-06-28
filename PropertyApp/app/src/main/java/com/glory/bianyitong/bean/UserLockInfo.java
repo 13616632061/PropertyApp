@@ -37,7 +37,6 @@ public class UserLockInfo extends BaseResponseBean {
          * lockSort : 0
          * authorizationUserName :
          */
-
         private int userLockID;
         private int userID;
         private int communityID;
@@ -54,6 +53,25 @@ public class UserLockInfo extends BaseResponseBean {
         private String status;
         private int lockSort;
         private String authorizationUserName;
+
+        public String getStartDate() {
+            return startDate;
+        }
+
+        public void setStartDate(String startDate) {
+            this.startDate = startDate;
+        }
+
+        public String getEndDate() {
+            return endDate;
+        }
+
+        public void setEndDate(String endDate) {
+            this.endDate = endDate;
+        }
+
+        private String startDate;
+        private String endDate;
 
         public int getUserLockID() {
             return userLockID;

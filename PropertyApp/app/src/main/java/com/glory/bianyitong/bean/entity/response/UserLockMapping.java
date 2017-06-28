@@ -1,4 +1,4 @@
-package com.glory.bianyitong.bean.entity;
+package com.glory.bianyitong.bean.entity.response;
 
 /**
  * Created by Administrator on 2017/6/27.

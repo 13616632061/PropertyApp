@@ -16,12 +16,14 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DataCleanManager;
 import com.glory.bianyitong.util.JsonHelper;
@@ -44,6 +46,7 @@ import okhttp3.Response;
  * Created by lucy on 2016/11/14.
  * 设置
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_SETTING)
 public class SettingActivity extends BaseActivity {
     @BindView(R.id.btn_logout)
     Button btn_logout;
@@ -207,6 +210,7 @@ public class SettingActivity extends BaseActivity {
         Database.USER_MAP = null;
         Database.my_community_List = null;
         Database.my_community = null;
+        Database.accessToken=null;
 //                SharePreToolsKits.putJsonDataString(SettingActivity.this, Constant.user, "");//缓存用户登录后信息
 //                SharePreToolsKits.putString(SettingActivity.this, Constant.bulletinID, ""); //缓存已读社区消息
 //                SharePreToolsKits.putString(SettingActivity.this, Constant.messageID, ""); //缓存已读系统通知消息
@@ -221,25 +225,26 @@ public class SettingActivity extends BaseActivity {
 
     //清除别名
     private void appExit(String phone) {
-        String url = "/Login/AppExit";
-        Map<String,String> map=new HashMap<>();
-        map.put("phoneNumber",phone);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
-            }
-            @Override
-            public void onError() {}
-            @Override
-            public void parseError() {}
-            @Override
-            public void onBefore() {}
-            @Override
-            public void onAfter() {}
-        }).getEntityData(url, map);
+
+//        String url = "/Login/AppExit";
+//        Map<String,String> map=new HashMap<>();
+//        map.put("phoneNumber",phone);
+//        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+//            @Override
+//            public void onSuccess(String s) {
+//                Log.i("resultString", "------------");
+//                Log.i("resultString", s);
+//                Log.i("resultString", "------------");
+//            }
+//            @Override
+//            public void onError() {}
+//            @Override
+//            public void parseError() {}
+//            @Override
+//            public void onBefore() {}
+//            @Override
+//            public void onAfter() {}
+//        }).getEntityData(url, map);
 
     }
 }

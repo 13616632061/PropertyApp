@@ -291,7 +291,7 @@ public class CommunityBulletinActivity extends BaseActivity {
 //                ",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
 //                "\"controllerName\": \"CommunityBulletin\",\"actionName\": \"StructureQuery\"}";
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("communityBulletin","");
+        map.put("communityBulletin",new Object());
         String json=new Gson().toJson(map);
         String url = "/ApiCommunityBulletin/Query";
 //        OkGo.post(HttpURL.HTTP_LOGIN)
@@ -441,11 +441,6 @@ public class CommunityBulletinActivity extends BaseActivity {
             @Override
             public void onSuccess(String s) {
 //                pullToRefreshView.onHeaderRefreshComplete();
-                getGoodsListStart = false;
-//                        loading_lay.setVisibility(View.GONE);
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
                 try {
                     JSONObject jo = new JSONObject(s);
 //                            String statuscode = jo.getString("statuscode");
@@ -522,7 +517,7 @@ public class CommunityBulletinActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url,json);
+        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE,json);
     }
 
     @Override

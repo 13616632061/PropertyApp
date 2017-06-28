@@ -15,13 +15,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.entity.response.ResponseShare;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.share.ShareUtil;
 import com.glory.bianyitong.ui.activity.AuthAreaActivity;
 import com.glory.bianyitong.ui.activity.AwardManagerActivity;
@@ -33,11 +38,14 @@ import com.glory.bianyitong.ui.activity.SettingActivity;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
 import com.glory.bianyitong.util.JsonHelper;
+import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.CircleImageView;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -124,63 +132,62 @@ public class MyFragment extends BaseFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.cim_my_head_portrait: //个人信息
-                if (Database.USER_MAP != null) {//登录
-                    Intent intent2 = new Intent(context, PersonalDataActivity.class);
-                    context.startActivity(intent2);
-                } else {
-                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
-                    login();
-                }
+                Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
+                        .go(this);
+//                if (Database.USER_MAP != null) {//登录
+//                    Intent intent2 = new Intent(context, PersonalDataActivity.class);
+//                    context.startActivity(intent2);
+//                } else {
+//                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
+//                    login();
+//                }
                 break;
             case R.id.text_user_name://个人信息
-                if (Database.USER_MAP != null) {//登录
-                    Intent intent3 = new Intent(context, PersonalDataActivity.class);
-                    context.startActivity(intent3);
-                } else {
-                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
-                    login();
-                }
+                Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
+                        .go(this);
+//                if (Database.USER_MAP != null) {//登录
+//                    Intent intent3 = new Intent(context, PersonalDataActivity.class);
+//                    context.startActivity(intent3);
+//                } else {
+//                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
+//                    login();
+//                }
                 break;
             case R.id.ll_describe://个人信息
-                if (Database.USER_MAP != null) {//登录
-                    Intent intent4 = new Intent(context, PersonalDataActivity.class);
-                    context.startActivity(intent4);
-                } else {
-                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
-                    login();
-                }
+                Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
+                        .go(this);
+//                if (Database.USER_MAP != null) {//登录
+//                    Intent intent4 = new Intent(context, PersonalDataActivity.class);
+//                    context.startActivity(intent4);
+//                } else {
+//                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
+//                    login();
+//                }
                 break;
             case R.id.tv_auth_area: //认证小区
-                if (Database.USER_MAP != null) {//登录
-                    Intent intent7 = new Intent(context, AuthAreaActivity.class);
-                    intent7.putExtra("from", "");
-                    context.startActivity(intent7);
-                } else {
-                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
-                    login();
-                }
+                Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)
+                        .go(this);
+//                if (Database.USER_MAP != null) {//登录
+//                    Intent intent7 = new Intent(context, AuthAreaActivity.class);
+//                    intent7.putExtra("from", "");
+//                    context.startActivity(intent7);
+//                } else {
+//                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
+//                    login();
+//                }
                 break;
             case R.id.tv_award_manager: //授权管理
-                if (Database.USER_MAP != null) {//登录
-                    if (Database.my_community != null) { //判断有没有小区
-                        Intent intent6 = new Intent(context, AwardManagerActivity.class);
-                        context.startActivity(intent6);
-                    } else {
-                        ToastUtils.showToast(context, getString(R.string.you_have_no_district_please_first_certification_district));//您还没有小区,请先认证小区
-                    }
-                } else {
-                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
-                    login();
+                if(Database.my_community==null){
+                    ToastUtils.showToast(context, getString(R.string.you_have_no_district_please_first_certification_district));//您还没有小区,请先认证小区
+                }else {
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MANAGER)
+                            .go(this);
                 }
                 break;
             case R.id.fg_tv_my_news: //我的发布 /登录
-                if (Database.USER_MAP != null) {
-                    Intent intent = new Intent(context, MyReleaseActivity.class);
-                    context.startActivity(intent);
-                } else {
-                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
-                    login();
-                }
+
+                Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MY_RELEASE)
+                        .go(this);
                 break;
             case R.id.tv_share_app: //推荐给其他朋友
                 dialog = new ShareSdkDialog(context, mhandler);
@@ -189,17 +196,14 @@ public class MyFragment extends BaseFragment {
                         Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
                 break;
             case R.id.tv_feedback: //意见反馈 /登录
-                if (Database.USER_MAP != null) {
-                    Intent intent8 = new Intent(context, FeedbackActivity.class);
-                    context.startActivity(intent8);
-                } else {
-                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
-                    login();
-                }
+                Router.build(RouterMapping.ROUTER_ACTIVITY_FEEDBACK)
+                        .go(this);
                 break;
             case R.id.tv_setting: //设置
-                Intent intent9 = new Intent(context, SettingActivity.class);
-                context.startActivity(intent9);
+//                Intent intent9 = new Intent(context, SettingActivity.class);
+//                context.startActivity(intent9);
+                Router.build(RouterMapping.ROUTER_ACTIVITY_SETTING)
+                        .go(this);
                 break;
         }
     }
@@ -253,25 +257,24 @@ public class MyFragment extends BaseFragment {
     }
 
     private void getShareInfo() {
-        String userID = RequestUtil.getuserid();
-        String json = "{\"type\":1,\"controllerName\": \"\",\"actionName\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"" +
-                ",\"userID\": \"" + userID + "\"}";
-        Log.i("resultString", "json-------" + json);
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
-                HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {});
-                if (hashMap2 != null && hashMap2.get("shareURL") != null) {
-                    share_url = hashMap2.get("shareURL").toString();
+                if (TextUtil.isEmpty(s)){
+                    showShort("系统异常");
+                    return;
                 }
-                if (hashMap2 != null && hashMap2.get("shareTitle") != null) {
-                    tittle = hashMap2.get("shareTitle").toString();
-                }
-                if (hashMap2 != null && hashMap2.get("shareContent") != null) {
-                    subTittle = hashMap2.get("shareContent").toString();
+                ResponseShare share=new Gson().fromJson(s,ResponseShare.class);
+                if(share.getStatusCode()==1){
+                    if(share.getListSetting()!=null && share.getListSetting().size()>0){
+                        share_url=share.getListSetting().get(0).getSettingValue();
+                        tittle=share.getListSetting().get(0).getSettingRemark();
+                        subTittle=share.getListSetting().get(0).getSettingKey();
+                    }else {
+                        showShort(share.getAlertMessage());
+                    }
                 }
             }
             @Override
@@ -282,7 +285,7 @@ public class MyFragment extends BaseFragment {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData("/Setting/GetShare", json);
+        }).getEntityData(HttpURL.HTTP_POST_MY_GETSHARE, json);
     }
 
     @Override

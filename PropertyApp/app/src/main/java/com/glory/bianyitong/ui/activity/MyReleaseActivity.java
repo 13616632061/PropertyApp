@@ -16,11 +16,19 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chenenyu.router.annotation.Route;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.request.RequestQuerySendInfo;
+import com.glory.bianyitong.bean.entity.response.ResponseQuerySendInfo;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.SharePreToolsKits;
+import com.glory.bianyitong.util.TextUtil;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.glory.bianyitong.R;
@@ -40,6 +48,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -49,6 +58,7 @@ import okhttp3.Response;
  * Created by lucy on 2016/11/14.
  * 我的发布
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_AAWARD_MY_RELEASE,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class MyReleaseActivity extends BaseActivity {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
@@ -241,108 +251,202 @@ public class MyReleaseActivity extends BaseActivity {
                 });
     }
 
+    /**
+     * 请求发布信息
+     * @param page
+     * @param isrefresh
+     */
     private void reqeust(int page, final boolean isrefresh) {
-        String userID = RequestUtil.getuserid();
-        String json = "{\"neighborhood\":{\"userID\":" + 0 + "},\"controllerName\":\"Neighborhood\"," +
-                "\"actionName\":\"StructureQuery\",\"userID\":\"" + userID + "\",\"nowpagenum\":\"" + page + "\",\"pagerownum\":\"10\"}";
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("currentPageNumber",page);
+        map.put("neighborhood",new RequestQuerySendInfo((String) map.get("userID")));
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                if(TextUtil.isEmpty(s)){
+                    return;
+                }else {
+                    ResponseQuerySendInfo querySendInfo=new Gson().fromJson(s,ResponseQuerySendInfo.class);
+                    if(querySendInfo.getStatusCode()==1){
+                        //分页加载数据----------------------------------------------------
+//                            if (Database.list_myRelease == null) {
+//                                Database.list_myRelease = neighborlist;
+//                            } else {
+//                                if (isrefresh) {
+//                                    if (Database.list_myRelease != null) {
+//                                        Database.list_myRelease = null;
+//                                        Database.list_myRelease = neighborlist;
+//                                    }
+//                                }
+//                                if (Database.list_myRelease.size() != 0
+//                                        && neighborlist.get(neighborlist.size() - 1).get("neighborhoodID")
+//                                        .equals(Database.list_myRelease.get(Database.list_myRelease.size() - 1).get("neighborhoodID"))) {
+//                                    have_GoodsList = false;
+//                                } else {
+//                                    for (int i = 0; i < neighborlist.size(); i++) {
+//                                        Database.list_myRelease.add(neighborlist.get(i));
+//                                    }
+//                                    have_GoodsList = true;
+//                                }
+//                            }
+//                            //---------------------------------------------------------------
+//                            if (Database.list_myRelease != null && Database.list_myRelease.size() != 0) {
+//                                if (mynewsAdapter == null || isrefresh) {
+//                                    have_GoodsList = true;
+//                                    mynewsAdapter = new NeighbourAdapter(MyReleaseActivity.this, Database.list_myRelease, "my", mhandler);
+//                                    listView_mynews.setAdapter(mynewsAdapter);
+//                                    noGoods.setVisibility(View.GONE);
+//                                } else if (have_GoodsList) {
+//                                    listView_mynews.requestLayout();
+//                                    mynewsAdapter.notifyDataSetChanged();
+//                                    noGoods.setVisibility(View.GONE);
+//                                } else {
+//                                    noGoods.setVisibility(View.VISIBLE);
+//                                }
+//                            } else {//没有数据
+//                                noGoods.setVisibility(View.VISIBLE);
+//                                listView_mynews.setAdapter(null);
+//                                lay_no_release.setVisibility(View.VISIBLE);
+//                                have_GoodsList = false;
+//                            }
+//                        } else {
+//                            if (Database.list_myRelease != null && Database.list_myRelease.size() > 0) { //分页加载无数据
+//                                noGoods.setVisibility(View.VISIBLE);
+//                                loading_lay.setVisibility(View.GONE);
+//                            } else { //加载无数据
+//                                listView_mynews.setAdapter(null);
+//                                lay_no_release.setVisibility(View.VISIBLE);
+//                            }
+//                            have_GoodsList = false;
+//                        }
+                    }else {
 
-        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/Neighborhood/StructureQuery") //我的发布
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        getGoodsListStart = false;
-                        loading_lay.setVisibility(View.GONE);
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {});
-                        if (hashMap2 != null && hashMap2.get("listNeighborhood") != null) {
-                            ArrayList<LinkedTreeMap<String, Object>> neighborlist = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listNeighborhood");
-                            //分页加载数据----------------------------------------------------
-                            if (Database.list_myRelease == null) {
-                                Database.list_myRelease = neighborlist;
-                            } else {
-                                if (isrefresh) {
-                                    if (Database.list_myRelease != null) {
-                                        Database.list_myRelease = null;
-                                        Database.list_myRelease = neighborlist;
-                                    }
-                                }
-                                if (Database.list_myRelease.size() != 0
-                                        && neighborlist.get(neighborlist.size() - 1).get("neighborhoodID")
-                                        .equals(Database.list_myRelease.get(Database.list_myRelease.size() - 1).get("neighborhoodID"))) {
-                                    have_GoodsList = false;
-                                } else {
-                                    for (int i = 0; i < neighborlist.size(); i++) {
-                                        Database.list_myRelease.add(neighborlist.get(i));
-                                    }
-                                    have_GoodsList = true;
-                                }
-                            }
-                            //---------------------------------------------------------------
-                            if (Database.list_myRelease != null && Database.list_myRelease.size() != 0) {
-                                if (mynewsAdapter == null || isrefresh) {
-                                    have_GoodsList = true;
-                                    mynewsAdapter = new NeighbourAdapter(MyReleaseActivity.this, Database.list_myRelease, "my", mhandler);
-                                    listView_mynews.setAdapter(mynewsAdapter);
-                                    noGoods.setVisibility(View.GONE);
-                                } else if (have_GoodsList) {
-                                    listView_mynews.requestLayout();
-                                    mynewsAdapter.notifyDataSetChanged();
-                                    noGoods.setVisibility(View.GONE);
-                                } else {
-                                    noGoods.setVisibility(View.VISIBLE);
-                                }
-                            } else {//没有数据
-                                noGoods.setVisibility(View.VISIBLE);
-                                listView_mynews.setAdapter(null);
-                                lay_no_release.setVisibility(View.VISIBLE);
-                                have_GoodsList = false;
-                            }
-                        } else {
-                            if (Database.list_myRelease != null && Database.list_myRelease.size() > 0) { //分页加载无数据
-                                noGoods.setVisibility(View.VISIBLE);
-                                loading_lay.setVisibility(View.GONE);
-                            } else { //加载无数据
-                                listView_mynews.setAdapter(null);
-                                lay_no_release.setVisibility(View.VISIBLE);
-                            }
-                            have_GoodsList = false;
-                        }
                     }
+                }
+            }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        getGoodsListStart = false;
-                        loading_lay.setVisibility(View.GONE);
-                        Log.i("resultString", "请求错误------");
-//                        ToastUtils.showToast(MyReleaseActivity.this, "请求失败...");
-                        ServiceDialog.showRequestFailed();
-                    }
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                        progressDialog = ProgressDialog.show(MyReleaseActivity.this, "", getString(R.string.load), true);//加载
-                        progressDialog.setCanceledOnTouchOutside(true);
-                    }
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                        if (progressDialog != null) {
-                            progressDialog.dismiss();
-                            progressDialog = null;
-                        }
-                    }
-                });
+            @Override
+            public void onError() {
+                getGoodsListStart = false;
+                loading_lay.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+                progressDialog = ProgressDialog.show(MyReleaseActivity.this, "", getString(R.string.load), true);//加载
+                progressDialog.setCanceledOnTouchOutside(true);
+            }
+
+            @Override
+            public void onAfter() {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
+            }
+        }).getEntityData(HttpURL.HTTP_POST_MY_GETSEND_INFO,json);
+//        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/Neighborhood/StructureQuery") //我的发布
+//                .tag(this)//
+//                .params("request", json)
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onSuccess(String s, Call call, Response response) {
+//                        getGoodsListStart = false;
+//                        loading_lay.setVisibility(View.GONE);
+//                        Log.i("resultString", "------------");
+//                        Log.i("resultString", s);
+//                        Log.i("resultString", "------------");
+//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {});
+//                        if (hashMap2 != null && hashMap2.get("listNeighborhood") != null) {
+//                            ArrayList<LinkedTreeMap<String, Object>> neighborlist = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listNeighborhood");
+//                            //分页加载数据----------------------------------------------------
+//                            if (Database.list_myRelease == null) {
+//                                Database.list_myRelease = neighborlist;
+//                            } else {
+//                                if (isrefresh) {
+//                                    if (Database.list_myRelease != null) {
+//                                        Database.list_myRelease = null;
+//                                        Database.list_myRelease = neighborlist;
+//                                    }
+//                                }
+//                                if (Database.list_myRelease.size() != 0
+//                                        && neighborlist.get(neighborlist.size() - 1).get("neighborhoodID")
+//                                        .equals(Database.list_myRelease.get(Database.list_myRelease.size() - 1).get("neighborhoodID"))) {
+//                                    have_GoodsList = false;
+//                                } else {
+//                                    for (int i = 0; i < neighborlist.size(); i++) {
+//                                        Database.list_myRelease.add(neighborlist.get(i));
+//                                    }
+//                                    have_GoodsList = true;
+//                                }
+//                            }
+//                            //---------------------------------------------------------------
+//                            if (Database.list_myRelease != null && Database.list_myRelease.size() != 0) {
+//                                if (mynewsAdapter == null || isrefresh) {
+//                                    have_GoodsList = true;
+//                                    mynewsAdapter = new NeighbourAdapter(MyReleaseActivity.this, Database.list_myRelease, "my", mhandler);
+//                                    listView_mynews.setAdapter(mynewsAdapter);
+//                                    noGoods.setVisibility(View.GONE);
+//                                } else if (have_GoodsList) {
+//                                    listView_mynews.requestLayout();
+//                                    mynewsAdapter.notifyDataSetChanged();
+//                                    noGoods.setVisibility(View.GONE);
+//                                } else {
+//                                    noGoods.setVisibility(View.VISIBLE);
+//                                }
+//                            } else {//没有数据
+//                                noGoods.setVisibility(View.VISIBLE);
+//                                listView_mynews.setAdapter(null);
+//                                lay_no_release.setVisibility(View.VISIBLE);
+//                                have_GoodsList = false;
+//                            }
+//                        } else {
+//                            if (Database.list_myRelease != null && Database.list_myRelease.size() > 0) { //分页加载无数据
+//                                noGoods.setVisibility(View.VISIBLE);
+//                                loading_lay.setVisibility(View.GONE);
+//                            } else { //加载无数据
+//                                listView_mynews.setAdapter(null);
+//                                lay_no_release.setVisibility(View.VISIBLE);
+//                            }
+//                            have_GoodsList = false;
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Call call, Response response, Exception e) {
+//                        super.onError(call, response, e);
+//                        getGoodsListStart = false;
+//                        loading_lay.setVisibility(View.GONE);
+//                        Log.i("resultString", "请求错误------");
+////                        ToastUtils.showToast(MyReleaseActivity.this, "请求失败...");
+//                        ServiceDialog.showRequestFailed();
+//                    }
+//                    @Override
+//                    public void parseError(Call call, Exception e) {
+//                        super.parseError(call, e);
+//                        Log.i("resultString", "网络解析错误------");
+//                    }
+//                    @Override
+//                    public void onBefore(BaseRequest request) {
+//                        super.onBefore(request);
+//                        progressDialog = ProgressDialog.show(MyReleaseActivity.this, "", getString(R.string.load), true);//加载
+//                        progressDialog.setCanceledOnTouchOutside(true);
+//                    }
+//                    @Override
+//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
+//                        super.onAfter(s, e);
+//                        if (progressDialog != null) {
+//                            progressDialog.dismiss();
+//                            progressDialog = null;
+//                        }
+//                    }
+//                });
     }
 
 }

@@ -8,11 +8,21 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chenenyu.router.annotation.InjectParam;
+import com.chenenyu.router.annotation.Route;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.entity.request.RequestUserBean;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
+import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.SharePreToolsKits;
+import com.glory.bianyitong.util.TextUtil;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
@@ -24,6 +34,7 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.request.BaseRequest;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -33,6 +44,7 @@ import okhttp3.Response;
  * Created by lucy on 2016/11/21.
  * 个人描述
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_MY_UPDATE_DESC,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class UpdateDescribeActivity extends BaseActivity {
 
     @BindView(R.id.et_describe)
@@ -45,7 +57,8 @@ public class UpdateDescribeActivity extends BaseActivity {
     @BindView(R.id.iv_title_text_left)
     TextView iv_title_text_left;
 
-    String describe = "";
+    @InjectParam(key = "desc")
+    String describe;
     private ProgressDialog progressDialog = null;
 
     @Override
@@ -59,7 +72,6 @@ public class UpdateDescribeActivity extends BaseActivity {
         inintTitle(getString(R.string.personal_description), false, getString(R.string.determine));//个人描述  确定
         left_return_btn.setVisibility(View.GONE);
 
-        describe = getIntent().getStringExtra("desc");
         et_describe.setText(describe);
 
         iv_title_text_left.setVisibility(View.VISIBLE);
@@ -85,81 +97,50 @@ public class UpdateDescribeActivity extends BaseActivity {
     }
 
     //保存
-    private void save(final String desc) {//
-        String userID = RequestUtil.getuserid();
-        String phoneNumber = "";
-        if (Database.USER_MAP != null && Database.USER_MAP.getPhoneNumber() != null) {
-            phoneNumber = Database.USER_MAP.getPhoneNumber();
-        }
-        String joinDate = "";
-        if (Database.USER_MAP != null && Database.USER_MAP.getJoinDate() != null) {
-            joinDate = Database.USER_MAP.getJoinDate();
-        }
-        String json = "{\"user\": {\"signature\": \"" + desc + "\",\"phoneNumber\": \"" + phoneNumber + "\"," +
-                " \"joinDate\": \"" + joinDate + "\"},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"3\",\"nowpagenum\": \"\"," +
-                "\"pagerownum\": \"\",\"controllerName\": \"User\",\"actionName\": \"Edit\"}";
-        Log.i("resultString", "json------------" + json);
-        OkGo.post(HttpURL.HTTP_LOGIN) //编辑
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                        });
-                        if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-                                Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
-//                            Database.USER_MAP.put("signature", desc);
-                            Database.USER_MAP.setSignature(desc);
-                            ToastUtils.showToast(UpdateDescribeActivity.this, getString(R.string.successfully_modified));//修改成功
+    private void save(final String desc) {
 
-                            HashMap<String, Object> hashMap3 = new HashMap<>();
-                            hashMap3.put("user", Database.USER_MAP);
-                            hashMap3.put("userCommnunity", Database.my_community_List);
-                            String json = JsonHelper.toJson(hashMap3);
-                            SharePreToolsKits.putJsonDataString(UpdateDescribeActivity.this, Constant.user, json); //缓存登录后信息 修改
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("user",new RequestUserBean(Database.USER_MAP.getLoginName(),desc,Database.USER_MAP.getSignature()));
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                if(TextUtil.isEmpty(s)){
+                    showShort("系统异常");
+                    return;
+                }
+                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                if(bean.getStatusCode()==1){
+                    Database.USER_MAP.setSignature(desc);
+                    showShort( getString(R.string.successfully_modified));
+                    DataUtils.saveSharePreToolsKits(UpdateDescribeActivity.this);
+                    UpdateDescribeActivity.this.finish();
+                }else {
+                    ToastUtils.showToast(UpdateDescribeActivity.this,bean.getAlertMessage());//修改失败
+                }
+            }
 
-                            UpdateDescribeActivity.this.finish();
-                        } else {
-                            ToastUtils.showToast(UpdateDescribeActivity.this, getString(R.string.fail_to_edit));//修改失败
-                        }
-                    }
+            @Override
+            public void onError() {
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-//                        ToastUtils.showToast(UpdateDescribeActivity.this, "请求失败...");
-                        ServiceDialog.showRequestFailed();
-                    }
+            }
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
+            @Override
+            public void parseError() {
 
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                        progressDialog = ProgressDialog.show(UpdateDescribeActivity.this, "", getString(R.string.save), true);//保存
-                        progressDialog.setCanceledOnTouchOutside(true);
-                    }
+            }
 
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                        if (progressDialog != null) {
-                            progressDialog.dismiss();
-                            progressDialog = null;
-                        }
-                    }
-                });
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_MY_EDITUSERINFO,json);
+
     }
 
 }

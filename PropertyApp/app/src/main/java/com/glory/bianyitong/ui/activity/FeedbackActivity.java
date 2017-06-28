@@ -7,10 +7,17 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chenenyu.router.annotation.Route;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.entity.request.FeedBack;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
+import com.glory.bianyitong.util.TextUtil;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
@@ -24,6 +31,7 @@ import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.request.BaseRequest;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -33,6 +41,7 @@ import okhttp3.Response;
  * Created by lucy on 2016/11/14.
  * 意见反馈
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_FEEDBACK,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class FeedbackActivity extends BaseActivity {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
@@ -70,30 +79,25 @@ public class FeedbackActivity extends BaseActivity {
         });
     }
 
-    //保存
-    private void save(final String feed) {//
-        String userID = RequestUtil.getuserid();
-        String nowdate = DateUtil.formatTimesTampDate(DateUtil.getCurrentDate());//获取当前时间
 
-        String json = "{\"feedback\": {\"feedbackID\": 1,\"presenterID\": 1,\"feedbackContext\": \""+feed+"\",\"feedbackDateTime\": \""+nowdate+"\"}," +
-                "\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\",\"accesstoken\": \"\"," +
-                "\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"3\",\"nowpagenum\": \"\"," +
-                "\"pagerownum\": \"\",\"controllerName\": \"Feedback\",\"actionName\": \"ADD\"}";
-        Log.i("resultString", "json------------" + json);
-        String url = HttpURL.HTTP_LOGIN;
+
+    //保存
+    private void save(final String feed) {
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("feeback",new FeedBack(feed));
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
-                HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {});
-                if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-                        Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
-
+                if(TextUtil.isEmpty(s)){
+                    showShort("系统异常");
+                    return;
+                }
+                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                if(bean.getStatusCode()==1){
                     ToastUtils.showToast(FeedbackActivity.this, getString(R.string.feedback_is_successful));//反馈成功
                     FeedbackActivity.this.finish();
-                } else {
+                }else {
                     ToastUtils.showToast(FeedbackActivity.this, getString(R.string.feedback_failed));//反馈失败
                 }
             }
@@ -114,7 +118,7 @@ public class FeedbackActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url,json);
+        }).getEntityData(HttpURL.HTTP_POST_FEEDBACK_ADD,json);
     }
 
 }

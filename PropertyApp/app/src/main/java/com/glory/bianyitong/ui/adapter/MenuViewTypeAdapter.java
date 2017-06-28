@@ -23,6 +23,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.glory.bianyitong.R;
+import com.glory.bianyitong.bean.UserLockInfo;
 import com.glory.bianyitong.widght.convenientbanner.listener.OnItemClickListener;
 import com.google.gson.internal.LinkedTreeMap;
 import com.yanzhenjie.recyclerview.swipe.SwipeMenuAdapter;
@@ -37,11 +38,11 @@ public class MenuViewTypeAdapter extends SwipeMenuAdapter<MenuViewTypeAdapter.De
 
     public static final int VIEW_TYPE_MENU_SINGLE = 2;
 
-    private ArrayList<LinkedTreeMap<String, Object>> mViewTypeBeanList;
+    private List<UserLockInfo.ListUserLockMappingBean> mViewTypeBeanList;
 
     private OnItemClickListener mOnItemClickListener;
 
-    public MenuViewTypeAdapter(ArrayList<LinkedTreeMap<String, Object>> viewTypeBeanList) {
+    public MenuViewTypeAdapter(List<UserLockInfo.ListUserLockMappingBean> viewTypeBeanList) {
         this.mViewTypeBeanList = viewTypeBeanList;
     }
 
@@ -97,32 +98,28 @@ public class MenuViewTypeAdapter extends SwipeMenuAdapter<MenuViewTypeAdapter.De
             this.mOnItemClickListener = onItemClickListener;
         }
 
-        public void setData(LinkedTreeMap<String, Object> map) {
-            if (map.get("authorizationUserName") != null && !map.get("authorizationUserName").equals("")) {
-                item_award_people_name.setText(map.get("authorizationUserName").toString()); //授权人姓名
+        public void setData(UserLockInfo.ListUserLockMappingBean map) {
+            if (map.getAuthorizationUserName()!= null && !map.getAuthorizationUserName().equals("")) {
+                item_award_people_name.setText(map.getAuthorizationUserName().toString()); //授权人姓名
             }else {
                 item_award_people_name.setText("");
             }
-            if (map.get("userIdentity") != null && !map.get("userIdentity").equals("")) {//用户身份
-                int identity = Double.valueOf(map.get("userIdentity").toString()).intValue();
-                if (identity == 1) {//1 家人 2租客 3临时客人
-                    item_award_people_role.setText("家人");
-                } else if (identity == 2) {
-                    item_award_people_role.setText("租客");
-                } else if (identity == 3) {
-                    item_award_people_role.setText("临时客人");
-                }else {
-                    item_award_people_role.setText("");
-                }
+            int identity = map.getUserIdentity();
+            if (identity == 1) {//1 家人 2租客 3临时客人
+                item_award_people_role.setText("家人");
+            } else if (identity == 2) {
+                item_award_people_role.setText("租客");
+            } else if (identity == 3) {
+                item_award_people_role.setText("临时客人");
             }else {
                 item_award_people_role.setText("");
             }
-            if (map.get("timeLimit") != null && !map.get("timeLimit").equals("")) {//时间限制
-                boolean timeLimit = Boolean.parseBoolean(map.get("timeLimit").toString());
+
+                boolean timeLimit = map.isTimeLimit();
                 if (timeLimit) { //限制
-                    if (map.get("startDate") != null && map.get("endDate") != null) {
-                        String startDate = map.get("startDate").toString();
-                        String endDate = map.get("endDate").toString();
+                    if (map.getStartDate() != null && map.getEndDate() != null) {
+                        String startDate = map.getStartDate();
+                        String endDate = map.getEndDate();
                         //startDate.substring(0, 4); //年 2016
                         //startDate.substring(5, 7); //月 12
                         //startDate.substring(8, 10);//日 20
@@ -134,11 +131,7 @@ public class MenuViewTypeAdapter extends SwipeMenuAdapter<MenuViewTypeAdapter.De
                 } else {
                     item_award_people_limit.setText("无限制");
                 }
-            }else {
-                item_award_people_limit.setText("");
             }
-
-        }
 
         @Override
         public void onClick(View v) {
@@ -146,6 +139,7 @@ public class MenuViewTypeAdapter extends SwipeMenuAdapter<MenuViewTypeAdapter.De
                 mOnItemClickListener.onItemClick(getAdapterPosition());
             }
         }
+
     }
 
 }

@@ -6,53 +6,37 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
-import com.glory.bianyitong.bean.entity.UserLockMapping;
+import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.entity.response.UserLockMapping;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
-import com.glory.bianyitong.ui.adapter.AwardPeopleAdapter;
-import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DateUtil;
-import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.timeselector.TimeSelector;
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.BaseRequest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * Created by lucy on 2016/11/22.
@@ -117,8 +101,6 @@ public class AddAwardActivity extends BaseActivity {
     @Override
     protected void init() {
         super.init();
-//        from = getIntent().getStringExtra("from");
-//        authorizationUserID = getIntent().getIntExtra("authorizationUserID", 0);
         if (from.equals("add")) {
             inintTitle(getResources().getString(R.string.add_authorization), false, getResources().getString(R.string.carry_out));//添加授权   完成
         } else if (from.equals("edit")) {
@@ -246,19 +228,15 @@ public class AddAwardActivity extends BaseActivity {
             Database.contact_phone_name = "";
         }
         if (from.equals("edit") && Database.awardpeople != null) {//姓名
-            Log.i("resultString", "awardpeople---------" + Database.awardpeople);
-            if (Database.awardpeople.get("authorizationUserName") != null) {
-                et_linkman_name.setText(Database.awardpeople.get("authorizationUserName").toString());
+                et_linkman_name.setText(Database.awardpeople.getAuthorizationUserName());
                 et_linkman_name.setFocusable(false);
                 et_linkman_name.setEnabled(false);
-            }
-            if (Database.awardpeople.get("authorizationUserPhone") != null) { //电话
-                et_linkman_phone.setText(Database.awardpeople.get("authorizationUserPhone").toString());
+                //电话
+                et_linkman_phone.setText(Database.awardpeople.getAuthorizationUserPhone());
                 et_linkman_phone.setFocusable(false);
                 et_linkman_phone.setEnabled(false);
-            }
-            if (Database.awardpeople.get("userIdentity") != null) { //用户身份
-                int userIdentity = Double.valueOf(Database.awardpeople.get("userIdentity").toString()).intValue();
+                //用户身份
+                int userIdentity = Database.awardpeople.getUserIdentity();
                 if (userIdentity == 1) { //家人
                     checkedIdentity(1);
                 } else if (userIdentity == 2) {//租客
@@ -266,16 +244,16 @@ public class AddAwardActivity extends BaseActivity {
                 } else if (userIdentity == 3) {//临时租客
                     checkedIdentity(3);
                 }
-            }
-            if (Database.awardpeople.get("timeLimit") != null && !Database.awardpeople.get("timeLimit").equals("")) {//时间限制
-                boolean timeLimit = Boolean.parseBoolean(Database.awardpeople.get("timeLimit").toString());
+
+            if (Database.awardpeople.isTimeLimit()) {//时间限制
+                boolean timeLimit =Database.awardpeople.isTimeLimit();
                 if (timeLimit) { //限制
                     ll_limit.setVisibility(View.VISIBLE); // 显示  限制时间选择
                     time_Limit = 1;
                     check_limit.setChecked(true);
-                    if (Database.awardpeople.get("startDate") != null && Database.awardpeople.get("endDate") != null) {
-                        String startDate = Database.awardpeople.get("startDate").toString();
-                        String endDate = Database.awardpeople.get("endDate").toString();
+                    if (Database.awardpeople.getStartDate()!= null && Database.awardpeople.getEndDate()!= null) {
+                        String startDate = Database.awardpeople.getStartDate().toString();
+                        String endDate = Database.awardpeople.getEndDate().toString();
                         tv_time_start.setText(startDate.substring(0, 10));
                         tv_time_end.setText(endDate.substring(0, 10));
                     }
@@ -285,11 +263,14 @@ public class AddAwardActivity extends BaseActivity {
                     time_Limit = 0;
                 }
             }
-            if (Database.awardpeople.get("authorizationType") != null) { //授权类型
-                user_type = Database.awardpeople.get("authorizationType").toString();
+            if (Database.awardpeople.getAuthorizationType() != null) { //授权类型
+                user_type = Database.awardpeople.getAuthorizationType().toString();
             }
+
+            }
+
         }
-    }
+
 
     private void checkedIdentity(int identity) {
         Drawable drawable = getResources().getDrawable(R.drawable.log_select_radio);
@@ -313,45 +294,36 @@ public class AddAwardActivity extends BaseActivity {
         String url = "";
         String json = "";
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-
         if (from.equals("add")) {
-            url = "/ApiUserLockMapping/Add";
-            map.put("userLockMapping",new UserLockMapping(Database.USER_MAP.getUserID(),userIdentity,timeLimit,phone,name));
+            url = HttpURL.HTTP_POST_LOCKMAPPING_ADD;//添加授权
+            map.put("userLockMapping",new UserLockMapping(userIdentity,timeLimit,phone,name));
+            map.put("communityID","1");
         } else if (from.equals("edit")) {
-            url ="/ApiUserLockMapping/Edit";
-            map.put("userLockMapping",new UserLockMapping(authorizationUserID+"",userIdentity,timeLimit,phone,name));
+            url =HttpURL.HTTP_POST_LOCKMAPPING_EDIT;//修改授权
+            map.put("userLockMapping",new UserLockMapping(authorizationUserID+"",userIdentity,timeLimit,startDate,endDate));
         }
 
         json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
-                HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {});
-                if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-                        Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
-                    if (from.equals("add")) {
+                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                if(bean.getStatusCode()==1){
+                    if (from.equals("add")){
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.added_successfully));//添加成功
-                    } else if (from.equals("edit")) {
+                    }else {
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.successfully_modified));//修改成功
                     }
-                    Database.isAddComment = true;
-                    AddAwardActivity.this.finish();
-                } else if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-                        Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == -126) {
-                    if (from.equals("add")) {
+                }else if(bean.getStatusCode()==-126){
+                    if (from.equals("add")){
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.this_user_already_has_this_permission));//该用户已有此权限
-                    } else if (from.equals("edit")) {
+                    }else {
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.fail_to_edit));//修改失败
                     }
-                } else if (hashMap2.get("alertmessage") != null) {
-                    ToastUtils.showToast(AddAwardActivity.this, hashMap2.get("alertmessage").toString());
-                } else {
-                    if (from.equals("add")) {
+                }else {
+                    if (from.equals("add")){
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.add_failed));//添加失败
-                    } else if (from.equals("edit")) {
+                    }else {
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.fail_to_edit));//修改失败
                     }
                 }

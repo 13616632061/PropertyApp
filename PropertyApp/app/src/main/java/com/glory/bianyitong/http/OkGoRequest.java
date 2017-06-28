@@ -5,16 +5,25 @@ import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.BuildConfig;
+import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.exception.MyApplication;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.LogUtils;
+import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.request.BaseRequest;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,22 +49,31 @@ public class OkGoRequest {
     }
 
 
-    public void getEntityData(String url, String request) {
+    public void getEntityData(String url,final String request) {
         OkGo.post(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
                 .tag(this)
                 .params("request", request)
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                        if (onOkGoUtilListener != null) {
+                        LogUtils.d("OkGoGo","---------------------start----------------------");
+                        LogUtils.d("OkGoGo","URL:   "+response.request().url());
+                        LogUtils.d("OkGoGo","params:    "+request);
+                        LogUtils.d("OkGoGo","response:    "+s);
+                        LogUtils.d("OkGoGo","----------------------end-----------------------");
 
-                            LogUtils.d("OkGo","---------------------start----------------------");
-                            LogUtils.d("OkGo","URL:   "+response.request().url());
-                            LogUtils.d("OkGo","params:    "+response.request().toString());
-                            LogUtils.d("OkGo","response:    "+s);
-                            LogUtils.d("OkGo","----------------------end-----------------------");
-                            onOkGoUtilListener.onSuccess(s);
+                        if(TextUtil.isEmpty(s)){
+                            onOkGoUtilListener.onError();
+                        }else {
+                            BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                            if(bean.getStatusCode()==-105){
+                                Database.accessToken=null;
+                            }
+                            if (onOkGoUtilListener != null) {
+                                onOkGoUtilListener.onSuccess(s);
+                            }
                         }
+
                     }
 
                     @Override
@@ -101,14 +119,22 @@ public class OkGoRequest {
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                        if (onOkGoUtilListener != null) {
+                        LogUtils.d("OkGoGo","---------------------start----------------------");
+                        LogUtils.d("OkGoGo","URL:   "+response.request().url());
+//                        LogUtils.d("OkGoGo","params:    "+request);
+                        LogUtils.d("OkGoGo","response:    "+s);
+                        LogUtils.d("OkGoGo","----------------------end-----------------------");
 
-                            LogUtils.d("OkGo","---------------------start----------------------");
-                            LogUtils.d("OkGo","URL:   "+response.request().url());
-                            LogUtils.d("OkGo","params:    "+response.request().method());
-                            LogUtils.d("OkGo","response:    "+s);
-                            LogUtils.d("OkGo","----------------------end-----------------------");
-                            onOkGoUtilListener.onSuccess(s);
+                        if(TextUtil.isEmpty(s)){
+                            onOkGoUtilListener.onError();
+                        }else {
+                            BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                            if(bean.getStatusCode()==-105){
+                                Database.accessToken=null;
+                            }
+                            if (onOkGoUtilListener != null) {
+                                onOkGoUtilListener.onSuccess(s);
+                            }
                         }
                     }
 
@@ -147,6 +173,7 @@ public class OkGoRequest {
                     }
                 });
     }
+
 
 
     public interface OnOkGoUtilListener {

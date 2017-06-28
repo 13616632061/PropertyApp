@@ -18,9 +18,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.chenenyu.router.Router;
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.dialog.PhotoPopuWindow;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.JsonHelper;
@@ -42,6 +45,7 @@ import okhttp3.Response;
 /**
  * 个人资料
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_PERSION,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class PersonalDataActivity extends BaseActivity {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
@@ -141,14 +145,21 @@ public class PersonalDataActivity extends BaseActivity {
                 startLocation();
                 break;
             case R.id.rl_nickname:
-                Intent intent = new Intent(PersonalDataActivity.this, UpdateNameActivity.class);
-                intent.putExtra("nick", text_nickname.getText());
-                startActivity(intent);
+                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_UPDATE_NAME)
+                        .with("nick", text_nickname.getText())
+                        .go(this);
+//                Intent intent = new Intent(PersonalDataActivity.this, UpdateNameActivity.class);
+//                intent.putExtra("nick", text_nickname.getText());
+//                startActivity(intent);
                 break;
             case R.id.rl_describe:
-                Intent intent2 = new Intent(PersonalDataActivity.this, UpdateDescribeActivity.class);
-                intent2.putExtra("desc", tv_personal_desc.getText());
-                startActivity(intent2);
+
+                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_UPDATE_DESC)
+                        .with("desc", tv_personal_desc.getText())
+                        .go(this);
+//                Intent intent2 = new Intent(PersonalDataActivity.this, UpdateDescribeActivity.class);
+//                intent2.putExtra("desc", tv_personal_desc.getText());
+//                startActivity(intent2);
                 break;
         }
     }

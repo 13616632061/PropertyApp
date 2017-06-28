@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.bean.AuthAreaInfo;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.CommnunityInfo;
@@ -18,6 +19,7 @@ import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.ToastUtils;
 import com.google.gson.Gson;
@@ -36,6 +38,7 @@ import butterknife.BindView;
  * Created by lucy on 2016/11/14.
  * 认证小区
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_AUTHAREA,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class AuthAreaActivity extends BaseActivity {
 
     @BindView(R.id.tv_addarea_auth) //添加小区

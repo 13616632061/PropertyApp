@@ -309,6 +309,7 @@ public class IndexFragment extends BaseFragment {
                 if (Database.USER_MAP != null) {
                     if (Database.my_community != null) {
                         if (Database.my_community.getApprovalStatus() == 1) {
+
                             intent = new Intent(context, CommunityBulletinActivity.class); //社区公告
                             startActivity(intent);
                         } else {

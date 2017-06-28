@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.glory.bianyitong.R;
+import com.glory.bianyitong.bean.UserLockInfo;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.ui.activity.AddAwardActivity;
 import com.glory.bianyitong.ui.activity.GoodsDetailsActivity;
@@ -25,11 +26,11 @@ import java.util.ArrayList;
  */
 public class AwardPeopleAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<LinkedTreeMap<String, Object>> list;
+    private ArrayList<UserLockInfo.ListUserLockMappingBean> list;
 
     private LayoutInflater mInflater = null;
 
-    public AwardPeopleAdapter(Context context, ArrayList<LinkedTreeMap<String, Object>> list) {
+    public AwardPeopleAdapter(Context context, ArrayList<UserLockInfo.ListUserLockMappingBean> list) {
         this.context = context;
         this.list = list;
 
@@ -73,31 +74,29 @@ public class AwardPeopleAdapter extends BaseAdapter {
 //            if (position == list.size() - 1) {
 //                holder.view_award_line.setVisibility(View.GONE);
 //            }
-            if (list.get(position).get("authorizationUserName") != null && !list.get(position).get("authorizationUserName").equals("")) {
-                holder.item_award_people_name.setText(list.get(position).get("authorizationUserName").toString()); //授权人姓名
+            if (list.get(position).getAuthorizationUserName() != null && !list.get(position).getAuthorizationUserName().equals("")) {
+                holder.item_award_people_name.setText(list.get(position).getAuthorizationUserName()); //授权人姓名
             }else {
                 holder.item_award_people_name.setText("");
             }
-            if (list.get(position).get("userIdentity") != null && !list.get(position).get("userIdentity").equals("")) {//用户身份
-                int identity = Double.valueOf(list.get(position).get("userIdentity").toString()).intValue();
-                if (identity == 1) {//1 家人 2租客 3临时客人
-                    holder.item_award_people_role.setText(context.getString(R.string.family));//家人
-                } else if (identity == 2) {
-                    holder.item_award_people_role.setText(context.getString(R.string.tenant));//租客
-                } else if (identity == 3) {
-                    holder.item_award_people_role.setText(context.getString(R.string.temporary_guest));//临时客人
-                }else {
-                    holder.item_award_people_role.setText("");
-                }
+            //用户身份
+            int identity = list.get(position).getUserIdentity();
+            if (identity == 1) {//1 家人 2租客 3临时客人
+                holder.item_award_people_role.setText(context.getString(R.string.family));//家人
+            } else if (identity == 2) {
+                holder.item_award_people_role.setText(context.getString(R.string.tenant));//租客
+            } else if (identity == 3) {
+                holder.item_award_people_role.setText(context.getString(R.string.temporary_guest));//临时客人
             }else {
                 holder.item_award_people_role.setText("");
             }
-            if (list.get(position).get("timeLimit") != null && !list.get(position).get("timeLimit").equals("")) {//时间限制
-                boolean timeLimit = Boolean.parseBoolean(list.get(position).get("timeLimit").toString());
+
+            //时间限制
+                boolean timeLimit = list.get(position).isTimeLimit();
                 if (timeLimit) { //限制
-                    if (list.get(position).get("startDate") != null && list.get(position).get("endDate") != null) {
-                        String startDate = list.get(position).get("startDate").toString();
-                        String endDate = list.get(position).get("endDate").toString();
+                    if (list.get(position).getStartDate() != null && list.get(position).getEndDate() != null) {
+                        String startDate = list.get(position).getStartDate().toString();
+                        String endDate = list.get(position).getEndDate().toString();
                         //startDate.substring(0, 4); //年 2016
                         //startDate.substring(5, 7); //月 12
                         //startDate.substring(8, 10);//日 20
@@ -109,9 +108,6 @@ public class AwardPeopleAdapter extends BaseAdapter {
                 } else {
                     holder.item_award_people_limit.setText(context.getString(R.string.unlimited));//无限制
                 }
-            }else {
-                holder.item_award_people_limit.setText("");
-            }
 
         }
 

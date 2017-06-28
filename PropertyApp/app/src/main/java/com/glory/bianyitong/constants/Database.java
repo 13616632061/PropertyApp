@@ -3,6 +3,10 @@ package com.glory.bianyitong.constants;
 import android.app.Activity;
 
 import com.glory.bianyitong.bean.CommnunityInfo;
+import com.glory.bianyitong.bean.UserLockInfo;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryBuild;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryRoom;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryUnit;
 import com.glory.bianyitong.bean.listCommunityBulletinInfo;
 import com.glory.bianyitong.bean.FreashInfo;
 import com.glory.bianyitong.bean.LoginUserInfo;
@@ -80,19 +84,19 @@ public class Database {
     public static String communityName = ""; //小区名称
     public static int communityID = 0; //小区 id
 
-    public static ArrayList<LinkedTreeMap<String, Object>> list_CommunityBuilding; //小区内的楼栋
+    public static List<ResponseQueryBuild.ListCommunityBuildingBean> list_CommunityBuilding; //小区内的楼栋
     public static String buildingName = ""; //楼栋名称
     public static int buildingID = 0; //楼栋 id
 
-    public static ArrayList<LinkedTreeMap<String, Object>> listCommunityUnit; //小区内的楼栋 单元
+    public static List<ResponseQueryUnit.ListCommunityUnitBean> listCommunityUnit; //小区内的楼栋 单元
     public static String unitName = ""; //单元名称
     public static int unitID = 0; //单元 id
 
-    public static ArrayList<LinkedTreeMap<String, Object>> listCommunityRoom; //小区内的楼栋 单元 房号
+    public static List<ResponseQueryRoom.ListCommunityRoomBean> listCommunityRoom; //小区内的楼栋 单元 房号
     public static String roomName = ""; //房号名称
     public static int roomID = 0; //房号 id
 
-    public static LinkedTreeMap<String, Object> awardpeople; //授权用户
+    public static UserLockInfo.ListUserLockMappingBean awardpeople; //授权用户
 
     //当前的头像名称
     public static String portrait = null;

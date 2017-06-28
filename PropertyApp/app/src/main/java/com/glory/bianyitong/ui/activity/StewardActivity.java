@@ -14,8 +14,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.listHousekeeperInfo;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.google.gson.Gson;
@@ -34,6 +36,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -124,51 +127,35 @@ public class StewardActivity extends BaseActivity {
         if (Database.my_community != null && Database.my_community.getBuildingID() != 0) {
             buildingID = Database.my_community.getBuildingID();
         }
-//        String json = "{\"housekeeper\": {\"houseKepperID\":1,\"communityID\":" + communityID + ",\"unitID\":" + unitID + "," +
-//                "\"buildingID\":" + buildingID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-//                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\"," +
-//                "\"pagerownum\": \"\",\"controllerName\": \"Housekeeper\",\"actionName\": \"StructureQuery\"}";
-
-//        String json = "{\"housekeeper\": {\"communityID\":" + communityID + ",\"unitID\":" + unitID + "," +
-//                "\"buildingID\":" + buildingID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-//                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\"," +
-//                "\"pagerownum\": \"\",\"controllerName\": \"Housekeeper\",\"actionName\": \"StructureQuery\"}";
-//        String url = HttpURL.HTTP_LOGIN;
-
         String query = "\"housekeeper\":{\"HouseKepperID\":1,\"communityID\":" + communityID + "}";
         String json = RequestUtil.getJson(StewardActivity.this, query);
-        String url = HttpURL.HTTP_NEW_URL + "/ApiHousekeeper/Query";
-        Log.i("resultString", "json----------" + json);
-        OkGo.post(url)
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        try {
-                            JSONObject jo = new JSONObject(s);
+
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("housekeeper",new Object());
+        json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                try {
+                    JSONObject jo = new JSONObject(s);
 //                            String statuscode = jo.getString("statuscode");
 //                            String statusmessage = jo.getString("statusmessage");
-                            listHousekeeperInfo hinfo = new Gson().fromJson(jo.toString(), listHousekeeperInfo.class);
+                    listHousekeeperInfo hinfo = new Gson().fromJson(jo.toString(), listHousekeeperInfo.class);
 //                            Log.i("resultString", "adinfo.getListHousekeeper()-------" + hinfo.getListHousekeeper());
-                            if (hinfo != null && hinfo.getListHousekeeper() != null) {
-                                List<listHousekeeperInfo.ListHousekeeperBean> hlist = hinfo.getListHousekeeper();
-                                if (hlist.get(0) != null) {
-                                    housekeeper = hlist.get(0);
-                                    if (housekeeper != null && housekeeper.getHouseKeeperName() != null) {
-                                        steward_name.setText(housekeeper.getHouseKeeperName());
-                                    }
-                                    if (housekeeper != null && housekeeper.getWorkPhoneNum() != null) {
-                                        steward_phone.setText(housekeeper.getWorkPhoneNum());
-                                        phone_str = housekeeper.getWorkPhoneNum();
-                                    }
-                                    String communityName = "";
-                                    String unitName = "";
-                                    String buildingName = "";
+                    if (hinfo != null && hinfo.getListHousekeeper() != null) {
+                        List<listHousekeeperInfo.ListHousekeeperBean> hlist = hinfo.getListHousekeeper();
+                        if (hlist.get(0) != null) {
+                            housekeeper = hlist.get(0);
+                            if (housekeeper != null && housekeeper.getHouseKeeperName() != null) {
+                                steward_name.setText(housekeeper.getHouseKeeperName());
+                            }
+                            if (housekeeper != null && housekeeper.getWorkPhoneNum() != null) {
+                                steward_phone.setText(housekeeper.getWorkPhoneNum());
+                                phone_str = housekeeper.getWorkPhoneNum();
+                            }
+                            String communityName = "";
+                            String unitName = "";
+                            String buildingName = "";
 //                                    if (housekeeper != null && housekeeper.getCommunityName() != null) {
 //                                        communityName = housekeeper.getCommunityName(); //小区名称
 //                                    }
@@ -178,40 +165,38 @@ public class StewardActivity extends BaseActivity {
 //                                    if (housekeeper != null && housekeeper.getBuildingName() != null) {
 //                                        buildingName = housekeeper.getBuildingName(); //楼栋名称
 //                                    }
-                                    steward_cert.setText(getResources().getString(R.string.certification) + ":" + communityName + unitName + buildingName);
-                                    if (housekeeper != null && housekeeper.getHouseKepperPhoto() != null) {
-                                        ServiceDialog.setPicture(housekeeper.getHouseKepperPhoto(), steward_pic, null);//管家 头像
-                                    }
-                                }
+                            steward_cert.setText(getResources().getString(R.string.certification) + ":" + communityName + unitName + buildingName);
+                            if (housekeeper != null && housekeeper.getHouseKepperPhoto() != null) {
+                                ServiceDialog.setPicture(housekeeper.getHouseKepperPhoto(), steward_pic, null);//管家 头像
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
                     }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-                        ToastUtils.showToast(StewardActivity.this, getResources().getString(R.string.failed_to_connect_to_server));//未能连接到服务器
-                    }
+            @Override
+            public void onError() {
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
+            }
 
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                    }
+            @Override
+            public void parseError() {
 
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                    }
-                });
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_OWNER_MANAGER,json);
+
     }
 
     @Override

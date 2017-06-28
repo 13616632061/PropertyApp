@@ -3,6 +3,7 @@ package com.glory.bianyitong.bean;
 import android.text.TextUtils;
 
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.util.DateUtil;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -26,7 +27,7 @@ public class BaseRequestBean{
     private String communityID=TextUtils.isEmpty(RequestUtil.getcommunityid()+"")?"0":RequestUtil.getcommunityid()+"";
 
     public String getTimeStemp() {
-        timeStemp=new Date().toString();
+        timeStemp=DateUtil.format(new Date(),DateUtil.TIMESTAMP_PATTERN);
         return timeStemp;
     }
 

@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryUnit;
 import com.glory.bianyitong.constants.Database;
 import com.google.gson.internal.LinkedTreeMap;
 
@@ -52,7 +53,7 @@ public class ListCommunityUnitActivity extends BaseActivity {
     /**
      * 动态添加布局
      */
-    public void ScrollViewLayout(final Context context, final List<LinkedTreeMap<String, Object>> list, LinearLayout lay_gallery) {
+    public void ScrollViewLayout(final Context context, final List<ResponseQueryUnit.ListCommunityUnitBean> list, LinearLayout lay_gallery) {
         lay_gallery.removeAllViews();
         LayoutInflater mInflater = LayoutInflater.from(context);
         if (list != null && list.size() != 0) {
@@ -61,9 +62,7 @@ public class ListCommunityUnitActivity extends BaseActivity {
                 final TextView tv_unitName = (TextView) view.findViewById(R.id.tv_province_name);
                 final TextView view_community_line = (TextView) view.findViewById(R.id.view_province_line);
 
-                if (list != null && list.get(i) != null && list.get(i).get("unitName") != null) {
-                    tv_unitName.setText(list.get(i).get("unitName").toString()); //单元名称
-                }
+                tv_unitName.setText(list.get(i).getUnitName()); //单元名称
 
                 if (i == list.size() - 1) { //最后一根线
                     view_community_line.setVisibility(View.GONE);
@@ -74,9 +73,9 @@ public class ListCommunityUnitActivity extends BaseActivity {
                     @Override
                     public void onClick(View arg0) {
                         // TODO Auto-generated method stub
-                        if (list.get(j).get("unitID") != null) {
-                            Database.unitName = list.get(j).get("unitName").toString();
-                            Database.unitID = Double.valueOf(list.get(j).get("unitID").toString()).intValue();
+                        if (list.get(j).getUnitID()>0) {
+                            Database.unitName = list.get(j).getUnitName();
+                            Database.unitID =list.get(j).getUnitID();
 
                             Database.roomName = "";
                             Database.roomID = 0;

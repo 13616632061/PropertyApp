@@ -7,6 +7,7 @@ import com.chenenyu.router.RouteRequest;
 import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.Interceptor;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.util.TextUtil;
 
 /**
  * Created by Administrator on 2017/6/27.
@@ -16,7 +17,7 @@ import com.glory.bianyitong.constants.Database;
 public class UserInterceptor implements RouteInterceptor {
     @Override
     public boolean intercept(Context context, RouteRequest routeRequest) {
-        if(Database.USER_MAP==null){
+        if(TextUtil.isEmpty(Database.accessToken)){
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
             return true;
         }

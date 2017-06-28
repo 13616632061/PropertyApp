@@ -77,7 +77,7 @@ public class LoginUserInfo extends ResponseBaseInfo{
         private String customerPhoto;
         private int chinaCity_ID;
         private String chinaCity_Name;
-        private Object signature;
+        private String signature;
 
         public Object getJgPushID() {
             return jgPushID;
@@ -239,11 +239,11 @@ public class LoginUserInfo extends ResponseBaseInfo{
             this.chinaCity_Name = chinaCity_Name;
         }
 
-        public Object getSignature() {
+        public String getSignature() {
             return signature;
         }
 
-        public void setSignature(Object signature) {
+        public void setSignature(String signature) {
             this.signature = signature;
         }
     }

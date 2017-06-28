@@ -8,9 +8,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chenenyu.router.annotation.InjectParam;
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryBuild;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.router.RouterMapping;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.List;
@@ -21,12 +25,16 @@ import butterknife.BindView;
  * Created by lucy on 2016/11/14.
  * 楼栋列表页
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_AREA_LIST,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class ListCommunityBuildingActivity extends BaseActivity {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
 
     @BindView(R.id.province_list)
     LinearLayout communityBuilding_list;
+
+//    @InjectParam(key="list")
+    ResponseQueryBuild queryBuild;
 
     @Override
     protected int getContentId() {
@@ -37,6 +45,8 @@ public class ListCommunityBuildingActivity extends BaseActivity {
     protected void init() {
         super.init();
         inintTitle(getString(R.string.choose_floor), true, "");//选择楼栋
+        queryBuild= (ResponseQueryBuild) getIntent().getSerializableExtra("data");
+
         left_return_btn.setOnClickListener(new View.OnClickListener() { //返回
             @Override
             public void onClick(View view) {
@@ -44,7 +54,7 @@ public class ListCommunityBuildingActivity extends BaseActivity {
             }
         });
 
-        ScrollViewLayout(ListCommunityBuildingActivity.this, Database.list_CommunityBuilding, communityBuilding_list);
+        ScrollViewLayout(ListCommunityBuildingActivity.this, queryBuild.getListCommunityBuilding(), communityBuilding_list);
 
     }
 
@@ -52,7 +62,7 @@ public class ListCommunityBuildingActivity extends BaseActivity {
     /**
      * 动态添加布局
      */
-    public void ScrollViewLayout(final Context context, final List<LinkedTreeMap<String, Object>> list, LinearLayout lay_gallery) {
+    public void ScrollViewLayout(final Context context, final List<ResponseQueryBuild.ListCommunityBuildingBean> list, LinearLayout lay_gallery) {
         lay_gallery.removeAllViews();
         LayoutInflater mInflater = LayoutInflater.from(context);
         if (list != null && list.size() != 0) {
@@ -60,10 +70,7 @@ public class ListCommunityBuildingActivity extends BaseActivity {
                 final View view = mInflater.inflate(R.layout.view_item_province, lay_gallery, false);
                 final TextView tv_community_name = (TextView) view.findViewById(R.id.tv_province_name);
                 final TextView view_community_line = (TextView) view.findViewById(R.id.view_province_line);
-
-                if (list != null && list.get(i) != null && list.get(i).get("buildingName") != null) {
-                    tv_community_name.setText(list.get(i).get("buildingName").toString()); //小区名称
-                }
+                tv_community_name.setText(list.get(i).getBuildingName()); //小区名称
 
                 if (i == list.size() - 1) { //最后一根线
                     view_community_line.setVisibility(View.GONE);
@@ -74,9 +81,9 @@ public class ListCommunityBuildingActivity extends BaseActivity {
                     @Override
                     public void onClick(View arg0) {
                         // TODO Auto-generated method stub
-                        if (list.get(j).get("buildingID") != null) {
-                            Database.buildingName = list.get(j).get("buildingName").toString();
-                            Database.buildingID = Double.valueOf(list.get(j).get("buildingID").toString()).intValue();
+                        if (list.get(j).getBuildingID() >0) {
+                            Database.buildingName = list.get(j).getBuildingName();
+                            Database.buildingID =list.get(j).getBuildingID();
 
                             Database.unitName = "";
                             Database.unitID = 0;

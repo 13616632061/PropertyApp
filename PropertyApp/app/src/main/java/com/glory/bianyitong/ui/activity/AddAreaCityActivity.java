@@ -32,14 +32,22 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.request.RequestLocalAreaBean;
+import com.glory.bianyitong.bean.entity.request.RequestQueryAreaList;
+import com.glory.bianyitong.bean.entity.response.ResponseListCommunity;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.JsonHelper;
+import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
@@ -48,6 +56,7 @@ import com.lzy.okgo.callback.StringCallback;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -78,7 +87,7 @@ public class AddAreaCityActivity extends BaseActivity {
     private String provider;
     private double latitude; //维度
     private double longitude; //经度
-    private ArrayList<LinkedTreeMap<String, Object>> nearlist;
+    private List<ResponseListCommunity.ListCommunityBean> nearlist;
     LocationListener locationListener = new LocationListener() {
         @Override
         public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
@@ -161,7 +170,7 @@ public class AddAreaCityActivity extends BaseActivity {
     /**
      * 动态添加布局
      */
-    public void ScrollViewLayout(final Context context, final List<LinkedTreeMap<String, Object>> list, LinearLayout lay_gallery) {
+    public void ScrollViewLayout(final Context context, final List<ResponseListCommunity.ListCommunityBean> list, LinearLayout lay_gallery) {
         lay_gallery.removeAllViews();
         LayoutInflater mInflater = LayoutInflater.from(context);
         if (list != null && list.size() != 0) {
@@ -172,12 +181,8 @@ public class AddAreaCityActivity extends BaseActivity {
                 final TextView tv_city_name = (TextView) view.findViewById(R.id.tv_city_name);
                 final TextView auth_area_line = (TextView) view.findViewById(R.id.auth_area_line);
 
-                if (list != null && list.get(i).get("communityName") != null && list.get(i).get("communityName").toString().length() != 0 && !list.get(i).get("communityName").toString().equals("")) {
-                    auth_area_name.setText(list.get(i).get("communityName").toString()); //小区名称
-                }
-                if (list != null && list.get(i).get("cityName") != null && list.get(i).get("cityName").toString().length() != 0 && !list.get(i).get("cityName").toString().equals("")) {
-                    tv_city_name.setText(list.get(i).get("cityName").toString());
-                }
+                auth_area_name.setText(list.get(i).getCommunityName());
+                tv_city_name.setText(list.get(i).getStreet());
                 if (i == list.size() - 1) { //最后一根线
                     auth_area_line.setVisibility(View.GONE);
                 }
@@ -185,28 +190,16 @@ public class AddAreaCityActivity extends BaseActivity {
                 item_auth_lay.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View arg0) {
-                        // TODO Auto-generated method stub
-                        if (list != null && list.get(j).get("communityID") != null) {
-                            Database.communityID = Double.valueOf(list.get(j).get("communityID").toString()).intValue();
-                            if (list != null && list.get(j).get("communityName") != null) {
-                                Database.communityName = list.get(j).get("communityID").toString();
-                            }
-                            if (list != null && list.get(j).get("provinceID") != null) {
-                                Database.id_province = Double.valueOf(list.get(j).get("provinceID").toString()).intValue();
-                            }
-                            if (list != null && list.get(j).get("provinceName") != null) {
-                                Database.str_province = list.get(j).get("provinceName").toString();
-                            }
-                            if (list != null && list.get(j).get("cityID") != null) {
-                                Database.id_city = Double.valueOf(list.get(j).get("cityID").toString()).intValue();
-                            }
-                            if (list != null && list.get(j).get("cityName") != null) {
-                                Database.str_city = list.get(j).get("cityName").toString();
-                            }
-                            Intent intent = new Intent(AddAreaCityActivity.this, AddRoomActivity.class);
-                            intent.putExtra("communityID", Double.valueOf(list.get(j).get("communityID").toString()).intValue());
-                            startActivity(intent);
-                        }
+
+                            Database.communityID = list.get(j).getCommunityID();
+                            Database.communityName = list.get(j).getCommunityName();
+                            Database.id_province = list.get(j).getProvinceID();
+                            Database.id_city = list.get(j).getCityID();
+                            Database.str_province = list.get(j).getProvinceName();
+                            Database.str_city = list.get(j).getCityName();
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_AREA_ADD)
+                                .with("communityID",list.get(j).getCommunityID())
+                                .go(AddAreaCityActivity.this);
                     }
                 });
                 lay_gallery.addView(view);
@@ -214,27 +207,29 @@ public class AddAreaCityActivity extends BaseActivity {
         }
     }
 
-    private void request_community2(String name) { //获取小区
-        String json = "{\"community\": {\"communityName\": \"" + name + "\"}," +
-                "\"userid\": \"" + userID + "\",\"controllerName\": \"Community\"," +
-                "\"actionName\": \"FuzzyQuery\"}";
-        Log.i("resultString", "json------" + json);
-        String url = HttpURL.HTTP_LOGIN_AREA + "/Community/FuzzyQuery"; //附近小区
+    /**
+     * 搜索小区
+     * //获取小区
+     * @param name
+     */
+    private void request_community2(String name) {
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("community",new RequestQueryAreaList(name));
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
-                HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                });
-                if (hashMap2 != null && hashMap2.get("listCommunity") != null) {
-                    ArrayList<LinkedTreeMap<String, Object>> list = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listCommunity");
-                    if (list != null && list.size() != 0) {
-                        ScrollViewLayout(AddAreaCityActivity.this, list, city_community_list);
+
+                if(TextUtil.isEmpty(s)){
+                    showShort("系统异常");
+                }else {
+                    ResponseListCommunity responseListCommunity=new Gson().fromJson(s,ResponseListCommunity.class);
+                    if(responseListCommunity.getStatusCode()==1){
+                        nearlist=responseListCommunity.getListCommunity();
+                        ScrollViewLayout(AddAreaCityActivity.this, nearlist, city_community_list);
+                    }else {
+                        showShort(responseListCommunity.getAlertMessage());
                     }
-                } else if (hashMap2.get("alertmessage") != null) {
-                    ToastUtils.showToast(AddAreaCityActivity.this, hashMap2.get("alertmessage").toString());
                 }
             }
 
@@ -259,30 +254,27 @@ public class AddAreaCityActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url, json);
+        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY, json);
     }
-
-    private void request_community(double latitude, double longitude) { //获取小区
-        String json = "{\"community\": {\"latitude\":" + latitude + ",\"longitude\":" + longitude + "}," +
-                "\"userid\": \"" + userID + "\",\"controllerName\": \"Community\"," +
-                "\"actionName\": \"StructureQuery\"}";
-        Log.i("resultString", "json------" + json);
-        String url = HttpURL.HTTP_LOGIN_AREA + "/Community/StructureQuery"; //附近小区
+    //获取附近小区
+    private void request_community(double latitude, double longitude) {
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("community",new RequestLocalAreaBean(longitude,latitude));
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
-                HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                });
-                if (hashMap2 != null && hashMap2.get("listCommunity") != null) {
-                    nearlist = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listCommunity");
-                    if (nearlist != null && nearlist.size() != 0) {
+
+                if(TextUtil.isEmpty(s)){
+                    showShort("系统异常");
+                }else {
+                    ResponseListCommunity responseListCommunity=new Gson().fromJson(s,ResponseListCommunity.class);
+                    if(responseListCommunity.getStatusCode()==1){
+                        nearlist=responseListCommunity.getListCommunity();
                         ScrollViewLayout(AddAreaCityActivity.this, nearlist, city_community_list);
+                    }else {
+                        showShort(responseListCommunity.getAlertMessage());
                     }
-                } else if (hashMap2.get("alertmessage") != null) {
-                    ToastUtils.showToast(AddAreaCityActivity.this, hashMap2.get("alertmessage").toString());
                 }
             }
 
@@ -301,7 +293,7 @@ public class AddAreaCityActivity extends BaseActivity {
             @Override
             public void onAfter() {
             }
-        }).getEntityData(url, json);
+        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA, json);
     }
 
     @Override

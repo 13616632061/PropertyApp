@@ -82,7 +82,7 @@ public class PickupAdapter extends BaseAdapter {
         layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Database.awardpeople = list.get(position);
+//                Database.awardpeople = list.get(position);
                 Intent intent = new Intent(context, AddAwardActivity.class);
                 intent.putExtra("from","edit");
                 context.startActivity(intent);

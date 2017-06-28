@@ -36,7 +36,6 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         Database.currentActivity = this;
         ButterKnife.bind(this);  //自动化声明控件
         Router.injectParams(this);
-//        Router.injectParams(this);
 //       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            Window window = getWindow();
 //            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
