@@ -13,6 +13,7 @@ public class Constant {
        public static final String communityID = "communityID"; //缓存选择社区的id
 
        public static final String user = "user_json"; //缓存用户登录后信息
+       public static final String userToken = "user_token"; //缓存用户登录后信息
 
        public static final String SEARCH = "search";// PreferenceHelper中搜索记录key值
 

@@ -343,33 +343,23 @@ public class LoginActivity extends BaseActivity {
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
-                try {
-                    JSONObject jo = new JSONObject(s);
-                    LoginUserInfo loginInfo = new Gson().fromJson(jo.toString(), LoginUserInfo.class);
-                    if (loginInfo != null && loginInfo.getUser() != null) {
-                        Database.islogin = true;
-                        Database.USER_MAP = loginInfo.getUser();
-                        Database.accessToken=loginInfo.getAccessToken();
-                        mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, Database.USER_MAP.getJgPushName()));
-                        if (loginInfo.getUserCommnunity() != null) {
+                    LoginUserInfo loginInfo = new Gson().fromJson(s, LoginUserInfo.class);
+                showShort(loginInfo.getAlertMessage());
+                if(loginInfo.getStatusCode()==1){
+                    Database.islogin = true;
+                    Database.USER_MAP = loginInfo.getUser();
+                    Database.accessToken=loginInfo.getAccessToken();
+                    mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, Database.USER_MAP.getJgPushName()));
+                    if (loginInfo.getUserCommnunity() != null) {
 //                            Database.my_community_List = userInfo.getUserCommnunity();
-                            DataUtils.getUesrCommunity(loginInfo.getUserCommnunity());//社区列表
-                            DataUtils.my_community(LoginActivity.this); //获取我的社区
-                        }
-                        SharePreToolsKits.putJsonDataString(LoginActivity.this, Constant.user, s); //缓存登录后信息
-                        //登录成功
-                        LoginActivity.this.finish();
-                    } else if (loginInfo != null && !loginInfo.getStatusMessage().equals("")) {
-                        ToastUtils.showToast(LoginActivity.this, loginInfo.getStatusMessage());
-                    }else {
-                        ToastUtils.showToast(LoginActivity.this, getString(R.string.login_failed));//登录失败
+                        DataUtils.getUesrCommunity(loginInfo);//社区列表
+                        DataUtils.my_community(LoginActivity.this); //获取我的社区
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    SharePreToolsKits.putJsonDataString(LoginActivity.this, Constant.user, s); //缓存登录后信息
+                    //登录成功
+                    LoginActivity.this.finish();
                 }
+
 
             }
 

@@ -200,17 +200,15 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void logout() {
-//        if (Database.USER_MAP != null && Database.USER_MAP.get("phoneNumber") != null) {
-//            appExit(Database.USER_MAP.get("phoneNumber").toString());
+//        if (Database.USER_MAP != null && Database.USER_MAP.getPhoneNumber() != null) {
+//            appExit(Database.USER_MAP.getPhoneNumber());
 //        }
-        if (Database.USER_MAP != null && Database.USER_MAP.getPhoneNumber() != null) {
-            appExit(Database.USER_MAP.getPhoneNumber());
-        }
-//        Database.USER_MAP.clear();
+
         Database.USER_MAP = null;
         Database.my_community_List = null;
         Database.my_community = null;
         Database.accessToken=null;
+        SharePreToolsKits.putJsonDataString(this, Constant.user, "");
 //                SharePreToolsKits.putJsonDataString(SettingActivity.this, Constant.user, "");//缓存用户登录后信息
 //                SharePreToolsKits.putString(SettingActivity.this, Constant.bulletinID, ""); //缓存已读社区消息
 //                SharePreToolsKits.putString(SettingActivity.this, Constant.messageID, ""); //缓存已读系统通知消息

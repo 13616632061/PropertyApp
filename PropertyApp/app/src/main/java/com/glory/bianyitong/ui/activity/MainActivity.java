@@ -344,26 +344,18 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             Database.login_return = SharePreToolsKits.fetchJsonDataString(MainActivity.this, Constant.user);
         }
         if (Database.login_return != null && Database.login_return.length() > 0) {
-            try {
-                Log.i("resultString", "Database.login_return-----" + Database.login_return);
-                JSONObject jo = new JSONObject(Database.login_return);
-//                UserInfo userInfo = new Gson().fromJson(jo.toString(), UserInfo.class);
-                LoginUserInfo userInfo = new Gson().fromJson(jo.toString(), LoginUserInfo.class);
-                Log.i("resultString", "userInfo.getUser()-------" + userInfo.getUser());
-                if (userInfo != null && userInfo.getUser() != null) {
-                    Database.USER_MAP = userInfo.getUser();
-                }
-                Database.accessToken=userInfo.getAccessToken();
-                if (userInfo != null && userInfo.getUserCommnunity() != null) {
-//                    Database.my_community_List = userInfo.getUserCommnunity();
-                    DataUtils.getUesrCommunity(userInfo.getUserCommnunity());//社区列表
-                    DataUtils.my_community(MainActivity.this);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, LoginUserInfo.class);
+            if (userInfo != null && userInfo.getUser() != null) {
+                Database.USER_MAP = userInfo.getUser();
+
+            }
+            Database.accessToken=userInfo.getAccessToken();
+            if (userInfo != null && userInfo.getUserCommnunity() != null) {
+                DataUtils.getUesrCommunity(userInfo);//社区列表
+                DataUtils.my_community(MainActivity.this);
             }
         }
-        getWeiXin();
+//        getWeiXin();
     }
 
     private void getWeiXin() {

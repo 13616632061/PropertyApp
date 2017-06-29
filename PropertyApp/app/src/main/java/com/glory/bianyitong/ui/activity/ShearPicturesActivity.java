@@ -31,17 +31,23 @@ import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.entity.request.RequestUserBean;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.ImageUtil;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.SharePreToolsKits;
+import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.photoViewUtil.ClipZoomImageView;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
@@ -52,6 +58,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.Call;
 import okhttp3.Response;
@@ -95,70 +102,56 @@ public class ShearPicturesActivity extends BaseActivity implements OnClickListen
                 case 1:
                     ImageUtil.deleteFile(); //上传成功删除图片
                     if (picpath != null && !picpath.equals("") && picpath.length() != 0) {
-                        String phoneNumber = "";
-                        if (Database.USER_MAP != null && Database.USER_MAP.getPhoneNumber() != null) {
-                            phoneNumber = Database.USER_MAP.getPhoneNumber();
-                        }
-                        String joinDate = "";
-                        if (Database.USER_MAP != null && Database.USER_MAP.getJoinDate() != null) {
-                            joinDate = Database.USER_MAP.getJoinDate();
-                        }
-                        //phoneNumber 跟 joinDate 一定要传
-                        String json = "{\"user\": {\"customerPhoto\": \"" + picpath + "\",\"phoneNumber\": \"" + phoneNumber + "\", " +
-                                "\"joinDate\": \"" + joinDate + "\"},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-                                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"3\",\"nowpagenum\": \"\"," +
-                                "\"pagerownum\": \"\",\"controllerName\": \"User\",\"actionName\": \"Edit\"}";
-                        Log.i("resultString", "json------------" + json);
-                        OkGo.post(HttpURL.HTTP_LOGIN) //编辑
-                                .tag(this)//
-                                .params("request", json)
-                                .execute(new StringCallback() {
-                                    @Override
-                                    public void onSuccess(String s, Call call, Response response) {
-                                        Log.i("resultString", "------------");
-                                        Log.i("resultString", s);
-                                        Log.i("resultString", "------------");
-                                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {});
-                                        if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-                                                Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
-//                                            Database.USER_MAP.put("customerPhoto", picpath);
-                                            Database.USER_MAP.setCustomerPhoto(picpath);
 
-                                            ToastUtils.showToast(ShearPicturesActivity.this, getString(R.string.successfully_modified));//修改成功
-                                            DataUtils.saveSharePreToolsKits(ShearPicturesActivity.this);
+                        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+                        map.put("user",new RequestUserBean(Database.USER_MAP.getLoginName(),Database.USER_MAP.getCustomerPhoto(),picpath));
+                        String json=new Gson().toJson(map);
+                        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                            @Override
+                            public void onSuccess(String s) {
+                                if(TextUtil.isEmpty(s)){
+                                    showShort("系统异常");
+                                    return;
+                                }
+                                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                                if(bean.getStatusCode()==1){
+                                    Database.USER_MAP.setCustomerPhoto(picpath);
+                                    showShort( getString(R.string.successfully_modified));
+                                    DataUtils.saveSharePreToolsKits(ShearPicturesActivity.this);
+                                    ShearPicturesActivity.this.finish();
+                                }else {
+                                    ToastUtils.showToast(ShearPicturesActivity.this,bean.getAlertMessage());//修改失败
+                                }
+                            }
 
-                                        } else {
-                                            ToastUtils.showToast(ShearPicturesActivity.this, getString(R.string.fail_to_edit));//修改失败
-                                        }
+                            @Override
+                            public void onError() {
+                                showShort(getString(R.string.system_error));
+                                ServiceDialog.showRequestFailed();
+                            }
 
-                                    }
+                            @Override
+                            public void parseError() {
 
-                                    @Override
-                                    public void onError(Call call, Response response, Exception e) {
-                                        super.onError(call, response, e);
-                                        Log.i("resultString", "请求错误------");
-//                                        ToastUtils.showToast(ShearPicturesActivity.this, "请求失败...");
-                                        ServiceDialog.showRequestFailed();
-                                    }
+                            }
 
-                                    @Override
-                                    public void parseError(Call call, Exception e) {
-                                        super.parseError(call, e);
-                                        Log.i("resultString", "网络解析错误------");
-                                    }
+                            @Override
+                            public void onBefore() {
 
-                                    @Override
-                                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                                        super.onAfter(s, e);
-                                        if (progressDialog != null) {
-                                            // 更新完列表数据，则关闭对话框
-                                            progressDialog.dismiss();
-                                            progressDialog = null;
-                                        }
-                                        save_btn.setClickable(true);
-                                        ShearPicturesActivity.this.finish();
-                                    }
-                                });
+                            }
+
+                            @Override
+                            public void onAfter() {
+                                if (progressDialog != null) {
+                                    // 更新完列表数据，则关闭对话框
+                                    progressDialog.dismiss();
+                                    progressDialog = null;
+                                }
+                                save_btn.setClickable(true);
+                                ShearPicturesActivity.this.finish();
+                            }
+                        }).getEntityData(HttpURL.HTTP_POST_MY_EDITUSERINFO,json);
+
                     } else {
                         if (progressDialog != null) {
                             // 更新完列表数据，则关闭对话框

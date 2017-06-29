@@ -84,20 +84,20 @@ public class DataUtils {
      * unitName : A单元
      * approvalDate : 2017-01-03T16:14:00
      */
-    public static void getUesrCommunity(List<LoginUserInfo.UserCommnunityBean> list) {
+    public static void getUesrCommunity(LoginUserInfo loginUserInfo) {
         Database.my_community_List = null;
         Database.my_community_List = new ArrayList<>();
-        for (int i = 0; i < list.size(); i++) {
-            if (list.get(i) != null) {
-                LoginUserInfo.UserCommnunityBean userCommnunityBean = list.get(i);
+        for (int i = 0; i < loginUserInfo.getUserCommnunity().size(); i++) {
+            if (loginUserInfo.getUserCommnunity().get(i) != null) {
+                LoginUserInfo.UserCommnunityBean userCommnunityBean = loginUserInfo.getUserCommnunity().get(i);
                 CommnunityInfo commnunityInfo = new CommnunityInfo();
                 if (userCommnunityBean.getUserCommunityID() != 0) {
                     commnunityInfo.setUserCommunityID(userCommnunityBean.getUserCommunityID());
                 }else {
                     commnunityInfo.setUserCommunityID(0);
                 }
-                if (userCommnunityBean.getUserID() != null) {
-                    commnunityInfo.setUserID(userCommnunityBean.getUserID());
+                if (loginUserInfo.getUser().getUserID() != null) {
+                    commnunityInfo.setUserID(loginUserInfo.getUser().getUserID());
                 }
                 if (userCommnunityBean.getUserName() != null) {
                     commnunityInfo.setUserName(userCommnunityBean.getUserName());

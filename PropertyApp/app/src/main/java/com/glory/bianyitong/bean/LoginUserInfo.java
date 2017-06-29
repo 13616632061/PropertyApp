@@ -6,14 +6,24 @@ import java.util.List;
  * Created by lucy on 2017/5/10.
  * 登录用户 信息
  */
-public class LoginUserInfo extends ResponseBaseInfo{
+public class LoginUserInfo{
 
     /**
-     * user : {"jgPushID":null,"jgPushName":null,"userID":"gPigLPD6EEbljpM0M0rxew==","userName":"Admin","userName_en":"Admin","gender":"2","loginName":"Admin","password":"21232F297A57A5A743894A0E4A801FC3","phoneNumber":"18612565664","birthDay":"2016-12-05T00:00:00","endBirthday":null,"openID":"15899647853","joinDate":"2016-12-20T00:00:00","endJoinDate":null,"status":"1","email":"78863622@qq.com","qq":"78863622","customerPhoto":"https://byt.bytsz.com.cn/images/head/Head.jpg","chinaCity_ID":440300,"chinaCity_Name":"深圳市","signature":null}
-     * userCommnunity : [{"userCommunityID":32,"userID":null,"userName":"","userIDentityID":1,"userIDentityName":"业主","provinceID":440000,"cityID":440300,"communityID":1,"communityName":"西丽小区","buildingID":1,"buildingName":"1号楼","unitID":1,"unitName":"A单元","roomID":1,"roomName":"101","approvalStatus":1,"approvalDate":"2016-12-21T00:00:00","endApprovalDate":null,"phoneNumber":null}]
+     * user : {"jgPushID":null,"jgPushName":null,"status":1,"userID":"ZmViYn5kgv0BlGmwaiog9A==","userName":"黄悦","gender":"1","loginName":"测试用户123","phoneNumber":"13510012206","joinDate":"2017-05-18T00:00:00","customerPhoto":"安卓哈哈","chinaCity_ID":0,"signature":"安卓"}
+     * userCommnunity : [{"userCommunityID":47,"userName":"","userIDentityID":1,"userIDentityName":"业主","provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","communityID":1,"communityName":"西丽小区","buildingID":1,"buildingName":"1号楼","unitID":3,"unitName":"B单元","roomID":1,"roomName":"101","approvalStatus":1,"approvalStatusName":"已审核","approvalDate":"2017-06-26T00:00:00"}]
+     * accessToken : IzAGEXo4K/6QFEhT7Z8lG4KDhBSiiJOqrV082FBdbVHGCzQmY6UkWHci6JMc2j2sO/ep4oYHDCtOfRf5JyU7eMBmzoD8HGuk32A0mb18fG2Ye4fbn7VmcHQiLH83AAXxgCCfZfK4+HV9tqFOrKK4GO6+1qoi+g3+wbFjmp3QpOiIF2CmbprDJUpNYK7l8Jiqpb/9ZXg6t7+4V3n0uQ4EVX3EomjJihW0ThOHAkWwx6jXnl3VMIzb7aOPiLYNKEkBrBzTI7iZZfqcV2W7bsJRYSQ7zG8vimc1OMPgDbNUMm3n+k5/K9xIcQW7ErPcu0ZD
+     * statusCode : 1
+     * alertMessage : 消息处理成功
+     * currentPageNumber : 0
+     * pageRowNumber : 0
      */
 
     private UserBean user;
+    private String accessToken;
+    private int statusCode;
+    private String alertMessage;
+    private int currentPageNumber;
+    private int pageRowNumber;
     private List<UserCommnunityBean> userCommnunity;
 
     public UserBean getUser() {
@@ -22,6 +32,46 @@ public class LoginUserInfo extends ResponseBaseInfo{
 
     public void setUser(UserBean user) {
         this.user = user;
+    }
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getAlertMessage() {
+        return alertMessage;
+    }
+
+    public void setAlertMessage(String alertMessage) {
+        this.alertMessage = alertMessage;
+    }
+
+    public int getCurrentPageNumber() {
+        return currentPageNumber;
+    }
+
+    public void setCurrentPageNumber(int currentPageNumber) {
+        this.currentPageNumber = currentPageNumber;
+    }
+
+    public int getPageRowNumber() {
+        return pageRowNumber;
+    }
+
+    public void setPageRowNumber(int pageRowNumber) {
+        this.pageRowNumber = pageRowNumber;
     }
 
     public List<UserCommnunityBean> getUserCommnunity() {
@@ -36,47 +86,29 @@ public class LoginUserInfo extends ResponseBaseInfo{
         /**
          * jgPushID : null
          * jgPushName : null
-         * userID : gPigLPD6EEbljpM0M0rxew==
-         * userName : Admin
-         * userName_en : Admin
-         * gender : 2
-         * loginName : Admin
-         * password : 21232F297A57A5A743894A0E4A801FC3
-         * phoneNumber : 18612565664
-         * birthDay : 2016-12-05T00:00:00
-         * endBirthday : null
-         * openID : 15899647853
-         * joinDate : 2016-12-20T00:00:00
-         * endJoinDate : null
          * status : 1
-         * email : 78863622@qq.com
-         * qq : 78863622
-         * customerPhoto : https://byt.bytsz.com.cn/images/head/Head.jpg
-         * chinaCity_ID : 440300
-         * chinaCity_Name : 深圳市
-         * signature : null
+         * userID : ZmViYn5kgv0BlGmwaiog9A==
+         * userName :
+         * gender : 1
+         * loginName : 测试用户123
+         * phoneNumber : 13510012206
+         * joinDate : 2017-05-18T00:00:00
+         * customerPhoto : 安卓哈哈
+         * chinaCity_ID : 0
+         * signature : 安卓
          */
 
         private Object jgPushID;
         private Object jgPushName;
+        private int status;
         private String userID;
         private String userName;
-        private String userName_en;
         private String gender;
         private String loginName;
-        private String password;
         private String phoneNumber;
-        private String birthDay;
-        private Object endBirthday;
-        private String openID;
         private String joinDate;
-        private Object endJoinDate;
-        private String status;
-        private String email;
-        private String qq;
         private String customerPhoto;
         private int chinaCity_ID;
-        private String chinaCity_Name;
         private String signature;
 
         public Object getJgPushID() {
@@ -95,6 +127,14 @@ public class LoginUserInfo extends ResponseBaseInfo{
             this.jgPushName = jgPushName;
         }
 
+        public int getStatus() {
+            return status;
+        }
+
+        public void setStatus(int status) {
+            this.status = status;
+        }
+
         public String getUserID() {
             return userID;
         }
@@ -109,14 +149,6 @@ public class LoginUserInfo extends ResponseBaseInfo{
 
         public void setUserName(String userName) {
             this.userName = userName;
-        }
-
-        public String getUserName_en() {
-            return userName_en;
-        }
-
-        public void setUserName_en(String userName_en) {
-            this.userName_en = userName_en;
         }
 
         public String getGender() {
@@ -135,14 +167,6 @@ public class LoginUserInfo extends ResponseBaseInfo{
             this.loginName = loginName;
         }
 
-        public String getPassword() {
-            return password;
-        }
-
-        public void setPassword(String password) {
-            this.password = password;
-        }
-
         public String getPhoneNumber() {
             return phoneNumber;
         }
@@ -151,68 +175,12 @@ public class LoginUserInfo extends ResponseBaseInfo{
             this.phoneNumber = phoneNumber;
         }
 
-        public String getBirthDay() {
-            return birthDay;
-        }
-
-        public void setBirthDay(String birthDay) {
-            this.birthDay = birthDay;
-        }
-
-        public Object getEndBirthday() {
-            return endBirthday;
-        }
-
-        public void setEndBirthday(Object endBirthday) {
-            this.endBirthday = endBirthday;
-        }
-
-        public String getOpenID() {
-            return openID;
-        }
-
-        public void setOpenID(String openID) {
-            this.openID = openID;
-        }
-
         public String getJoinDate() {
             return joinDate;
         }
 
         public void setJoinDate(String joinDate) {
             this.joinDate = joinDate;
-        }
-
-        public Object getEndJoinDate() {
-            return endJoinDate;
-        }
-
-        public void setEndJoinDate(Object endJoinDate) {
-            this.endJoinDate = endJoinDate;
-        }
-
-        public String getStatus() {
-            return status;
-        }
-
-        public void setStatus(String status) {
-            this.status = status;
-        }
-
-        public String getEmail() {
-            return email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getQq() {
-            return qq;
-        }
-
-        public void setQq(String qq) {
-            this.qq = qq;
         }
 
         public String getCustomerPhoto() {
@@ -231,14 +199,6 @@ public class LoginUserInfo extends ResponseBaseInfo{
             this.chinaCity_ID = chinaCity_ID;
         }
 
-        public String getChinaCity_Name() {
-            return chinaCity_Name;
-        }
-
-        public void setChinaCity_Name(String chinaCity_Name) {
-            this.chinaCity_Name = chinaCity_Name;
-        }
-
         public String getSignature() {
             return signature;
         }
@@ -250,34 +210,35 @@ public class LoginUserInfo extends ResponseBaseInfo{
 
     public static class UserCommnunityBean {
         /**
-         * userCommunityID : 32
-         * userID : null
+         * userCommunityID : 47
          * userName :
          * userIDentityID : 1
          * userIDentityName : 业主
          * provinceID : 440000
+         * provinceName : 广东省
          * cityID : 440300
+         * cityName : 深圳市
          * communityID : 1
          * communityName : 西丽小区
          * buildingID : 1
          * buildingName : 1号楼
-         * unitID : 1
-         * unitName : A单元
+         * unitID : 3
+         * unitName : B单元
          * roomID : 1
          * roomName : 101
          * approvalStatus : 1
-         * approvalDate : 2016-12-21T00:00:00
-         * endApprovalDate : null
-         * phoneNumber : null
+         * approvalStatusName : 已审核
+         * approvalDate : 2017-06-26T00:00:00
          */
 
         private int userCommunityID;
-        private Object userID;
         private String userName;
         private int userIDentityID;
         private String userIDentityName;
         private int provinceID;
+        private String provinceName;
         private int cityID;
+        private String cityName;
         private int communityID;
         private String communityName;
         private int buildingID;
@@ -287,9 +248,8 @@ public class LoginUserInfo extends ResponseBaseInfo{
         private int roomID;
         private String roomName;
         private int approvalStatus;
+        private String approvalStatusName;
         private String approvalDate;
-        private Object endApprovalDate;
-        private Object phoneNumber;
 
         public int getUserCommunityID() {
             return userCommunityID;
@@ -297,14 +257,6 @@ public class LoginUserInfo extends ResponseBaseInfo{
 
         public void setUserCommunityID(int userCommunityID) {
             this.userCommunityID = userCommunityID;
-        }
-
-        public Object getUserID() {
-            return userID;
-        }
-
-        public void setUserID(Object userID) {
-            this.userID = userID;
         }
 
         public String getUserName() {
@@ -339,12 +291,28 @@ public class LoginUserInfo extends ResponseBaseInfo{
             this.provinceID = provinceID;
         }
 
+        public String getProvinceName() {
+            return provinceName;
+        }
+
+        public void setProvinceName(String provinceName) {
+            this.provinceName = provinceName;
+        }
+
         public int getCityID() {
             return cityID;
         }
 
         public void setCityID(int cityID) {
             this.cityID = cityID;
+        }
+
+        public String getCityName() {
+            return cityName;
+        }
+
+        public void setCityName(String cityName) {
+            this.cityName = cityName;
         }
 
         public int getCommunityID() {
@@ -419,28 +387,20 @@ public class LoginUserInfo extends ResponseBaseInfo{
             this.approvalStatus = approvalStatus;
         }
 
+        public String getApprovalStatusName() {
+            return approvalStatusName;
+        }
+
+        public void setApprovalStatusName(String approvalStatusName) {
+            this.approvalStatusName = approvalStatusName;
+        }
+
         public String getApprovalDate() {
             return approvalDate;
         }
 
         public void setApprovalDate(String approvalDate) {
             this.approvalDate = approvalDate;
-        }
-
-        public Object getEndApprovalDate() {
-            return endApprovalDate;
-        }
-
-        public void setEndApprovalDate(Object endApprovalDate) {
-            this.endApprovalDate = endApprovalDate;
-        }
-
-        public Object getPhoneNumber() {
-            return phoneNumber;
-        }
-
-        public void setPhoneNumber(Object phoneNumber) {
-            this.phoneNumber = phoneNumber;
         }
     }
 }

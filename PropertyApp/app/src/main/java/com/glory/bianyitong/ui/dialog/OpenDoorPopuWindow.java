@@ -22,7 +22,10 @@ import com.bumptech.glide.Glide;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.bean.AdvertisingInfo2;
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.UserLockInfo;
+import com.glory.bianyitong.bean.entity.response.ResponseOpenLock;
+import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
@@ -226,10 +229,6 @@ public class OpenDoorPopuWindow extends PopupWindow implements View.OnClickListe
     }
 
     private void request() { //钥匙查询
-        String userID = RequestUtil.getuserid();
-        int communityID = RequestUtil.getcommunityid();
-//        String json = "{\"userLock\":{\"communityID\":" + communityID + "},\"controllerName\":\"FreshFeatured\",\"actionName\":\"StructureQuery\"," +
-//                "\"nowpagenum\":\"2\",\"pagerownum\":\"10\",\"userID\":\"" + userID + "\"}";
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("userLockMapping",new Object());
         String json=new Gson().toJson(map);
@@ -305,74 +304,45 @@ public class OpenDoorPopuWindow extends PopupWindow implements View.OnClickListe
     private void OpenLock(int lockID) { //开锁
         Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);//获取系统振动
         vibrator.vibrate(500);
-        String userID = RequestUtil.getuserid();
-        String json = "{\"lockID\":" + lockID + ",\"controllerName\":\"OpenLock\",\"actionName\":\"Open\"," +
-                "\"nowpagenum\":\"2\",\"pagerownum\":\"10\",\"userID\":\"" + userID + "\"}";
 
+        final Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("lockID",lockID);
+        String json=new Gson().toJson(map);
         progressDialog = ProgressDialog.show(context, "", context.getString(R.string.unlocked), true);//开锁中
         progressDialog.setCanceledOnTouchOutside(true);
-        new Handler().postDelayed(new Runnable() {
-
-            public void run() {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
-                    progressDialog = null;
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseOpenLock bean=new Gson().fromJson(s,ResponseOpenLock.class);
+                if(bean.getStatusCode()==1) {
+                    Database.accessToken = bean.getAccessToken();
                 }
-                ToastUtils.showToast(context, context.getString(R.string.unlock_success));//开锁成功
+                if(bean!=null)
+                ToastUtils.showToast(context, bean.getAlertMessage());
+                progressDialog.dismiss();
             }
 
-        }, 2000);
-        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/OpenLock/Open")
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                        });
-                        if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-                                Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
-//                            ToastUtils.showToast(context, "开锁成功");
+            @Override
+            public void onError() {
+                progressDialog.dismiss();
+                ToastUtils.showToast(context, context.getString(R.string.system_error));
+            }
 
-                        } else {
-//                            ToastUtils.showToast(context, "开锁失败...");
-                        }
-                    }
+            @Override
+            public void parseError() {
+                progressDialog.dismiss();
+            }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-                        ToastUtils.showToast(context, "请求失败");
-                    }
+            @Override
+            public void onBefore() {
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
+            }
 
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-//                        progressDialog = ProgressDialog.show(context, "", "开锁中...", true);
-//                        progressDialog.setCanceledOnTouchOutside(true);
-                    }
+            @Override
+            public void onAfter() {
 
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-//                        if (progressDialog != null) {
-//                            progressDialog.dismiss();
-//                            progressDialog = null;
-//                        }
-                    }
-
-                });
+            }
+        }).getEntityData(HttpURL.HTTP_POST_OPEN_LOCK,json);
     }
 
     private void ad_request() { //获取广告轮播

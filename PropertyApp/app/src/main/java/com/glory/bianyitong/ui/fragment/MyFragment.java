@@ -208,18 +208,13 @@ public class MyFragment extends BaseFragment {
         }
     }
 
-    private void login() {
-        Intent intent_login = new Intent();
-        intent_login.setClass(context, LoginActivity.class);
-        startActivity(intent_login);
-    }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (Database.USER_MAP != null) { //登录
+        if (Database.USER_MAP != null && Database.accessToken!=null) { //登录
             //用户名
-            if (Database.USER_MAP != null && Database.USER_MAP.getLoginName() != null) {
+            if (Database.accessToken != null && Database.USER_MAP != null) {
                 String name1 = text_user_name.getText().toString();
                 String name2 = Database.USER_MAP.getLoginName();
                 if (!name1.equals(name2)) {
@@ -229,7 +224,7 @@ public class MyFragment extends BaseFragment {
                 text_user_name.setText("");
             }
             //头像
-            if (Database.USER_MAP != null && Database.USER_MAP.getCustomerPhoto() != null) {
+            if (Database.accessToken!= null && Database.USER_MAP != null) {
                 String pic = Database.USER_MAP.getCustomerPhoto();
                 if (!customerPhoto.equals(pic)) {
                     ServiceDialog.setPicture(pic, headPortraitCiv, null);
@@ -270,8 +265,8 @@ public class MyFragment extends BaseFragment {
                 if(share.getStatusCode()==1){
                     if(share.getListSetting()!=null && share.getListSetting().size()>0){
                         share_url=share.getListSetting().get(0).getSettingValue();
-                        tittle=share.getListSetting().get(0).getSettingRemark();
-                        subTittle=share.getListSetting().get(0).getSettingKey();
+                        tittle=share.getListSetting().get(1).getSettingValue();
+                        subTittle=share.getListSetting().get(2).getSettingRemark();
                     }else {
                         showShort(share.getAlertMessage());
                     }

@@ -69,6 +69,8 @@ public class HttpURL {
     public static String HTTP_POST_LOCAL_KEY_MANAGER="/ApiUserKey/Query";
     //我的钥匙排序
     public static String HTTP_POST_LOCAL_KEY_SORT="/ApiUserKey/SortUserKey";
+    //开锁
+    public static String HTTP_POST_OPEN_LOCK="/ApiOpenLock/Open";
 
     /**
      * 物业管家

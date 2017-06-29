@@ -2,6 +2,7 @@ package com.glory.bianyitong.bean;
 
 import android.text.TextUtils;
 
+import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.util.DateUtil;
 
@@ -15,7 +16,7 @@ import java.util.Map;
 
 public class BaseRequestBean{
     private String timeStemp;
-    private String accessToken=TextUtils.isEmpty(RequestUtil.getToken())?"0":RequestUtil.getToken();;
+    private String accessToken=TextUtils.isEmpty(Database.accessToken)?"0":Database.accessToken;
     private String version;
     private int deviceType=3;
     private int currentPageNumber=0;
@@ -36,6 +37,7 @@ public class BaseRequestBean{
     }
 
     public String getAccessToken() {
+        accessToken=TextUtils.isEmpty(Database.accessToken)?"0":Database.accessToken;
         return accessToken;
     }
 
@@ -111,7 +113,7 @@ public class BaseRequestBean{
     public Map<String,Object> getBaseRequest(){
         Map<String,Object> map=new HashMap<>();
         map.put("timeStemp",getTimeStemp());
-        map.put("accessToken",getAccessToken());
+        map.put("accessToken",TextUtils.isEmpty(Database.accessToken)?"0":Database.accessToken);
         map.put("version",getVersion());
         map.put("deviceType",getDeviceType());
         map.put("currentPageNumber",getCurrentPageNumber());
