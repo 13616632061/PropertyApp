@@ -201,71 +201,6 @@ public class CommunityBulletinActivity extends BaseActivity {
                     SharePreToolsKits.putString(CommunityBulletinActivity.this, Constant.bulletinID, Database.readbulletinid); //缓存已读消息
                 }
                 break;
-//            case R.id.tv_del_ca: //删除
-////                删除这部分有点复杂，比如12345 你删除了13 haspmap里面保存了245 但是2这项其实到了第一条了，如果你不做处理的话，
-////                他会显示第二条已读所以要再删除后重新排列，下面先移除选中数据
-//                checkList = CommunityAnnouceAdapter.getIsCheck();
-//                for (int i = 0; i < checkList.size(); i++) {
-//                    if (checkList.get(i)) {
-//                        removeList.add(Database.list_communityBulletin.get(i));
-//                    }
-//                }
-//                if (removeList.size() > 0) {
-//                    //  删掉文本数据
-//                    Database.list_communityBulletin.removeAll(removeList);
-//                    removeList = null;
-//                    adapter.updateList(Database.list_communityBulletin);
-//                    isDoMore = false;
-//
-//                    //  这里是更新选中的checkbox，删除后 全部设置为false
-//                    adapter.upDateCheckList();
-//                    //  隐藏checkbox 恢复显示图片
-//                    adapter.setIsDoMore(isDoMore);
-//                    adapter.notifyDataSetChanged();
-//                    iv_title_text_right.setText("编辑");
-//                    rl_bottom_ca.setVisibility(View.GONE);
-//                }
-//
-//                break;
-//            case R.id.tv_all_read://全部已读
-//                checkList = CommunityAnnouceAdapter.getIsCheck();
-//                for (int i = 0; i < checkList.size(); i++) {
-//                    if (checkList.get(i)) {
-//                        removeList.add(Database.list_communityBulletin.get(i));
-//                    }
-//                }
-//                for (int i = 0; i < removeList.size(); i++) {
-//                    if (removeList != null && removeList.get(i) != null && removeList.get(i).get("bulletinID") != null) {
-//                        boolean has = false;
-//                        String[] array = Database.readbulletinid.split(",");
-//                        if (array != null && array.length > 0) {
-//                            for (int j = 0; j < array.length; j++) {
-//                                if (array[i].equals(removeList.get(i).get("bulletinID").toString())) {
-//                                    has = true;
-//                                }
-//                            }
-//                        }
-//                        if (!has) {
-//                            Database.readbulletinid = Database.readbulletinid + removeList.get(i).get("bulletinID").toString() + ",";
-//                        }
-//                        Log.i("resultString", "------------" + removeList.get(i).get("bulletinID").toString());
-//                    }
-//                    Log.i("resultString", "------------" + removeList);
-//                }
-//
-//                adapter.updateList(Database.list_communityBulletin);
-//                isDoMore = false;
-//
-//                //  这里是更新选中的checkbox，删除后 全部设置为false
-//                adapter.upDateCheckList();
-//                //  隐藏checkbox 恢复显示图片
-//
-//                adapter.setIsDoMore(isDoMore);
-//                adapter.notifyDataSetChanged();
-//                iv_title_text_right.setText("编辑");
-//                rl_bottom_ca.setVisibility(View.GONE);
-//                Log.i("resultString", "Database.readbulletinid------" + Database.readbulletinid);
-//                break;
         }
     }
 
@@ -283,169 +218,14 @@ public class CommunityBulletinActivity extends BaseActivity {
     }
 
     private void request() { //请求社区公告
-//        String userID = RequestUtil.getuserid();
-//        int communityID = RequestUtil.getcommunityid();
-//
-//        String json = "{\"communityBulletin\": {\"communityID\":" + communityID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\"" +
-//                ",\"datetime\": \"\",\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\"" +
-//                ",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
-//                "\"controllerName\": \"CommunityBulletin\",\"actionName\": \"StructureQuery\"}";
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("communityBulletin",new Object());
         String json=new Gson().toJson(map);
-        String url = "/ApiCommunityBulletin/Query";
-//        OkGo.post(HttpURL.HTTP_LOGIN)
-//                .tag(this)//
-////                .headers("", "")//
-//                .params("request", json)
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onSuccess(String s, Call call, Response response) {
-////                        pullToRefreshView.onHeaderRefreshComplete();
-//                        getGoodsListStart = false;
-////                        loading_lay.setVisibility(View.GONE);
-//                        Log.i("resultString", "------------");
-//                        Log.i("resultString", s);
-//                        Log.i("resultString", "------------");
-////                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-////                        });
-////                        if (hashMap2 != null && hashMap2.get("listCommunityBulletin") != null) {
-////                            Database.list_communityBulletin = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listCommunityBulletin");
-////                            if (Database.list_communityBulletin.size() > 0) {
-////                                if (adapter == null) {
-////                                    have_GoodsList = true;
-////                                    adapter = new CommunityAnnouceAdapter(CommunityBulletinActivity.this, Database.list_communityBulletin, checkList
-////                                            , isDoMore);
-//////                                    adapter = new CommunityAnnouceAdapter(CommunityBulletinActivity.this, community_List, checkList
-//////                                            , buttonList, isDoMore);
-////                                    gg_Listview.setAdapter(adapter);
-////                                } else {
-////                                    have_GoodsList = true;
-////                                    adapter.notifyDataSetChanged();
-////                                }
-////
-////                                //清空过期的已读缓存
-//////        if (Database.readbulletinid != null) {
-////                                String[] array = Database.readbulletinid.split(",");
-////                                if (array != null && Database.list_communityBulletin != null) {
-////                                    Database.readbulletinid = "";
-////                                    for (int i = 0; i < array.length; i++) {
-////                                        for (int j = 0; j < Database.list_communityBulletin.size(); j++) {
-////                                            if (Database.list_communityBulletin.get(j) != null && Database.list_communityBulletin.get(j).get("bulletinID") != null) {
-////                                                if (array[i].equals(Database.list_communityBulletin.get(j).get("bulletinID").toString())) {
-////                                                    Database.readbulletinid = Database.readbulletinid + Database.list_communityBulletin.get(j).get("bulletinID").toString() + ",";
-////                                                }
-////                                            }
-////                                        }
-////                                    }
-////                                }
-//////        }
-////                            } else {//没有数据
-//////                                noGoods.setVisibility(View.VISIBLE);
-////                                gg_Listview.setAdapter(null);
-////                                have_GoodsList = false;
-////                                getGoodsListStart = false;
-////                                lay_no_message.setVisibility(View.VISIBLE);
-////                            }
-////                        }
-//
-//                        try {
-//                            JSONObject jo = new JSONObject(s);
-////                            String statuscode = jo.getString("statuscode");
-////                            String statusmessage = jo.getString("statusmessage");
-//                            listCommunityBulletinInfo cbinfo = new Gson().fromJson(jo.toString(), listCommunityBulletinInfo.class);
-////                            Log.i("resultString", "adinfo.getListHousekeeper()-------" + hinfo.getListHousekeeper());
-//                            if (cbinfo != null && cbinfo.getListCommunityBulletin() != null) {
-//                                Database.list_communityBulletin = cbinfo.getListCommunityBulletin();
-//                                if (Database.list_communityBulletin.size() > 0) {
-//                                    if (adapter == null) {
-//                                        have_GoodsList = true;
-//                                        adapter = new CommunityAnnouceAdapter(CommunityBulletinActivity.this, Database.list_communityBulletin, checkList
-//                                                , isDoMore);
-////                                    adapter = new CommunityAnnouceAdapter(CommunityBulletinActivity.this, community_List, checkList
-////                                            , buttonList, isDoMore);
-//                                        gg_Listview.setAdapter(adapter);
-//                                    } else {
-//                                        have_GoodsList = true;
-//                                        adapter.notifyDataSetChanged();
-//                                    }
-//
-//                                    //清空过期的已读缓存
-////        if (Database.readbulletinid != null) {
-//                                    String[] array = Database.readbulletinid.split(",");
-//                                    if (array != null && Database.list_communityBulletin != null) {
-//                                        Database.readbulletinid = "";
-//                                        for (int i = 0; i < array.length; i++) {
-//                                            for (int j = 0; j < Database.list_communityBulletin.size(); j++) {
-////                                                if (Database.list_communityBulletin.get(j) != null && Database.list_communityBulletin.get(j).get("bulletinID") != null) {
-////                                                    if (array[i].equals(Database.list_communityBulletin.get(j).get("bulletinID").toString())) {
-////                                                        Database.readbulletinid = Database.readbulletinid + Database.list_communityBulletin.get(j).get("bulletinID").toString() + ",";
-////                                                    }
-////                                                }
-//                                                if (Database.list_communityBulletin.get(j) != null && Database.list_communityBulletin.get(j).getBulletinID() != null) {
-//                                                    if (array[i] != null && array[i].equals(Database.list_communityBulletin.get(j).getBulletinID())) {
-//                                                        Database.readbulletinid = Database.readbulletinid + Database.list_communityBulletin.get(j).getBulletinID() + ",";
-//                                                    }
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-////        }
-//                                } else {//没有数据
-////                                noGoods.setVisibility(View.VISIBLE);
-//                                    gg_Listview.setAdapter(null);
-//                                    have_GoodsList = false;
-//                                    getGoodsListStart = false;
-//                                    lay_no_message.setVisibility(View.VISIBLE);
-//                                }
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//
-//                    }
-//
-//                    @Override
-//                    public void onError(Call call, Response response, Exception e) {
-//                        super.onError(call, response, e);
-////                        pullToRefreshView.onHeaderRefreshComplete();
-//                        getGoodsListStart = false;
-////                        loading_lay.setVisibility(View.GONE);
-//                        Log.i("resultString", "请求错误------");
-//                        ToastUtils.showToast(CommunityBulletinActivity.this, getString(R.string.failed_to_connect_to_server));//未能连接到服务器
-//                    }
-//
-//                    @Override
-//                    public void parseError(Call call, Exception e) {
-//                        super.parseError(call, e);
-//                        Log.i("resultString", "网络解析错误------");
-//                    }
-//
-//                    @Override
-//                    public void onBefore(BaseRequest request) {
-//                        super.onBefore(request);
-//                        progressDialog = ProgressDialog.show(CommunityBulletinActivity.this, "", getString(R.string.load), true);//加载
-//                        progressDialog.setCanceledOnTouchOutside(true);
-//                    }
-//
-//                    @Override
-//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-//                        super.onAfter(s, e);
-//                        if (progressDialog != null) {
-//                            progressDialog.dismiss();
-//                            progressDialog = null;
-//                        }
-//                    }
-//                });
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
 //                pullToRefreshView.onHeaderRefreshComplete();
-                try {
-                    JSONObject jo = new JSONObject(s);
-//                            String statuscode = jo.getString("statuscode");
-//                            String statusmessage = jo.getString("statusmessage");
-                    listCommunityBulletinInfo cbinfo = new Gson().fromJson(jo.toString(), listCommunityBulletinInfo.class);
+                    listCommunityBulletinInfo cbinfo = new Gson().fromJson(s, listCommunityBulletinInfo.class);
 //                            Log.i("resultString", "adinfo.getListHousekeeper()-------" + hinfo.getListHousekeeper());
                     if (cbinfo != null && cbinfo.getListCommunityBulletin() != null) {
                         Database.list_communityBulletin = cbinfo.getListCommunityBulletin();
@@ -494,9 +274,6 @@ public class CommunityBulletinActivity extends BaseActivity {
                             lay_no_message.setVisibility(View.VISIBLE);
                         }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
             }
 
             @Override

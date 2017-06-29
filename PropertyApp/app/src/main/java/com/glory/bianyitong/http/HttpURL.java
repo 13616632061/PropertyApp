@@ -63,14 +63,48 @@ public class HttpURL {
     public static String HTTP_POST_LOCAL_AREA_QUERY_ROOM="/ApiCommunityRoom/Query";
     //申请社区
     public static String HTTP_POST_LOCAL_AREA_ADD_COMMNUNITY="/ApiUserCommnunity/Add";
-    //申请社区
+    //社区公告
     public static String HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE="/ApiCommunityBulletin/Query";
+    //查询我的钥匙
+    public static String HTTP_POST_LOCAL_KEY_MANAGER="/ApiUserKey/Query";
+    //我的钥匙排序
+    public static String HTTP_POST_LOCAL_KEY_SORT="/ApiUserKey/SortUserKey";
 
     /**
      * 物业管家
      */
-    //物业管家从查询
+    //物业管家查询
     public static String HTTP_POST_OWNER_MANAGER="/ApiHousekeeper/Query";
 
+    /**
+     * 便民黄页
+     */
+    //黄页分类查询
+    public static String HTTP_POST_YELLOWPAGE_QUERY="/ApiYellowPageGroup/Query";
+    //黄页数据列表
+    public static String HTTP_POST_YELLOWITEM_QUERY="/ApiYellowPage/Query";
 
+
+
+    /**
+     * 投诉建议
+     */
+    //投诉类型
+    public static String HTTP_POST_COMPLAINTS_TYPE="/ApiComplaintsType/Query";
+    //新增投诉
+    public static String HTTP_POST_COMPLAINTS_ADD="/ApiComplaints/Add";
+
+
+    /**
+     * 配置信息
+     */
+    //获取阿里云密钥
+    public static String HTTP_POST_GET_ALIYUN="/ApiSetting/SelectOSS";
+
+
+    /**
+     * 近邻
+     */
+    //近邻查询
+    public static String HTTP_POST_FRIEND_QUERY="/ApiNeighborhood/Query";
 }

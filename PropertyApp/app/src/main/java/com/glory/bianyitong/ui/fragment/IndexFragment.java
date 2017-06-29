@@ -545,7 +545,7 @@ public class IndexFragment extends BaseFragment {
                         super.onError(call, response, e);
                         Log.i("resultString", "请求错误------");
                         news_list_refresh.onHeaderRefreshComplete();
-                        ToastUtils.showToast(context, getResources().getString(R.string.failed_to_connect_to_server));
+                        showShort(getString(R.string.failed_to_connect_to_server));
                         listView.setAdapter(null);
                         getGoodsListStart = false;
                         loading_lay.setVisibility(View.GONE);

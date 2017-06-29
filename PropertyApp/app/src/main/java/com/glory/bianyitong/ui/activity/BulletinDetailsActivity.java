@@ -8,13 +8,18 @@ import android.widget.TextView;
 
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.request.RequestCommunityBulletin;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
+import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.util.JsonHelper;
+import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
@@ -23,6 +28,7 @@ import com.lzy.okgo.request.BaseRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -52,7 +58,7 @@ public class BulletinDetailsActivity extends BaseActivity {
     private String bulletinContent;
     private String communityName;
     private String bulletinDatetime;
-
+    private int bulletinId;//公告ID
     @Override
     protected int getContentId() {
         return R.layout.ac_bulletin_details;
@@ -62,6 +68,7 @@ public class BulletinDetailsActivity extends BaseActivity {
     protected void init() {
         super.init();
         initview();
+        bulletinId=getIntent().getIntExtra("bulletinId", 0);
         PushID = getIntent().getIntExtra("PushID", 0);
         bulletinTittle = getIntent().getStringExtra("bulletinTittle");
         bulletinContent = getIntent().getStringExtra("bulletinContent");
@@ -84,77 +91,15 @@ public class BulletinDetailsActivity extends BaseActivity {
         tv_ans_auth.setText(communityName);
         tv_ans_time.setText(bulletinDatetime);
 
-        if (PushID != 0) {
-            request(PushID);
+        if (bulletinId != 0) {
+            request(bulletinId);
         }
     }
 
     private void request(int bulletinID) {
-        String userID = RequestUtil.getuserid();
-
-        String json = "{\"communityBulletin\": {\"bulletinID\":" + bulletinID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
-                "\"controllerName\": \"CommunityBulletin\",\"actionName\": \"StructureQuery\"}";
-        Log.i("resultString", "json----------" + json);
-        String url = HttpURL.HTTP_LOGIN;
-//        OkGo.post(HttpURL.HTTP_LOGIN)
-//                .tag(this)//
-////                .headers("", "")//
-//                .params("request", json)
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onSuccess(String s, Call call, Response response) {
-//                        Log.i("resultString", "------------");
-//                        Log.i("resultString", s);
-//                        Log.i("resultString", "------------");
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("listCommunityBulletin") != null) {
-//                            ArrayList<LinkedTreeMap<String, Object>> list = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listCommunityBulletin");
-//                            if (list != null && list.size() != 0) {
-//                                if (list.get(0) != null && list.get(0).get("bulletinTittle") != null) {
-//                                    tv_ans_title.setText(list.get(0).get("bulletinTittle").toString()); //管家姓名
-//                                }
-//
-//                                if (list.get(0) != null && list.get(0).get("bulletinContent") != null) {
-//                                    tv_ans_content.setText(list.get(0).get("bulletinContent").toString());
-//                                }
-//
-//                                if (list.get(0) != null && list.get(0).get("communityName") != null) {
-//                                    tv_ans_auth.setText(list.get(0).get("communityName").toString());
-//                                }
-//
-//                                if (list.get(0) != null && list.get(0).get("bulletinDatetime") != null) {
-//                                    tv_ans_time.setText(list.get(0).get("bulletinDatetime").toString());
-//                                }
-//
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Call call, Response response, Exception e) {
-//                        super.onError(call, response, e);
-//                        Log.i("resultString", "请求错误------");
-//                        ServiceDialog.showRequestFailed();
-//                    }
-//
-//                    @Override
-//                    public void parseError(Call call, Exception e) {
-//                        super.parseError(call, e);
-//                        Log.i("resultString", "网络解析错误------");
-//                    }
-//
-//                    @Override
-//                    public void onBefore(BaseRequest request) {
-//                        super.onBefore(request);
-//                    }
-//
-//                    @Override
-//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-//                        super.onAfter(s, e);
-//                    }
-//                });
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("communityBulletin",new RequestCommunityBulletin(bulletinID));
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -176,7 +121,13 @@ public class BulletinDetailsActivity extends BaseActivity {
                             tv_ans_auth.setText(list.get(0).get("communityName").toString());
                         }
                         if (list.get(0) != null && list.get(0).get("bulletinDatetime") != null) {
-                            tv_ans_time.setText(list.get(0).get("bulletinDatetime").toString());
+                            String time=list.get(0).get("bulletinDatetime").toString();
+                            if(!TextUtil.isEmpty(time)){
+                                tv_ans_time.setText( DateUtil.format(DateUtil.parse(time),DateUtil.DEFAULT_PATTERN));
+                            }else {
+                                tv_ans_time.setText("");
+                            }
+
                         }
                     }
                 }
@@ -190,7 +141,7 @@ public class BulletinDetailsActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(url,json);
+        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE,json);
     }
 
     private void initview() {

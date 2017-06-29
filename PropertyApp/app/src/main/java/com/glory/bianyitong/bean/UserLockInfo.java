@@ -201,4 +201,30 @@ public class UserLockInfo extends BaseResponseBean {
             this.authorizationUserName = authorizationUserName;
         }
     }
+
+    public static class ListUserLock{
+        private int userLockID	;//	用户锁对照ID
+        private int lockSort;//	锁排序
+
+        public ListUserLock(int userLockID, int lockSort) {
+            this.userLockID = userLockID;
+            this.lockSort = lockSort;
+        }
+
+        public int getUserLockID() {
+            return userLockID;
+        }
+
+        public void setUserLockID(int userLockID) {
+            this.userLockID = userLockID;
+        }
+
+        public int getLockSort() {
+            return lockSort;
+        }
+
+        public void setLockSort(int lockSort) {
+            this.lockSort = lockSort;
+        }
+    }
 }

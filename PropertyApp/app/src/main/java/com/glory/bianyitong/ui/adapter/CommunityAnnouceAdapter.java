@@ -255,8 +255,9 @@ public class CommunityAnnouceAdapter extends BaseAdapter {
                         }
                     }
                     Intent intent = new Intent(context, BulletinDetailsActivity.class);
-
+                    intent.putExtra("bulletinId",qiList.get(position).getBulletinID());
                     if (qiList.get(position).getBulletinContent() != null) {
+
                         intent.putExtra("bulletinContent", qiList.get(position).getBulletinContent());
                     }else {
                         intent.putExtra("bulletinContent", "");

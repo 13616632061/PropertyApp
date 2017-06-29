@@ -15,11 +15,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.response.ResponseQuerySteWard;
 import com.glory.bianyitong.bean.listHousekeeperInfo;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
+import com.glory.bianyitong.util.TextUtil;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
@@ -60,7 +62,7 @@ public class StewardActivity extends BaseActivity {
     @BindView(R.id.steward_pic) //管家头像
             ImageView steward_pic;
     ArrayList<LinkedTreeMap<String, Object>> housekeeper_list;//物业管家
-    listHousekeeperInfo.ListHousekeeperBean housekeeper;
+    ResponseQuerySteWard.ListHousekeeperBean housekeeper;
     private String phone_str = "";//要拨打的电话
 
     @Override
@@ -109,41 +111,22 @@ public class StewardActivity extends BaseActivity {
     }
 
     private void request() {
-        int communityID = RequestUtil.getcommunityid();
-        String userID = RequestUtil.getuserid();
-//        int unitID = 0;
-//        if (Database.my_community != null && Database.my_community.get("unitID") != null) {
-//            unitID = Double.valueOf(Database.my_community.get("unitID").toString()).intValue();
-//        }
-        int unitID = 0;
-        if (Database.my_community != null && Database.my_community.getUnitID() != 0) {
-            unitID = Database.my_community.getUnitID();
-        }
-//        int buildingID = 0;
-//        if (Database.my_community != null && Database.my_community.get("buildingID") != null) {
-//            buildingID = Double.valueOf(Database.my_community.get("buildingID").toString()).intValue();
-//        }
-        int buildingID = 0;
-        if (Database.my_community != null && Database.my_community.getBuildingID() != 0) {
-            buildingID = Database.my_community.getBuildingID();
-        }
-        String query = "\"housekeeper\":{\"HouseKepperID\":1,\"communityID\":" + communityID + "}";
-        String json = RequestUtil.getJson(StewardActivity.this, query);
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("housekeeper",new Object());
-        json=new Gson().toJson(map);
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                try {
-                    JSONObject jo = new JSONObject(s);
-//                            String statuscode = jo.getString("statuscode");
-//                            String statusmessage = jo.getString("statusmessage");
-                    listHousekeeperInfo hinfo = new Gson().fromJson(jo.toString(), listHousekeeperInfo.class);
-//                            Log.i("resultString", "adinfo.getListHousekeeper()-------" + hinfo.getListHousekeeper());
-                    if (hinfo != null && hinfo.getListHousekeeper() != null) {
-                        List<listHousekeeperInfo.ListHousekeeperBean> hlist = hinfo.getListHousekeeper();
+
+                if(TextUtil.isEmpty(s)){
+                    showShort("系统异常");
+                    return;
+                }
+                ResponseQuerySteWard querySteWard=new Gson().fromJson(s,ResponseQuerySteWard.class);
+                if(querySteWard.getStatusCode()==1){
+                    if (querySteWard != null && querySteWard.getListHousekeeper() != null) {
+                        List<ResponseQuerySteWard.ListHousekeeperBean> hlist = querySteWard.getListHousekeeper();
                         if (hlist.get(0) != null) {
                             housekeeper = hlist.get(0);
                             if (housekeeper != null && housekeeper.getHouseKeeperName() != null) {
@@ -153,27 +136,16 @@ public class StewardActivity extends BaseActivity {
                                 steward_phone.setText(housekeeper.getWorkPhoneNum());
                                 phone_str = housekeeper.getWorkPhoneNum();
                             }
-                            String communityName = "";
-                            String unitName = "";
-                            String buildingName = "";
-//                                    if (housekeeper != null && housekeeper.getCommunityName() != null) {
-//                                        communityName = housekeeper.getCommunityName(); //小区名称
-//                                    }
-//                                    if (housekeeper != null && housekeeper.getUnitName() != null) {
-//                                        unitName = housekeeper.getUnitName(); //单元名称
-//                                    }
-//                                    if (housekeeper != null && housekeeper.getBuildingName() != null) {
-//                                        buildingName = housekeeper.getBuildingName(); //楼栋名称
-//                                    }
-                            steward_cert.setText(getResources().getString(R.string.certification) + ":" + communityName + unitName + buildingName);
+                            steward_cert.setText(getResources().getString(R.string.certification) + ":" + housekeeper.getCommunityName() + housekeeper.getUnitName() + housekeeper.getBuildingName());
                             if (housekeeper != null && housekeeper.getHouseKepperPhoto() != null) {
                                 ServiceDialog.setPicture(housekeeper.getHouseKepperPhoto(), steward_pic, null);//管家 头像
                             }
                         }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                }else {
+                    showShort(querySteWard.getAlertMessage());
                 }
+
             }
 
             @Override

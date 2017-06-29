@@ -10,7 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.ComplaintsTypeInfo;
+import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.util.TextUtil;
 import com.google.gson.Gson;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
@@ -24,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -117,83 +121,56 @@ public class SuggestTypeActivity extends BaseActivity {
     }
 
     private void request() { //获取投诉类型
-        String json = "{\"complaintsType\": {\"status\":\"E\",\"communityID\":1},\"userid\": \"gPigLPD6EEbljpM0M0rxew==\",\"groupid\": \"\",\"datetime\": \"\"," +
-                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\"," +
-                "\"nowpagenum\": \"\",\"pagerownum\": \"\",\"controllerName\": \"ComplaintsType\"," +
-                "\"actionName\": \"StructureQuery\"}";
-        // "status":"D"  d 禁用  e 启用        communityID小区 id
-//        request:{"complaintsType": {"complaintsTypeID":1,"complaintsTypeName":"物业","status":"D","communityID":1,
-//                "communityName":"西丽社区"},"userid": "1","groupid": "","datetime": "","accesstoken": "","version": "",
-//                "messagetoken": "","DeviceType": "","nowpagenum": "","pagerownum": "","controllerName": "ComplaintsType",
-//                "actionName": "StructureQuery"}
-        OkGo.post(HttpURL.HTTP_LOGIN)
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("listComplaintsType") != null) {
-//                            typelist = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listComplaintsType");
-//                            if (typelist.size() > 0) {
-//                                ScrollViewLayout(SuggestTypeActivity.this, typelist, ll_suggest_type_list);
-//                            } else {//没有数据
-//
-//                            }
-//                        }
-                        try {
-                            JSONObject jo = new JSONObject(s);
-                            String statuscode = jo.getString("statuscode");
-                            String statusmessage = jo.getString("statusmessage");
-                            typelist = new Gson().fromJson(jo.toString(), ComplaintsTypeInfo.class);
-//                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
-                            if (typelist != null && typelist.getListComplaintsType() != null) {
-                                List<ComplaintsTypeInfo.ListComplaintsTypeBean> clist = typelist.getListComplaintsType();
-                                if (clist.size() > 0) {
-                                    ScrollViewLayout(SuggestTypeActivity.this, clist, ll_suggest_type_list);
-                                } else {//没有数据
 
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("complaintsType",new Object());
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                if(TextUtil.isEmpty(s)){
+                    showShort("系统异常");
+                    return;
+                }
+
+                typelist = new Gson().fromJson(s, ComplaintsTypeInfo.class);
+                if (typelist != null && typelist.getListComplaintsType() != null) {
+                    if(typelist.getStatusCode()==1){
+                        List<ComplaintsTypeInfo.ListComplaintsTypeBean> clist = typelist.getListComplaintsType();
+                        if (clist.size() > 0) {
+                            ScrollViewLayout(SuggestTypeActivity.this, clist, ll_suggest_type_list);
+                        } else {//没有数据
+                            showShort(typelist.getAlertMessage());
                         }
+                    }else {
+                        showShort(typelist.getAlertMessage());
                     }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
+                }else {
+                    showShort("系统异常");
+                }
+            }
 
-                        Log.i("resultString", "请求错误------");
-                    }
+            @Override
+            public void onError() {
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
+            }
 
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-//                        progressDialog = ProgressDialog.show(SuggestTypeActivity.this, "", "加载..", true);
-//                        progressDialog.setCanceledOnTouchOutside(true);
-                    }
+            @Override
+            public void parseError() {
 
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-//                        if (progressDialog != null) {
-//                            progressDialog.dismiss();
-//                            progressDialog = null;
-//                        }
-                    }
-                });
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_COMPLAINTS_TYPE,json);
 
     }
 

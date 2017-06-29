@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.adapter.ConveniencePhoneAdapter;
 import com.google.gson.internal.LinkedTreeMap;
@@ -168,6 +169,11 @@ public class NeighbourFragment extends BaseFragment {
         }
     }
 
+    /**
+     * 近邻查询
+     * @param page
+     * @param isrefresh
+     */
     private void request(int page, final boolean isrefresh) {
         int communityID = RequestUtil.getcommunityid();
         String userID = RequestUtil.getuserid();
@@ -176,6 +182,32 @@ public class NeighbourFragment extends BaseFragment {
 //        String json = "{\"neighborhood\":{},\"controllerName\":\"Neighborhood\"," +
 //                "\"actionName\":\"StructureQuery\",\"userID\":\"" + userID + "\",\"nowpagenum\":\"" + page + "\",\"pagerownum\":\"10\"}";
 
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_FRIEND_QUERY,json);
         OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/Neighborhood/StructureQuery") //近邻
                 .tag(this)//
 //                .headers("", "")//

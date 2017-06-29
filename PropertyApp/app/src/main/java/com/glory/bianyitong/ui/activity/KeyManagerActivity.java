@@ -18,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.UserLockInfo;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
@@ -49,6 +51,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -70,7 +73,7 @@ public class KeyManagerActivity extends BaseActivity {
     //    private List<LinkedTreeMap<String, Object>> list_door;
     private List<UserLockInfo.ListUserLockMappingBean> list_door;
     private ProgressDialog progressDialog = null;
-    private List<HashMap<String, Object>> list_sort; //排序后的list
+    private List<UserLockInfo.ListUserLock> list_sort; //排序后的list
     private String userID = "";
     private boolean isChange = false;
     /**
@@ -179,145 +182,41 @@ public class KeyManagerActivity extends BaseActivity {
     }
 
     private void request() { //钥匙查询
-        int communityID = RequestUtil.getcommunityid();
-        String json = "{\"userLock\":{\"communityID\":" + communityID + "},\"controllerName\":\"FreshFeatured\",\"actionName\":\"StructureQuery\"," +
-                "\"nowpagenum\":\"2\",\"pagerownum\":\"10\",\"userID\":\"" + userID + "\"}";
-        String url = HttpURL.HTTP_LOGIN_AREA + "/UserKey/StructureQuery";
-//        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/UserKey/StructureQuery")
-//                .tag(this)//
-////                .headers("", "")//
-//                .params("request", json)
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onSuccess(String s, Call call, Response response) {
-//                        Log.i("resultString", "------------");
-//                        Log.i("resultString", s);
-//                        Log.i("resultString", "------------");
-////                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-////                        });
-////                        if (hashMap2 != null && hashMap2.get("listUserLock") != null) {
-////                            list_door = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listUserLock");
-////                            if (list_door != null && list_door.size() > 0) {
-////                                keyListAdapter = new KeyListAdapter(list_door);
-////                                keyListAdapter.setOnItemClickListener(onItemClickListener);
-////                                key_recycler_view.setAdapter(keyListAdapter);
-////
-////                                list_sort = new ArrayList<>(); //要排序的集合
-////                                for (int i = 0; i < list_door.size(); i++) {
-////                                    if (list_door.get(i) != null && list_door.get(i).get("userLockID") != null &&
-////                                            list_door.get(i).get("lockSort") != null) {
-////                                        HashMap<String, Object> map = new HashMap<>();
-////                                        map.put("userLockID", Double.valueOf(list_door.get(i).get("userLockID").toString()).intValue());
-////                                        map.put("lockSort", Double.valueOf(list_door.get(i).get("lockSort").toString()).intValue());
-////                                        list_sort.add(map);
-////                                    }
-////                                }
-////                            }
-////                        }
-//                        try {
-//                            JSONObject jo = new JSONObject(s);
-//                            String statuscode = jo.getString("statuscode");
-//                            String statusmessage = jo.getString("statusmessage");
-//                            UserLockInfo uinfo = new Gson().fromJson(jo.toString(), UserLockInfo.class);
-////                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
-//                            if (uinfo != null && uinfo.getListUserLock() != null) {
-//                                list_door = uinfo.getListUserLock();
-//                                if (list_door != null && list_door.size() > 0) {
-//                                    keyListAdapter = new KeyListAdapter(list_door);
-//                                    keyListAdapter.setOnItemClickListener(onItemClickListener);
-//                                    key_recycler_view.setAdapter(keyListAdapter);
-//
-//                                    list_sort = new ArrayList<>(); //要排序的集合
-//                                    for (int i = 0; i < list_door.size(); i++) {
-////                                        if (list_door.get(i) != null && list_door.get(i).get("userLockID") != null &&
-////                                                list_door.get(i).get("lockSort") != null) {
-////                                            HashMap<String, Object> map = new HashMap<>();
-////                                            map.put("userLockID", Double.valueOf(list_door.get(i).get("userLockID").toString()).intValue());
-////                                            map.put("lockSort", Double.valueOf(list_door.get(i).get("lockSort").toString()).intValue());
-////                                            list_sort.add(map);
-////                                        }
-//                                        if (list_door.get(i) != null) {
-//                                            HashMap<String, Object> map = new HashMap<>();
-//                                            map.put("userLockID", list_door.get(i).getUserLockID());
-//                                            map.put("lockSort", list_door.get(i).getLockSort());
-//                                            list_sort.add(map);
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Call call, Response response, Exception e) {
-//                        super.onError(call, response, e);
-//                        Log.i("resultString", "请求错误------");
-////                        ToastUtils.showToast(KeyManagerActivity.this, "请求失败...");
-//                        ServiceDialog.showRequestFailed();
-//                    }
-//
-//                    @Override
-//                    public void parseError(Call call, Exception e) {
-//                        super.parseError(call, e);
-//                        Log.i("resultString", "网络解析错误------");
-//                    }
-//
-//                    @Override
-//                    public void onBefore(BaseRequest request) {
-//                        super.onBefore(request);
-//                        progressDialog = ProgressDialog.show(KeyManagerActivity.this, "", getString(R.string.load), true);//加载
-//                        progressDialog.setCanceledOnTouchOutside(true);
-//                    }
-//
-//                    @Override
-//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-//                        super.onAfter(s, e);
-//                        if (progressDialog != null) {
-//                            progressDialog.dismiss();
-//                            progressDialog = null;
-//                        }
-//                    }
-//
-//                });
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("userLockMapping",new Object());
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
 
-                try {
-                    JSONObject jo = new JSONObject(s);
-                    String statuscode = jo.getString("statuscode");
-                    String statusmessage = jo.getString("statusmessage");
-                    UserLockInfo uinfo = new Gson().fromJson(jo.toString(), UserLockInfo.class);
-//                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
-                    if (uinfo != null && uinfo.getStatusCode()==1) {
-                        list_door = uinfo.getListUserLockMapping();
-                        if (list_door != null && list_door.size() > 0) {
-                            keyListAdapter = new KeyListAdapter(list_door);
-                            keyListAdapter.setOnItemClickListener(onItemClickListener);
-                            key_recycler_view.setAdapter(keyListAdapter);
+                UserLockInfo uinfo = new Gson().fromJson(s, UserLockInfo.class);
+                if(uinfo.getStatusCode()==1){
+                    list_door = uinfo.getListUserLockMapping();
+                    if (list_door != null && list_door.size() > 0) {
+                        keyListAdapter = new KeyListAdapter(list_door);
+                        keyListAdapter.setOnItemClickListener(onItemClickListener);
+                        key_recycler_view.setAdapter(keyListAdapter);
 
-                            list_sort = new ArrayList<>(); //要排序的集合
-                            for (int i = 0; i < list_door.size(); i++) {
-                                if (list_door.get(i) != null) {
-                                    HashMap<String, Object> map = new HashMap<>();
-                                    map.put("userLockID", list_door.get(i).getUserLockID());
-                                    map.put("lockSort", list_door.get(i).getLockSort());
-                                    list_sort.add(map);
-                                }
+                        list_sort = new ArrayList<>(); //要排序的集合
+                        for (int i = 0; i < list_door.size(); i++) {
+                            if (list_door.get(i) != null) {
+//                                HashMap<String, Object> map = new HashMap<>();
+//                                map.put("userLockID", list_door.get(i).getUserLockID());
+//                                map.put("lockSort", list_door.get(i).getLockSort());
+                                UserLockInfo.ListUserLock userLockMappingBean=new UserLockInfo.ListUserLock(list_door.get(i).getUserLockID(),list_door.get(i).getLockSort());
+                                list_sort.add(userLockMappingBean);
                             }
                         }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                }else {
+                    showShort(uinfo.getAlertMessage());
                 }
+
             }
             @Override
-            public void onError() {}
+            public void onError() {
+                showShort(getString(R.string.system_error));
+            }
             @Override
             public void parseError() {}
             @Override
@@ -333,93 +232,43 @@ public class KeyManagerActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url, json);
+        }).getEntityData(HttpURL.HTTP_POST_LOCAL_KEY_MANAGER, json);
     }
 
     private void save() { //保存 钥匙排序
-        String jsonlist = JsonHelper.toJson(list_sort);
-        Log.i("resultString", "jsonlist------------" + jsonlist);
-        String json = "{\"listUserLock\":" + jsonlist + ",\"controllerName\":\"FreshFeatured\",\"actionName\":\"StructureQuery\",\"nowpagenum\":\"2\"," +
-                "\"pagerownum\":\"10\",\"userID\":\"" + userID + "\"}";
-        String url = HttpURL.HTTP_LOGIN_AREA + "/UserKey/SortUserKey";
-//        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/UserKey/SortUserKey")
-//                .tag(this)//
-////                .headers("", "")//
-//                .params("request", json)
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onSuccess(String s, Call call, Response response) {
-//                        Log.i("resultString", "------------");
-//                        Log.i("resultString", s);
-//                        Log.i("resultString", "------------");
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-//                                Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
-////                            ToastUtils.showToast(KeyManagerActivity.this, "已保存");
-//                            EventBus.getDefault().post(true);
-//                            KeyManagerActivity.this.finish();
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Call call, Response response, Exception e) {
-//                        super.onError(call, response, e);
-//                        Log.i("resultString", "请求错误------");
-////                        ToastUtils.showToast(KeyManagerActivity.this, "请求失败...");
-//                        ServiceDialog.showRequestFailed();
-//                    }
-//
-//                    @Override
-//                    public void parseError(Call call, Exception e) {
-//                        super.parseError(call, e);
-//                        Log.i("resultString", "网络解析错误------");
-//                    }
-//
-//                    @Override
-//                    public void onBefore(BaseRequest request) {
-//                        super.onBefore(request);
-//                    }
-//
-//                    @Override
-//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-//                        super.onAfter(s, e);
-//                    }
-//                });
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("listUserLock",list_sort);
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
-                HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                });
-                if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-                        Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
-//                            ToastUtils.showToast(KeyManagerActivity.this, "已保存");
+                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                showShort(bean.getAlertMessage());
+                if(bean.getStatusCode()==1){
                     EventBus.getDefault().post(true);
-                    KeyManagerActivity.this.finish();
+                    finish();
                 }
             }
 
             @Override
-            public void onError() {}
+            public void onError() {
+                showShort(getString(R.string.system_error));
+            }
             @Override
             public void parseError() {}
             @Override
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(url, json);
+        }).getEntityData(HttpURL.HTTP_POST_LOCAL_KEY_SORT, json);
     }
 
     private void sort() { //排序
         isChange = true;
         for (int i = 0; i < list_sort.size(); i++) {
-            list_sort.get(i).put("lockSort", i);
+            list_sort.get(i).setLockSort(i);
         }
-        String jsonlist = JsonHelper.toJson(list_sort);
-        Log.i("resultString", "jsonlist------------" + jsonlist);
+
     }
 
     @Override

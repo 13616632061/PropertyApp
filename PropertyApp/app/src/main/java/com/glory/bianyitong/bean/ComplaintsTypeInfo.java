@@ -4,8 +4,9 @@ import java.util.List;
 
 /**
  * Created by lucy on 2017/2/22.
+ * 查询投诉类型
  */
-public class ComplaintsTypeInfo {
+public class ComplaintsTypeInfo extends BaseResponseBean{
     /**
      * tableColumnPermission : [{"columnID":0,"columnName":"complaintsTypeID","permissionValues":1,"columnDescription":"投诉类型ID"},{"columnID":0,"columnName":"complaintsTypeName","permissionValues":2,"columnDescription":"投诉类型名称"},{"columnID":0,"columnName":"status","permissionValues":4,"columnDescription":"投诉类型启用状态 "},{"columnID":0,"columnName":"communityID","permissionValues":8,"columnDescription":"社区ID"},{"columnID":0,"columnName":"communityName","permissionValues":16,"columnDescription":"社区名称"}]
      * listComplaintsType : [{"complaintsTypeID":1,"complaintsTypeName":"公共设施","status":"E","communityID":1,"communityName":"西丽小区"},{"complaintsTypeID":3,"complaintsTypeName":"邻里纠纷","status":"E","communityID":1,"communityName":"西丽小区"},{"complaintsTypeID":4,"complaintsTypeName":"噪音扰民","status":"E","communityID":1,"communityName":"西丽小区"},{"complaintsTypeID":6,"complaintsTypeName":"车辆管理","status":"E","communityID":1,"communityName":"西丽小区"},{"complaintsTypeID":7,"complaintsTypeName":"服务态度","status":"E","communityID":1,"communityName":"西丽小区"},{"complaintsTypeID":8,"complaintsTypeName":"其他","status":"E","communityID":1,"communityName":"西丽小区"}]
@@ -14,35 +15,10 @@ public class ComplaintsTypeInfo {
      * statusmessage : 消息处理成功
      */
 
-    private String version;
-    private int statuscode;
-    private String statusmessage;
     private List<TableColumnPermissionBean> tableColumnPermission;
     private List<ListComplaintsTypeBean> listComplaintsType;
 
-    public String getVersion() {
-        return version;
-    }
 
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public int getStatuscode() {
-        return statuscode;
-    }
-
-    public void setStatuscode(int statuscode) {
-        this.statuscode = statuscode;
-    }
-
-    public String getStatusmessage() {
-        return statusmessage;
-    }
-
-    public void setStatusmessage(String statusmessage) {
-        this.statusmessage = statusmessage;
-    }
 
     public List<TableColumnPermissionBean> getTableColumnPermission() {
         return tableColumnPermission;

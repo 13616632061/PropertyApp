@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Created by lucy on 2017/2/21.
  */
-public class YellowPageInfo {
+public class YellowPageInfo extends BaseResponseBean {
 
     /**
      * tableColumnPermission : [{"columnID":0,"columnName":"yellowPageID","permissionValues":1,"columnDescription":"黄页ID"},{"columnID":0,"columnName":"yellowPageGroupID","permissionValues":2,"columnDescription":"黄页分组ID"},{"columnID":0,"columnName":"yellowPageGroupName","permissionValues":4,"columnDescription":"黄页分组名称"},{"columnID":0,"columnName":"yellowPageGroupLeaf","permissionValues":8,"columnDescription":"黄页分组递归节点"},{"columnID":0,"columnName":"yellowPageTEL","permissionValues":16,"columnDescription":"黄页电话号码"},{"columnID":0,"columnName":"communityID","permissionValues":32,"columnDescription":"社区ID"},{"columnID":0,"columnName":"communityName","permissionValues":64,"columnDescription":"社区名称"},{"columnID":0,"columnName":"yellowPageContext","permissionValues":128,"columnDescription":"黄页内容"}]
@@ -15,35 +15,9 @@ public class YellowPageInfo {
      * statusmessage : 消息处理成功
      */
 
-    private String version;
-    private int statuscode;
-    private String statusmessage;
+
     private List<TableColumnPermissionBean> tableColumnPermission;
     private List<ListYellowPageBean> listYellowPage;
-
-    public String getVersion() {
-        return version;
-    }
-
-    public void setVersion(String version) {
-        this.version = version;
-    }
-
-    public int getStatuscode() {
-        return statuscode;
-    }
-
-    public void setStatuscode(int statuscode) {
-        this.statuscode = statuscode;
-    }
-
-    public String getStatusmessage() {
-        return statusmessage;
-    }
-
-    public void setStatusmessage(String statusmessage) {
-        this.statusmessage = statusmessage;
-    }
 
     public List<TableColumnPermissionBean> getTableColumnPermission() {
         return tableColumnPermission;

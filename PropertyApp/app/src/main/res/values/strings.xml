@@ -297,5 +297,6 @@
     <string name="pending_payment">待付款</string>
     <string name="view_all_orders">查看全部订单</string>
     <string name="my_order">我的订单</string>
+    <string name="system_error">系统异常</string>
 
 </resources>

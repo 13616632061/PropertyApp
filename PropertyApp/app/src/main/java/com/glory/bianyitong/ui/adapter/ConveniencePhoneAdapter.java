@@ -90,8 +90,8 @@ public class ConveniencePhoneAdapter extends BaseAdapter {
 //            }else {
 //                holder.tv_police_service.setText("");
 //            }
-            if (qiList.get(position).getYellowPageGroupName() != null) { //名称
-                holder.tv_police_service.setText(qiList.get(position).getYellowPageGroupName());
+            if (qiList.get(position).getPageInfo().getYellowPageGroupName() != null) { //名称
+                holder.tv_police_service.setText(qiList.get(position).getPageInfo().getYellowPageGroupName());
             }else {
                 holder.tv_police_service.setText("");
             }
@@ -116,8 +116,8 @@ public class ConveniencePhoneAdapter extends BaseAdapter {
 //            }else {
 //                holder.iv_police_log.setImageResource(R.drawable.wait_round);
 //            }
-            if (qiList.get(position).getYellowPageGroupPicture()!= null) { //头像
-                ServiceDialog.setPicture(qiList.get(position).getYellowPageGroupPicture(), holder.iv_police_log, null);
+            if (qiList.get(position).getPageInfo().getYellowPageGroupPicture()!= null) { //头像
+                ServiceDialog.setPicture(qiList.get(position).getPageInfo().getYellowPageGroupPicture(), holder.iv_police_log, null);
             }else {
                 holder.iv_police_log.setImageResource(R.drawable.wait_round);
             }

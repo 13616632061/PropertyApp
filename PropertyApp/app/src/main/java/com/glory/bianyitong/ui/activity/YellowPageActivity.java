@@ -14,10 +14,14 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.YellowPageAllInfo;
 import com.glory.bianyitong.bean.YellowPageGroupInfo;
 import com.glory.bianyitong.bean.YellowPageInfo;
+import com.glory.bianyitong.bean.entity.request.RequestYellowItem;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryYelloPage;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.google.gson.Gson;
 import com.glory.bianyitong.R;
@@ -25,6 +29,7 @@ import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.ui.adapter.ConveniencePhoneAdapter;
 import com.glory.bianyitong.ui.dialog.CallPhoneDialog;
+import com.google.gson.internal.LinkedTreeMap;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
 import com.lzy.okgo.request.BaseRequest;
@@ -33,7 +38,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -55,6 +62,8 @@ public class YellowPageActivity extends BaseActivity {
     private String phone_str = "";//要拨打的电话
     private Handler mhandler;
     private ProgressDialog progressDialog = null;
+
+    private List<YellowPageAllInfo> dataMap=new ArrayList<>();
 
     //加载布局
     @Override
@@ -89,17 +98,19 @@ public class YellowPageActivity extends BaseActivity {
 //            intent.putExtra("from", "index");
 //            startActivity(intent);
 //        }
+        requestyellowPageGroup();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (Database.list_yellow != null && Database.list_yellow.size() > 0 && adapter == null) {
-            adapter = new ConveniencePhoneAdapter(YellowPageActivity.this, Database.list_yellow, mhandler);
-            list_conveniencephone.setAdapter(adapter);
-        } else if (Database.list_yellow == null || Database.list_yellow.size() == 0) {
-            requestyellowPageGroup();
-        }
+//        if (Database.list_yellow != null && Database.list_yellow.size() > 0 && adapter == null) {
+//            adapter = new ConveniencePhoneAdapter(YellowPageActivity.this, dataMap, mhandler);
+//            list_conveniencephone.setAdapter(adapter);
+//        } else if (Database.list_yellow == null || Database.list_yellow.size() == 0) {
+//            requestyellowPageGroup();
+//        }
+
     }
 
     @Override
@@ -111,175 +122,137 @@ public class YellowPageActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 黄页分组
+     */
     private void requestyellowPageGroup() {
-        String userID = RequestUtil.getuserid();
-        int communityID = RequestUtil.getcommunityid();
-        String json = "{\"yellowPageGroup\": {\"communityID\":" + communityID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\",\"accesstoken\": \"\"," +
-                "\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
-                "\"controllerName\": \"YellowPageGroup\",\"actionName\": \"StructureQuery\"}";
-        Log.i("resultString", "json------" + json);
-        OkGo.post(HttpURL.HTTP_LOGIN)
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        try {
-                            JSONObject jo = new JSONObject(s);
-//                            String statuscode = jo.getString("statuscode");
-//                            String statusmessage = jo.getString("statusmessage");
-                            YellowPageGroupInfo ygInfo = new Gson().fromJson(jo.toString(), YellowPageGroupInfo.class);
-                            if (ygInfo != null && ygInfo.getListYellowPageGroup() != null) {
-                                List<YellowPageGroupInfo.ListYellowPageGroupBean> list = ygInfo.getListYellowPageGroup();
-                                if (list != null && list.size() > 0) {
-                                    getallinfo(list);
-                                    requestlistYellowPage();
-                                }
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("yellowPageGroup",new Object());
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryYelloPage ygInfo = new Gson().fromJson(s.toString(), ResponseQueryYelloPage.class);
+                if (ygInfo.getStatusCode()==1){
+                    dataMap.clear();
+                    if (ygInfo != null && ygInfo.getListYellowPageGroup() != null) {
+                        List<ResponseQueryYelloPage.ListYellowPageGroupBean> list = ygInfo.getListYellowPageGroup();
+                        if (list != null && list.size() > 0) {
+                            getallinfo(list);
+                            for (int i=0;i<list.size();i++){
+                                YellowPageAllInfo pageAllInfo=new YellowPageAllInfo();
+                                pageAllInfo.setPageInfo(list.get(i));
+                                dataMap.add(i,pageAllInfo);
+                                requestlistYellowPage(list.get(i),i);
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("listYellowPageGroup") != null) {  //listYellowPageGroup
-//                            Database.list_yellow = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listYellowPageGroup");
-//                            if (Database.list_yellow != null && Database.list_yellow.size() > 0) {
-//                                requestlistYellowPage();
-//                            }
-//                        }
-                    }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-                    }
-
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
-
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                        progressDialog = ProgressDialog.show(YellowPageActivity.this, "", getString(R.string.load), true);//加载
-                        progressDialog.setCanceledOnTouchOutside(true);
-                    }
-
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                        if (progressDialog != null) {
-                            progressDialog.dismiss();
-                            progressDialog = null;
                         }
                     }
-                });
-    }
+                }
 
-    private void requestlistYellowPage() {
-        String userID = RequestUtil.getuserid();
-        int communityID = RequestUtil.getcommunityid();
+            }
 
-        String json = "{\"yellowPage\": {\"communityID\":" + communityID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\",\"accesstoken\": \"\"," +
-                "\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
-                "\"controllerName\": \"YellowPage\",\"actionName\": \"StructureQuery\"}";
+            @Override
+            public void onError() {
+                showShort(getString(R.string.system_error));
+            }
 
-        OkGo.post(HttpURL.HTTP_LOGIN)
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("listYellowPage") != null) {  //
-//                            ArrayList<LinkedTreeMap<String, Object>> yellowlist = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listYellowPage");
-//                            if (yellowlist != null && yellowlist.size() > 0) {
-//                                for (int j = 0; j < Database.list_yellow.size(); j++) {
-//                                    ArrayList<LinkedTreeMap<String, Object>> ylist = new ArrayList<>();
-//                                    for (int i = 0; i < yellowlist.size(); i++) {
-//                                        if (yellowlist.get(i) != null && yellowlist.get(i).get("yellowPageGroupID") != null &&
-//                                                Database.list_yellow.get(j) != null && Database.list_yellow.get(j).get("yellowPageGroupID") != null &&
-//                                                yellowlist.get(i).get("yellowPageGroupID").toString().equals(Database.list_yellow.get(j).get("yellowPageGroupID").toString())) {
-//                                            ylist.add(yellowlist.get(i));
-//                                        }
-//                                    }
-//                                    Database.list_yellow.get(j).put("list", ylist);
-//                                }
-//                                if (Database.list_yellow.size() > 0) {
-//                                    adapter = new ConveniencePhoneAdapter(YellowPageActivity.this, Database.list_yellow, mhandler);
-//                                    list_conveniencephone.setAdapter(adapter);
-//                                } else {//没有数据
-//
-//                                }
-//                            }
-//                        }
-                        try {
-                            JSONObject jo = new JSONObject(s);
-//                            String statuscode = jo.getString("statuscode");
-//                            String statusmessage = jo.getString("statusmessage");
-                            YellowPageInfo yInfo = new Gson().fromJson(jo.toString(), YellowPageInfo.class);
-                            if (yInfo != null && yInfo.getListYellowPage() != null) {
-                                List<YellowPageInfo.ListYellowPageBean> list = yInfo.getListYellowPage();
-                                if (list != null && list.size() > 0) {
-                                    for (int j = 0; j < Database.list_yellow.size(); j++) {
-                                        List<YellowPageAllInfo.ListYellowPageBean> ylist = new ArrayList<>();
-                                        for (int i = 0; i < list.size(); i++) {
-                                            if (list.get(i) != null && Database.list_yellow.get(j) != null &&
-                                                    list.get(i).getYellowPageGroupID() == Database.list_yellow.get(j).getYellowPageGroupID()) {
-                                                YellowPageAllInfo.ListYellowPageBean bean = new YellowPageAllInfo.ListYellowPageBean();
-                                                bean.setYellowPageGroupID(list.get(i).getYellowPageGroupID());
-                                                if(list.get(i).getYellowPageContext() != null){
-                                                    bean.setYellowPageContext(list.get(i).getYellowPageContext());//名称
-                                                }
-                                                if(list.get(i).getYellowPageTEL() != null){
-                                                    bean.setYellowPageTEL(list.get(i).getYellowPageTEL()); //电话
-                                                }
-                                                ylist.add(bean);
-                                            }
-                                        }
-                                        Database.list_yellow.get(j).setListYellowPage(ylist);
-                                    }
-                                    if (Database.list_yellow.size() > 0) {
-                                        adapter = new ConveniencePhoneAdapter(YellowPageActivity.this, Database.list_yellow, mhandler);
-                                        list_conveniencephone.setAdapter(adapter);
-                                    } else {//没有数据
+            @Override
+            public void parseError() {
 
-                                    }
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
+            }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-                    }
+            @Override
+            public void onBefore() {
+                progressDialog = ProgressDialog.show(YellowPageActivity.this, "", getString(R.string.load), true);//加载
+                progressDialog.setCanceledOnTouchOutside(true);
+            }
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
-                });
+            @Override
+            public void onAfter() {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
+            }
+        }).getEntityData(HttpURL.HTTP_POST_YELLOWPAGE_QUERY,json);
 
     }
 
-    private void getallinfo(List<YellowPageGroupInfo.ListYellowPageGroupBean> list) {
+    /**
+     * 根据分组请求详细列表
+     * @param bean
+     */
+    private void requestlistYellowPage(final ResponseQueryYelloPage.ListYellowPageGroupBean bean,final int i) {
+
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("yellowPage",new RequestYellowItem(bean.getYellowPageGroupID()));
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                final YellowPageAllInfo yInfo = new Gson().fromJson(s, YellowPageAllInfo.class);
+
+                if(yInfo.getStatusCode()==1){
+                    List<YellowPageAllInfo.ListYellowPageBean> list = yInfo.getListYellowPage();
+                    YellowPageAllInfo allInfo=dataMap.get(i);
+                    allInfo.setListYellowPage(list);
+                    if (list != null && list.size() > 0) {
+                        for (int j = 0; j < Database.list_yellow.size(); j++) {
+
+
+                            List<YellowPageAllInfo.ListYellowPageBean> ylist = new ArrayList<>();
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i) != null && Database.list_yellow.get(j) != null &&
+                                        list.get(i).getYellowPageGroupID() == Database.list_yellow.get(j).getYellowPageGroupID()) {
+                                    YellowPageAllInfo.ListYellowPageBean bean = new YellowPageAllInfo.ListYellowPageBean();
+                                    bean.setYellowPageGroupID(list.get(i).getYellowPageGroupID());
+                                    if(list.get(i).getYellowPageContext() != null){
+                                        bean.setYellowPageContext(list.get(i).getYellowPageContext());//名称
+                                    }
+                                    if(list.get(i).getYellowPageTEL() != null){
+                                        bean.setYellowPageTEL(list.get(i).getYellowPageTEL()); //电话
+                                    }
+                                    ylist.add(bean);
+                                }
+                            }
+                            Database.list_yellow.get(j).setListYellowPage(ylist);
+                        }
+                        if (Database.list_yellow.size() > 0) {
+                            adapter = new ConveniencePhoneAdapter(YellowPageActivity.this, dataMap, mhandler);
+                            list_conveniencephone.setAdapter(adapter);
+                        } else {//没有数据
+
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onError() {
+                showShort(getString(R.string.system_error));
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_YELLOWITEM_QUERY,json);
+
+
+    }
+
+    private void getallinfo(List<ResponseQueryYelloPage.ListYellowPageGroupBean> list) {
         Database.list_yellow = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             YellowPageAllInfo bean = new YellowPageAllInfo();
@@ -333,5 +306,11 @@ public class YellowPageActivity extends BaseActivity {
         }
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(dataMap!=null)
+            dataMap.clear();
+        dataMap=null;
+    }
 }

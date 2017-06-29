@@ -1,16 +1,28 @@
 package com.glory.bianyitong.bean;
 
+import com.glory.bianyitong.bean.entity.response.ResponseQueryYelloPage;
+
 import java.util.List;
 
 /**
  * Created by lucy on 2017/2/21.
  */
-public class YellowPageAllInfo {
+public class YellowPageAllInfo extends BaseResponseBean{
     private int yellowPageGroupID;
     private String yellowPageGroupName;
     private String yellowPageGroupLeaf;
     private String yellowPageGroupPicture;
     private List<ListYellowPageBean> listYellowPage;
+
+    public ResponseQueryYelloPage.ListYellowPageGroupBean getPageInfo() {
+        return pageInfo;
+    }
+
+    public void setPageInfo(ResponseQueryYelloPage.ListYellowPageGroupBean pageInfo) {
+        this.pageInfo = pageInfo;
+    }
+
+    private ResponseQueryYelloPage.ListYellowPageGroupBean pageInfo;
 
     public int getYellowPageGroupID() {
         return yellowPageGroupID;
@@ -70,6 +82,16 @@ public class YellowPageAllInfo {
         private int communityID;
         private String communityName;
         private String yellowPageContext;
+
+        public String getYellowPageGroupPicture() {
+            return yellowPageGroupPicture;
+        }
+
+        public void setYellowPageGroupPicture(String yellowPageGroupPicture) {
+            this.yellowPageGroupPicture = yellowPageGroupPicture;
+        }
+
+        private String yellowPageGroupPicture;
 
         public int getYellowPageID() {
             return yellowPageID;
