@@ -8,7 +8,7 @@ import java.util.List;
  * Created by lucy on 2017/1/10.
  * 广告 实体类
  */
-public class AdvertisingInfo2 extends RequestBaseInfo{
+public class AdvertisingInfo2 extends BaseResponseBean{
 
     private List<ListAdvertisingBean> listAdvertising;
     private List<ListSystemMsgBean> listSystemMsg;

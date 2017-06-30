@@ -50,6 +50,11 @@ public class RouterMapping  {
     public static final String ROUTER_ACTIVITY_AREA_LIST="ROUTER_ACTIVITY_AREA_LIST";//小区列表
 
 
+    /**
+     * 近邻
+     */
+    public static final String ROUTER_ACTIVITY_FRIEND_DETAIL="ROUTER_ACTIVITY_FRIEND_DETAIL";//近邻详情
+    public static final String ROUTER_ACTIVITY_FRIEND_COMMENT="ROUTER_ACTIVITY_FRIEND_COMMENT";//添加评论
 
 
 }

@@ -18,13 +18,7 @@ public class ToastUtils {
 	 * @param text
 	 */
 	public static void showShort(Context activity,  CharSequence text) {
-		if (null == toast) {
-			toast = Toast.makeText(activity, text, Toast.LENGTH_SHORT);
-			// toast.setGravity(Gravity.CENTER, 0, 0);
-		} else {
-			toast.setText(text);
-		}
-		toast.show();
+		com.github.lazylibrary.util.ToastUtils.showToast(activity,text.toString());
 	}
 
 	/**
@@ -46,28 +40,9 @@ public class ToastUtils {
 
 	public static void showToast(Context context, String s)
 	{
-		if (toast == null)
-		{
-			toast = Toast.makeText(context, s, Toast.LENGTH_SHORT);
-			toast.show();
-			oneTime = System.currentTimeMillis();
-		} else
-		{
-			twoTime = System.currentTimeMillis();
-			if (s.equals(oldMsg))
-			{
-				if (twoTime - oneTime > Toast.LENGTH_SHORT)
-				{
-					toast.show();
-				}
-			} else
-			{
-				oldMsg = s;
-				toast.setText(s);
-				toast.show();
-			}
-		}
-		oneTime = twoTime;
+
+		com.github.lazylibrary.util.ToastUtils.showToast(context,s);
+
 	}
 
 //	public static void showToast(Context context, int resId){

@@ -4,6 +4,7 @@ import android.app.Activity;
 
 import com.glory.bianyitong.bean.CommnunityInfo;
 import com.glory.bianyitong.bean.UserLockInfo;
+import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryBuild;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryRoom;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryUnit;
@@ -53,7 +54,7 @@ public class Database {
 
     public static ArrayList<LinkedTreeMap<String, Object>> list_news = null;// 新闻列表
 
-    public static ArrayList<LinkedTreeMap<String, Object>> list_neighbour = null;//近邻列表
+    public static List<ResponseFriendDetail.ListNeighborhoodBean>  list_neighbour = null;//近邻列表
 
     public static ArrayList<LinkedTreeMap<String, Object>> list_myRelease = null;//我的发布列表
 

@@ -9,7 +9,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.MessageInfo;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.google.gson.Gson;
@@ -31,6 +33,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -249,163 +252,92 @@ public class MessageActivity extends BaseActivity {
     }
 
     private void request() { //请求社区公告
-        String userID = RequestUtil.getuserid();
-        int communityID = RequestUtil.getcommunityid();
-        String json = "{\"systemMsg\": {\"communityID\":" + communityID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
-                "\"controllerName\": \"SystemMsg\",\"actionName\": \"StructureQuery\"}";
-        Log.i("resultString", "json----------" + json);
 
-        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/SystemMsg/StructureQuery")
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-//                        pullToRefreshView.onHeaderRefreshComplete();
-                        getGoodsListStart = false;
-                        loading_lay.setVisibility(View.GONE);
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("listSystemMsg") != null) {
-//                            message_List = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listSystemMsg");
-//                            if (message_List.size() > 0) {
-//                                if (adapter == null) {
-//                                    have_GoodsList = true;
-//                                    adapter = new MessageAdapter(MessageActivity.this, message_List, checkList, isDoMore);
-//                                    listView_mes.setAdapter(adapter);
-//                                } else {
-//                                    have_GoodsList = true;
-//                                    adapter.notifyDataSetChanged();
-//                                }
-//
-//                                //清空过期的已读缓存
-//                                //if (Database.readmessageid != null) {
-//                                String[] array = Database.readmessageid.split(",");
-//                                if (array != null && message_List != null) {
-//                                    Database.readmessageid = "";
-//                                    for (int i = 0; i < array.length; i++) {
-//                                        for (int j = 0; j < message_List.size(); j++) {
-//                                            if (message_List.get(j) != null && message_List.get(j).get("messageID") != null) {
-//                                                if (array[i].equals(message_List.get(j).get("messageID").toString())) {
-//                                                    Database.readmessageid = Database.readmessageid + message_List.get(j).get("messageID").toString() + ",";
-//                                                }
-//                                            }
-//                                        }
-//                                    }
-//                                }
-////        }
-//                            } else {//没有数据
-////                                noGoods.setVisibility(View.VISIBLE);
-//                                listView_mes.setAdapter(null);
-//                                have_GoodsList = false;
-//                                listView_mes.setVisibility(View.GONE);
-//                                lay_no_message.setVisibility(View.VISIBLE);
-//                            }
-//                        } else {
-////                            noGoods.setVisibility(View.VISIBLE);
-//                            listView_mes.setAdapter(null);
-//                            have_GoodsList = false;
-//                            listView_mes.setVisibility(View.GONE);
-//                            lay_no_message.setVisibility(View.VISIBLE);
-//                        }
-                        try {
-                            JSONObject jo = new JSONObject(s);
-//                            String statuscode = jo.getString("statuscode");
-//                            String statusmessage = jo.getString("statusmessage");
-                            MessageInfo minfo = new Gson().fromJson(jo.toString(), MessageInfo.class);
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("systemMsg",new Object());
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                MessageInfo minfo = new Gson().fromJson(s, MessageInfo.class);
 //                            Log.i("resultString", "adinfo.getListHousekeeper()-------" + hinfo.getListHousekeeper());
-                            if (minfo != null && minfo.getListSystemMsg() != null) {
-                                message_List = minfo.getListSystemMsg();
-                                if (message_List.size() > 0) {
-                                    if (adapter == null) {
-                                        have_GoodsList = true;
-                                        adapter = new MessageAdapter(MessageActivity.this, message_List, checkList, isDoMore);
-                                        listView_mes.setAdapter(adapter);
-                                    } else {
-                                        have_GoodsList = true;
-                                        adapter.notifyDataSetChanged();
-                                    }
+                if (minfo != null && minfo.getListSystemMsg() != null) {
+                    message_List = minfo.getListSystemMsg();
+                    if (message_List.size() > 0) {
+                        if (adapter == null) {
+                            have_GoodsList = true;
+                            adapter = new MessageAdapter(MessageActivity.this, message_List, checkList, isDoMore);
+                            listView_mes.setAdapter(adapter);
+                        } else {
+                            have_GoodsList = true;
+                            adapter.notifyDataSetChanged();
+                        }
 
-                                    //清空过期的已读缓存
-                                    //if (Database.readmessageid != null) {
-                                    String[] array = Database.readmessageid.split(",");
-                                    if (array != null && message_List != null) {
-                                        Database.readmessageid = "";
-                                        for (int i = 0; i < array.length; i++) {
-                                            for (int j = 0; j < message_List.size(); j++) {
+                        //清空过期的已读缓存
+                        //if (Database.readmessageid != null) {
+                        String[] array = Database.readmessageid.split(",");
+                        if (array != null && message_List != null) {
+                            Database.readmessageid = "";
+                            for (int i = 0; i < array.length; i++) {
+                                for (int j = 0; j < message_List.size(); j++) {
 //                                                if (message_List.get(j) != null && message_List.get(j).get("messageID") != null) {
 //                                                    if (array[i].equals(message_List.get(j).get("messageID").toString())) {
 //                                                        Database.readmessageid = Database.readmessageid + message_List.get(j).get("messageID").toString() + ",";
 //                                                    }
 //                                                }
-                                                if (message_List.get(j) != null && message_List.get(j).getMessageID() != null) {
-                                                    if (array[i].equals(message_List.get(j).getMessageID())) {
-                                                        Database.readmessageid = Database.readmessageid + message_List.get(j).getMessageID() + ",";
-                                                    }
-                                                }
-                                            }
+                                    if (message_List.get(j) != null && message_List.get(j).getMessageID() != null) {
+                                        if (array[i].equals(message_List.get(j).getMessageID())) {
+                                            Database.readmessageid = Database.readmessageid + message_List.get(j).getMessageID() + ",";
                                         }
                                     }
-//        }
-                                } else {//没有数据
-//                                noGoods.setVisibility(View.VISIBLE);
-                                    listView_mes.setAdapter(null);
-                                    have_GoodsList = false;
-                                    listView_mes.setVisibility(View.GONE);
-                                    lay_no_message.setVisibility(View.VISIBLE);
                                 }
-                            } else {
-//                            noGoods.setVisibility(View.VISIBLE);
-                                listView_mes.setAdapter(null);
-                                have_GoodsList = false;
-                                listView_mes.setVisibility(View.GONE);
-                                lay_no_message.setVisibility(View.VISIBLE);
                             }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-                    }
-
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-//                        pullToRefreshView.onHeaderRefreshComplete();
-                        getGoodsListStart = false;
-                        loading_lay.setVisibility(View.GONE);
+//        }
+                    } else {//没有数据
+//                                noGoods.setVisibility(View.VISIBLE);
+                        listView_mes.setAdapter(null);
+                        have_GoodsList = false;
                         listView_mes.setVisibility(View.GONE);
                         lay_no_message.setVisibility(View.VISIBLE);
-                        Log.i("resultString", "请求错误------");
-//                        ToastUtils.showToast(MessageActivity.this, "请求失败");
-                        ServiceDialog.showRequestFailed();
                     }
+                } else {
+//                            noGoods.setVisibility(View.VISIBLE);
+                    listView_mes.setAdapter(null);
+                    have_GoodsList = false;
+                    listView_mes.setVisibility(View.GONE);
+                    lay_no_message.setVisibility(View.VISIBLE);
+                }
+            }
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
+            @Override
+            public void onError() {
+                getGoodsListStart = false;
+                loading_lay.setVisibility(View.GONE);
+                listView_mes.setVisibility(View.GONE);
+                lay_no_message.setVisibility(View.VISIBLE);
+            }
 
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                        progressDialog = ProgressDialog.show(MessageActivity.this, "", getString(R.string.load), true);//加载
-                        progressDialog.setCanceledOnTouchOutside(true);
-                    }
+            @Override
+            public void parseError() {
 
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                        if (progressDialog != null) {
-                            progressDialog.dismiss();
-                            progressDialog = null;
-                        }
-                    }
-                });
+            }
+
+            @Override
+            public void onBefore() {
+                progressDialog = ProgressDialog.show(MessageActivity.this, "", getString(R.string.load), true);//加载
+                progressDialog.setCanceledOnTouchOutside(true);
+            }
+
+            @Override
+            public void onAfter() {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
+            }
+        }).getEntityData(HttpURL.HTTP_POST_GET_MESSAGE,json);
+
     }
 
     @Override

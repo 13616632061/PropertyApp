@@ -34,6 +34,7 @@ import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.entity.request.RequestUserBean;
+import com.glory.bianyitong.bean.entity.response.ResponseAliyun;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
@@ -350,73 +351,53 @@ public class ShearPicturesActivity extends BaseActivity implements OnClickListen
 
     // 获取阿里云OSS相关秘钥数据
     public void getData() {
-        String json = "{\"settingkey\": \"ALiOSSBucket\",\"controllerName\": \"\",\"actionName\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"" +
-                ",\"userID\": \"" + userID + "\"}";
+        String json=new Gson().toJson(new BaseRequestBean().getBaseRequest());
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseAliyun aliyun=new Gson().fromJson(s,ResponseAliyun.class);
+                if(aliyun.getStatusCode()==1){
+                    accessKeyId=aliyun.getListSetting().get(0).getSettingValue();
+                    accessKeySecret=aliyun.getListSetting().get(1).getSettingValue();
+                    endpoint=aliyun.getListSetting().get(2).getSettingValue()+ ".aliyuncs.com";
+                    testBucket=aliyun.getListSetting().get(3).getSettingValue();
+                    // 阿里云上传
+                    OSSCredentialProvider credentialProvider = new OSSPlainTextAKSKCredentialProvider(accessKeyId, accessKeySecret);
+                    ClientConfiguration conf = new ClientConfiguration();
+                    conf.setConnectionTimeout(15 * 1000); // 连接超时，默认15秒
+                    conf.setSocketTimeout(15 * 1000); // socket超时，默认15秒
+                    conf.setMaxConcurrentRequest(5); // 最大并发请求书，默认5个
+                    conf.setMaxErrorRetry(2); // 失败后最大重试次数，默认2次
+                    OSSLog.enableLog();
+                    //String endpoint = "http://oss-cn-hangzhou.aliyuncs.com"
+                    oss = new OSSClient(getApplicationContext(), "http://" + endpoint, credentialProvider, conf);
+                }else {
+                    showShort(aliyun.getAlertMessage());
+                }
 
-        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/Setting/SelectAllByOSS")
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                        });
-                        if (hashMap2 != null && hashMap2.get("listsettingvalue") != null) {
-                            ArrayList<LinkedTreeMap<String, Object>> list = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listsettingvalue");
-                            if (list != null && list.size() != 0) {
-                                // ALiOSSAKeyID ALiOSSKeySecret ALiOSSRegion ALiOSSBucket
-                                if (list.get(0) != null && list.get(0).get("settingValue") != null) {
-                                    accessKeyId = list.get(0).get("settingValue").toString();
-                                }
-                                if (list.get(1) != null && list.get(1).get("settingValue") != null) {
-                                    accessKeySecret = list.get(1).get("settingValue").toString();
-                                }
-                                if (list.get(2) != null && list.get(2).get("settingValue") != null) {
-                                    endpoint = list.get(2).get("settingValue").toString() + ".aliyuncs.com";
-                                }
-                                if (list.get(3) != null && list.get(3).get("settingValue") != null) {
-                                    testBucket = list.get(3).get("settingValue").toString();
-                                }
-                                // 阿里云上传
-                                OSSCredentialProvider credentialProvider = new OSSPlainTextAKSKCredentialProvider(accessKeyId, accessKeySecret);
-                                ClientConfiguration conf = new ClientConfiguration();
-                                conf.setConnectionTimeout(15 * 1000); // 连接超时，默认15秒
-                                conf.setSocketTimeout(15 * 1000); // socket超时，默认15秒
-                                conf.setMaxConcurrentRequest(5); // 最大并发请求书，默认5个
-                                conf.setMaxErrorRetry(2); // 失败后最大重试次数，默认2次
-                                OSSLog.enableLog();
-                                //String endpoint = "http://oss-cn-hangzhou.aliyuncs.com"
-                                oss = new OSSClient(getApplicationContext(), "http://" + endpoint, credentialProvider, conf);
-                            }
-                        }
-                    }
+            }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-                    }
+            @Override
+            public void onError() {
+                showShort("系统异常");
+            }
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
+            @Override
+            public void parseError() {
 
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                    }
+            }
 
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                    }
-                });
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_GET_ALIYUN,json);
+
     }
 
     @Override

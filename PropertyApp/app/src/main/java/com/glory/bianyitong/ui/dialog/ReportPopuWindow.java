@@ -79,7 +79,7 @@ public class ReportPopuWindow extends PopupWindow implements View.OnClickListene
         switch (arg0.getId()) {
             case R.id.news_delete: //举报
                 Message msg = new Message();
-                msg.what = 0;
+                msg.what = 10;
                 msg.setData(bundle);
                 del_handler.sendMessage(msg);
 

@@ -16,7 +16,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.chenenyu.router.Router;
+import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.activity.ImagePagerActivity;
+import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.view.MyGridView;
 import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
@@ -26,6 +30,7 @@ import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.widght.CircleImageView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lucy on 2016/11/10.
@@ -34,7 +39,7 @@ import java.util.ArrayList;
 public class NeighbourAdapter extends BaseAdapter {
     private Context context;
 
-    private ArrayList<LinkedTreeMap<String, Object>> list;
+    private  List<ResponseFriendDetail.ListNeighborhoodBean> list;
 
     private String from = "";
 
@@ -42,14 +47,14 @@ public class NeighbourAdapter extends BaseAdapter {
 
     private Handler mhandler;
 
-    public NeighbourAdapter(Context context, ArrayList<LinkedTreeMap<String, Object>> list, String from) {
+    public NeighbourAdapter(Context context, List<ResponseFriendDetail.ListNeighborhoodBean> list, String from) {
         this.context = context;
         this.list = list;
         this.from = from;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public NeighbourAdapter(Context context, ArrayList<LinkedTreeMap<String, Object>> list, String from, Handler mhandler) {
+    public NeighbourAdapter(Context context,  List<ResponseFriendDetail.ListNeighborhoodBean> list, String from, Handler mhandler) {
         this.context = context;
         this.list = list;
         this.from = from;
@@ -136,41 +141,17 @@ public class NeighbourAdapter extends BaseAdapter {
             if (position == list.size() - 1) {
                 holder.view_neighbor_line.setVisibility(View.GONE);
             }
-            if (list.get(position).get("userPhoto") != null && !list.get(position).get("userPhoto").equals("")) {//头像
-                String pic = list.get(position).get("userPhoto").toString();//  用户名
-//                ServiceDialog.setPicture(pic, holder.item_near_head_pic, null);
-                Glide.with(context).load(pic).error(R.drawable.wait).placeholder(R.drawable.wait).into(holder.item_near_head_pic);
-            } else {
-                holder.item_near_head_pic.setImageResource(R.drawable.wait);
-            }
-            if (list.get(position).get("userName") != null && !list.get(position).get("userName").equals("")) {
-                holder.tv_near_userName.setText(list.get(position).get("userName").toString());//  用户名
-            } else {
-                holder.tv_near_userName.setText("");
-            }
-            if (list.get(position).get("datetime") != null && !list.get(position).get("datetime").equals("")) {
-                String date = list.get(position).get("datetime").toString().substring(0, 10);
-                holder.tv_mynews_time.setText(date);//  发布时间
-            } else {
-                holder.tv_mynews_time.setText("");
-            }
-            if (list.get(position).get("neighborhoodContent") != null && !list.get(position).get("neighborhoodContent").equals("")) {
-                holder.tv_near_text.setText(list.get(position).get("neighborhoodContent").toString());//  文字内容
-            } else {
-                holder.tv_near_text.setText("");
-            }
-            if (list.get(position).get("likeCount") != null) {
-                holder.tv_near_praise.setText(Double.valueOf(list.get(position).get("likeCount").toString()).intValue() + "");//  赞
-            } else {
-                holder.tv_near_praise.setText("" + 0);
-            }
-            if (list.get(position).get("commentCount") != null) {
-                holder.tv_near_comment.setText(Double.valueOf(list.get(position).get("commentCount").toString()).intValue() + "");//  评论
-            } else {
-                holder.tv_near_comment.setText("" + 0);
-            }
-            if (list.get(position).get("listNeighborhoodPic") != null) {// 图片组
-                ArrayList<LinkedTreeMap<String, Object>> pics = (ArrayList<LinkedTreeMap<String, Object>>) list.get(position).get("listNeighborhoodPic");
+            String pic = list.get(position).getUserPhoto().toString();//  用户名
+            Glide.with(context).load(pic).error(R.drawable.wait).placeholder(R.drawable.wait).into(holder.item_near_head_pic);
+            holder.tv_near_userName.setText(list.get(position).getUserName());//  用户名
+            String date = DateUtil.format(DateUtil.parse(list.get(position).getDatetime(),DateUtil.DEFAULT_PATTERN));
+            holder.tv_mynews_time.setText(date);//  发布时间
+            holder.tv_near_text.setText(list.get(position).getNeighborhoodContent());//  文字内容
+            holder.tv_near_praise.setText(list.get(position).getLikeCount()+ "");//  赞
+            holder.tv_near_comment.setText(list.get(position).getCommentCount()+"");//  评论
+
+            if (list.get(position).getListNeighborhoodPic() != null) {// 图片组
+                List<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodPicBean> pics = list.get(position).getListNeighborhoodPic();
                 if (pics != null && pics.size() > 0) {
                     holder.gv_dynamic_pic2.setVisibility(View.VISIBLE);
                     DynamicPicsAdapter picsAdapter = new DynamicPicsAdapter(context, pics);
@@ -189,9 +170,12 @@ public class NeighbourAdapter extends BaseAdapter {
 //                            intent.setClass(context, ImagePagerActivity.class);
 //                            intent.putExtra("pictureList", pictureList2);
 //                            context.startActivity(intent);
-                            Intent intent = new Intent(context, DynamicDetailsActivity.class);
-                            intent.putExtra("neighborhoodID", Double.valueOf(list.get(j).get("neighborhoodID").toString()).intValue());
-                            context.startActivity(intent);
+                            Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_DETAIL)
+                                    .with("neighborhoodID",list.get(j).getNeighborhoodID())
+                                    .go(context);
+//                            Intent intent = new Intent(context, DynamicDetailsActivity.class);
+//                            intent.putExtra("neighborhoodID", Double.valueOf(list.get(j).get("neighborhoodID").toString()).intValue());
+//                            context.startActivity(intent);
                         }
                     });
                 } else {
@@ -239,9 +223,12 @@ public class NeighbourAdapter extends BaseAdapter {
         holder.item_near_content_lay.setOnClickListener(new View.OnClickListener() {//动态详情
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, DynamicDetailsActivity.class);
-                intent.putExtra("neighborhoodID", Double.valueOf(list.get(position).get("neighborhoodID").toString()).intValue());
-                context.startActivity(intent);
+                Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_DETAIL)
+                        .with("neighborhoodID",list.get(position).getNeighborhoodID())
+                        .go(context);
+//                Intent intent = new Intent(context, DynamicDetailsActivity.class);
+//                intent.putExtra("neighborhoodID", Double.valueOf(list.get(position).get("neighborhoodID").toString()).intValue());
+//                context.startActivity(intent);
             }
         });
 
@@ -249,8 +236,8 @@ public class NeighbourAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, PersonalHomePageActivity.class);
-                if (list.get(position).get("userID") != null) {
-                    intent.putExtra("userID", Double.valueOf(list.get(position).get("userID").toString()).intValue());
+                if (list.get(position).getAesUserID() != null) {
+                    intent.putExtra("userID", list.get(position).getAesUserID());
                 } else {
                     intent.putExtra("userID", 0);
                 }

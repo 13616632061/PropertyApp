@@ -7,11 +7,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
 import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lucy on 2016/11/14.
@@ -19,11 +21,11 @@ import java.util.ArrayList;
  */
 public class DynamicPicsAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<LinkedTreeMap<String, Object>> list;
+    private List<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodPicBean>  list;
 
     private LayoutInflater mInflater = null;
 
-    public DynamicPicsAdapter(Context context, ArrayList<LinkedTreeMap<String, Object>> list) {
+    public DynamicPicsAdapter(Context context, List<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodPicBean>  list) {
         this.context = context;
         this.list = list;
 
@@ -60,8 +62,8 @@ public class DynamicPicsAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         if (list != null && list.size() != 0 && list.get(position) != null) {
-            if (list.get(position).get("picturePath") != null && !list.get(position).get("picturePath").equals("")) {
-                ServiceDialog.setPicture(list.get(position).get("picturePath").toString(), holder.iv_mynews_pic, null);
+            if (list.get(position).getPicturePath()!= null && !list.get(position).getPicturePath().equals("")) {
+                ServiceDialog.setPicture(list.get(position).getPicturePath(), holder.iv_mynews_pic, null);
             }else {
                 holder.iv_mynews_pic.setImageResource(R.drawable.wait);
             }

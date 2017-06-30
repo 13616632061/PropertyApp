@@ -16,8 +16,11 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.glory.bianyitong.bean.AdvertisingInfo2;
 import com.glory.bianyitong.bean.AuthAreaInfo;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.request.RequestAdvertising;
 import com.glory.bianyitong.bean.listCommunityBulletinInfo;
 import com.glory.bianyitong.bean.MessageInfo;
 import com.glory.bianyitong.constants.Constant;
@@ -61,6 +64,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -397,56 +401,46 @@ public class IndexFragment extends BaseFragment {
         imageList = new ArrayList<>();
 
         int communityID = RequestUtil.getcommunityid();
-//        String url = HttpURL.HTTP_LOGIN_AREA + "/Advertising/StructureQuery";
-        String url = "/ApiIndex/Query";
-//        String json = "{\"advertising\": {\"communityID\":" + communityID + ",\"advertisingLocation\":\"1\"},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-//                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\"," +
-//                "\"pagerownum\": \"\",\"controllerName\": \"Advertising\",\"actionName\": \"StructureQuery\"}";
 
-        String query = "\"advertising\":{\"communityID\":" + communityID + "},\"systemMsg\":{\"communityID\":" + communityID + "}";
-        String json = RequestUtil.getJson(context, query);
-        Log.i("resultString", "advertising json----" + json);
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("advertising",new RequestAdvertising(1));
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
-                try {
-                    JSONObject jo = new JSONObject(s);
-
-                    AdvertisingInfo2 adinfo = new Gson().fromJson(jo.toString(), AdvertisingInfo2.class);
+                AdvertisingInfo2 adinfo = new Gson().fromJson(s, AdvertisingInfo2.class);
 //                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
-                    if (adinfo != null && adinfo.getListAdvertising() != null) {
-                        List<AdvertisingInfo2.ListAdvertisingBean> adlist = adinfo.getListAdvertising();
-                        String adstr = "";
-                        for (int i = 0; i < adlist.size(); i++) {
-                            if (adlist.get(i) != null && adlist.get(i).getAdvertisingPicture() != null) {
-                                adstr = adstr + adlist.get(i).getAdvertisingPicture().toString() + ","; //广告图  ,号隔开
-                            }
+                if (adinfo != null && adinfo.getListAdvertising() != null) {
+                    List<AdvertisingInfo2.ListAdvertisingBean> adlist = adinfo.getListAdvertising();
+                    String adstr = "";
+                    for (int i = 0; i < adlist.size(); i++) {
+                        if (adlist.get(i) != null && adlist.get(i).getAdvertisingPicture() != null) {
+                            adstr = adstr + adlist.get(i).getAdvertisingPicture().toString() + ","; //广告图  ,号隔开
                         }
-                        if (adstr.split(",") != null && adstr.split(",").length > 0) {
-                            images = adstr.split(",");
-                        } else {
-                            images = new String[]{adstr};
-                        }
-                        getBanner(); //开始广告轮播
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                    if (adstr.split(",") != null && adstr.split(",").length > 0) {
+                        images = adstr.split(",");
+                    } else {
+                        images = new String[]{adstr};
+                    }
+                    getBanner(); //开始广告轮播
+
                 }
             }
 
             @Override
             public void onError() {
+
             }
 
             @Override
             public void parseError() {
+
             }
 
             @Override
             public void onBefore() {
+
             }
 
             @Override
@@ -456,7 +450,7 @@ public class IndexFragment extends BaseFragment {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url, json);
+        }).getEntityData(HttpURL.HTTP_POST_GET_AD,json);
     }
 
 

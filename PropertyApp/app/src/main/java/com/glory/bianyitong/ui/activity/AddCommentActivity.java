@@ -8,9 +8,17 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chenenyu.router.Router;
+import com.chenenyu.router.annotation.InjectParam;
+import com.chenenyu.router.annotation.Route;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.entity.request.RequestNeighborhoodComment;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
@@ -26,6 +34,7 @@ import com.lzy.okgo.request.BaseRequest;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -35,6 +44,7 @@ import okhttp3.Response;
  * Created by lucy on 2016/11/14.
  * 我来(添加)评论
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_FRIEND_COMMENT,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class AddCommentActivity extends BaseActivity {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
@@ -50,10 +60,14 @@ public class AddCommentActivity extends BaseActivity {
 
 
     private ProgressDialog progressDialog = null;
-    private int neighborhoodid; //近邻 id
-    private int CommentToID; //近邻 评论 id
-    private int commentToUserID; //评论 评论的用户id
-    private String commentToUserName = ""; //评论 评论的用户名
+    @InjectParam(key = "neighborhoodID")
+     int neighborhoodid; //近邻 id
+    @InjectParam(key = "CommentToID")
+     int CommentToID; //近邻 评论 id
+    @InjectParam(key = "commentToUserID")
+     int commentToUserID; //被评论 评论的用户id
+    @InjectParam(key = "neighborhoodID")
+     String commentToUserName ; //被评论的用户名
 
     @Override
     protected int getContentId() {
@@ -63,13 +77,7 @@ public class AddCommentActivity extends BaseActivity {
     @Override
     protected void init() {
         super.init();
-        neighborhoodid = getIntent().getIntExtra("neighborhoodID", 0); //近邻 id
-        CommentToID = getIntent().getIntExtra("CommentToID", 0); //评论 id
-        commentToUserID = getIntent().getIntExtra("commentToUserID", 0);
-        commentToUserName = getIntent().getStringExtra("commentToUserName");
-        if (commentToUserName == null) {
-            commentToUserName = "";
-        }
+        Router.injectParams(this);
         //初始化标题栏
         inintTitle(getResources().getString(R.string.neighborhood_comments), false, getResources().getString(R.string.release)); //近邻评论  发布
         left_return_btn.setVisibility(View.GONE);
@@ -95,45 +103,21 @@ public class AddCommentActivity extends BaseActivity {
     }
 
     private void request(String txt) { //评论
-        String customerPhoto = "";
-        if (Database.USER_MAP != null && Database.USER_MAP.getCustomerPhoto() != null) {
-            customerPhoto = Database.USER_MAP.getCustomerPhoto();
-        }
-        String userID = RequestUtil.getuserid();
-        String loginName = "";
-        if (Database.USER_MAP != null && Database.USER_MAP.getLoginName() != null) {
-            loginName = Database.USER_MAP.getLoginName();
-        }
-        String nowdate = DateUtil.formatTimesTampDate(DateUtil.getCurrentDate());//获取当前时间
-        // CommentToID 评论近邻 0  评论评论 评论id
-//        String json = "{\"neighborhoodComment\": {\"neighboCommentID\": 1,\"neighborhoodID\": " + neighborhoodid + ",\"userID\": 1,\"userName\": \"admin\"," +
-//                "\"userPhoto\": \"" + customerPhoto + "\",\"commentDateTime\": \"" + nowdate + "\",\"commentContent\": \"" + txt + "\",\"CommentToID\": " + CommentToID + "" +
-//                "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\",\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\"," +
-//                "\"DeviceType\": \"3\",\"nowpagenum\": \"\",\"pagerownum\": \"\",\"controllerName\": \"NeighborhoodComment\",\"actionName\": \"ADD\"}";
-
-        String json = "{\"neighborhoodComment\": {\"neighboCommentID\": 1,\"neighborhoodID\": \"" + neighborhoodid + "\",\"userID\": 1,\"userName\": \"" + loginName + "\"," +
-                "\"userPhoto\": \"" + customerPhoto + "\",\"commentDateTime\": \"" + nowdate + "\",\"commentContent\": \"" + txt + "\",\"commentToID\": " + CommentToID + "," +
-                "\"commentToUserID\":" + commentToUserID + ",\"commentToUserName\":\"" + commentToUserName + "\"},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
-                "\"controllerName\": \"NeighborhoodComment\",\"actionName\": \"ADD\"}";
-        String url = HttpURL.HTTP_LOGIN_AREA + "/WebApi/Post";
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("neighborhoodComment",new RequestNeighborhoodComment(neighborhoodid,Database.USER_MAP.getCustomerPhoto(),txt,CommentToID,commentToUserName));
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                Log.i("resultString", "------------");
-                Log.i("resultString", s);
-                Log.i("resultString", "------------");
-                HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {});
-                if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-                        Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
 
-                    ToastUtils.showToast(AddCommentActivity.this, getResources().getString(R.string.comments_are_successful));//评论成功
+                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                showShort(bean.getAlertMessage());
+                if(bean.getStatusCode()==1){
                     Database.isAddComment = true;
                     AddCommentActivity.this.finish();
                     EventBus.getDefault().post("addComment");
-                } else {
-                    ToastUtils.showToast(AddCommentActivity.this, getResources().getString(R.string.comment_failed));//评论失败
                 }
+
             }
 
             @Override
@@ -152,7 +136,7 @@ public class AddCommentActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url, json);
+        }).getEntityData(HttpURL.HTTP_POST_FRIEND_COMMENT_ADD, json);
     }
 
 }

@@ -38,17 +38,24 @@ import com.alibaba.sdk.android.oss.model.PutObjectRequest;
 import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.entity.request.RequestNeighborhood;
+import com.glory.bianyitong.bean.entity.response.ResponseAliyun;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.util.ImageUtil;
 import com.glory.bianyitong.util.JsonHelper;
+import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.photos.ChooseAdapter;
 import com.glory.bianyitong.widght.photos.EventEntry;
 import com.glory.bianyitong.widght.photos.PhotosActivity;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.litao.android.lib.Utils.GridSpacingItemDecoration;
@@ -64,6 +71,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -98,7 +106,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ChooseAdapte
     // 阿里云上传
     private OSS oss;
     private boolean btnbool = true;
-    private ArrayList<LinkedTreeMap<String, Object>> pic_list; //要上传的图片地址
+    private ArrayList<RequestNeighborhood.ListNeighborhoodPic> pic_list; //要上传的图片地址
     private ProgressDialog progressDialog = null;
     private String userID = "";
     //    private int count = 0;
@@ -160,7 +168,11 @@ public class ReleaseDynamicActivity extends BaseActivity implements ChooseAdapte
                         }
                     } else { //无图片
                         iv_title_text_right.setClickable(false);
-                        release(content);
+                        if(!TextUtil.isEmpty(content)) {
+                            release(content);
+                        }else {
+                            showShort("内容不能为空");
+                        }
                     }
                 }
 
@@ -271,11 +283,10 @@ public class ReleaseDynamicActivity extends BaseActivity implements ChooseAdapte
                             Log.d("RequestId", result.getRequestId());
                             String picpath = "https://" + testBucket + "." + endpoint + "/" + testObject;
                             Log.e("picpath--->>", picpath);
-                            LinkedTreeMap<String, Object> map = new LinkedTreeMap<>();
-                            map.put("neighborhoodPictureID", 1);
-                            map.put("neighborhoodID", 1);
-                            map.put("picturePath", picpath);
-                            pic_list.add(map);
+                            RequestNeighborhood.ListNeighborhoodPic neighborhoodPic=new RequestNeighborhood.ListNeighborhoodPic();
+                            neighborhoodPic.setPicturePath(picpath);
+                            neighborhoodPic.setNeighborhoodID(0);
+                            pic_list.add(neighborhoodPic);
 
                             urls.remove(0);
                             toSend(urls, content);// 递归同步效果
@@ -304,150 +315,103 @@ public class ReleaseDynamicActivity extends BaseActivity implements ChooseAdapte
     }
 
     private void release(String content) { //发布
-        String jsonlist = "";
-        if (pic_list != null && pic_list.size() > 0) {
-            jsonlist = JsonHelper.toJson(pic_list);
-        } else {
-            jsonlist = "[]";
-        }
-        String loginName = "";
-//        if (Database.USER_MAP != null && Database.USER_MAP.get("loginName") != null) {
-//            loginName = Database.USER_MAP.get("loginName").toString();
-//        }
-        if (Database.USER_MAP != null && Database.USER_MAP.getLoginName() != null) {
-            loginName = Database.USER_MAP.getLoginName();
-        }
-        String customerPhoto = "";
-//        if (Database.USER_MAP != null && Database.USER_MAP.get("customerPhoto") != null) {
-//            customerPhoto = Database.USER_MAP.get("customerPhoto").toString();
-//        }
-        if (Database.USER_MAP != null && Database.USER_MAP.getCustomerPhoto() != null) {
-            customerPhoto = Database.USER_MAP.getCustomerPhoto();
-        }
-        int communityID = RequestUtil.getcommunityid();
-//        String communityName = "";//
-//        if (Database.my_community != null && Database.my_community.get("communityName") != null) {
-//            communityName = Database.my_community.get("communityName").toString();
-//        }
-        String communityName = "";//
-        if (Database.my_community != null && Database.my_community.getCommunityName() != null) {
-            communityName = Database.my_community.getCommunityName();
-        }
-        String nowdate = DateUtil.formatTimesTampDate(DateUtil.getCurrentDate());//获取当前时间
-        String json = "{\"neighborhood\":{\"neighborhoodID\":1,\"userID\":1,\"userName\":\"" + loginName + "\",\"userPhoto\":\"" + customerPhoto + "\"," +
-                "\"communityID\":" + communityID + ",\"communityName\":\"" + communityName + "\",\"neighborhoodContent\":\"" + content + "\"," +
-                "\"datetime\":\"" + nowdate + "\"},\"listNeighborhoodPicture\":" + jsonlist + ",\"controllerName\":\"Neighborhood\"," +
-                "\"actionName\":\"ADD\",\"userID\":\"" + userID + "\"}";
-        Log.i("resultString", "json--------" + json);
-        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/Neighborhood/ADD")
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                        });
-                        if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-                                Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
-                            Toast.makeText(ReleaseDynamicActivity.this, getString(R.string.published_successfully), Toast.LENGTH_SHORT).show();//发布成功
-                            Database.isAddarea = true;
-                            EventBus.getDefault().post("MyRelease");
-                            ReleaseDynamicActivity.this.finish();
-                        } else {
-                            Toast.makeText(ReleaseDynamicActivity.this, getString(R.string.release_failed), Toast.LENGTH_SHORT).show();//发布失败
-                        }
-                    }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-//                        ToastUtils.showToast(ReleaseDynamicActivity.this, "请求失败...");
-                        ServiceDialog.showRequestFailed();
-                    }
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        RequestNeighborhood neighborhood=new RequestNeighborhood(Database.USER_MAP.getCustomerPhoto(),content,pic_list);
+        map.put("neighborhood",neighborhood);
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                BaseResponseBean baseResponseBean=new Gson().fromJson(s,BaseResponseBean.class);
+                showShort(baseResponseBean.getAlertMessage());
+                if(baseResponseBean.getStatusCode()==1){
+                    Database.isAddarea = true;
+                    EventBus.getDefault().post("MyRelease");
+                    finish();
+                }
 
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                        if (progressDialog != null) {
-                            // 更新完列表数据，则关闭对话框
-                            progressDialog.dismiss();
-                            progressDialog = null;
-                        }
-                        iv_title_text_right.setClickable(true);
-                    }
-                });
+            }
+
+            @Override
+            public void onError() {
+                ServiceDialog.showRequestFailed();
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+                if (progressDialog != null) {
+                    // 更新完列表数据，则关闭对话框
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
+                iv_title_text_right.setClickable(true);
+            }
+        }).getEntityData(HttpURL.HTTP_POST_FRIEND_ADD,json);
+
 
     }
 
     // 获取阿里云OSS相关秘钥数据
     public void getOssData() {
-        String json = "{\"settingkey\": \"ALiOSSBucket\",\"controllerName\": \"\",\"actionName\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"" +
-                ",\"userID\": \"" + userID + "\"}";
-        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/Setting/SelectAllByOSS")
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                        });
-                        if (hashMap2 != null && hashMap2.get("listsettingvalue") != null) {
-                            ArrayList<LinkedTreeMap<String, Object>> list = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listsettingvalue");
-                            if (list != null && list.size() != 0) {
-                                // ALiOSSAKeyID ALiOSSKeySecret ALiOSSRegion ALiOSSBucket
-                                if (list.get(0) != null && list.get(0).get("settingValue") != null) {
-                                    accessKeyId = list.get(0).get("settingValue").toString();
-                                }
-                                if (list.get(1) != null && list.get(1).get("settingValue") != null) {
-                                    accessKeySecret = list.get(1).get("settingValue").toString();
-                                }
-                                if (list.get(2) != null && list.get(2).get("settingValue") != null) {
-                                    endpoint = list.get(2).get("settingValue").toString() + ".aliyuncs.com";
-                                }
-                                if (list.get(3) != null && list.get(3).get("settingValue") != null) {
-                                    testBucket = list.get(3).get("settingValue").toString();
-                                }
-                                // 阿里云上传
-                                OSSCredentialProvider credentialProvider = new OSSPlainTextAKSKCredentialProvider(accessKeyId, accessKeySecret);
-                                ClientConfiguration conf = new ClientConfiguration();
-                                conf.setConnectionTimeout(15 * 1000); // 连接超时，默认15秒
-                                conf.setSocketTimeout(15 * 1000); // socket超时，默认15秒
-                                conf.setMaxConcurrentRequest(5); // 最大并发请求书，默认5个
-                                conf.setMaxErrorRetry(2); // 失败后最大重试次数，默认2次
-                                OSSLog.enableLog();
-                                //String endpoint = "http://oss-cn-hangzhou.aliyuncs.com"
-                                oss = new OSSClient(getApplicationContext(), "http://" + endpoint, credentialProvider, conf);
-                            }
-                        }
-                    }
+        String json=new Gson().toJson(new BaseRequestBean().getBaseRequest());
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseAliyun aliyun=new Gson().fromJson(s,ResponseAliyun.class);
+                if(aliyun.getStatusCode()==1){
+                    accessKeyId=aliyun.getListSetting().get(0).getSettingValue();
+                    accessKeySecret=aliyun.getListSetting().get(1).getSettingValue();
+                    endpoint=aliyun.getListSetting().get(2).getSettingValue()+ ".aliyuncs.com";
+                    testBucket=aliyun.getListSetting().get(3).getSettingValue();
+                    // 阿里云上传
+                    OSSCredentialProvider credentialProvider = new OSSPlainTextAKSKCredentialProvider(accessKeyId, accessKeySecret);
+                    ClientConfiguration conf = new ClientConfiguration();
+                    conf.setConnectionTimeout(15 * 1000); // 连接超时，默认15秒
+                    conf.setSocketTimeout(15 * 1000); // socket超时，默认15秒
+                    conf.setMaxConcurrentRequest(5); // 最大并发请求书，默认5个
+                    conf.setMaxErrorRetry(2); // 失败后最大重试次数，默认2次
+                    OSSLog.enableLog();
+                    //String endpoint = "http://oss-cn-hangzhou.aliyuncs.com"
+                    oss = new OSSClient(getApplicationContext(), "http://" + endpoint, credentialProvider, conf);
+                }else {
+                    showShort(aliyun.getAlertMessage());
+                }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-                    }
+            }
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
-                });
+            @Override
+            public void onError() {
+                showShort("系统异常");
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_GET_ALIYUN,json);
+
     }
 
     @Override

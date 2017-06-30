@@ -434,7 +434,6 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
 
             @Override
             public void onError() {
-
             }
 
             @Override
@@ -451,7 +450,7 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
             public void onAfter() {
 
             }
-        }).getEntityData("/ApiUserCommnunity/Query",jsons);
+        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA,jsons);
     }
 
     @Override
@@ -524,6 +523,9 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
         registerReceiver(mMessageReceiver, filter);
     }
 
+    /**
+     * 版本更新
+     */
     private void requestUpdate() {
 //        String json = "{\"version\":{},\"controllerName\": \"Version\",\"actionName\": \"StructureQuery\"," +
 //                "\"userID\": \"" + RequestUtil.getuserid() + "\",\"datetime\": \"" + RequestUtil.getCurrentTime() + "\"}";

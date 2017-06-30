@@ -21,7 +21,7 @@ public class BaseRequestBean{
     private int deviceType=3;
     private int currentPageNumber=0;
 
-    private int pageRowNumber=0;
+    private int pageRowNumber=10;
     private String controllerName;
     private String actionName;
     private String userID= TextUtils.isEmpty(RequestUtil.getuserid())?"0":RequestUtil.getuserid();

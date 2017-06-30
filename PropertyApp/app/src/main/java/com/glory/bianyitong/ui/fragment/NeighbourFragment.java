@@ -15,10 +15,14 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.request.RequestNeighborhood;
+import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.adapter.ConveniencePhoneAdapter;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.glory.bianyitong.R;
@@ -41,6 +45,8 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -175,27 +181,83 @@ public class NeighbourFragment extends BaseFragment {
      * @param isrefresh
      */
     private void request(int page, final boolean isrefresh) {
-        int communityID = RequestUtil.getcommunityid();
-        String userID = RequestUtil.getuserid();
-        String json = "{\"neighborhood\":{\"communityID\":"+communityID+"},\"controllerName\":\"Neighborhood\"," +
-                "\"actionName\":\"StructureQuery\",\"userID\":\""+userID+"\",\"nowpagenum\":\""+page+"\",\"pagerownum\":\"10\"}";
-//        String json = "{\"neighborhood\":{},\"controllerName\":\"Neighborhood\"," +
-//                "\"actionName\":\"StructureQuery\",\"userID\":\"" + userID + "\",\"nowpagenum\":\"" + page + "\",\"pagerownum\":\"10\"}";
 
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("currentPageNumber",page);
+        map.put("neighborhood",new Object());
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
+                base_pullToRefreshView.onHeaderRefreshComplete();
+                getGoodsListStart = false;
+                loading_lay.setVisibility(View.GONE);
+                HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
+                });
+                ResponseFriendDetail detail=new Gson().fromJson(s,ResponseFriendDetail.class);
+                if(detail.getStatusCode()==1){
+                    List<ResponseFriendDetail.ListNeighborhoodBean> neighborlist = detail.getListNeighborhood();
+                    //分页加载数据----------------------------------------------------
+                    if (Database.list_neighbour == null) {
+                        Database.list_neighbour = neighborlist;
+                    } else {
+                        if (isrefresh) {
+                            if (Database.list_neighbour != null) {
+                                Database.list_neighbour = null;
+                                Database.list_neighbour = neighborlist;
+                            }
+                        }
+                        if (Database.list_neighbour.size() != 0
+                                && neighborlist.get(neighborlist.size() - 1).getNeighborhoodID() ==(Database.list_neighbour.get(Database.list_neighbour.size() - 1).getNeighborhoodID())) {
+                            have_GoodsList = false;
+                        } else {
+                            for (int i = 0; i < neighborlist.size(); i++) {
+                                Database.list_neighbour.add(neighborlist.get(i));
+                            }
+                            have_GoodsList = true;
+                        }
+                    }
+                    //---------------------------------------------------------------
+                    if (Database.list_neighbour != null && Database.list_neighbour.size() != 0) {
+                        if (mMainAdapter == null || isrefresh) {
+                            have_GoodsList = true;
+                            mMainAdapter = new NeighbourAdapter(context, Database.list_neighbour, "near");
+                            listView_neighbour.setAdapter(mMainAdapter);
+                            noGoods.setVisibility(View.GONE);
+                        } else if (have_GoodsList) {
+                            listView_neighbour.requestLayout();
+                            mMainAdapter.notifyDataSetChanged();
+                            noGoods.setVisibility(View.GONE);
+                        } else {
+                            noGoods.setVisibility(View.VISIBLE);
+                        }
+                    } else {//没有数据
+                        noGoods.setVisibility(View.VISIBLE);
+                        listView_neighbour.setAdapter(null);
+                        have_GoodsList = false;
+                    }
+                } else {
+                    if (Database.list_news != null && Database.list_news.size() > 0) { //分页加载无数据
 
+                    } else { //加载无数据
+                        listView_neighbour.setAdapter(null);
+                    }
+                    have_GoodsList = false;
+                    noGoods.setVisibility(View.VISIBLE);
+                    loading_lay.setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void onError() {
-
+                base_pullToRefreshView.onHeaderRefreshComplete();
+                getGoodsListStart = false;
+                loading_lay.setVisibility(View.GONE);
             }
 
             @Override
             public void parseError() {
-
+                base_pullToRefreshView.onHeaderRefreshComplete();
             }
 
             @Override
@@ -205,110 +267,14 @@ public class NeighbourFragment extends BaseFragment {
 
             @Override
             public void onAfter() {
-
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
+                base_pullToRefreshView.onHeaderRefreshComplete();
             }
         }).getEntityData(HttpURL.HTTP_POST_FRIEND_QUERY,json);
-        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/Neighborhood/StructureQuery") //近邻
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        base_pullToRefreshView.onHeaderRefreshComplete();
-                        getGoodsListStart = false;
-                        loading_lay.setVisibility(View.GONE);
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                        });
-                        if (hashMap2 != null && hashMap2.get("listNeighborhood") != null) {
-                            ArrayList<LinkedTreeMap<String, Object>> neighborlist = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listNeighborhood");
-                            //分页加载数据----------------------------------------------------
-                            if (Database.list_neighbour == null) {
-                                Database.list_neighbour = neighborlist;
-                            } else {
-                                if (isrefresh) {
-                                    if (Database.list_neighbour != null) {
-                                        Database.list_neighbour = null;
-                                        Database.list_neighbour = neighborlist;
-                                    }
-                                }
-                                if (Database.list_neighbour.size() != 0
-                                        && neighborlist.get(neighborlist.size() - 1).get("neighborhoodID")
-                                        .equals(Database.list_neighbour.get(Database.list_neighbour.size() - 1).get("neighborhoodID"))) {
-                                    have_GoodsList = false;
-                                } else {
-                                    for (int i = 0; i < neighborlist.size(); i++) {
-                                        Database.list_neighbour.add(neighborlist.get(i));
-                                    }
-                                    have_GoodsList = true;
-                                }
-                            }
-                            //---------------------------------------------------------------
-                            if (Database.list_neighbour != null && Database.list_neighbour.size() != 0) {
-                                if (mMainAdapter == null || isrefresh) {
-                                    have_GoodsList = true;
-                                    mMainAdapter = new NeighbourAdapter(context, Database.list_neighbour, "near");
-                                    listView_neighbour.setAdapter(mMainAdapter);
-                                    noGoods.setVisibility(View.GONE);
-                                } else if (have_GoodsList) {
-                                    listView_neighbour.requestLayout();
-                                    mMainAdapter.notifyDataSetChanged();
-                                    noGoods.setVisibility(View.GONE);
-                                } else {
-                                    noGoods.setVisibility(View.VISIBLE);
-                                }
-                            } else {//没有数据
-                                noGoods.setVisibility(View.VISIBLE);
-                                listView_neighbour.setAdapter(null);
-                                have_GoodsList = false;
-                            }
-                        } else {
-                            if (Database.list_news != null && Database.list_news.size() > 0) { //分页加载无数据
 
-                            } else { //加载无数据
-                                listView_neighbour.setAdapter(null);
-                            }
-                            have_GoodsList = false;
-                            noGoods.setVisibility(View.VISIBLE);
-                            loading_lay.setVisibility(View.GONE);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        base_pullToRefreshView.onHeaderRefreshComplete();
-                        getGoodsListStart = false;
-                        loading_lay.setVisibility(View.GONE);
-                        Log.i("resultString", "请求错误------");
-                        ToastUtils.showToast(context, getResources().getString(R.string.failed_to_connect_to_server));
-                    }
-
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                        base_pullToRefreshView.onHeaderRefreshComplete();
-                    }
-
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                    }
-
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                        if (progressDialog != null) {
-                            progressDialog.dismiss();
-                            progressDialog = null;
-                        }
-                        base_pullToRefreshView.onHeaderRefreshComplete();
-                    }
-                });
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.bean.BaseRequestBean;
@@ -69,6 +70,7 @@ public class UpdateDescribeActivity extends BaseActivity {
     @Override
     protected void init() {
         super.init();
+        Router.injectParams(this);
         inintTitle(getString(R.string.personal_description), false, getString(R.string.determine));//个人描述  确定
         left_return_btn.setVisibility(View.GONE);
 
@@ -100,7 +102,7 @@ public class UpdateDescribeActivity extends BaseActivity {
     private void save(final String desc) {
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("user",new RequestUserBean(Database.USER_MAP.getLoginName(),desc,Database.USER_MAP.getSignature()));
+        map.put("user",new RequestUserBean(Database.USER_MAP.getLoginName(),Database.USER_MAP.getCustomerPhoto(),desc));
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override

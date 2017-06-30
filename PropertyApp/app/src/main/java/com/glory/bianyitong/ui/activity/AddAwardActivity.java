@@ -18,6 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
@@ -101,6 +102,7 @@ public class AddAwardActivity extends BaseActivity {
     @Override
     protected void init() {
         super.init();
+        Router.injectParams(this);
         if (from.equals("add")) {
             inintTitle(getResources().getString(R.string.add_authorization), false, getResources().getString(R.string.carry_out));//添加授权   完成
         } else if (from.equals("edit")) {

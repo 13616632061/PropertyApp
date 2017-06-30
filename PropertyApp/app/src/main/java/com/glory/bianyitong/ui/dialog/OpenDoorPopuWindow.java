@@ -24,6 +24,7 @@ import com.glory.bianyitong.bean.AdvertisingInfo2;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.UserLockInfo;
+import com.glory.bianyitong.bean.entity.request.RequestAdvertising;
 import com.glory.bianyitong.bean.entity.response.ResponseOpenLock;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
@@ -345,75 +346,51 @@ public class OpenDoorPopuWindow extends PopupWindow implements View.OnClickListe
         }).getEntityData(HttpURL.HTTP_POST_OPEN_LOCK,json);
     }
 
+    /**
+     * 广告查询
+     */
     private void ad_request() { //获取广告轮播
-        String userID = RequestUtil.getuserid();
-        int communityID = RequestUtil.getcommunityid();
-        String json = "{\"advertising\": {\"communityID\":" + communityID + ",\"advertisingLocation\":\"2\"},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\"," +
-                "\"pagerownum\": \"\",\"controllerName\": \"Advertising\",\"actionName\": \"StructureQuery\"}";
-
-        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/Advertising/StructureQuery")
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("listAdvertising") != null) {
-//                            ArrayList<LinkedTreeMap<String, Object>> ad_list = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listAdvertising");
-//                            if (ad_list != null && ad_list.get(0) != null && ad_list.get(0).get("advertisingPicture") != null) {
-//                                String data = ad_list.get(0).get("advertisingPicture").toString();
-////                                ServiceDialog.setPicture(ad_list.get(0).get("advertisingPicture").toString(), iv_open_ad, null);
-//                                Glide.with(context).load(data).error(R.drawable.wait).placeholder(R.drawable.wait).into(iv_open_ad);
-//                            }
-//                        }
-                        try {
-                            JSONObject jo = new JSONObject(s);
-                            String statuscode = jo.getString("statuscode");
-                            String statusmessage = jo.getString("statusmessage");
-                            AdvertisingInfo2 adinfo = new Gson().fromJson(jo.toString(), AdvertisingInfo2.class);
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("advertising",new RequestAdvertising(2));
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                AdvertisingInfo2 adinfo = new Gson().fromJson(s, AdvertisingInfo2.class);
 //                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
-                            if (adinfo != null && adinfo.getListAdvertising() != null) {
-                                List<AdvertisingInfo2.ListAdvertisingBean> ad_list = adinfo.getListAdvertising();
-                                if (ad_list != null && ad_list.get(0) != null && ad_list.get(0).getAdvertisingPicture() != null) {
-                                    String data = ad_list.get(0).getAdvertisingPicture();
+                if (adinfo != null && adinfo.getListAdvertising() != null) {
+                    if(adinfo.getStatusCode()==1){
+                        List<AdvertisingInfo2.ListAdvertisingBean> ad_list = adinfo.getListAdvertising();
+                        if (ad_list != null && ad_list.get(0) != null && ad_list.get(0).getAdvertisingPicture() != null) {
+                            String data = ad_list.get(0).getAdvertisingPicture();
 //                                ServiceDialog.setPicture(ad_list.get(0).get("advertisingPicture").toString(), iv_open_ad, null);
-                                    Glide.with(context).load(data).error(R.drawable.wait).placeholder(R.drawable.wait).into(iv_open_ad);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            Glide.with(context).load(data).error(R.drawable.wait).placeholder(R.drawable.wait).into(iv_open_ad);
                         }
                     }
 
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-                        ToastUtils.showToast(context, "请求失败");
-                    }
+                }
+            }
 
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
+            @Override
+            public void onError() {
 
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                    }
+            }
 
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                    }
-                });
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_GET_AD,json);
     }
 
     private boolean checkPermission() {

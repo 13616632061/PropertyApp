@@ -28,6 +28,12 @@ public class HttpURL {
 
 
     /**
+     * 首页
+     */
+    //系统消息查询
+    public static String HTTP_POST_GET_MESSAGE="/ApiSystemMsg/Query";
+
+    /**
      * 我的页面
      */
     //添加授权
@@ -65,12 +71,16 @@ public class HttpURL {
     public static String HTTP_POST_LOCAL_AREA_ADD_COMMNUNITY="/ApiUserCommnunity/Add";
     //社区公告
     public static String HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE="/ApiCommunityBulletin/Query";
+    //我的社区查询
+    public static String HTTP_POST_LOCAL_AREA_QUERY_AREA="/ApiUserCommnunity/Query";
     //查询我的钥匙
     public static String HTTP_POST_LOCAL_KEY_MANAGER="/ApiUserKey/Query";
     //我的钥匙排序
     public static String HTTP_POST_LOCAL_KEY_SORT="/ApiUserKey/SortUserKey";
     //开锁
     public static String HTTP_POST_OPEN_LOCK="/ApiOpenLock/Open";
+    //广告查询
+    public static String HTTP_POST_GET_AD="/ApiAdvertising/Query";
 
     /**
      * 物业管家
@@ -109,4 +119,16 @@ public class HttpURL {
      */
     //近邻查询
     public static String HTTP_POST_FRIEND_QUERY="/ApiNeighborhood/Query";
+    //近邻发布
+    public static String HTTP_POST_FRIEND_ADD="/ApiNeighborhood/Add";
+    //近邻详情
+    public static String HTTP_POST_FRIEND_DETAIL="/ApiNeighborhood/Query";
+    //近邻点赞
+    public static String HTTP_POST_FRIEND_LIKE="/ApiNeighborhoodLike/Add";
+    //近邻点赞取消
+    public static String HTTP_POST_FRIEND_LIKE_CANCEL="/ApiNeighborhoodLike/Delete";
+    //近邻评论
+    public static String HTTP_POST_FRIEND_COMMENT_ADD="/ApiNeighborhoodComment/Add";
+    //举报
+    public static String HTTP_POST_FRIEND_COMMENT_REPORT="/ApiReport/Add";
 }

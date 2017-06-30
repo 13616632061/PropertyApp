@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.bean.BaseRequestBean;
@@ -65,6 +66,7 @@ public class UpdateNameActivity extends BaseActivity {
     @Override
     protected void init() {
         super.init();
+        Router.injectParams(this);
         inintTitle(getString(R.string.change_username), false, getString(R.string.save));//修改昵称  保存
         et_nickname.setText(nick);
 
