@@ -55,6 +55,7 @@ public class RouterMapping  {
      */
     public static final String ROUTER_ACTIVITY_FRIEND_DETAIL="ROUTER_ACTIVITY_FRIEND_DETAIL";//近邻详情
     public static final String ROUTER_ACTIVITY_FRIEND_COMMENT="ROUTER_ACTIVITY_FRIEND_COMMENT";//添加评论
+    public static final String ROUTER_ACTIVITY_FRIEND_USER_INFO="ROUTER_ACTIVITY_FRIEND_USER_INFO";//个人主页
 
 
 }

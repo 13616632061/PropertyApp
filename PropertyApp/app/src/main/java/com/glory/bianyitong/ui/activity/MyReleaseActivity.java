@@ -25,6 +25,7 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.adapter.PersionInfoAdapter;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.SharePreToolsKits;
 import com.glory.bianyitong.util.TextUtil;
@@ -48,6 +49,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -79,6 +81,8 @@ public class MyReleaseActivity extends BaseActivity {
     private Handler del_handler;
     private NewsDeletePopuWindow deleteDialog;
     private int index_page = 0;
+    private PersionInfoAdapter mMainAdapter;
+    private List<ResponseQuerySendInfo.ListNeighborhoodBean> list_dongtai;
 
     @Override
     protected int getContentId() {
@@ -264,65 +268,58 @@ public class MyReleaseActivity extends BaseActivity {
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                if(TextUtil.isEmpty(s)){
-                    return;
-                }else {
-                    ResponseQuerySendInfo querySendInfo=new Gson().fromJson(s,ResponseQuerySendInfo.class);
-                    if(querySendInfo.getStatusCode()==1){
-                        //分页加载数据----------------------------------------------------
-//                            if (Database.list_myRelease == null) {
-//                                Database.list_myRelease = neighborlist;
-//                            } else {
-//                                if (isrefresh) {
-//                                    if (Database.list_myRelease != null) {
-//                                        Database.list_myRelease = null;
-//                                        Database.list_myRelease = neighborlist;
-//                                    }
-//                                }
-//                                if (Database.list_myRelease.size() != 0
-//                                        && neighborlist.get(neighborlist.size() - 1).get("neighborhoodID")
-//                                        .equals(Database.list_myRelease.get(Database.list_myRelease.size() - 1).get("neighborhoodID"))) {
-//                                    have_GoodsList = false;
-//                                } else {
-//                                    for (int i = 0; i < neighborlist.size(); i++) {
-//                                        Database.list_myRelease.add(neighborlist.get(i));
-//                                    }
-//                                    have_GoodsList = true;
-//                                }
-//                            }
-//                            //---------------------------------------------------------------
-//                            if (Database.list_myRelease != null && Database.list_myRelease.size() != 0) {
-//                                if (mynewsAdapter == null || isrefresh) {
-//                                    have_GoodsList = true;
-//                                    mynewsAdapter = new NeighbourAdapter(MyReleaseActivity.this, Database.list_myRelease, "my", mhandler);
-//                                    listView_mynews.setAdapter(mynewsAdapter);
-//                                    noGoods.setVisibility(View.GONE);
-//                                } else if (have_GoodsList) {
-//                                    listView_mynews.requestLayout();
-//                                    mynewsAdapter.notifyDataSetChanged();
-//                                    noGoods.setVisibility(View.GONE);
-//                                } else {
-//                                    noGoods.setVisibility(View.VISIBLE);
-//                                }
-//                            } else {//没有数据
-//                                noGoods.setVisibility(View.VISIBLE);
-//                                listView_mynews.setAdapter(null);
-//                                lay_no_release.setVisibility(View.VISIBLE);
-//                                have_GoodsList = false;
-//                            }
-//                        } else {
-//                            if (Database.list_myRelease != null && Database.list_myRelease.size() > 0) { //分页加载无数据
-//                                noGoods.setVisibility(View.VISIBLE);
-//                                loading_lay.setVisibility(View.GONE);
-//                            } else { //加载无数据
-//                                listView_mynews.setAdapter(null);
-//                                lay_no_release.setVisibility(View.VISIBLE);
-//                            }
-//                            have_GoodsList = false;
-//                        }
-                    }else {
-
+                getGoodsListStart = false;
+                loading_lay.setVisibility(View.GONE);
+                ResponseQuerySendInfo querySendInfo=new Gson().fromJson(s, ResponseQuerySendInfo.class);
+                if(querySendInfo.getStatusCode()==1){
+                    //分页加载数据----------------------------------------------------
+                    if (list_dongtai == null) {
+                        list_dongtai = querySendInfo.getListNeighborhood();
+                    } else {
+                        if (isrefresh) {
+                            if (list_dongtai != null) {
+                                list_dongtai = null;
+                                list_dongtai = querySendInfo.getListNeighborhood();
+                            }
+                        }
+                        if (list_dongtai.size() != 0
+                                && querySendInfo.getListNeighborhood().get(querySendInfo.getListNeighborhood().size() - 1).getNeighborhoodID()==(list_dongtai.get(list_dongtai.size() - 1).getNeighborhoodID())) {
+                            have_GoodsList = false;
+                        } else {
+                            for (int i = 0; i < querySendInfo.getListNeighborhood().size(); i++) {
+                                list_dongtai.add(querySendInfo.getListNeighborhood().get(i));
+                            }
+                            have_GoodsList = true;
+                        }
                     }
+                    //---------------------------------------------------------------
+                    if (list_dongtai != null && list_dongtai.size() != 0) {
+                        if (mMainAdapter == null || isrefresh) {
+                            have_GoodsList = true;
+                            mMainAdapter = new PersionInfoAdapter(MyReleaseActivity.this, list_dongtai, "personal");
+                            listView_mynews.setAdapter(mMainAdapter);
+                            noGoods.setVisibility(View.GONE);
+                        } else if (have_GoodsList) {
+                            listView_mynews.requestLayout();
+                            mMainAdapter.notifyDataSetChanged();
+                            noGoods.setVisibility(View.GONE);
+                        } else {
+                            noGoods.setVisibility(View.VISIBLE);
+                        }
+                    } else {//没有数据
+                        noGoods.setVisibility(View.VISIBLE);
+                        listView_mynews.setAdapter(null);
+                        have_GoodsList = false;
+                    }
+                } else {
+                    if (Database.list_news != null && Database.list_news.size() > 0) { //分页加载无数据
+
+                    } else { //加载无数据
+                        listView_mynews.setAdapter(null);
+                    }
+                    have_GoodsList = false;
+                    noGoods.setVisibility(View.VISIBLE);
+                    loading_lay.setVisibility(View.GONE);
                 }
             }
 

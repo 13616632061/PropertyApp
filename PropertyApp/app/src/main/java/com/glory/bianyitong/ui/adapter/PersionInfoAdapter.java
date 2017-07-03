@@ -1,7 +1,6 @@
 package com.glory.bianyitong.ui.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,29 +15,24 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.chenenyu.router.Router;
+import com.glory.bianyitong.R;
 import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
+import com.glory.bianyitong.bean.entity.response.ResponseQuerySendInfo;
 import com.glory.bianyitong.router.RouterMapping;
-import com.glory.bianyitong.ui.activity.ImagePagerActivity;
 import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.view.MyGridView;
-import com.google.gson.internal.LinkedTreeMap;
-import com.glory.bianyitong.R;
-import com.glory.bianyitong.ui.activity.DynamicDetailsActivity;
-import com.glory.bianyitong.ui.activity.PersonalHomePageActivity;
-import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.widght.CircleImageView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by lucy on 2016/11/10.
  * 近邻
  */
-public class NeighbourAdapter extends BaseAdapter {
+public class PersionInfoAdapter extends BaseAdapter {
     private Context context;
 
-    private  List<ResponseFriendDetail.ListNeighborhoodBean> list;
+    private  List<ResponseQuerySendInfo.ListNeighborhoodBean> list;
 
     private String from = "";
 
@@ -47,14 +40,14 @@ public class NeighbourAdapter extends BaseAdapter {
 
     private Handler mhandler;
 
-    public NeighbourAdapter(Context context, List<ResponseFriendDetail.ListNeighborhoodBean> list, String from) {
+    public PersionInfoAdapter(Context context, List<ResponseQuerySendInfo.ListNeighborhoodBean> list, String from) {
         this.context = context;
         this.list = list;
         this.from = from;
         mInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
-    public NeighbourAdapter(Context context,  List<ResponseFriendDetail.ListNeighborhoodBean> list, String from, Handler mhandler) {
+    public PersionInfoAdapter(Context context, List<ResponseQuerySendInfo.ListNeighborhoodBean> list, String from, Handler mhandler) {
         this.context = context;
         this.list = list;
         this.from = from;
@@ -143,7 +136,7 @@ public class NeighbourAdapter extends BaseAdapter {
             }
             String pic = list.get(position).getUserPhoto().toString();//  用户名
             Glide.with(context).load(pic).error(R.drawable.wait).placeholder(R.drawable.wait).into(holder.item_near_head_pic);
-            holder.tv_near_userName.setText(list.get(position).getUserName());//  用户名
+            holder.tv_near_userName.setText("我");//  用户名
             String date = DateUtil.format(DateUtil.parse(list.get(position).getDatetime(),DateUtil.DEFAULT_PATTERN));
             holder.tv_mynews_time.setText(date);//  发布时间
             holder.tv_near_text.setText(list.get(position).getNeighborhoodContent());//  文字内容
@@ -151,10 +144,10 @@ public class NeighbourAdapter extends BaseAdapter {
             holder.tv_near_comment.setText(list.get(position).getCommentCount()+"");//  评论
 
             if (list.get(position).getListNeighborhoodPic() != null) {// 图片组
-                List<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodPicBean> pics = list.get(position).getListNeighborhoodPic();
+                List<ResponseQuerySendInfo.ListNeighborhoodBean.ListNeighborhoodPicBean> pics = list.get(position).getListNeighborhoodPic();
                 if (pics != null && pics.size() > 0) {
                     holder.gv_dynamic_pic2.setVisibility(View.VISIBLE);
-                    DynamicPicsAdapter picsAdapter = new DynamicPicsAdapter(context, pics);
+                    PersionPicsAdapter picsAdapter = new PersionPicsAdapter(context, pics);
                     holder.gv_dynamic_pic2.setAdapter(picsAdapter);
 //                    final ArrayList<String> pictureList = new ArrayList<>();
 //                    for (int i = 0; i < pics.size(); i++) {

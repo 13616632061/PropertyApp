@@ -52,6 +52,9 @@ public class HttpURL {
     public static String HTTP_POST_MY_GETSHARE="/ApiSetting/GetShare";
     //获取发布内容
     public static String HTTP_POST_MY_GETSEND_INFO="/ApiNeighborhood/Query";
+    //根据用户ID查询用户信息
+    public static String HTTP_POST_QUERY_USER_INFO="/ApiUser/Query";
+
 
 
     /**
