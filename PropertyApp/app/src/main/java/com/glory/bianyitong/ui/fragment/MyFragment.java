@@ -1,7 +1,6 @@
 package com.glory.bianyitong.ui.fragment;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -12,39 +11,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.BaseRequestBean;
-import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.entity.response.ResponseShare;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.share.ShareUtil;
-import com.glory.bianyitong.ui.activity.AuthAreaActivity;
-import com.glory.bianyitong.ui.activity.AwardManagerActivity;
-import com.glory.bianyitong.ui.activity.FeedbackActivity;
-import com.glory.bianyitong.ui.activity.LoginActivity;
-import com.glory.bianyitong.ui.activity.MyReleaseActivity;
-import com.glory.bianyitong.ui.activity.PersonalDataActivity;
-import com.glory.bianyitong.ui.activity.SettingActivity;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
-import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.CircleImageView;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -66,14 +53,19 @@ public class MyFragment extends BaseFragment {
             TextView fg_tv_my_news;
     @BindView(R.id.tv_share_app) //推荐给其他朋友
             TextView tv_share_app;
-    @BindView(R.id.tv_setting) //设置
-            TextView tvSetting;
+    @BindView(R.id.rl_setting) //设置
+            RelativeLayout rl_setting;
     @BindView(R.id.text_user_name)
     TextView text_user_name;
     @BindView(R.id.ll_describe)
     LinearLayout ll_describe;
     @BindView(R.id.tv_user_signature) //签名
             TextView tv_user_signature;
+
+    @BindView(R.id.tv_my_account)
+    TextView txtUserInfo;
+    @BindView(R.id.my_fragment_allorder)
+    RelativeLayout myFragmentAllorder;
     private View view_my;
     private CircleImageView headPortraitCiv; //个人信息
     private String customerPhoto = "";
@@ -104,7 +96,7 @@ public class MyFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view_my = inflater.inflate(R.layout.fg_my, container, false);
+        view_my = inflater.inflate(R.layout.fg_my2, container, false);
         context = getActivity();
         ButterKnife.bind(this, view_my);
         return view_my;
@@ -123,17 +115,19 @@ public class MyFragment extends BaseFragment {
         tv_auth_area.setOnClickListener(this);
         fg_tv_my_news.setOnClickListener(this);
         tv_share_app.setOnClickListener(this);
-        tvSetting.setOnClickListener(this);
+        rl_setting.setOnClickListener(this);
         tvFeedback.setOnClickListener(this);
+        txtUserInfo.setOnClickListener(this);
+        myFragmentAllorder.setOnClickListener(this);
         getShareInfo();
     }
+
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.cim_my_head_portrait: //个人信息
-                Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
-                        .go(this);
+
 //                if (Database.USER_MAP != null) {//登录
 //                    Intent intent2 = new Intent(context, PersonalDataActivity.class);
 //                    context.startActivity(intent2);
@@ -141,6 +135,8 @@ public class MyFragment extends BaseFragment {
 //                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
 //                    login();
 //                }
+                Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
+                        .go(this);
                 break;
             case R.id.text_user_name://个人信息
                 Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
@@ -177,15 +173,19 @@ public class MyFragment extends BaseFragment {
 //                }
                 break;
             case R.id.tv_award_manager: //授权管理
-                if(Database.my_community==null){
+
+                if(Database.USER_MAP==null)
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                            .go(this);
+
+                if (Database.my_community == null) {
                     ToastUtils.showToast(context, getString(R.string.you_have_no_district_please_first_certification_district));//您还没有小区,请先认证小区
-                }else {
+                } else {
                     Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MANAGER)
                             .go(this);
                 }
                 break;
             case R.id.fg_tv_my_news: //我的发布 /登录
-
                 Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MY_RELEASE)
                         .go(this);
                 break;
@@ -199,10 +199,19 @@ public class MyFragment extends BaseFragment {
                 Router.build(RouterMapping.ROUTER_ACTIVITY_FEEDBACK)
                         .go(this);
                 break;
-            case R.id.tv_setting: //设置
+            case R.id.rl_setting: //设置
 //                Intent intent9 = new Intent(context, SettingActivity.class);
 //                context.startActivity(intent9);
                 Router.build(RouterMapping.ROUTER_ACTIVITY_SETTING)
+                        .go(this);
+                break;
+            case R.id.tv_my_account:
+                Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
+                        .go(this);
+                break;
+
+            case R.id.my_fragment_allorder://我的订单
+                Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
                         .go(this);
                 break;
         }
@@ -212,7 +221,7 @@ public class MyFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (Database.USER_MAP != null && Database.accessToken!=null) { //登录
+        if (Database.USER_MAP != null && Database.accessToken != null) { //登录
             //用户名
             if (Database.accessToken != null && Database.USER_MAP != null) {
                 String name1 = text_user_name.getText().toString();
@@ -224,7 +233,7 @@ public class MyFragment extends BaseFragment {
                 text_user_name.setText("");
             }
             //头像
-            if (Database.accessToken!= null && Database.USER_MAP != null) {
+            if (Database.accessToken != null && Database.USER_MAP != null) {
                 String pic = Database.USER_MAP.getCustomerPhoto();
                 if (!customerPhoto.equals(pic)) {
                     ServiceDialog.setPicture(pic, headPortraitCiv, null);
@@ -252,34 +261,42 @@ public class MyFragment extends BaseFragment {
     }
 
     private void getShareInfo() {
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        String json=new Gson().toJson(map);
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                if (TextUtil.isEmpty(s)){
+                if (TextUtil.isEmpty(s)) {
                     showShort("系统异常");
                     return;
                 }
-                ResponseShare share=new Gson().fromJson(s,ResponseShare.class);
-                if(share.getStatusCode()==1){
-                    if(share.getListSetting()!=null && share.getListSetting().size()>0){
-                        share_url=share.getListSetting().get(0).getSettingValue();
-                        tittle=share.getListSetting().get(1).getSettingValue();
-                        subTittle=share.getListSetting().get(2).getSettingRemark();
-                    }else {
+                ResponseShare share = new Gson().fromJson(s, ResponseShare.class);
+                if (share.getStatusCode() == 1) {
+                    if (share.getListSetting() != null && share.getListSetting().size() > 0) {
+                        share_url = share.getListSetting().get(0).getSettingValue();
+                        tittle = share.getListSetting().get(1).getSettingValue();
+                        subTittle = share.getListSetting().get(2).getSettingRemark();
+                    } else {
                         showShort(share.getAlertMessage());
                     }
                 }
             }
+
             @Override
-            public void onError() {}
+            public void onError() {
+            }
+
             @Override
-            public void parseError() {}
+            public void parseError() {
+            }
+
             @Override
-            public void onBefore() {}
+            public void onBefore() {
+            }
+
             @Override
-            public void onAfter() {}
+            public void onAfter() {
+            }
         }).getEntityData(HttpURL.HTTP_POST_MY_GETSHARE, json);
     }
 

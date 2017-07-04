@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -19,14 +18,11 @@ import com.glory.bianyitong.bean.GetSMSCodeInfo;
 import com.glory.bianyitong.bean.LoginUserInfo;
 import com.glory.bianyitong.bean.UserInfo;
 import com.glory.bianyitong.constants.Constant;
-import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.jpush.ExampleUtil;
-import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.DataUtils;
-import com.glory.bianyitong.util.SharePreToolsKits;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
@@ -34,9 +30,6 @@ import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.ToastUtils;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.BaseRequest;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,8 +42,6 @@ import java.util.Set;
 import butterknife.BindView;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * Created by lucy on 2016/11/10.
@@ -130,7 +121,7 @@ public class LoginActivity extends BaseActivity {
         tv_contract.setOnClickListener(this);
         time = new TimeCount(60000, 1000);
         //15899647853
-        login_phone.setText(SharePreToolsKits.fetchUserString(LoginActivity.this, "phone")); //上一个人的电话号码
+        login_phone.setText(mCache.getAsString("phone")); //上一个人的电话号码
     }
 
     @Override
@@ -271,54 +262,6 @@ public class LoginActivity extends BaseActivity {
 
             }
         }).getEntityData(url,map);
-//        OkGo.post(HttpURL.HTTP_NEW_URL + "/SMSCode/GetVituralSMSCheckCode") //获取验证码
-//                .params("phoneNumber", phone)
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onSuccess(String s, Call call, Response response) {
-//                        Log.i("resultString", "------------");
-//                        Log.i("resultString", s);
-//                        Log.i("resultString", "------------");
-//                        try {
-//                            JSONObject jo = new JSONObject(s);
-//                            GetSMSCodeInfo getcodeinfo = new Gson().fromJson(jo.toString(), GetSMSCodeInfo.class);
-//                            if(getcodeinfo!=null && getcodeinfo.getMsg()!=null){
-//                                String code = getcodeinfo.getMsg();
-//                                login_code.setText(code);
-//                            }else if (getcodeinfo.getAlertMessage() != null) { //返回消息
-//                                ToastUtils.showToast(LoginActivity.this, getcodeinfo.getAlertMessage());
-//                            } else {
-//                                ToastUtils.showToast(LoginActivity.this, getString(R.string.failed_to_generate_verification_code));//生成验证码失败
-//                            }
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-
-
-//                    }
-//
-//                    @Override
-//                    public void onError(Call call, Response response, Exception e) {
-//                        super.onError(call, response, e);
-//                        Log.i("resultString", "请求错误------");
-//                    }
-//
-//                    @Override
-//                    public void parseError(Call call, Exception e) {
-//                        super.parseError(call, e);
-//                        Log.i("resultString", "网络解析错误------");
-//                    }
-//
-//                    @Override
-//                    public void onBefore(BaseRequest request) {
-//                        super.onBefore(request);
-//                    }
-//
-//                    @Override
-//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-//                        super.onAfter(s, e);
-//                    }
-//                });
 
     }
 
@@ -327,7 +270,7 @@ public class LoginActivity extends BaseActivity {
         Database.USER_MAP = null;
         Database.my_community = null;
         Database.my_community_List = null;
-        SharePreToolsKits.putUserString(LoginActivity.this, "phone", phone);
+        mCache.put("phone",phone);
         if (Database.registrationId == null) {
             Database.registrationId = "";
         }
@@ -355,7 +298,8 @@ public class LoginActivity extends BaseActivity {
                         DataUtils.getUesrCommunity(loginInfo);//社区列表
                         DataUtils.my_community(LoginActivity.this); //获取我的社区
                     }
-                    SharePreToolsKits.putJsonDataString(LoginActivity.this, Constant.user, s); //缓存登录后信息
+                    mCache.put(Constant.user,s);
+//                    SharePreToolsKits.putJsonDataString(LoginActivity.this, Constant.user, s); //缓存登录后信息
                     //登录成功
                     LoginActivity.this.finish();
                 }
@@ -388,7 +332,7 @@ public class LoginActivity extends BaseActivity {
     }
 
     private void my_community() { //我的社区
-        String communityID_str = SharePreToolsKits.fetchString(LoginActivity.this, Constant.communityID);
+        String communityID_str = mCache.getAsString(Constant.communityID);
         int communityID = 0;
         if (communityID_str != null) {
             communityID = Double.valueOf(communityID_str).intValue();

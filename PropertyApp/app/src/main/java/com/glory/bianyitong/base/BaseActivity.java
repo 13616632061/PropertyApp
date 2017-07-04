@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.util.ACache;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.ScreenUtil;
 import com.glory.bianyitong.util.ToastUtils;
@@ -28,11 +29,12 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  */
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 //    InputMethodManager manager;
-
+    protected ACache mCache;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(getContentId());
+        mCache=ACache.get(this);
         Database.currentActivity = this;
         ButterKnife.bind(this);  //自动化声明控件
 //       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

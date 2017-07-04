@@ -11,15 +11,12 @@ import android.widget.TextView;
 
 import com.glory.bianyitong.bean.CommnunityInfo;
 import com.glory.bianyitong.constants.Constant;
-import com.glory.bianyitong.util.SharePreToolsKits;
-import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Database;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -135,7 +132,7 @@ public class SwitchAreaActivity extends BaseActivity {
 //                        }
                         if (list.get(j)!=null) {
                             Database.my_community = list.get(j);
-                            SharePreToolsKits.putString(SwitchAreaActivity.this, Constant.communityID, list.get(j).getCommunityID()+""); //缓存所选的小区id
+                            mCache.put( Constant.communityID, list.get(j).getCommunityID()+""); //缓存所选的小区id
                             item_area_select.setVisibility(View.VISIBLE);
                             EventBus.getDefault().post(true);
                             SwitchAreaActivity.this.finish();

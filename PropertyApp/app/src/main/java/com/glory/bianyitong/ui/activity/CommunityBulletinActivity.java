@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.listCommunityBulletinInfo;
 import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -22,10 +21,6 @@ import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.ui.adapter.CommunityAnnouceAdapter;
-import com.glory.bianyitong.util.SharePreToolsKits;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,7 +85,7 @@ public class CommunityBulletinActivity extends BaseActivity {
         gg_Listview = (ListView) findViewById(R.id.listView_ca);
 //        SharePreToolsKits.clearShare(CommunityBulletinActivity.this); //清除缓存
         if (Database.readbulletinid == null || Database.readbulletinid.equals("")) {
-            Database.readbulletinid = SharePreToolsKits.fetchString(CommunityBulletinActivity.this, Constant.bulletinID);
+            Database.readbulletinid = mCache.getAsString(Constant.bulletinID) ;
         }
         if (Database.readbulletinid == null || Database.readbulletinid.equals("")) {
             Database.readbulletinid = "";
@@ -198,7 +193,7 @@ public class CommunityBulletinActivity extends BaseActivity {
                     }
                     adapter.notifyDataSetChanged();
                     Database.notreadbulletinSize = 0;
-                    SharePreToolsKits.putString(CommunityBulletinActivity.this, Constant.bulletinID, Database.readbulletinid); //缓存已读消息
+                    mCache.put(Constant.bulletinID, Database.readbulletinid);//缓存已读消息
                 }
                 break;
         }

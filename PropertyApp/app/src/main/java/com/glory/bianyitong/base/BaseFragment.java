@@ -5,12 +5,20 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.View;
 
+import com.glory.bianyitong.util.ACache;
 import com.glory.bianyitong.util.ToastUtils;
 
 /**
  * Created by lucy on 2016/11/21.
  */
 public class BaseFragment extends Fragment implements View.OnClickListener {
+    protected ACache mCache;
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mCache=ACache.get(getActivity());
+    }
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

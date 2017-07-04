@@ -14,12 +14,10 @@ import android.widget.TextView;
 
 import com.glory.bianyitong.bean.MessageInfo;
 import com.glory.bianyitong.constants.Constant;
-import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
-import com.glory.bianyitong.util.SharePreToolsKits;
-import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.ui.activity.MessageDetailsActivity;
+import com.glory.bianyitong.util.ACache;
 
 import java.util.HashMap;
 import java.util.List;
@@ -269,7 +267,8 @@ public class MessageAdapter extends BaseAdapter {
                 }
                 intent.putExtra("PushID", 0);
                 context.startActivity(intent);
-                SharePreToolsKits.putString(context, Constant.messageID, Database.readmessageid); //缓存已读消息
+                ACache cache=ACache.get(context);
+                cache.put(Constant.messageID, Database.readmessageid); //缓存已读消息
             }
         });
         return convertView;

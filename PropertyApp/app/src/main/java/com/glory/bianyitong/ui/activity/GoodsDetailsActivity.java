@@ -4,8 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Build;
-import android.os.Message;
-import android.util.Log;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.SslErrorHandler;
@@ -13,6 +12,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -20,27 +20,40 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.chenenyu.router.Router;
+import com.chenenyu.router.annotation.InjectParam;
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
-import com.glory.bianyitong.bean.FreashInfo;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.request.RequestProductDetail;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
+import com.glory.bianyitong.bean.entity.response.ResponseSearchFresh;
 import com.glory.bianyitong.constants.Database;
-import com.glory.bianyitong.ui.dialog.ServiceDialog;
+import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.NetworkImageHolderView;
 import com.glory.bianyitong.widght.convenientbanner.ConvenientBanner;
 import com.glory.bianyitong.widght.convenientbanner.holder.CBViewHolderCreator;
 import com.glory.bianyitong.widght.convenientbanner.listener.OnItemClickListener;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by lucy on 2016/11/22.
  * 商品详情
  */
+@Route(value = RouterMapping.ROUTER_ACTIVITY_PRODUCT_DETAIL)
 public class GoodsDetailsActivity extends BaseActivity {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
@@ -74,13 +87,25 @@ public class GoodsDetailsActivity extends BaseActivity {
     WebView webview_ervery;
     @BindView(R.id.my_progress)
     ProgressBar my_progress;
-    //    private String[] images = {"http://pic19.nipic.com/20120310/6608733_161926686000_2.jpg",
-//            "http://pic.baike.soso.com/p/20140314/20140314163748-240481789.jpg",
-//            "http://pic.baike.soso.com/p/20140314/20140314161519-1600894624.jpg"
-//    };
+    @BindView(R.id.detail_kefu)
+    LinearLayout detailKefu;
+    @BindView(R.id.detail_shoucang_image)
+    ImageView detailShoucangImage;
+    @BindView(R.id.detail_shoucang)
+    LinearLayout detailShoucang;
+    @BindView(R.id.detail_addshopping_cart)
+    Button detailAddshoppingCart;
+    @BindView(R.id.detail_addshopping_payproduct)
+    Button detailAddshoppingPayproduct;
+
     private String[] images;
     private List<String> imageList = new ArrayList<String>();
 
+
+    @InjectParam(key = "data")
+    ResponseSearchFresh.ListfreshBean product;
+
+    private ResponseQueryProductDetail.ListfreshBean productDetail=null;
     @Override
     protected int getContentId() {
         return R.layout.ac_goods_details;
@@ -89,7 +114,7 @@ public class GoodsDetailsActivity extends BaseActivity {
     @Override
     protected void init() {
         super.init();
-
+        Router.injectParams(this);
         inintTitle(getString(R.string.product_details), true, "");//商品详情
         left_return_btn.setOnClickListener(new View.OnClickListener() { //返回
             @Override
@@ -100,119 +125,30 @@ public class GoodsDetailsActivity extends BaseActivity {
         View headview = LayoutInflater.from(GoodsDetailsActivity.this).inflate(R.layout.index_headview_goods_details, null);
         convenientBanner2 = (ConvenientBanner) headview.findViewById(R.id.convenientBanner2);
         lay_goods_pic.addView(headview);
-
         initview();
 
     }
 
     private void initview() {
-        Log.i("resultString", "Database.goodsdetails-----" + Database.goodsdetails);
-//        if (Database.goodsdetails != null && Database.goodsdetails.size() != 0) {
-//            if (Database.goodsdetails.get("freshName") != null) { //商品名称
-//                tv_goods_name.setText(Database.goodsdetails.get("freshName").toString());
-//            }
-//            if (Database.goodsdetails.get("freshPrice") != null) { //商品价格
-//                tv_goods_price.setText("¥ " + Database.goodsdetails.get("freshPrice").toString());
-//            }
-//            if (Database.goodsdetails.get("freshTypeName") != null) { // freshTypeName
-//                tv_quick_deliver_goods.setText(Database.goodsdetails.get("freshTypeName").toString());
-//            }
-//            if (Database.goodsdetails.get("weight") != null) { //净含量
-//                tv_goods_weight.setText(Double.valueOf(Database.goodsdetails.get("weight").toString()).intValue() + "g");
-//            }
-//            if (Database.goodsdetails.get("packingType") != null) { //包装方式
-//                goods_packaging.setText(Database.goodsdetails.get("packingType").toString());
-//            }
-//            if (Database.goodsdetails.get("brandName") != null) { //品牌
-//                tv_goods_brand.setText(Database.goodsdetails.get("brandName").toString());
-//            }
-//            if (Database.goodsdetails.get("originName") != null) { //产地
-//                tv_producing_area.setText(Database.goodsdetails.get("originName").toString());
-//            }
-//            if (Database.goodsdetails.get("brandTEL") != null) { //厂家联系方式
-//                tv_vender_phone.setText(Database.goodsdetails.get("brandTEL").toString());
-//            }
-//            if (Database.goodsdetails.get("shelfLife") != null) { //保质期
-//                tv_expiration_date.setText(Database.goodsdetails.get("shelfLife").toString());
-//            }
-//            if (Database.goodsdetails.get("freshUrl") != null) { //
-//                load(Database.goodsdetails.get("freshUrl").toString()); //
-//            }
-//            if (Database.goodsdetails.get("nutritiveValue") != null) { //营养价值
-//                tv_nutritiveValue.setText(Database.goodsdetails.get("nutritiveValue").toString()); //
-//            }
-//
-//            if (Database.goodsdetails.get("listfreshPicture") != null) { //生鲜标题图片路径
-//                ArrayList<LinkedTreeMap<String, Object>> picture_list = (ArrayList<LinkedTreeMap<String, Object>>) Database.goodsdetails.get("listfreshPicture");
-//                if (picture_list != null && picture_list.size() != 0) {
-//                    String pic_str = "";
-//                    for (int i = 0; i < picture_list.size(); i++) {
-//                        if (picture_list.get(i) != null && picture_list.get(i).get("picturePath") != null) {
-//                            pic_str = pic_str + picture_list.get(i).get("picturePath").toString() + ","; //生鲜图片  ,号隔开
-//                        }
-//                    }
-//                    if (pic_str.split(",") != null && pic_str.split(",").length > 0) {
-//                        images = pic_str.split(",");
-//                    } else {
-//                        images = new String[]{pic_str};
-//                    }
-//                    getBanner(); //开始广告轮播
-////                    ScrollViewLayout(GoodsDetailsActivity.this, picture_list, lay_goodsImage_list);
-//                }
-//            }
-//        }
-        if (Database.goodsdetails != null) {
-            if (Database.goodsdetails.getFreshName() != null) { //商品名称
-                tv_goods_name.setText(Database.goodsdetails.getFreshName());
-            }
-            if (Database.goodsdetails.getFreshPrice() != 0) { //商品价格
-                tv_goods_price.setText("¥ " + Database.goodsdetails.getFreshPrice());
-            }
-            if (Database.goodsdetails.getFreshTypeName() != null) { // freshTypeName
-                tv_quick_deliver_goods.setText(Database.goodsdetails.getFreshTypeName());
-            }
-            if (Database.goodsdetails.getWeight() != 0) { //净含量
-                tv_goods_weight.setText(Database.goodsdetails.getWeight() + "g");
-            }
-            if (Database.goodsdetails.getPackingType() != null) { //包装方式
-                goods_packaging.setText(Database.goodsdetails.getPackingType().toString());
-            }
-            if (Database.goodsdetails.getBrandName() != null) { //品牌
-                tv_goods_brand.setText(Database.goodsdetails.getBrandName());
-            }
-            if (Database.goodsdetails.getOriginName() != null) { //产地
-                tv_producing_area.setText(Database.goodsdetails.getOriginName());
-            }
-            if (Database.goodsdetails.getBrandTEL() != null) { //厂家联系方式
-                tv_vender_phone.setText(Database.goodsdetails.getBrandTEL());
-            }
-            if (Database.goodsdetails.getShelfLife() != null) { //保质期
-                tv_expiration_date.setText(Database.goodsdetails.getShelfLife());
-            }
-            if (Database.goodsdetails.getFreshUrl() != null) { //
-                load(Database.goodsdetails.getFreshUrl()); //
-            }
-            if (Database.goodsdetails.getNutritiveValue() != null) { //营养价值
-                tv_nutritiveValue.setText(Database.goodsdetails.getNutritiveValue()+""); //
-            }
-            if (Database.goodsdetails.getListfreshPicture() != null) { //生鲜标题图片路径
-                List<FreashInfo.ListFreshBean.ListfreshPictureBean> picture_list = Database.goodsdetails.getListfreshPicture();
-                if (picture_list != null && picture_list.size() != 0) {
-                    String pic_str = "";
-                    for (int i = 0; i < picture_list.size(); i++) {
-                        if (picture_list.get(i) != null && picture_list.get(i).getPicturePath() != null) {
-                            pic_str = pic_str + picture_list.get(i).getPicturePath() + ","; //生鲜图片  ,号隔开
-                        }
-                    }
-                    if (pic_str.split(",") != null && pic_str.split(",").length > 0) {
-                        images = pic_str.split(",");
-                    } else {
-                        images = new String[]{pic_str};
-                    }
-                    getBanner(); //开始广告轮播
-//                    ScrollViewLayout(GoodsDetailsActivity.this, picture_list, lay_goodsImage_list);
-                }
-            }
+        tv_goods_name.setText(product.getFreshName()); //商品名称
+        tv_goods_price.setText("¥ " + product.getFreshPrice());//商品价格
+        tv_quick_deliver_goods.setText(product.getFreshTypeName());
+        tv_goods_weight.setText(product.getWeight() + "g");//净含量
+        requestProductDetail(product.getFreshID());
+    }
+
+    @OnClick({R.id.detail_kefu,R.id.detail_shoucang,R.id.detail_addshopping_cart,R.id.detail_addshopping_payproduct})
+    void onClickBtn(View view){
+        switch (view.getId()){
+            case R.id.detail_kefu://客服
+
+                break;
+            case R.id.detail_shoucang://收藏
+                break;
+            case R.id.detail_addshopping_cart://加入购物车
+                break;
+            case R.id.detail_addshopping_payproduct://立即购买
+                break;
         }
     }
 
@@ -263,6 +199,85 @@ public class GoodsDetailsActivity extends BaseActivity {
 
                     }
                 });
+    }
+
+    /**
+     * 查询产品详情
+     *
+     * @param freshId
+     */
+    private void requestProductDetail(int freshId) {
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("fresh", new RequestProductDetail(freshId));
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
+                if (detail.getStatusCode() == 1) {
+                    if (detail.getListfresh() == null || detail.getListfresh().size() <= 0) {
+                        showShort(detail.getAlertMessage());
+                    } else {
+                        productDetail=detail.getListfresh().get(0);
+                        goods_packaging.setText(detail.getListfresh().get(0).getPackingType());//包装方式
+                        tv_goods_brand.setText(detail.getListfresh().get(0).getMerchantName());//品牌
+                        tv_producing_area.setText(detail.getListfresh().get(0).getOriginName());//产地
+                        tv_vender_phone.setText(detail.getListfresh().get(0).getMerchantTel());//厂家联系方式
+                        tv_expiration_date.setText(detail.getListfresh().get(0).getShelfLife());//保质期
+
+//                        load(Database.goodsdetails.getFreshUrl());
+                        tv_nutritiveValue.setText(detail.getListfresh().get(0).getNutritiveValue() + ""); //营养价值
+
+                        if(productDetail.isCollectionStatu()){
+                            detailShoucangImage.setImageResource(R.mipmap.shoucang);
+                        }else {
+                            detailShoucangImage.setImageResource(R.mipmap.icon_collection_normal);
+                        }
+
+                        List<ResponseQueryProductDetail.ListfreshBean.ListfreshPictureBean> picture_list = detail.getListfresh().get(0).getListfreshPicture();
+                        if (picture_list != null && picture_list.size() != 0) {
+                            String pic_str = "";
+                            for (int i = 0; i < picture_list.size(); i++) {
+                                if (picture_list.get(i) != null && picture_list.get(i).getPicturePath() != null) {
+                                    pic_str = pic_str + picture_list.get(i).getPicturePath() + ","; //生鲜图片  ,号隔开
+                                }
+                            }
+                            if (pic_str.split(",") != null && pic_str.split(",").length > 0) {
+                                images = pic_str.split(",");
+                            } else {
+                                images = new String[]{pic_str};
+                            }
+                            getBanner(); //开始广告轮播
+//                    ScrollViewLayout(GoodsDetailsActivity.this, picture_list, lay_goodsImage_list);
+                        }
+                    }
+
+
+                } else {
+                    showShort(detail.getAlertMessage());
+                }
+            }
+
+            @Override
+            public void onError() {
+                showShort("系统异常");
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_FRESH_QUERY_DETAIL, json);
     }
 
     private void load(String html) {
@@ -342,4 +357,5 @@ public class GoodsDetailsActivity extends BaseActivity {
         super.onDestroy();
         Database.goodsdetails = null;
     }
+
 }

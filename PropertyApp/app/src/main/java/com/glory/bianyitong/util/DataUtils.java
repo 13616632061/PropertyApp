@@ -1,6 +1,7 @@
 package com.glory.bianyitong.util;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.glory.bianyitong.bean.AuthAreaInfo;
@@ -23,7 +24,8 @@ import java.util.List;
 public class DataUtils {
 
     public static void my_community(Context context) { //我的社区
-        String communityID_str = SharePreToolsKits.fetchString(context, Constant.communityID);
+        ACache cache=ACache.get(context);
+        String communityID_str = cache.getAsString(Constant.communityID);
         int communityID = 0;
         if (communityID_str != null) {
             communityID = Double.valueOf(communityID_str).intValue();
@@ -85,6 +87,9 @@ public class DataUtils {
      * approvalDate : 2017-01-03T16:14:00
      */
     public static void getUesrCommunity(LoginUserInfo loginUserInfo) {
+        if (loginUserInfo==null){
+            return;
+        }
         Database.my_community_List = null;
         Database.my_community_List = new ArrayList<>();
         for (int i = 0; i < loginUserInfo.getUserCommnunity().size(); i++) {
@@ -96,14 +101,16 @@ public class DataUtils {
                 }else {
                     commnunityInfo.setUserCommunityID(0);
                 }
-                if (loginUserInfo.getUser().getUserID() != null) {
+                if(!TextUtils.isEmpty(loginUserInfo.getUser().getUserID()))
                     commnunityInfo.setUserID(loginUserInfo.getUser().getUserID());
-                }
-                if (userCommnunityBean.getUserName() != null) {
-                    commnunityInfo.setUserName(userCommnunityBean.getUserName());
-                }else {
+
+                if(!TextUtils.isEmpty(loginUserInfo.getUser().getUserName()))
+                    commnunityInfo.setUserName(loginUserInfo.getUser().getUserName());
+                else {
                     commnunityInfo.setUserName("");
                 }
+
+
                 if (userCommnunityBean.getCommunityID() != 0) {
                     commnunityInfo.setCommunityID(userCommnunityBean.getCommunityID());
                 }else {
@@ -320,7 +327,9 @@ public class DataUtils {
         hashMap3.put("user", toUserMap());
         hashMap3.put("userCommnunity", tohserMaplist());
         String json = JsonHelper.toJson(hashMap3);
-        SharePreToolsKits.putJsonDataString(context, Constant.user, json); //缓存登录后信息 修改
+//        SharePreToolsKits.putJsonDataString(context, Constant.user, json); //缓存登录后信息 修改
+        ACache cache=ACache.get(context);
+        cache.put(Constant.user,json);
     }
 
     public static void getgoods(LinkedTreeMap<String, Object> map) {

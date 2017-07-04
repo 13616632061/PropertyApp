@@ -310,7 +310,7 @@ public class FreshSupermarketFragment extends BaseFragment {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(url, json);
+        }).getEntityData(HttpURL.HTTP_POST_FRESH_TYPE, json);
     }
 
     @Override

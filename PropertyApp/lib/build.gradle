@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-//apply plugin: 'com.github.dcendents.android-maven' // ADD THIS
-
 group='com.github.sd6352051'
 
 android {
@@ -8,7 +6,7 @@ android {
     buildToolsVersion '25.0.0'
 
     defaultConfig {
-        minSdkVersion 14
+        minSdkVersion 15
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -20,6 +18,11 @@ android {
         }
     }
 }
+// 可选. 指定版本号.
+ext {
+    routerVersion = "1.2.0" // 指定特定的router版本
+    compilerVersion = "1.2.0" // 指定特定的router-compiler版本
+}
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
@@ -27,6 +30,14 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.3.0'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.github.lazylibrary:lazylibrary:1.0.2'
+    compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.22'
+
+    //okgo
+    compile 'com.lzy.net:okgo:2.0.0'
+    compile 'com.lzy.net:okserver:1.1.0'
+
+    compile 'com.google.code.gson:gson:2.6.2'
+
 //    compile 'com.android.support:support-v4:23.0.0'
 //    compile 'com.android.support:appcompat-v7:23.0.0'
 }

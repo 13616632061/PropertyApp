@@ -17,7 +17,7 @@ import com.glory.bianyitong.bean.listCommunityBulletinInfo;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
-import com.glory.bianyitong.util.SharePreToolsKits;
+import com.glory.bianyitong.util.ACache;
 
 import java.util.HashMap;
 import java.util.List;
@@ -259,7 +259,8 @@ public class FavoriteProductAdapter extends BaseAdapter {
                     }
                     intent.putExtra("PushID", 0);
                     context.startActivity(intent);
-                    SharePreToolsKits.putString(context, Constant.bulletinID, Database.readbulletinid); //缓存已读消息
+                    ACache cache=ACache.get(context);
+                    cache.put(Constant.bulletinID, Database.readbulletinid);//缓存已读消息
                 }
 
             }

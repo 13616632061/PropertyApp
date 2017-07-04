@@ -1,7 +1,6 @@
 package com.glory.bianyitong.ui.activity;
 
 import android.app.ProgressDialog;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -12,8 +11,6 @@ import android.widget.TextView;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.MessageInfo;
 import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.http.RequestUtil;
-import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
@@ -22,13 +19,6 @@ import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.ui.adapter.MessageAdapter;
-import com.glory.bianyitong.util.SharePreToolsKits;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.BaseRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,8 +26,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * Created by lucy on 2016/11/28.
@@ -93,7 +81,7 @@ public class MessageActivity extends BaseActivity {
 //        tv_all_read_mes.setOnClickListener(this);
         listView_mes = (ListView) findViewById(R.id.listView_mes);
         if (Database.readmessageid == null || Database.readmessageid.equals("")) {
-            Database.readmessageid = SharePreToolsKits.fetchString(MessageActivity.this, Constant.messageID);
+            Database.readmessageid = mCache.getAsString(Constant.messageID);
         }
         if (Database.readmessageid == null || Database.readmessageid.equals("")) {
             Database.readmessageid = "";
@@ -183,7 +171,8 @@ public class MessageActivity extends BaseActivity {
                 }
                 adapter.notifyDataSetChanged();
                 Database.notreadmessageidSize = 0;
-                SharePreToolsKits.putString(MessageActivity.this, Constant.messageID, Database.readmessageid); //缓存已读消息
+                mCache.put(Constant.messageID,Database.readmessageid);
+//                SharePreToolsKits.putString(MessageActivity.this, Constant.messageID, Database.readmessageid); //缓存已读消息
                 break;
 //            case R.id.tv_del_mes: //删除
 ////                删除这部分有点复杂，比如12345 你删除了13 haspmap里面保存了245 但是2这项其实到了第一条了，如果你不做处理的话，

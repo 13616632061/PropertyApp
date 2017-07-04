@@ -1,5 +1,6 @@
 package com.glory.bianyitong.bean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -82,7 +83,7 @@ public class LoginUserInfo{
         this.userCommnunity = userCommnunity;
     }
 
-    public static class UserBean {
+    public static class UserBean  {
         /**
          * jgPushID : null
          * jgPushName : null

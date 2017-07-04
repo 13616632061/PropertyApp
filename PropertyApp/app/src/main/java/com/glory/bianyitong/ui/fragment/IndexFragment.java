@@ -16,7 +16,6 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.glory.bianyitong.bean.AdvertisingInfo2;
 import com.glory.bianyitong.bean.AuthAreaInfo;
 import com.glory.bianyitong.bean.BaseRequestBean;
@@ -31,7 +30,6 @@ import com.glory.bianyitong.ui.activity.AuthAreaActivity;
 import com.glory.bianyitong.ui.activity.LoginActivity;
 import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.DateUtil;
-import com.glory.bianyitong.util.SharePreToolsKits;
 import com.glory.bianyitong.view.NewPullToRefreshView;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -148,13 +146,13 @@ public class IndexFragment extends BaseFragment {
         ad_request();
 
         if (Database.readbulletinid == null || Database.readbulletinid.equals("")) { //获取已读公告缓存
-            Database.readbulletinid = SharePreToolsKits.fetchString(context, Constant.bulletinID);
+            Database.readbulletinid = mCache.getAsString(Constant.bulletinID);
         }
         if (Database.readbulletinid == null || Database.readbulletinid.equals("")) {
             Database.readbulletinid = "";
         }
         if (Database.readmessageid == null || Database.readmessageid.equals("")) {//获取已读消息缓存
-            Database.readmessageid = SharePreToolsKits.fetchString(context, Constant.messageID);
+            Database.readmessageid = mCache.getAsString( Constant.messageID);
         }
         if (Database.readmessageid == null || Database.readmessageid.equals("")) {
             Database.readmessageid = "";

@@ -1,11 +1,9 @@
 package com.glory.bianyitong.ui.activity;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -15,18 +13,13 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -42,7 +35,6 @@ import com.glory.bianyitong.bean.AuthAreaInfo;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.LoginUserInfo;
 import com.glory.bianyitong.bean.UPVersionInfo;
-import com.glory.bianyitong.bean.UserInfo;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
@@ -50,7 +42,6 @@ import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.jpush.ExampleUtil;
-import com.glory.bianyitong.ui.adapter.ConveniencePhoneAdapter;
 import com.glory.bianyitong.ui.adapter.FragmentTabAdapter;
 import com.glory.bianyitong.ui.dialog.OpenDoorPopuWindow;
 import com.glory.bianyitong.ui.fragment.FreshSupermarketFragment;
@@ -58,25 +49,18 @@ import com.glory.bianyitong.ui.fragment.IndexFragment;
 import com.glory.bianyitong.ui.fragment.MyFragment;
 import com.glory.bianyitong.ui.fragment.NeighbourFragment;
 import com.glory.bianyitong.ui.fragment.OpenTheDoorFragment;
+import com.glory.bianyitong.util.ACache;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DataUtils;
-import com.glory.bianyitong.util.ImageUtil;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.LogUtils;
-import com.glory.bianyitong.util.SharePreToolsKits;
+import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.update.service.DownloadService;
-import com.glory.bianyitong.widght.update.utils.SPUtils;
 import com.glory.bianyitong.widght.update.utils.UPVersion;
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedHashTreeMap;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.BaseRequest;
 
-import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -92,8 +76,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import cn.sharesdk.framework.ShareSDK;
-import okhttp3.Call;
-import okhttp3.Response;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 @Route(value = RouterMapping.ROUTER_ACTIVITY_MAIN)
@@ -340,17 +322,15 @@ public class MainActivity extends FragmentActivity implements View.OnClickListen
     }
 
     private void getUser() {
-        if (Database.login_return == null || Database.login_return.equals("")) {
-            Database.login_return = SharePreToolsKits.fetchJsonDataString(MainActivity.this, Constant.user);
+        if(TextUtil.isEmpty(Database.login_return)){
+            ACache cache=ACache.get(this);
+            Database.login_return = cache.getAsString(Constant.user);
         }
-        if (Database.login_return != null && Database.login_return.length() > 0) {
-            LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, LoginUserInfo.class);
-            if (userInfo != null && userInfo.getUser() != null) {
-                Database.USER_MAP = userInfo.getUser();
-
-            }
+        if(!TextUtil.isEmpty(Database.login_return)){
+            LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, new TypeToken<LoginUserInfo>(){}.getType());
+            Database.USER_MAP = userInfo.getUser();
             Database.accessToken=userInfo.getAccessToken();
-            if (userInfo != null && userInfo.getUserCommnunity() != null) {
+            if(!(userInfo==null || userInfo.getUserCommnunity()==null)){
                 DataUtils.getUesrCommunity(userInfo);//社区列表
                 DataUtils.my_community(MainActivity.this);
             }

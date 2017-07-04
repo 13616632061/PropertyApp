@@ -15,6 +15,7 @@ import com.glory.bianyitong.R;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lucy on 2016/11/14.
@@ -23,11 +24,11 @@ import java.util.ArrayList;
 public class GridSearchTagAdapter extends BaseAdapter {
     private Context context;
     private Handler handler;
-    private ArrayList<LinkedTreeMap<String, Object>> list;
+    private List<String> list;
     private LayoutInflater mInflater = null;
     private int type;
 
-    public GridSearchTagAdapter(Context context, ArrayList<LinkedTreeMap<String, Object>> list, Handler handler,int type) {
+    public GridSearchTagAdapter(Context context, List<String> list, Handler handler, int type) {
         this.context = context;
         this.list = list;
         this.handler = handler;
@@ -65,8 +66,8 @@ public class GridSearchTagAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        if (list != null && list.get(position) != null && list.get(position).get("freshTypeName")!=null) {
-            String name = list.get(position).get("freshTypeName").toString();
+        if (list != null && list.get(position) != null ) {
+            String name = list.get(position);
             holder.tv_search_tag_name.setText(name);//  标签名称
         }else {
             holder.tv_search_tag_name.setText("");
@@ -77,7 +78,7 @@ public class GridSearchTagAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 Message msg = new Message();
-                msg.obj = list.get(position).get("freshTypeName").toString();
+                msg.obj = list.get(position);
                 msg.what = type;
                 msg.arg1 = position;
                 handler.sendMessage(msg);

@@ -1,8 +1,6 @@
 package com.glory.bianyitong.ui.activity;
 
 import android.app.ProgressDialog;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -14,32 +12,20 @@ import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.entity.request.RequestUserBean;
-import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
-import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.DataUtils;
-import com.glory.bianyitong.util.SharePreToolsKits;
 import com.glory.bianyitong.util.TextUtil;
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Database;
-import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.ToastUtils;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.BaseRequest;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * Created by lucy on 2016/11/21.

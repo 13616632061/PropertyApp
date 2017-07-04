@@ -134,4 +134,15 @@ public class HttpURL {
     public static String HTTP_POST_FRIEND_COMMENT_ADD="/ApiNeighborhoodComment/Add";
     //举报
     public static String HTTP_POST_FRIEND_COMMENT_REPORT="/ApiReport/Add";
+
+
+    /**
+     * 生鲜
+     */
+    public static String HTTP_POST_FRESH_TYPE="/ApiFreshType/Query";//生鲜类型
+
+
+    public static String HTTP_POST_FRESH_QUERY_TAG="/ApiFresh/QueryTag";//获取热门标签
+    public static String HTTP_POST_FRESH_QUERY_SEARCH="/ApiFresh/FuzzyQuery";//搜索框搜索生鲜
+    public static String HTTP_POST_FRESH_QUERY_DETAIL="/ApiFresh/Query";//查询生鲜详情
 }

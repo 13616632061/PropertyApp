@@ -22,15 +22,19 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp"
+                android:layout_height="100dp"
                 android:background="@drawable/my_bg_pic">
 
                 <com.glory.bianyitong.widght.CircleImageView
                     android:id="@+id/cim_my_head_portrait"
-                    android:layout_width="69dp"
-                    android:layout_height="69dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="22dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="6dp"
+                    android:layout_marginLeft="21dp"
+                    android:layout_marginStart="21dp"
+                    android:layout_toEndOf="@+id/ll_describe"
+                    android:layout_toRightOf="@+id/ll_describe"
                     android:src="@drawable/head" />
 
                 <!--fontPath="font/PingFang Regular.ttf"-->
@@ -38,7 +42,9 @@
                     android:id="@+id/text_user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginBottom="21dp"
                     android:layout_marginLeft="20dp"
                     android:layout_toRightOf="@id/cim_my_head_portrait"
                     android:text="用户名"
@@ -68,26 +74,33 @@
                         android:textColor="@color/tv_color_name"
                         android:textSize="14sp" />
                 </LinearLayout>
+
                 <TextView
                     android:id="@+id/tv_my_account"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="16dp"
-                    android:text="@string/account_management"/>
+                    android:layout_marginBottom="21dp"
+                    android:background="@mipmap/zhanghuguanli_button"
+                    android:gravity="center"
+                    android:text="@string/account_management"
+                    android:textColor="@color/white" />
+
                 <RelativeLayout
                     android:id="@+id/rl_setting"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:layout_alignParentRight="true">
+
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:src="@drawable/icon_setting"/>
+                        android:src="@drawable/icon_setting" />
                 </RelativeLayout>
             </RelativeLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -112,7 +125,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:drawablePadding="4dp"
-                        android:drawableTop="@drawable/icon_community"
+                        android:drawableTop="@mipmap/gouwuche"
                         android:gravity="center"
                         android:text="@string/shopping_cart"
                         android:textColor="@color/tv_color_name"
@@ -123,14 +136,14 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="-17dp"
-                        android:layout_marginTop="10dp"
+                        android:layout_marginTop="-3dp"
                         android:layout_toRightOf="@id/tv_shopping_cart"
                         android:background="@drawable/log_notice_text"
                         android:gravity="center"
                         android:text="0"
                         android:textColor="@color/white"
                         android:textSize="11sp"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
                 </RelativeLayout>
 
                 <TextView
@@ -140,7 +153,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:drawablePadding="4dp"
-                    android:drawableTop="@drawable/icon_convenience_phone"
+                    android:drawableTop="@mipmap/shoucang"
                     android:gravity="center"
                     android:text="@string/favorite_product"
                     android:textColor="@color/tv_color_name"
@@ -153,7 +166,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:drawablePadding="4dp"
-                    android:drawableTop="@drawable/icon_suggest"
+                    android:drawableTop="@mipmap/youhuiquan"
                     android:gravity="center"
                     android:text="@string/coupon"
                     android:textColor="@color/tv_color_name"
@@ -166,7 +179,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:drawablePadding="4dp"
-                    android:drawableTop="@drawable/icon_tenement_steward"
+                    android:drawableTop="@mipmap/kefu"
                     android:gravity="center"
                     android:text="@string/customer_service"
                     android:textColor="@color/tv_color_name"
@@ -177,6 +190,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="@color/linegray" />
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -184,15 +198,18 @@
                 android:background="@color/linegray" />
 
             <RelativeLayout
+                android:id="@+id/my_fragment_allorder"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:background="@color/white">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="10dp"
-                    android:text="@string/my_order"/>
+                    android:text="@string/my_order" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -201,8 +218,9 @@
                     android:layout_marginRight="10dp"
                     android:drawablePadding="8dp"
                     android:drawableRight="@drawable/ic_gray_next"
-                    android:text="@string/view_all_orders"/>
+                    android:text="@string/view_all_orders" />
             </RelativeLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -222,7 +240,7 @@
                     android:layout_centerHorizontal="true"
                     android:layout_weight="1"
                     android:drawablePadding="4dp"
-                    android:drawableTop="@drawable/icon_community"
+                    android:drawableTop="@mipmap/daifukuan"
                     android:gravity="center"
                     android:text="@string/pending_payment"
                     android:textColor="@color/tv_color_name"
@@ -235,7 +253,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:drawablePadding="4dp"
-                    android:drawableTop="@drawable/icon_convenience_phone"
+                    android:drawableTop="@mipmap/daifahuo"
                     android:gravity="center"
                     android:text="@string/to_be_delivered"
                     android:textColor="@color/tv_color_name"
@@ -248,7 +266,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:drawablePadding="4dp"
-                    android:drawableTop="@drawable/icon_suggest"
+                    android:drawableTop="@mipmap/daishouhuo"
                     android:gravity="center"
                     android:text="@string/to_be_received"
                     android:textColor="@color/tv_color_name"
@@ -261,7 +279,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:drawablePadding="4dp"
-                    android:drawableTop="@drawable/icon_tenement_steward"
+                    android:drawableTop="@mipmap/daipingjia"
                     android:gravity="center"
                     android:text="@string/be_evaluated"
                     android:textColor="@color/tv_color_name"
@@ -274,12 +292,13 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:drawablePadding="4dp"
-                    android:drawableTop="@drawable/icon_tenement_steward"
+                    android:drawableTop="@mipmap/tuikuan"
                     android:gravity="center"
                     android:text="@string/refund_sale"
                     android:textColor="@color/tv_color_name"
                     android:textSize="13sp" />
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -290,12 +309,14 @@
                 android:layout_height="1dp"
                 android:layout_marginTop="3dp"
                 android:background="@color/linegray" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@color/white"
                 android:orientation="vertical"
                 android:paddingLeft="15dp">
+
                 <TextView
                     android:id="@+id/tv_auth_area"
                     style="@style/my_base_text_style"
@@ -321,6 +342,34 @@
                     android:drawableRight="@drawable/ic_gray_next"
                     android:gravity="center_vertical"
                     android:text="@string/authorized_management" />
+
+                <include layout="@layout/base_view_line"></include>
+
+                <TextView
+                    android:id="@+id/tv_family_manager"
+                    style="@style/my_base_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="15dp"
+                    android:drawableLeft="@drawable/icon_door_award"
+                    android:drawablePadding="18dp"
+                    android:drawableRight="@drawable/ic_gray_next"
+                    android:gravity="center_vertical"
+                    android:text="@string/family_management" />
+
+                <include layout="@layout/base_view_line"></include>
+
+                <TextView
+                    android:id="@+id/tv_address_manager"
+                    style="@style/my_base_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="15dp"
+                    android:drawableLeft="@drawable/icon_door_award"
+                    android:drawablePadding="18dp"
+                    android:drawableRight="@drawable/ic_gray_next"
+                    android:gravity="center_vertical"
+                    android:text="@string/address_management" />
 
                 <include layout="@layout/base_view_line"></include>
 

@@ -3,31 +3,19 @@ package com.glory.bianyitong.ui.dialog;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import com.glory.bianyitong.bean.AuthAreaInfo;
-import com.glory.bianyitong.bean.CommnunityInfo;
-import com.glory.bianyitong.bean.UserInfo;
-import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.exception.MyApplication;
-import com.glory.bianyitong.util.JsonHelper;
-import com.glory.bianyitong.util.SharePreToolsKits;
 import com.glory.bianyitong.util.ToastUtils;
-import com.google.gson.reflect.TypeToken;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 @SuppressLint("SdCardPath")
 public class ServiceDialog {

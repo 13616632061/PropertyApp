@@ -1,18 +1,13 @@
 package com.glory.bianyitong.ui.activity;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.chenenyu.router.Router;
@@ -20,11 +15,7 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.router.RouterMapping;
-import com.glory.bianyitong.util.SharePreToolsKits;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +51,7 @@ public class WelcomeActivity extends BaseActivity {
         viewPager = (ViewPager) findViewById(R.id.viewPager1);
         initsdk();
 
-        versioncode = SharePreToolsKits.fetchVersionString(WelcomeActivity.this, "versioncode");//版本号
+        versioncode = mCache.getAsString("versioncode");//版本号
         if (versioncode == null) {
             versioncode = "";
         }
@@ -214,7 +205,7 @@ public class WelcomeActivity extends BaseActivity {
             views.get(position).setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
                     if (position == 3) {
-                        SharePreToolsKits.putVersionString(WelcomeActivity.this, "versioncode", Constant.VERSIONCODE);
+                        mCache.put("versioncode", Constant.VERSIONCODE);
                         Intent intent2 = new Intent(WelcomeActivity.this, MainActivity.class);
                         startActivity(intent2);
                         WelcomeActivity.this.finish();
@@ -287,7 +278,7 @@ public class WelcomeActivity extends BaseActivity {
         @Override
         public void onPageScrolled(int arg0, float arg1, int arg2) {
             if (arg0 == viewPager.getAdapter().getCount() - 1) {// 滑动到最后一页
-                SharePreToolsKits.putVersionString(WelcomeActivity.this, "versioncode", Constant.VERSIONCODE);
+                mCache.put("versioncode", Constant.VERSIONCODE);
                 Intent intent2 = new Intent(WelcomeActivity.this, MainActivity.class);
                 startActivity(intent2);
                 WelcomeActivity.this.finish();

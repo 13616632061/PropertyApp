@@ -5,9 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -21,26 +19,13 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
-import com.glory.bianyitong.http.HttpURL;
-import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DataCleanManager;
-import com.glory.bianyitong.util.JsonHelper;
-import com.glory.bianyitong.util.SharePreToolsKits;
 import com.glory.bianyitong.util.ToastUtils;
-import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.BaseRequest;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import cn.jpush.android.api.JPushInterface;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * Created by lucy on 2016/11/14.
@@ -200,22 +185,13 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void logout() {
-//        if (Database.USER_MAP != null && Database.USER_MAP.getPhoneNumber() != null) {
-//            appExit(Database.USER_MAP.getPhoneNumber());
-//        }
 
         Database.USER_MAP = null;
         Database.my_community_List = null;
         Database.my_community = null;
         Database.accessToken=null;
-        SharePreToolsKits.putJsonDataString(this, Constant.user, "");
-//                SharePreToolsKits.putJsonDataString(SettingActivity.this, Constant.user, "");//缓存用户登录后信息
-//                SharePreToolsKits.putString(SettingActivity.this, Constant.bulletinID, ""); //缓存已读社区消息
-//                SharePreToolsKits.putString(SettingActivity.this, Constant.messageID, ""); //缓存已读系统通知消息
-//                SharePreToolsKits.putString(SettingActivity.this, Constant.communityID, ""); //缓存所选的小区id
-//                SharePreToolsKits.putJsonDataString(SettingActivity.this, Constant.SEARCH, "");//缓存最近搜索数据
-        SharePreToolsKits.clearJsonDataShare(SettingActivity.this);
-        SharePreToolsKits.clearShare(SettingActivity.this);
+        mCache.remove(Constant.user);
+        mCache.clear();
         Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
         startActivity(intent);
         SettingActivity.this.finish();

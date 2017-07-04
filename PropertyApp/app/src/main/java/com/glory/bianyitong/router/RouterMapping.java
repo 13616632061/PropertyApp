@@ -58,4 +58,14 @@ public class RouterMapping  {
     public static final String ROUTER_ACTIVITY_FRIEND_USER_INFO="ROUTER_ACTIVITY_FRIEND_USER_INFO";//个人主页
 
 
+    /**
+     * 订单
+     */
+    public static final String ROUTER_ACTIVITY_ORDER="ROUTER_ACTIVITY_ORDER";//订单列表
+
+
+    /**
+     * 生鲜
+     */
+    public static final String ROUTER_ACTIVITY_PRODUCT_DETAIL="ROUTER_ACTIVITY_PRODUCT_DETAIL";//商品详情
 }

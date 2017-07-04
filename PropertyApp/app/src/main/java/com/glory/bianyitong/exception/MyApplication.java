@@ -7,7 +7,10 @@ import android.os.Vibrator;
 
 import com.chenenyu.router.RouteInterceptor;
 import com.chenenyu.router.RouteRequest;
+import com.chenenyu.router.RouteTable;
 import com.chenenyu.router.Router;
+import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.activity.shop.OrderListActivity;
 import com.glory.bianyitong.util.imgloader.AuthImageDownloader;
 import com.glory.bianyitong.util.imgloader.TilmImgLoaderUtil;
 import com.lzy.okgo.BuildConfig;
@@ -22,6 +25,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+
+import java.util.Map;
+
 import cn.jpush.android.api.JPushInterface;
 
 /**

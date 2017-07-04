@@ -144,6 +144,8 @@
     <string name="prompt">提示</string>
     <string name="whether_to_delete_the_donor">是否删除授权人</string>
     <string name="authorized_management">授权管理</string>
+    <string name="family_management">家庭管理</string>
+    <string name="address_management">收货地址管理</string>
     <string name="successfully_deleted">删除成功</string>
     <string name="failed_to_delete">删除失败</string>
     <string name="notice_details">公告详情</string>
@@ -284,10 +286,10 @@
     <string name="version_upgrade">版本升级</string>
 
     <string name="pickup">取件</string>
-    <string name="account_management">账号管理</string>
+    <string name="account_management">账户管理</string>
     <string name="customer_service">客服</string>
     <string name="coupon">优惠券</string>
-    <string name="favorite_product">收藏商品</string>
+    <string name="favorite_product">收藏夹</string>
     <string name="shopping_cart">购物车</string>
 
     <string name="refund_sale">退款/售后</string>
