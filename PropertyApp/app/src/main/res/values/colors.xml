@@ -108,4 +108,7 @@
 
     <!-- 标题背景颜色（淡蓝色）-->
     <color name="title_background_color4">#ff66D5DE</color>
+
+    <!--不含运费 灰色-->
+    <color name="grayb1">#b1b1b1</color>
 </resources>

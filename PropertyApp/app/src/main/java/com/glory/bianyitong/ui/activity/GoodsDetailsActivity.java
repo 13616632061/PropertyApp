@@ -2,6 +2,7 @@ package com.glory.bianyitong.ui.activity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
@@ -20,13 +21,18 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.chenenyu.router.RouteCallback;
+import com.chenenyu.router.RouteResult;
 import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.entity.request.RequestCollectionAdd;
 import com.glory.bianyitong.bean.entity.request.RequestProductDetail;
+import com.glory.bianyitong.bean.entity.request.RequestShoppingCartAdd;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseSearchFresh;
 import com.glory.bianyitong.constants.Database;
@@ -54,7 +60,7 @@ import butterknife.OnClick;
  * 商品详情
  */
 @Route(value = RouterMapping.ROUTER_ACTIVITY_PRODUCT_DETAIL)
-public class GoodsDetailsActivity extends BaseActivity {
+public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
 
@@ -141,11 +147,36 @@ public class GoodsDetailsActivity extends BaseActivity {
     void onClickBtn(View view){
         switch (view.getId()){
             case R.id.detail_kefu://客服
-
                 break;
             case R.id.detail_shoucang://收藏
+                if(!(Database.USER_MAP==null || Database.USER_MAP.getUserID()==null)){
+                    if(!(productDetail==null || productDetail.getFreshID()<=0)){
+                        if(productDetail.isCollectionStatu()){
+                            deleteCollection();
+                        }else {
+                            addCollection();
+                        }
+                    }else {
+                        showShort("数据异常,请返回重试");
+                    }
+                }else {
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                            .go(this, this);
+                }
                 break;
             case R.id.detail_addshopping_cart://加入购物车
+
+                if(!(Database.USER_MAP==null || Database.USER_MAP.getUserID()==null)){
+                    if(!(productDetail==null || productDetail.getFreshID()<=0)){
+                        addShoppingCart();
+                    }else {
+                        showShort("数据异常,请返回重试");
+                    }
+                }else {
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                            .go(this, this);
+                }
+
                 break;
             case R.id.detail_addshopping_payproduct://立即购买
                 break;
@@ -202,6 +233,18 @@ public class GoodsDetailsActivity extends BaseActivity {
     }
 
     /**
+     * 收藏改变
+     * @param status
+     */
+    private void collectionChange(boolean status){
+        if(status){
+            detailShoucangImage.setImageResource(R.mipmap.shoucang);
+        }else {
+            detailShoucangImage.setImageResource(R.mipmap.icon_collection_normal);
+        }
+    }
+
+    /**
      * 查询产品详情
      *
      * @param freshId
@@ -227,12 +270,7 @@ public class GoodsDetailsActivity extends BaseActivity {
 
 //                        load(Database.goodsdetails.getFreshUrl());
                         tv_nutritiveValue.setText(detail.getListfresh().get(0).getNutritiveValue() + ""); //营养价值
-
-                        if(productDetail.isCollectionStatu()){
-                            detailShoucangImage.setImageResource(R.mipmap.shoucang);
-                        }else {
-                            detailShoucangImage.setImageResource(R.mipmap.icon_collection_normal);
-                        }
+                        collectionChange(productDetail.isCollectionStatu());
 
                         List<ResponseQueryProductDetail.ListfreshBean.ListfreshPictureBean> picture_list = detail.getListfresh().get(0).getListfreshPicture();
                         if (picture_list != null && picture_list.size() != 0) {
@@ -256,6 +294,8 @@ public class GoodsDetailsActivity extends BaseActivity {
                 } else {
                     showShort(detail.getAlertMessage());
                 }
+                Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
+                        .go(GoodsDetailsActivity.this);
             }
 
             @Override
@@ -278,6 +318,126 @@ public class GoodsDetailsActivity extends BaseActivity {
 
             }
         }).getEntityData(HttpURL.HTTP_POST_FRESH_QUERY_DETAIL, json);
+    }
+
+    /**
+     * 添加购物车
+     */
+    private void addShoppingCart(){
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("shoppingCart",new RequestShoppingCartAdd(productDetail.getFreshID(),productDetail.getFreshTypeID(),1,productDetail.getFreshPrice()));
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                showShort(bean.getAlertMessage());
+
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_SHOPPINGCART_ADD,json);
+    }
+
+    /**
+     * 添加收藏
+     */
+    private void addCollection(){
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("freshCollection",new RequestCollectionAdd(productDetail.getFreshID(),productDetail.getFreshTypeID()));
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                if(bean.getStatusCode()==1){
+                    productDetail.setCollectionStatu(true);
+                    collectionChange(true);
+                }
+                showShort(bean.getAlertMessage());
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_COLLECTION_ADD,json);
+    }
+
+    /**
+     * 取消收藏
+     */
+    private void deleteCollection(){
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        List<Integer> freshId=new ArrayList<>();
+        freshId.add(productDetail.getFreshID());
+        map.put("listFreshID",freshId);
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                if(bean.getStatusCode()==1){
+                    productDetail.setCollectionStatu(false);
+                    collectionChange(false);
+
+                }
+                showShort(bean.getAlertMessage());
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_COLLECTION_DELETE,json);
     }
 
     private void load(String html) {
@@ -358,4 +518,10 @@ public class GoodsDetailsActivity extends BaseActivity {
         Database.goodsdetails = null;
     }
 
+    @Override
+    public void callback(RouteResult state, Uri uri, String message) {
+        if(!(Database.USER_MAP==null || Database.USER_MAP.getUserID()==null)){
+            requestProductDetail(product.getFreshID());
+        }
+    }
 }

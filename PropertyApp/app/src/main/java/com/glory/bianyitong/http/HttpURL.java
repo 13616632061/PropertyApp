@@ -140,9 +140,21 @@ public class HttpURL {
      * 生鲜
      */
     public static String HTTP_POST_FRESH_TYPE="/ApiFreshType/Query";//生鲜类型
-
-
     public static String HTTP_POST_FRESH_QUERY_TAG="/ApiFresh/QueryTag";//获取热门标签
     public static String HTTP_POST_FRESH_QUERY_SEARCH="/ApiFresh/FuzzyQuery";//搜索框搜索生鲜
     public static String HTTP_POST_FRESH_QUERY_DETAIL="/ApiFresh/Query";//查询生鲜详情
+
+
+    /**
+     * 购物车
+     */
+    public static String HTTP_POST_SHOPPINGCART_ADD="/ApiShoppingCart/Add";//添加
+    public static String HTTP_POST_SHOPPINGCART_QUERY="/ApiShoppingCart/Query";//查询
+    public static String HTTP_POST_SHOPPINGCART_DELETE="/ApiShoppingCart/Delete";//删除
+
+    /**
+     * 收藏
+     */
+    public static String HTTP_POST_COLLECTION_ADD="/ApiFreshCollection/Add";//添加
+    public static String HTTP_POST_COLLECTION_DELETE="/ApiFreshCollection/Delete";//删除
 }

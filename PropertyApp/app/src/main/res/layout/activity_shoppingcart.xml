@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bggray"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+    <include layout="@layout/base_text_title"></include>
+
+    <include layout="@layout/base_view_line"></include>
+
+
+
+    <include layout="@layout/base_view_line"></include>
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:layout_weight="1">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rec_shoppingcart"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        ></android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+    <LinearLayout
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp">
+        <ImageView
+            android:id="@+id/iv_button"
+            android:src="@drawable/weixuanzhong"
+            android:scaleType="fitXY"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="11dp"
+            android:textColor="@color/text_color_title"
+            android:textSize="15sp"
+            android:text="全选"/>
+        <LinearLayout
+            android:id="@+id/ll_edit"
+            android:paddingRight="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="31dp"
+                android:textColor="@color/small_text_color_gray"
+                android:textSize="13sp"
+                android:text="合计"/>
+            <TextView
+                android:id="@+id/all_money"
+                android:layout_width="70dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="12dp"
+                android:text="￥0"
+                android:textColor="@color/color_red_del"
+                android:textSize="15sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="31dp"
+                android:textColor="@color/grayb1"
+                android:textSize="10sp"
+                android:text="结算"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/move_collection"
+            android:visibility="gone"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="125dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:text="移到收藏"/>
+        <TextView
+            android:id="@+id/tv_Settlement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:text="结算(1)"/>
+    </LinearLayout>
+</LinearLayout>

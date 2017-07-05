@@ -191,7 +191,6 @@ public class SettingActivity extends BaseActivity {
         Database.my_community = null;
         Database.accessToken=null;
         mCache.remove(Constant.user);
-        mCache.clear();
         Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
         startActivity(intent);
         SettingActivity.this.finish();
