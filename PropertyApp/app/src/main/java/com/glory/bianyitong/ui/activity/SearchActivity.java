@@ -137,14 +137,14 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
                             lay_search_hot.setVisibility(View.GONE);
                             tv_search_txt.setText(freshName);
                             tv_search_txt.setSelection(freshName.length());
-                            request2(index_page, true, freshName);//, tag_str, 0
+                            request2(index_page, freshName);//, tag_str, 0
                         if(!localTag.contains(freshName)){
                             localTag.add(freshName);
                             localTagAdapter.notifyDataSetChanged();
                         }
                         if(!TextUtils.isEmpty(freshName)){
                             datas.clear();
-                            request2(index_page, true, freshName);
+                            request2(index_page, freshName);
                         }
 
 
@@ -161,7 +161,7 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
                             tv_search_txt.setSelection(freshName.length());
                         if(!TextUtils.isEmpty(freshName)){
                             datas.clear();
-                            request2(index_page, true, freshName);
+                            request2(index_page, freshName);
                         }
                         break;
                     case 2: // 最近搜索
@@ -172,7 +172,8 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
                             lay_search_hot.setVisibility(View.GONE);
                             tv_search_txt.setText(freshName);
                             tv_search_txt.setSelection(freshName.length());
-                            request2(index_page,true,freshName);
+                            datas.clear();
+                            request2(index_page,freshName);
                         }
 
                         break;
@@ -224,13 +225,13 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
     /**
      * 查询商品列表
      * @param page
-     * @param isrefresh
      * @param name
      */
-    private void request2(int page, final boolean isrefresh, String name) { //1 热门标签搜索  0 输入框搜索 , String tag, int type
+    private void request2(int page, String name) { //1 热门标签搜索  0 输入框搜索 , String tag, int type
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("fresh",new RequestSearchFresh(name));
+        map.put("currentPageNumber",page);
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -238,6 +239,8 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
                 ResponseSearchFresh searchFresh=new Gson().fromJson(s,ResponseSearchFresh.class);
                 if(searchFresh.getStatusCode()==1){
                     List<ResponseSearchFresh.ListfreshBean> list=searchFresh.getListfresh();
+
+                    search_listView.setAdapter(adapter);
                     if(!(list==null || list.size()<=0)){
                         for (ResponseSearchFresh.ListfreshBean bean:list
                                 ) {
@@ -379,7 +382,7 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
     @Override
     public void onLoadMoreRequested() {
         index_page++;
-        request2(index_page, false, freshName); //, tag_str, type_search
+        request2(index_page, freshName); //, tag_str, type_search
     }
 
     @Override
@@ -398,6 +401,8 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
             clean_word.setVisibility(View.VISIBLE);
         } else {
             clean_word.setVisibility(View.GONE);
+
+
         }
     }
 

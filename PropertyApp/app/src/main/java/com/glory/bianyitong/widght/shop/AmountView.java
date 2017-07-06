@@ -21,13 +21,18 @@ import com.glory.bianyitong.R;
 public class AmountView extends LinearLayout implements View.OnClickListener, TextWatcher {
 
     private static final String TAG = "AmountView";
-
+    private int position=-1;
     public void setAmount(int amount) {
         this.amount = amount;
+        etAmount.setText(this.amount + "");
+        if (this.amount>0){
+            etAmount.setVisibility(VISIBLE);
+            btnDecrease.setVisibility(VISIBLE);
+        }
     }
 
     private int amount = 0; //购买数量
-    private int goods_storage = 1; //商品库存
+    private int goods_storage = 100; //商品库存
 
     private OnAmountChangeListener mListener;
 
@@ -62,8 +67,16 @@ public class AmountView extends LinearLayout implements View.OnClickListener, Te
         this.mListener = onAmountChangeListener;
     }
 
+    public void setPosition(int position) {
+        this.position = position;
+    }
+
     public void setGoods_storage(int goods_storage) {
         this.goods_storage = goods_storage;
+    }
+
+    public int getAmount() {
+        return amount;
     }
 
     @Override
@@ -92,7 +105,7 @@ public class AmountView extends LinearLayout implements View.OnClickListener, Te
         etAmount.clearFocus();
 
         if (mListener != null) {
-            mListener.onAmountChange(this, amount);
+            mListener.onAmountChange(this, amount,position);
         }
     }
 
@@ -116,14 +129,15 @@ public class AmountView extends LinearLayout implements View.OnClickListener, Te
             return;
         }
 
-        if (mListener != null) {
-            mListener.onAmountChange(this, amount);
-        }
+//        if (mListener != null) {
+//            mListener.onAmountChange(this, amount,position);
+//        }
     }
 
 
     public interface OnAmountChangeListener {
-        void onAmountChange(View view, int amount);
+        void onAmountChange(View view, int amount,int position);
     }
+
 
 }

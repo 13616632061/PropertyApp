@@ -151,6 +151,7 @@ public class HttpURL {
     public static String HTTP_POST_SHOPPINGCART_ADD="/ApiShoppingCart/Add";//添加
     public static String HTTP_POST_SHOPPINGCART_QUERY="/ApiShoppingCart/Query";//查询
     public static String HTTP_POST_SHOPPINGCART_DELETE="/ApiShoppingCart/Delete";//删除
+    public static String HTTP_POST_SHOPPINGCART_EDIT="/ApiShoppingCart/Edit";//购物车编辑
 
     /**
      * 收藏

@@ -43,7 +43,7 @@ public class ResponseShoppingCart extends BaseResponseBean {
         private String addTime;
         private Object endAddTime;
         private int quantity;
-        private int price;
+        private float price;
         private FreshBean fresh;
 
         public int getCartID() {
@@ -110,11 +110,11 @@ public class ResponseShoppingCart extends BaseResponseBean {
             this.quantity = quantity;
         }
 
-        public int getPrice() {
+        public float getPrice() {
             return price;
         }
 
-        public void setPrice(int price) {
+        public void setPrice(float price) {
             this.price = price;
         }
 
