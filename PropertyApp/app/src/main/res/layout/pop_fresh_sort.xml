@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RadioGroup
+        android:id="@+id/tabs_rg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_line_tab"
+        android:background="@drawable/background_radiobutton_underline_gray"
+        android:orientation="horizontal">
+        <!--android:id="@+id/message_rb"-->
+        <RadioButton
+            android:id="@+id/rb_tab_1"
+            style="@style/pop_fresh_tab"
+            android:drawablePadding="4dp"
+            android:text="@string/Comprehensive_ranking"
+            android:textColor="@color/small_text_color_gray" />
+        <!--android:drawableTop="@drawable/icon_home2"-->
+        <RadioButton
+            android:id="@+id/rb_tab_2"
+            style="@style/pop_fresh_tab"
+            android:drawablePadding="4dp"
+            android:text="@string/Lowest_price"
+            android:textColor="@color/small_text_color_gray" />
+        <!-- android:drawableTop="@drawable/icon_neighour"-->
+        <RadioButton
+            android:id="@+id/rb_tab_3"
+            style="@style/pop_fresh_tab"
+            android:text="@string/Highest_price"
+            android:textColor="@color/small_text_color_gray" />
+
+    </RadioGroup>
+    <include layout="@layout/base_view_line"></include>
+    <View
+        android:id="@+id/pop_dismis"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/popwindow_background"/>
+</LinearLayout>

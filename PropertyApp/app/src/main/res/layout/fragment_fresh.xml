@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/main">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/app_base_color">
+
+        <ImageView
+            android:id="@+id/iv_title_left"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="12dp"
+            android:src="@drawable/search_bar_icon_normal"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="生鲜"
+            android:textColor="@color/text_color_title"
+            android:textSize="17sp" />
+
+        <ImageView
+            android:id="@+id/iv_title_right"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:paddingLeft="12dp"
+            android:paddingRight="15dp"
+            android:src="@drawable/icon_camera" />
+    </RelativeLayout>
+    <include layout="@layout/base_view_line"></include>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="45dp"
+
+        android:background="@color/white">
+
+        <RelativeLayout
+            android:id="@+id/rl_address"
+            android:layout_width="100dp"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_fresh_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="南山区"
+                android:textColor="@color/small_text_color_gray"
+                android:textSize="14sp" />
+            <ImageView
+                android:layout_toRightOf="@+id/tv_fresh_address"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/down"
+                android:gravity="center"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/linegray"></View>
+        <RelativeLayout
+            android:id="@+id/rl_zonghe"
+            android:layout_width="wrap_content"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/tv_fresh_sort"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/Comprehensive_ranking"
+                android:textColor="@color/small_text_color_gray"
+                android:textSize="14sp" />
+            <ImageView
+                android:layout_toRightOf="@+id/tv_fresh_sort"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="4dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@mipmap/down"
+                android:gravity="center"/>
+        </RelativeLayout>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
+            android:background="@color/linegray"></View>
+        <ImageView
+            android:id="@+id/iv_rec_line"
+            android:paddingRight="15dp"
+            android:paddingLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@mipmap/crosshigh"
+            android:gravity="center"/>
+    </LinearLayout>
+    <include layout="@layout/base_view_line"></include>
+    <LinearLayout
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rec_left_button"
+            android:layout_marginTop="12dp"
+            android:layout_width="100dp"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+        <View
+            android:id="@+id/view_line"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/linegray"></View>
+        <android.support.v7.widget.RecyclerView
+            android:background="@color/linegray"
+            android:id="@+id/rec_right_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+    </LinearLayout>
+</LinearLayout>

@@ -302,4 +302,13 @@
     <string name="system_error">系统异常</string>
 
 
+    <string name="Comprehensive_ranking">综合排序</string>
+    <string name="Lowest_price">价格最低</string>
+    <string name="Highest_price">价格最高</string>
+    <string name="move_Collection">移至收藏夹</string>
+    <string name="Receive_immediately">立即领取</string>
+    <string name="not_used">未使用</string>
+    <string name="in_used">已使用</string>
+    <string name="expired">已过期</string>
+    <string name="browse_log">最近浏览</string>
 </resources>

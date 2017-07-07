@@ -207,22 +207,22 @@ public class ActivityUtils {
 	// }
 	// }
 
-	/**
-	 * 获取用户MAC地址
-	 *
-	 * @param--context
-	 * @return
-	 */
-	public static String getNetWorkMac() {
-		Context context = MyApplication.getInstance();
-		WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
-//		WifiInfo info = (null == wifi ? null : wifi.getConnectionInfo());
-		String macAddress = "";
-//		if (null != info) {
-//			macAddress = info.getMacAddress();
-//		}
-		return macAddress;
-	}
+//	/**
+//	 * 获取用户MAC地址
+//	 *
+//	 * @param--context
+//	 * @return
+//	 */
+//	public static String getNetWorkMac() {
+//		Context context = MyApplication.getInstance();
+//		WifiManager wifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+////		WifiInfo info = (null == wifi ? null : wifi.getConnectionInfo());
+//		String macAddress = "";
+////		if (null != info) {
+////			macAddress = info.getMacAddress();
+////		}
+//		return macAddress;
+//	}
 
 //	public static boolean checkApkExist(String packageName) {
 //		try {

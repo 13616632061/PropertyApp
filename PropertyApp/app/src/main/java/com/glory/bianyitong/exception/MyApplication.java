@@ -4,7 +4,6 @@ import android.app.Application;
 import android.app.Service;
 import android.content.Context;
 import android.os.Vibrator;
-
 import com.chenenyu.router.RouteInterceptor;
 import com.chenenyu.router.RouteRequest;
 import com.chenenyu.router.RouteTable;
@@ -48,6 +47,8 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+//        CrashHandler crashHandler = CrashHandler.getInstance();
+//        crashHandler.init(getApplicationContext(), this);
         Router.initialize(this, BuildConfig.DEBUG);
         Instance = this;
         //极光推送
@@ -76,14 +77,6 @@ public class MyApplication extends Application {
         // 显示图片的设置
         imageLoader = ImageLoader.getInstance();
 
-        //---------这里给出的是示例代码,告诉你可以这么传,实际使用的时候,根据需要传,不需要就不传-------------//
-        HttpHeaders headers = new HttpHeaders();
-        headers.put("commonHeaderKey1", "commonHeaderValue1");    //header不支持中文
-        headers.put("commonHeaderKey2", "commonHeaderValue2");
-        HttpParams params = new HttpParams();
-        params.put("commonParamsKey1", "commonParamsValue1");     //param支持中文,直接传,不要自己编码
-        params.put("commonParamsKey2", "这里支持中文参数");
-        //-----------------------------------------------------------------------------------//
 
         //必须调用初始化
         OkGo.init(this);
@@ -144,4 +137,11 @@ public class MyApplication extends Application {
 //        }
 //        Toast.makeText(Database.currentActivity, string, lenth).show();
 //    }
+
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+//        System.exit(0);
+    }
 }

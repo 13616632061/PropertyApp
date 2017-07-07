@@ -32,6 +32,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
@@ -52,6 +56,9 @@ import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.PermissionNo;
+import com.yanzhenjie.permission.PermissionYes;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -66,7 +73,7 @@ import okhttp3.Response;
  * Created by lucy on 2016/11/14.
  * 添加小区
  */
-public class AddAreaCityActivity extends BaseActivity {
+public class AddAreaCityActivity extends BaseActivity implements BDLocationListener {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
 
@@ -82,8 +89,7 @@ public class AddAreaCityActivity extends BaseActivity {
 
     private String userID = "";
     private ProgressDialog progressDialog = null;
-
-    private LocationManager locationManager;
+    private LocationClient client;
     private String provider;
     private double latitude; //维度
     private double longitude; //经度
@@ -150,10 +156,12 @@ public class AddAreaCityActivity extends BaseActivity {
         super.init();
         //初始化标题栏
         inintTitle(getResources().getString(R.string.add_community), true, ""); //添加小区
+        client=new LocationClient(this);
+
         initview();
         userID = RequestUtil.getuserid();
         //定位
-        startlocation();
+        initLocalData();
         mhandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
@@ -312,46 +320,59 @@ public class AddAreaCityActivity extends BaseActivity {
         }
     }
 
-    private void location() {
-        //获取定位服务
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
-//            Toast.makeText(this, GPS模块正常 ,Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, getResources().getString(R.string.please_turn_on_gps), Toast.LENGTH_SHORT).show(); //请开启GPS
-            Intent intent = new Intent(Settings.ACTION_SECURITY_SETTINGS);
-            startActivityForResult(intent, 0); //此为设置完成后返回到获取界面
-        }
-        //获取当前可用的位置控制器
-        List<String> list = locationManager.getProviders(true);
-        if (list.contains(LocationManager.GPS_PROVIDER)) {
-            //是否为GPS位置控制器
-            provider = LocationManager.GPS_PROVIDER;
-        } else if (list.contains(LocationManager.NETWORK_PROVIDER)) {
-            //是否为网络位置控制器
-            provider = LocationManager.NETWORK_PROVIDER;
-        } else {
-            Toast.makeText(this, getResources().getString(R.string.check_whether_the_network_or_gps_is_open), Toast.LENGTH_LONG).show();//请检查网络或GPS是否打开
-            return;
-        }
-        try {
-            Location location = locationManager.getLastKnownLocation(provider);
-            if (location != null) {
-                //获取当前位置，这里只用到了经纬度
-                latitude = location.getLatitude(); //纬度
-                longitude = location.getLongitude(); //经度
-                request_community(latitude, longitude);
-                Log.i("resultString", "latitude---------" + latitude);
-                Log.i("resultString", "longitude---------" + longitude);
-            }
-            //绑定定位事件，监听位置是否改变
-            //第一个参数为控制器类型第二个参数为监听位置变化的时间间隔（单位：毫秒）
-            //第三个参数为位置变化的间隔（单位：米）第四个参数为位置监听器
-            locationManager.requestLocationUpdates(provider, 60000, 500, locationListener);
-        } catch (SecurityException e) {
-            e.printStackTrace();
+    void initLocalData(){
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        option.setCoorType("bd09ll");
+        //可选，默认gcj02，设置返回的定位结果坐标系
+        int span=6000;
+        option.setScanSpan(span);
+        //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setIsNeedAddress(true);
+        //可选，设置是否需要地址信息，默认不需要
+        option.setOpenGps(true);
+        //可选，默认false,设置是否使用gps
+        option.setLocationNotify(true);
+        //可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+        option.setIsNeedLocationDescribe(true);
+        //可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
+        option.setIsNeedLocationPoiList(true);
+        //可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        option.setIgnoreKillProcess(false);
+        //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+        option.SetIgnoreCacheException(false);
+        //可选，默认false，设置是否收集CRASH信息，默认收集
+        option.setEnableSimulateGps(false);
+        //可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+        client.setLocOption(option);
+        client.registerLocationListener(this);
+        if(AndPermission.hasPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION)){
+
+            client.start();
+        }else {
+            AndPermission.with(this)
+                    .requestCode(100)
+                    .permission(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION)
+                    .send();
         }
 
+    }
+
+    @PermissionYes(100)
+    private void getYes(List<String> grantedPermissions) {
+        // TODO 申请权限成功。
+        client.start();
+    }
+
+    // 失败回调的方法，用注解即可，里面的数字是请求时的requestCode。
+    @PermissionNo(100)
+    private void getNo(List<String> deniedPermissions) {
+        // 用户否勾选了不再提示并且拒绝了权限，那么提示用户到设置中授权。
+        if (AndPermission.hasAlwaysDeniedPermission(this, deniedPermissions)) {
+            // 第一种：用默认的提示语。
+            AndPermission.defaultSettingDialog(this, 1).show();
+        }
     }
 
     private void initview() {
@@ -382,49 +403,41 @@ public class AddAreaCityActivity extends BaseActivity {
         });
     }
 
-    // android 6.0d 权限管理变了，属于隐私权限，需要在运行时手动申请，参考如下代码
-    private void startlocation() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            int checkPermission = ContextCompat.checkSelfPermission(AddAreaCityActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION);
-            if (checkPermission != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 1);
-                return;
-            } else {
-                //有权限
-                location();
-            }
-        } else {
-            location();
-        }
-    }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case 1:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    location();
-                } else {
-                    location();
-                }
-                break;
-            default:
-                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
+        AndPermission.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
-    //关闭时解除监听器
+
+
     @Override
-    protected void onDestroy() {
-        // TODO Auto-generated method stub
-        super.onDestroy();
-        try {
-            if (locationManager != null) {
-                locationManager.removeUpdates(locationListener);
-            }
-        } catch (SecurityException e) {
-            e.printStackTrace();
+    public void onReceiveLocation(BDLocation bdLocation) {
+        switch (bdLocation.getLocType()){
+            case BDLocation.TypeGpsLocation://GPS
+                request_community(bdLocation.getLatitude(),bdLocation.getLongitude());
+                latitude=bdLocation.getLatitude();
+                longitude=bdLocation.getLongitude();
+                client.stop();
+                break;
+            case BDLocation.TypeNetWorkLocation://网络
+                request_community(bdLocation.getLatitude(),bdLocation.getLongitude());
+                latitude=bdLocation.getLatitude();
+                longitude=bdLocation.getLongitude();
+                client.stop();
+                break;
+            case BDLocation.TypeOffLineLocation://离线
+                request_community(bdLocation.getLatitude(),bdLocation.getLongitude());
+                latitude=bdLocation.getLatitude();
+                longitude=bdLocation.getLongitude();
+                client.stop();
+                break;
         }
     }
 
+    @Override
+    public void onConnectHotSpotMessage(String s, int i) {
+
+    }
 }

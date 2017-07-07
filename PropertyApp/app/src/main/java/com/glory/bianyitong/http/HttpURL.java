@@ -34,6 +34,13 @@ public class HttpURL {
     public static String HTTP_POST_GET_MESSAGE="/ApiSystemMsg/Query";
 
     /**
+     * 位置信息
+     */
+    public static String HTTP_POST_MY_LOCAL="/ApiArea/Query";//我的位置查询
+    public static String HTTP_POST_LOCAL_INFO="/ApiArea/FuzzyQuery";//区域信息查询
+
+
+    /**
      * 我的页面
      */
     //添加授权
@@ -143,7 +150,7 @@ public class HttpURL {
     public static String HTTP_POST_FRESH_QUERY_TAG="/ApiFresh/QueryTag";//获取热门标签
     public static String HTTP_POST_FRESH_QUERY_SEARCH="/ApiFresh/FuzzyQuery";//搜索框搜索生鲜
     public static String HTTP_POST_FRESH_QUERY_DETAIL="/ApiFresh/Query";//查询生鲜详情
-
+    public static String HTTP_POST_SHOP_QUERY_INFO="/ApiFreshMerchant/Query";//查询商户信息
 
     /**
      * 购物车

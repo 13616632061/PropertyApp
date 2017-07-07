@@ -101,14 +101,18 @@ public class DataUtils {
                 }else {
                     commnunityInfo.setUserCommunityID(0);
                 }
-                if(!TextUtils.isEmpty(loginUserInfo.getUser().getUserID()))
+                if(!(loginUserInfo==null || loginUserInfo.getUser() ==null )){
                     commnunityInfo.setUserID(loginUserInfo.getUser().getUserID());
-
-                if(!TextUtils.isEmpty(loginUserInfo.getUser().getUserName()))
                     commnunityInfo.setUserName(loginUserInfo.getUser().getUserName());
-                else {
-                    commnunityInfo.setUserName("");
                 }
+//                if(!TextUtils.isEmpty(loginUserInfo.getUser().getUserID()))
+//
+//
+//                if(!TextUtils.isEmpty(loginUserInfo.getUser().getUserName()))
+//
+//                else {
+//                    commnunityInfo.setUserName("");
+//                }
 
 
                 if (userCommnunityBean.getCommunityID() != 0) {

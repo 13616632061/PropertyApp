@@ -111,4 +111,8 @@
 
     <!--不含运费 灰色-->
     <color name="grayb1">#b1b1b1</color>
+    <!-- popwindow 半透明-->
+    <color name="popwindow_background">#99000000</color>
+    <!--模块名称颜色-->
+
 </resources>

@@ -56,6 +56,13 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
 
+    <!--百度地图-->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+
     <application
         android:name="com.glory.bianyitong.exception.MyApplication"
         android:allowBackup="true"
@@ -568,6 +575,10 @@
         <meta-data
             android:name="JPUSH_APPKEY"
             android:value="9277c702a8da5583e569df5c" />
+
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="jtkte4ngSXfrfbW9ZtHHmVIxurwUNpdf" />
     </application>
 
 </manifest>
