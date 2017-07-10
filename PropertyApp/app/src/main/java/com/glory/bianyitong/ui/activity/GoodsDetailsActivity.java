@@ -294,8 +294,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
                 } else {
                     showShort(detail.getAlertMessage());
                 }
-                Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
-                        .go(GoodsDetailsActivity.this);
+
             }
 
             @Override

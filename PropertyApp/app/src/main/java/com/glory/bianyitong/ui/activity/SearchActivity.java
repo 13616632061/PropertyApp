@@ -25,6 +25,7 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chenenyu.router.Router;
+import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
@@ -67,6 +68,7 @@ import okhttp3.Response;
  * Created by lucy on 2016/11/14.
  * 搜索页
  */
+@Route(RouterMapping.ROUTER_ACTIVITY_PRODUCT_SEARCH)
 public class SearchActivity extends BaseActivity implements View.OnKeyListener,BaseQuickAdapter.OnItemClickListener,BaseQuickAdapter.RequestLoadMoreListener,TextWatcher {
     @BindView(R.id.tv_search_cancel)
     TextView tv_search_cancel;

@@ -6,6 +6,7 @@
 
 
     <RelativeLayout
+        android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="45dp"
         android:background="@color/app_base_color">
@@ -39,7 +40,7 @@
             android:layout_marginRight="5dp"
             android:paddingLeft="12dp"
             android:paddingRight="15dp"
-            android:src="@drawable/icon_camera" />
+            android:src="@mipmap/gouwuche" />
     </RelativeLayout>
     <include layout="@layout/base_view_line"></include>
 

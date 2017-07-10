@@ -68,6 +68,8 @@ public class RouterMapping  {
      * 生鲜
      */
     public static final String ROUTER_ACTIVITY_PRODUCT_DETAIL="ROUTER_ACTIVITY_PRODUCT_DETAIL";//商品详情
+    public static final String ROUTER_ACTIVITY_PRODUCT_SEARCH="ROUTER_ACTIVITY_PRODUCT_SEARCH";//搜索商品
+    public static final String ROUTER_ACTIVITY_PRODUCT_SELECT_LOCAL="ROUTER_ACTIVITY_PRODUCT_SELECT_LOCAL";//选择地区
 
     /**
      * 购物车

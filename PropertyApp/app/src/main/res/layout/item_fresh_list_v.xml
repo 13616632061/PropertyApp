@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#f0f0f0"
+    android:padding="5dp">
+
+
+    <include layout="@layout/base_view_line"></include>
+
+
+    <include layout="@layout/base_view_line"></include>
+
+    <LinearLayout
+        android:id="@+id/lay_list_item_goods"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:padding="4dp"
+        android:paddingBottom="4dp">
+
+
+        <ImageView
+            android:id="@+id/iv_list_item_goods_pic"
+            android:layout_width="120dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center_horizontal"
+            android:scaleType="fitXY"
+            android:src="@drawable/ic_launcher" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/iv_list_item_goods_pic"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_list_item_goods_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="精选西红柿200g"
+                android:textColor="@color/text_color_title"
+                android:textSize="14sp" />
+            <!--300g-->
+            <TextView
+                android:id="@+id/tv_list_item_goods_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="四季鲜果"
+                android:textColor="@color/small_text_color_gray"
+                android:textSize="12sp" />
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_list_item_goods_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:textColor="@color/color_red_del"
+                    android:textSize="15sp" />
+
+                <com.glory.bianyitong.widght.shop.AmountView
+                    android:id="@+id/amount_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_gravity="bottom|right"
+                    android:visibility="gone">
+
+                </com.glory.bianyitong.widght.shop.AmountView>
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </LinearLayout>
+</LinearLayout>

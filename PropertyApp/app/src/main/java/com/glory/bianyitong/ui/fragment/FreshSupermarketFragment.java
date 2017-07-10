@@ -1,41 +1,51 @@
 package com.glory.bianyitong.ui.fragment;
 
 import android.Manifest;
-import android.content.DialogInterface;
-import android.location.LocationManager;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.BaseRequestBean;
-import com.glory.bianyitong.bean.entity.FreshLeftInfo;
 import com.glory.bianyitong.bean.entity.request.RequestFreshType;
+import com.glory.bianyitong.bean.entity.request.RequestProductList;
 import com.glory.bianyitong.bean.entity.request.RequestQuerysShopInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryMyLocal;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryShopInfo;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryTwoType;
+import com.glory.bianyitong.bean.entity.response.ResponseSearchFresh;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.ui.adapter.shop.PopFreshAdapter;
+import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.activity.GoodsDetailsActivity;
+import com.glory.bianyitong.ui.adapter.shop.FreshPopTypeTwoAdapter;
+import com.glory.bianyitong.ui.adapter.shop.FreshShopListAdapter;
+import com.glory.bianyitong.ui.adapter.shop.FreshSuperMarketTypeAdapter;
+import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.google.gson.Gson;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionNo;
@@ -49,16 +59,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static android.R.id.list;
-
 /**
  * Created by lucy on 2016/11/10.
  * 生鲜
  */
-public class FreshSupermarketFragment extends BaseFragment implements BDLocationListener{
+public class FreshSupermarketFragment extends BaseFragment implements BDLocationListener,RadioGroup.OnCheckedChangeListener,BaseQuickAdapter.OnItemClickListener{
 
 
 
+    @BindView(R.id.topBar)
+    RelativeLayout topBar;
     @BindView(R.id.tv_fresh_address)
     TextView tvFreshAddress;
     @BindView(R.id.rl_address)
@@ -80,39 +90,259 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
     private LocationClient client;
     private ResponseQueryMyLocal myLocal=null;//定位信息
+    private PopupWindow popupWindowSort;
 
-    private List<FreshLeftInfo> list=new ArrayList<>();
-    private PopupWindow popupWindowSort,popupWindowLeft;
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        client=new LocationClient(getActivity());
-        initLocalData();
-    }
 
+    // TODO: 2017/7/10 一级分类列表
+    private FreshSuperMarketTypeAdapter typeAdapter;
+    private List<ItemMenu<ResponseQueryShopInfo.ListFreshMerchantBean.ListTypeBean>> typeData=new ArrayList<>();
+    // TODO: 2017/7/10 二级分类列表
+    private FreshPopTypeTwoAdapter twoAdapter;
+    private PopupWindow popupWindowLeft;
+    private List<ItemMenu<ResponseQueryTwoType.ListFreshTypeBean>> typeTwoData=new ArrayList<>();
+    // TODO: 2017/7/10 商品列表
+    private FreshShopListAdapter shopListAdapter;
+    private List<ItemMenu<ResponseSearchFresh.ListfreshBean>> shopData=new ArrayList<>();
+    private GridLayoutManager gridLayoutManager;
+
+    // TODO: 2017/7/10 其他参数
+    private String orderBy="";
+    private int freshTypeID;//查询商品列表所需参数
+    private boolean isLocal=false;//定位状态 false 失败 true 成功
+    private int twoTypeFreshLeafID,twoTypeMerchantId;//查询二级分类所需参数  类型ID  商户ID
+    private  boolean listModel=true;//是列表模式
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = LayoutInflater.from(getActivity()).inflate(R.layout.fragment_fresh, null);
-        ButterKnife.bind(view);
+        ButterKnife.bind(this,view);
         initView();
         return view;
     }
 
 
-    @OnClick({R.id.rl_address})
+    @OnClick({R.id.rl_address,R.id.rl_zonghe,R.id.iv_title_left,R.id.iv_rec_line,R.id.iv_title_right})
     void onClickView(View view){
         switch (view.getId()){
             case R.id.rl_address://切换地址
-                initPopupWindowLeft();
+                if(isLocal){//定位成功
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_PRODUCT_SELECT_LOCAL)
+                            .with("data",myLocal)
+                            .go(getActivity());
+                }else {
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_PRODUCT_SELECT_LOCAL)
+                            .with("data",myLocal)
+                            .go(getActivity());
+                }
+
+                break;
+            case R.id.rl_zonghe://弹出筛选框
+                initPopupWindowSort();
+                break;
+
+            case R.id.iv_title_left://搜索
+                Router.build(RouterMapping.ROUTER_ACTIVITY_PRODUCT_SEARCH)
+                        .go(getActivity());
+                break;
+            case R.id.iv_title_right://购物车
+                Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
+                        .go(getActivity());
+                break;
+            case R.id.iv_rec_line://切换列表样式
+                listModel=!listModel;
+                if(listModel){//列表
+                    shopListAdapter=new FreshShopListAdapter(R.layout.item_fresh_list,shopData);
+                    shopListAdapter.setOnItemClickListener(this);
+                    gridLayoutManager=new GridLayoutManager(getActivity(),1);
+                    recRightList.setLayoutManager(gridLayoutManager);
+                    recRightList.setAdapter(shopListAdapter);
+                    shopListAdapter.notifyDataSetChanged();
+                }else {
+                    shopListAdapter=new FreshShopListAdapter(R.layout.item_fresh_list_v,shopData);
+                    shopListAdapter.setOnItemClickListener(this);
+                    gridLayoutManager=new GridLayoutManager(getActivity(),2);
+                    recRightList.setLayoutManager(gridLayoutManager);
+                    recRightList.setAdapter(shopListAdapter);
+                    shopListAdapter.notifyDataSetChanged();
+                }
+
+
                 break;
         }
     }
     private void initView() {
-//        titleAcText.setText("生鲜");
+        initPopupWindowSort();
+        client=new LocationClient(getActivity());
+        LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
+        typeAdapter=new FreshSuperMarketTypeAdapter(R.layout.item_fresh_left,typeData);
+        typeAdapter.setOnItemClickListener(this);
+        typeAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                ResponseQueryShopInfo.ListFreshMerchantBean.ListTypeBean bean=typeData.get(position).getData();
+                if(bean!=null){
+                    twoTypeFreshLeafID=bean.getFreshTypeLeaf();
+                    queryFreshTypeTwo();
+                }
+            }
+        });
+        recLeftButton.setLayoutManager(layoutManager);
+        recLeftButton.setAdapter(typeAdapter);
+
+
+
+        shopListAdapter=new FreshShopListAdapter(R.layout.item_fresh_list,shopData);
+        shopListAdapter.setOnItemClickListener(this);
+        gridLayoutManager=new GridLayoutManager(getActivity(),1);
+        recRightList.setLayoutManager(gridLayoutManager);
+        recRightList.setAdapter(shopListAdapter);
+
+        tvFreshAddress.setText("定位中");
+
+        initPopupWindowLeft();
+        initLocalData();
+
+    }
+
+    //左侧列表弹出窗口
+    private void initPopupWindowLeft() {
+        if (popupWindowLeft == null) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            final View pView = inflater.inflate(R.layout.pop_fresh_left, null);
+            popupWindowLeft = new PopupWindow(pView);
+            popupWindowLeft.setWidth(((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 153, getResources().getDisplayMetrics())));
+            popupWindowLeft.setHeight(((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 239, getResources().getDisplayMetrics())));
+            RecyclerView rec_pop = (RecyclerView) pView.findViewById(R.id.rec_pop);
+            twoAdapter=new FreshPopTypeTwoAdapter(R.layout.item_pop_fresh,typeTwoData,getActivity());
+            twoAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+                @Override
+                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+                    ItemMenu<ResponseQueryTwoType.ListFreshTypeBean> bean=typeTwoData.get(position);
+                    if(bean!=null)
+                        freshTypeID=bean.getData().getFreshTypeID();
+                        shopData.clear();
+                        getShopList();
+                    popupWindowLeft.dismiss();
+                }
+            });
+
+            LinearLayoutManager pop_linearLayoutManager = new LinearLayoutManager(getActivity());
+            pop_linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+            rec_pop.setLayoutManager(pop_linearLayoutManager);
+            rec_pop.setAdapter(twoAdapter);
+
+//            PopFreshAdapter popFreshAdapter=new PopFreshAdapter(this,R.layout.item_pop_fresh,list);
+//            rec_pop.setAdapter(popFreshAdapter);
+
+            //点击弹窗内容改变弹窗中文字颜色
+//            popFreshAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
+//                @Override
+//                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+//                    PopFreshAdapter.popFreshCallBack.popTextColorCall(position);
+//                }
+//            });
+        }else {
+            if(!popupWindowLeft.isShowing())
+            popupWindowLeft.showAtLocation(recLeftButton,Gravity.LEFT,recLeftButton.getWidth(),-(rlAddress.getHeight()+topBar.getHeight()));
+        }
+    }
+
+    //综合排序弹出窗口
+    private void initPopupWindowSort() {
+        if (popupWindowSort == null) {
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            final View pView = inflater.inflate(R.layout.pop_fresh_sort, null);
+            popupWindowSort = new PopupWindow(pView,getActivity().getWindowManager().getDefaultDisplay().getWidth()-rlAddress.getWidth(),ViewGroup.LayoutParams.WRAP_CONTENT);
+//            //获取控件宽度
+//            int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+//            int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
+//            rlAddress.measure(w, h);
+//            int width =rlAddress.getMeasuredWidth();
+            //设置popwindow显示宽度
+//            popupWindowSort.setWidth(getActivity().getWindowManager().getDefaultDisplay().getWidth()-width);
+//            popupWindowSort.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+            popupWindowSort.setFocusable(true);
+            popupWindowSort.setOutsideTouchable(true);
+            //综合排序
+            RadioGroup radioGroup= (RadioGroup) pView.findViewById(R.id.tabs_rg);
+            radioGroup.setOnCheckedChangeListener(this);
+
+            //点击弹窗下方关闭
+            View pop_dismis=pView.findViewById(R.id.pop_dismis);
+            pop_dismis.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    popupWindowSort.dismiss();
+                }
+            });
+        }else{
+            if(!popupWindowSort.isShowing()){
+//                popupWindowSort.showAtLocation(rlZonghe, Gravity.LEFT|Gravity.RIGHT,0,0);
+                popupWindowSort.showAsDropDown(rlZonghe);
+            }
+        }
     }
 
 
 
+    void initLocalData(){
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
+        //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
+        option.setCoorType("bd09ll");
+        //可选，默认gcj02，设置返回的定位结果坐标系
+        int span=6000;
+        option.setScanSpan(span);
+        //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setIsNeedAddress(true);
+        //可选，设置是否需要地址信息，默认不需要
+        option.setOpenGps(true);
+        //可选，默认false,设置是否使用gps
+        option.setLocationNotify(true);
+        //可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
+        option.setIsNeedLocationDescribe(true);
+        //可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
+        option.setIsNeedLocationPoiList(true);
+        //可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
+        option.setIgnoreKillProcess(false);
+        //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
+        option.SetIgnoreCacheException(false);
+        //可选，默认false，设置是否收集CRASH信息，默认收集
+        option.setEnableSimulateGps(false);
+        //可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
+        client.setLocOption(option);
+        client.registerLocationListener(this);
+        if(AndPermission.hasPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION)){
+
+            client.start();
+        }else {
+            AndPermission.with(this)
+                    .requestCode(100)
+                    .permission(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION)
+                    .send();
+        }
+
+    }
+
+    @PermissionYes(100)
+    private void getYes(List<String> grantedPermissions) {
+        // TODO 申请权限成功。
+        client.start();
+    }
+
+    // 失败回调的方法，用注解即可，里面的数字是请求时的requestCode。
+    @PermissionNo(100)
+    private void getNo(List<String> deniedPermissions) {
+        // 用户否勾选了不再提示并且拒绝了权限，那么提示用户到设置中授权。
+        if (AndPermission.hasAlwaysDeniedPermission(this, deniedPermissions)) {
+            // 第一种：用默认的提示语。
+            AndPermission.defaultSettingDialog(this, 1).show();
+        }
+    }
+
+    /**
+     * 根据区域ID查询商户信息/一级分类
+     * @param areaId
+     */
     private void queryShopInfo(int areaId){
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("freshMerchant",new RequestQuerysShopInfo(areaId));
@@ -124,10 +354,12 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                 if(info.getStatusCode()==1){
                     for (ResponseQueryShopInfo.ListFreshMerchantBean.ListTypeBean bean:info.getListFreshMerchant().get(0).getListType()
                          ) {
-                        list.add(new FreshLeftInfo(false,bean.getFreshTypeName()));
+                        typeData.add(new ItemMenu<ResponseQueryShopInfo.ListFreshMerchantBean.ListTypeBean>(bean));
                     }
-                }else {
-
+                    twoTypeFreshLeafID=info.getListFreshMerchant().get(0).getListType().get(0).getFreshTypeLeaf();
+                    twoTypeMerchantId=info.getListFreshMerchant().get(0).getListType().get(0).getMerchant_ID();
+//                    oneTypeId=info.getListFreshMerchant().get(0).get;
+                    typeAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -154,13 +386,28 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     }
 
 
-    private void queryFreshTypeOne(){
+    /**
+     * 查询二级分类
+     */
+    private void queryFreshTypeTwo(){
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("",new RequestFreshType(1));
-        String json="";
+        map.put("freshType",new RequestFreshType(twoTypeFreshLeafID,twoTypeMerchantId));
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
+                ResponseQueryTwoType bean=new Gson().fromJson(s,ResponseQueryTwoType.class);
+                if(bean.getStatusCode()==1){
+                    typeTwoData.clear();
+                    for (ResponseQueryTwoType.ListFreshTypeBean typeBean:
+                         bean.getListFreshType()) {
+                        typeTwoData.add(new ItemMenu<ResponseQueryTwoType.ListFreshTypeBean>(typeBean));
+                    }
+                    freshTypeID=bean.getListFreshType().get(0).getFreshTypeID();
+                    twoAdapter.notifyDataSetChanged();
+
+                    initPopupWindowLeft();
+                }
 
             }
 
@@ -186,59 +433,56 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         }).getEntityData(HttpURL.HTTP_POST_FRESH_TYPE,json);
     }
 
-     void initLocalData(){
-        LocationClientOption option = new LocationClientOption();
-        option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy);
-        //可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
-        option.setCoorType("bd09ll");
-        //可选，默认gcj02，设置返回的定位结果坐标系
-        int span=6000;
-        option.setScanSpan(span);
-        //可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
-        option.setIsNeedAddress(true);
-        //可选，设置是否需要地址信息，默认不需要
-        option.setOpenGps(true);
-        //可选，默认false,设置是否使用gps
-        option.setLocationNotify(true);
-        //可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
-        option.setIsNeedLocationDescribe(true);
-        //可选，默认false，设置是否需要位置语义化结果，可以在BDLocation.getLocationDescribe里得到，结果类似于“在北京天安门附近”
-        option.setIsNeedLocationPoiList(true);
-        //可选，默认false，设置是否需要POI结果，可以在BDLocation.getPoiList里得到
-        option.setIgnoreKillProcess(false);
-        //可选，默认true，定位SDK内部是一个SERVICE，并放到了独立进程，设置是否在stop的时候杀死这个进程，默认不杀死
-        option.SetIgnoreCacheException(false);
-        //可选，默认false，设置是否收集CRASH信息，默认收集
-        option.setEnableSimulateGps(false);
-        //可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
-        client.setLocOption(option);
-         client.registerLocationListener(this);
-         if(AndPermission.hasPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION)){
 
-             client.start();
-         }else {
-             AndPermission.with(this)
-                     .requestCode(100)
-                     .permission(Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION)
-                     .send();
-         }
+    /**
+     * 查询商品列表
+     */
+    private void getShopList(){
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("fresh", new RequestProductList(freshTypeID, orderBy, twoTypeMerchantId));
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseSearchFresh detail = new Gson().fromJson(s, ResponseSearchFresh.class);
+                if (detail.getStatusCode() == 1) {
+                    if (detail.getListfresh() == null || detail.getListfresh().size() <= 0) {
+                        showShort(detail.getAlertMessage());
+                    } else {
+                        for (ResponseSearchFresh.ListfreshBean beans:detail.getListfresh()
+                             ) {
+                            shopData.add(new ItemMenu<ResponseSearchFresh.ListfreshBean>(beans));
+                        }
+                        shopListAdapter.notifyDataSetChanged();
 
-    }
+                    }
 
-    @PermissionYes(100)
-    private void getYes(List<String> grantedPermissions) {
-        // TODO 申请权限成功。
-        client.start();
-    }
 
-    // 失败回调的方法，用注解即可，里面的数字是请求时的requestCode。
-    @PermissionNo(100)
-    private void getNo(List<String> deniedPermissions) {
-        // 用户否勾选了不再提示并且拒绝了权限，那么提示用户到设置中授权。
-        if (AndPermission.hasAlwaysDeniedPermission(this, deniedPermissions)) {
-            // 第一种：用默认的提示语。
-            AndPermission.defaultSettingDialog(this, 1).show();
-        }
+                } else {
+                    showShort(detail.getAlertMessage());
+                }
+            }
+
+            @Override
+            public void onError() {
+                showShort("系统异常");
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_FRESH_QUERY_DETAIL, json);
     }
 
 
@@ -250,6 +494,8 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("longitude",bdLocation.getLongitude());
         map.put("latitude",bdLocation.getLatitude());
+
+
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -257,6 +503,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                 ResponseQueryMyLocal local=new Gson().fromJson(s,ResponseQueryMyLocal.class);
                 if(local.getStatusCode()==1){
                     myLocal=local;
+                    tvFreshAddress.setText(myLocal.getArea().getArea_Name());
                     queryShopInfo(myLocal.getArea().getArea_ID());
                 }
             }
@@ -285,49 +532,17 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     }
 
 
-    private void initPopupWindowLeft() {
-        if (popupWindowLeft == null) {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
-            final View pView = inflater.inflate(R.layout.pop_fresh_left, null);
-            popupWindowLeft = new PopupWindow(pView);
-            popupWindowLeft.setWidth(((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 153, getResources().getDisplayMetrics())));
-            popupWindowLeft.setHeight(((int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 239, getResources().getDisplayMetrics())));
-            RecyclerView rec_pop= (RecyclerView) pView.findViewById(R.id.rec_pop);
-            LinearLayoutManager pop_linearLayoutManager=new LinearLayoutManager(getActivity());
-            pop_linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-            rec_pop.setLayoutManager(pop_linearLayoutManager);
 
-//            PopFreshAdapter popFreshAdapter=new PopFreshAdapter(this,R.layout.item_pop_fresh,list);
-            rec_pop.setAdapter(popFreshAdapter);
-
-            //点击弹窗内容改变弹窗中文字颜色
-            popFreshAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-                @Override
-                public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                    PopFreshAdapter.popFreshCallBack.popTextColorCall(position);
-                }
-            });
-//            popFreshAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
-//                @Override
-//                public void onItemClick(View view, int i) {
-//                    PopFreshAdapter.popFreshCallBack.popTextColorCall(i);
-//                }
-//            });
-        }
-    }
     @Override
     public void onReceiveLocation(BDLocation bdLocation) {
         switch (bdLocation.getLocType()){
             case BDLocation.TypeGpsLocation://GPS
-                getMyLocal(bdLocation);
-                client.stop();
-                break;
             case BDLocation.TypeNetWorkLocation://网络
-                getMyLocal(bdLocation);
-                client.stop();
-                break;
             case BDLocation.TypeOffLineLocation://离线
                 getMyLocal(bdLocation);
+                mCache.put("longitude",bdLocation.getLongitude());
+                mCache.put("latitude",bdLocation.getLatitude());
+                isLocal=true;
                 client.stop();
                 break;
         }
@@ -344,4 +559,38 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     }
 
 
+
+
+    @Override
+    public void onCheckedChanged(RadioGroup group, @IdRes int checkedId) {
+        if(popupWindowSort.isShowing())
+        popupWindowSort.dismiss();
+
+        switch (checkedId){
+            case R.id.rb_tab_1://综合搜索
+                tvFreshSort.setText("综合搜索");
+                orderBy="";
+            break;
+            case R.id.rb_tab_2://价格最低
+                tvFreshSort.setText("价格最低");
+                orderBy="ASC";
+            break;
+            case R.id.rb_tab_3://价格最高
+                tvFreshSort.setText("价格最高");
+                orderBy="DESC";
+                break;
+        }
+        shopData.clear();
+        getShopList();
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        ResponseSearchFresh.ListfreshBean bean=shopData.get(position).getData();
+        if(bean!=null){
+            Intent intent=new Intent(getActivity(),GoodsDetailsActivity.class);
+            intent.putExtra("data",bean);
+            startActivity(intent);
+        }
+    }
 }
