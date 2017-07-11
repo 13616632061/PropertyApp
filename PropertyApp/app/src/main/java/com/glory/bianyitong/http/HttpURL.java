@@ -62,6 +62,13 @@ public class HttpURL {
     //根据用户ID查询用户信息
     public static String HTTP_POST_QUERY_USER_INFO="/ApiUser/Query";
 
+    //我的收货地址
+    public static String HTTP_POST_QUERY_ADDRESS="/ApiShopAddress/Query";
+    //附近生鲜柜
+    public static String HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_LOCAL="/ApiShopAddress/OtherOne";
+    //搜索生鲜柜
+    public static String HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_SEARCH="/ApiShopAddress/FuzzyQuery";
+
 
 
     /**
@@ -151,6 +158,8 @@ public class HttpURL {
     public static String HTTP_POST_FRESH_QUERY_SEARCH="/ApiFresh/FuzzyQuery";//搜索框搜索生鲜
     public static String HTTP_POST_FRESH_QUERY_DETAIL="/ApiFresh/Query";//查询生鲜详情
     public static String HTTP_POST_SHOP_QUERY_INFO="/ApiFreshMerchant/Query";//查询商户信息
+    public static String HTTP_POST_SHOP_QUERY_LOCAL="/ApiArea/FuzzyQuery";//地区搜索
+    public static String HTTP_POST_SHOP_QUERY_GOOD_SHOP="/ApiFresh/QueryFreshChoice";//生鲜精品
 
     /**
      * 购物车

@@ -1,36 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/lay_shopping_car"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@color/bggray"
-    android:fitsSystemWindows="true"
-    android:orientation="vertical">
+    android:fitsSystemWindows="true">
 
     <include layout="@layout/base_text_title"></include>
-
     <include layout="@layout/base_view_line"></include>
+
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginBottom="6dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/white_bg_search">
+        android:layout_height="48dp"
+        android:paddingBottom="8dp"
+        android:paddingLeft="13dp"
+        android:paddingRight="8dp"
+        android:paddingTop="8dp"
+        android:background="@color/white">
 
         <RelativeLayout
             android:id="@+id/clean_word"
             android:layout_width="28dp"
             android:layout_height="match_parent"
             android:layout_alignParentRight="true"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <ImageView
                 android:layout_width="16dp"
                 android:layout_height="16dp"
                 android:layout_centerInParent="true"
-                android:background="@drawable/login_icon_del" />
+                android:background="@drawable/icon_location" />
         </RelativeLayout>
 
         <EditText
@@ -38,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@id/clean_word"
-            android:background="#e1e1de"
+            android:background="@drawable/shape_item_express_search"
             android:drawableLeft="@drawable/search_bar_icon_normal"
             android:drawablePadding="5dp"
             android:hint="搜索"
@@ -49,10 +50,13 @@
             android:textSize="13sp"
             android:imeOptions="actionSearch"/>
     </RelativeLayout>
+    <include layout="@layout/base_view_line"></include>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/express_bar_addlist"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/add_local_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        </android.support.v7.widget.RecyclerView>
+
 
 </LinearLayout>

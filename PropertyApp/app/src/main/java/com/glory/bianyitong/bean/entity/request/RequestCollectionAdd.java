@@ -1,11 +1,14 @@
 package com.glory.bianyitong.bean.entity.request;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2017/7/5.
  * 添加收藏
  */
 
 public class RequestCollectionAdd {
+
     private int freshID;//	int	生鲜ID
     private int FreshTypeID;//	int	生鲜类型ID
 

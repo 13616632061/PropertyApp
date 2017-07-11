@@ -206,3 +206,7 @@
 -keep class cn.jpush.** { *; }
 -dontwarn cn.jiguang.**
 -keep class cn.jiguang.** { *; }
+#百度地图
+-keep class com.baidu.** {*;}
+-keep class vi.com.** {*;}
+-dontwarn com.baidu.**

@@ -10,7 +10,7 @@ import java.util.List;
  * 搜索框搜索生鲜数据
  */
 
-public class ResponseSearchFresh extends BaseResponseBean {
+public class ResponseSearchFresh extends BaseResponseBean implements Serializable{
 
 
     private List<ListfreshBean> listfresh;

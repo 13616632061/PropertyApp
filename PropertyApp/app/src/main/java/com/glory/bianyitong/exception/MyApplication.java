@@ -4,6 +4,8 @@ import android.app.Application;
 import android.app.Service;
 import android.content.Context;
 import android.os.Vibrator;
+
+import com.baidu.mapapi.SDKInitializer;
 import com.chenenyu.router.RouteInterceptor;
 import com.chenenyu.router.RouteRequest;
 import com.chenenyu.router.RouteTable;
@@ -49,6 +51,7 @@ public class MyApplication extends Application {
         super.onCreate();
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init(getApplicationContext(), this);
+        SDKInitializer.initialize(getApplicationContext());
         Router.initialize(this, BuildConfig.DEBUG);
         Instance = this;
         //极光推送

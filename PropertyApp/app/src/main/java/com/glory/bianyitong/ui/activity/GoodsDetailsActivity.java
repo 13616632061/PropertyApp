@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
-import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.SslErrorHandler;
@@ -52,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -361,7 +359,9 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
      */
     private void addCollection(){
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("freshCollection",new RequestCollectionAdd(productDetail.getFreshID(),productDetail.getFreshTypeID()));
+        List<RequestCollectionAdd> list=new ArrayList<>();
+        list.add(new RequestCollectionAdd(productDetail.getFreshID(),productDetail.getFreshTypeID()));
+        map.put("listCollection",list);
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override

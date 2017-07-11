@@ -10,21 +10,21 @@ import java.util.List;
  * 查询我的位置信息
  */
 
-public class ResponseQueryMyLocal extends BaseResponseBean{
+public class ResponseQueryMyLocal extends BaseResponseBean implements Serializable{
 
     /**
      * area : {"area_ID":39,"area_Name":"南山区","domain_ID":79,"domain_Name":"广东地区","provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","districtID":440305,"districtName":"南山区","user":null,"listUser":null,"listDomain":null,"listArea":null,"listMerchant":[{"merchant_ID":22,"merchant_Name":"宜家生鲜店","merchant_TEL":"135011","area_ID":39,"area_Name":null,"listUser":null,"domain_ID":79,"domain_Name":null,"listDomain":null,"listType":[{"freshTypeID":3,"freshTypeName":"水果","freshTypeLeaf":3,"merchant_ID":22},{"freshTypeID":6,"freshTypeName":"蔬菜","freshTypeLeaf":6,"merchant_ID":22},{"freshTypeID":7,"freshTypeName":"水产","freshTypeLeaf":7,"merchant_ID":22},{"freshTypeID":8,"freshTypeName":"肉类","freshTypeLeaf":8,"merchant_ID":22}]}]}
      * listArea : [{"area_ID":18,"area_Name":"龙岗区","domain_ID":79,"domain_Name":"广东地区","provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","districtID":440307,"districtName":"龙岗区","user":null,"listUser":null,"listDomain":null,"listArea":null,"listMerchant":null},{"area_ID":36,"area_Name":"宝安区","domain_ID":79,"domain_Name":"广东地区","provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","districtID":440306,"districtName":"宝安区","user":null,"listUser":null,"listDomain":null,"listArea":null,"listMerchant":null},{"area_ID":40,"area_Name":"福田区","domain_ID":79,"domain_Name":"广东地区","provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","districtID":440304,"districtName":"福田区","user":null,"listUser":null,"listDomain":null,"listArea":null,"listMerchant":null}]
      */
 
-    private AreaBean area;
+    private ListAreaBean area;
     private List<ListAreaBean> listArea;
 
-    public AreaBean getArea() {
+    public ListAreaBean getArea() {
         return area;
     }
 
-    public void setArea(AreaBean area) {
+    public void setArea(ListAreaBean area) {
         this.area = area;
     }
 
@@ -296,7 +296,7 @@ public class ResponseQueryMyLocal extends BaseResponseBean{
                 this.listType = listType;
             }
 
-            public static class ListTypeBean {
+            public static class ListTypeBean implements Serializable{
                 /**
                  * freshTypeID : 3
                  * freshTypeName : 水果
@@ -344,7 +344,7 @@ public class ResponseQueryMyLocal extends BaseResponseBean{
         }
     }
 
-    public static class ListAreaBean {
+    public static class ListAreaBean implements Serializable{
         /**
          * area_ID : 18
          * area_Name : 龙岗区

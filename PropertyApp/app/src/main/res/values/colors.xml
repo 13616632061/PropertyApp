@@ -115,4 +115,6 @@
     <color name="popwindow_background">#99000000</color>
     <!--模块名称颜色-->
 
+    <color name="green1">#3e8d1c</color>
+    <color name="gray1">#6e6d7d</color>
 </resources>

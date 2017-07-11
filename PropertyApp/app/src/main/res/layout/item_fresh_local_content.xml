@@ -10,7 +10,9 @@
         android:id="@+id/local_content_txt"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dp_10"
-        android:text="测试"/>
+        android:paddingLeft="16dp"
+        android:paddingBottom="@dimen/dp_10"
+        android:paddingRight="@dimen/dp_10"
+        android:paddingTop="@dimen/dp_10"/>
     <include layout="@layout/base_view_line"></include>
 </LinearLayout>

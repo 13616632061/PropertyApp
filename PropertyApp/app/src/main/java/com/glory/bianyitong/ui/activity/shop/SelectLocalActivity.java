@@ -1,10 +1,15 @@
 package com.glory.bianyitong.ui.activity.shop;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -16,6 +21,7 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.chad.library.adapter.base.listener.OnItemClickListener;
 import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.InjectParam;
@@ -23,6 +29,7 @@ import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.request.RequestQueryFreshLocal;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryMyLocal;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
@@ -40,6 +47,8 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.OnEditorAction;
 
 
 /**
@@ -48,7 +57,7 @@ import butterknife.ButterKnife;
  */
 
 @Route(RouterMapping.ROUTER_ACTIVITY_PRODUCT_SELECT_LOCAL)
-public class SelectLocalActivity extends BaseActivity implements BaseQuickAdapter.OnItemClickListener ,BDLocationListener{
+public class SelectLocalActivity extends BaseActivity implements BaseSectionQuickAdapter.OnItemClickListener ,BDLocationListener{
 
     @BindView(R.id.iv_title_back)
     ImageView ivTitleBack;
@@ -68,7 +77,7 @@ public class SelectLocalActivity extends BaseActivity implements BaseQuickAdapte
     EditText etSearchAreaTxt;
     @BindView(R.id.add_local_list)
     RecyclerView addLocalList;
-
+//    @InjectParam(key = "data")
     ResponseQueryMyLocal myLocal;
 
 
@@ -86,6 +95,7 @@ public class SelectLocalActivity extends BaseActivity implements BaseQuickAdapte
     @Override
     protected void init() {
         super.init();
+        Router.injectParams(this);
         inintTitle("选择地区", false, "");
         myLocal= (ResponseQueryMyLocal) getIntent().getSerializableExtra("data");
         LinearLayoutManager layoutManager=new LinearLayoutManager(this);
@@ -102,23 +112,59 @@ public class SelectLocalActivity extends BaseActivity implements BaseQuickAdapte
 
     }
 
+
     private void initLocal() {
         client=new LocationClient(this);
         initLocalData();
     }
 
 
-    @Override
-    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
+    @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2})
+    void onClickText(View view){
+        switch (view.getId()){
+            case R.id.iv_title_back:
+                finish();
+                break;
+            case R.id.iv_title_text_left2:
+                finish();
+                break;
+        }
     }
+
+    @OnEditorAction(R.id.et_search_area_txt)
+    boolean onEditSearch(TextView txtView, int actionId, KeyEvent event){
+        if ((actionId == 0 || actionId == 3) && event != null) {
+            String keyWord=etSearchAreaTxt.getText().toString().trim();
+            if(!TextUtils.isEmpty(keyWord)) {
+                queryLocal(keyWord);
+            }else {
+                showShort("搜索关键字不能为空");
+            }
+
+
+        }
+        return false;
+    }
+
+
 
 
     private void addData(ResponseQueryMyLocal local){
         datas.clear();
         if(local!=null){
-            datas.add(new ItemMenu<ResponseQueryMyLocal.ListAreaBean>(true,"定位地区"));
-            datas.add(new ItemMenu<ResponseQueryMyLocal.ListAreaBean>(local.getArea()))
+            if(local.getArea()!=null){
+                datas.add(new ItemMenu<ResponseQueryMyLocal.ListAreaBean>(true,"定位地区"));
+                datas.add(new ItemMenu<ResponseQueryMyLocal.ListAreaBean>(local.getArea()));
+            }else {
+                datas.add(new ItemMenu<ResponseQueryMyLocal.ListAreaBean>(true,"无定位地区"));
+            }
+
+            if(local.getListArea()==null || local.getListArea().size()<=0){
+                datas.add(new ItemMenu<ResponseQueryMyLocal.ListAreaBean>(true,"无其他地区"));
+            }else {
+                datas.add(new ItemMenu<ResponseQueryMyLocal.ListAreaBean>(true,"其他地区"));
+            }
+
             for (ResponseQueryMyLocal.ListAreaBean bean:local.getListArea()
                  ) {
                 datas.add(new ItemMenu<ResponseQueryMyLocal.ListAreaBean>(bean));
@@ -143,12 +189,18 @@ public class SelectLocalActivity extends BaseActivity implements BaseQuickAdapte
                 ResponseQueryMyLocal local=new Gson().fromJson(s,ResponseQueryMyLocal.class);
                 if(local.getStatusCode()==1){
                     addData(local);
+                }else {
+                    datas.clear();
+                    View view= LayoutInflater.from(SelectLocalActivity.this).inflate(R.layout.layout_empty,null);
+                    adapter.setEmptyView(view);
                 }
             }
 
             @Override
             public void onError() {
-
+                datas.clear();
+                View view= LayoutInflater.from(SelectLocalActivity.this).inflate(R.layout.layout_empty,null);
+                adapter.setEmptyView(view);
             }
 
             @Override
@@ -167,6 +219,47 @@ public class SelectLocalActivity extends BaseActivity implements BaseQuickAdapte
             }
         }).getEntityData(HttpURL.HTTP_POST_MY_LOCAL,json);
 
+    }
+
+    private void queryLocal(String keyWord){
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("area",new RequestQueryFreshLocal(keyWord));
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryMyLocal local=new Gson().fromJson(s,ResponseQueryMyLocal.class);
+                if(local.getStatusCode()==1){
+                    addData(local);
+                }else {
+                    datas.clear();
+                    View view= LayoutInflater.from(SelectLocalActivity.this).inflate(R.layout.layout_empty,null);
+                    adapter.setEmptyView(view);
+                }
+            }
+
+            @Override
+            public void onError() {
+                datas.clear();
+                View view= LayoutInflater.from(SelectLocalActivity.this).inflate(R.layout.layout_empty,null);
+                adapter.setEmptyView(view);
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_SHOP_QUERY_LOCAL,json);
     }
 
     void initLocalData(){
@@ -247,4 +340,14 @@ public class SelectLocalActivity extends BaseActivity implements BaseQuickAdapte
         AndPermission.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        ItemMenu<ResponseQueryMyLocal.ListAreaBean> itemMenu=datas.get(position);
+        if(!itemMenu.isHeader){
+            Intent intent=new Intent();
+            intent.putExtra("data",itemMenu.getData());
+            setResult(Activity.RESULT_OK,intent);
+            finish();
+        }
+    }
 }

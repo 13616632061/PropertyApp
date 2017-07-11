@@ -66,6 +66,8 @@ public class MyFragment extends BaseFragment {
     TextView txtUserInfo;
     @BindView(R.id.my_fragment_allorder)
     RelativeLayout myFragmentAllorder;
+    @BindView(R.id.tv_address_manager)
+    TextView tvAddressManager;
     private View view_my;
     private CircleImageView headPortraitCiv; //个人信息
     private String customerPhoto = "";
@@ -119,6 +121,7 @@ public class MyFragment extends BaseFragment {
         tvFeedback.setOnClickListener(this);
         txtUserInfo.setOnClickListener(this);
         myFragmentAllorder.setOnClickListener(this);
+        tvAddressManager.setOnClickListener(this);
         getShareInfo();
     }
 
@@ -127,14 +130,6 @@ public class MyFragment extends BaseFragment {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.cim_my_head_portrait: //个人信息
-
-//                if (Database.USER_MAP != null) {//登录
-//                    Intent intent2 = new Intent(context, PersonalDataActivity.class);
-//                    context.startActivity(intent2);
-//                } else {
-//                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
-//                    login();
-//                }
                 Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
                         .go(this);
                 break;
@@ -174,7 +169,7 @@ public class MyFragment extends BaseFragment {
                 break;
             case R.id.tv_award_manager: //授权管理
 
-                if(Database.USER_MAP==null)
+                if (Database.USER_MAP == null)
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
                             .go(this);
 
@@ -187,6 +182,10 @@ public class MyFragment extends BaseFragment {
                 break;
             case R.id.fg_tv_my_news: //我的发布 /登录
                 Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MY_RELEASE)
+                        .go(this);
+                break;
+            case R.id.tv_address_manager: //地址管理
+                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
                         .go(this);
                 break;
             case R.id.tv_share_app: //推荐给其他朋友
