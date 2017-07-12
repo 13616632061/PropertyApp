@@ -1,5 +1,9 @@
 package com.glory.bianyitong.ui.activity.shop;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -12,13 +16,21 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.baidu.mapapi.map.BaiduMap;
+import com.baidu.mapapi.map.BitmapDescriptor;
+import com.baidu.mapapi.map.BitmapDescriptorFactory;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdate;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.MarkerOptions;
+import com.baidu.mapapi.map.MyLocationConfiguration;
 import com.baidu.mapapi.map.MyLocationData;
+import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.TextOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chenenyu.router.Router;
+import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
@@ -65,6 +77,8 @@ public class ExpressMapActivity extends BaseActivity {
 
     private BaiduMap baiduMap;
 
+    @InjectParam(key = "data")
+    ResponseQueryExpressBar queryExpressBar;
 
     @Override
     protected int getContentId() {
@@ -74,6 +88,7 @@ public class ExpressMapActivity extends BaseActivity {
     @Override
     protected void init() {
         super.init();
+        Router.injectParams(this);
         inintTitle("地址地图",false,"");
         baiduMap=mapView.getMap();
         //普通地图
@@ -83,8 +98,15 @@ public class ExpressMapActivity extends BaseActivity {
                 .zoom(18).build();
 
         MapStatusUpdate mapStatusUpdate= MapStatusUpdateFactory.newMapStatus(mapStatus);
+        baiduMap.setMyLocationEnabled(true);
+        MyLocationData locationData=new MyLocationData.Builder().latitude(latLng.latitude).longitude(latLng.longitude).build();
+        MyLocationConfiguration locationConfig=new MyLocationConfiguration(MyLocationConfiguration.LocationMode.COMPASS,false,null);
 
+        baiduMap.setMyLocationData(locationData);
+        baiduMap.setMyLocationConfiguration(locationConfig);
         baiduMap.setMapStatus(mapStatusUpdate);
+
+        initOverLayText();
     }
 
     @OnClick({R.id.iv_title_back, R.id.iv_title_text_left2})
@@ -97,8 +119,30 @@ public class ExpressMapActivity extends BaseActivity {
         }
     }
 
+    private void initOverLayText(){
+//构建文字Option对象，用于在地图上添加文字
+
+        if(queryExpressBar==null || queryExpressBar.getListFreshCabinet()==null || queryExpressBar.getListFreshCabinet().size()<=0)
+            return;
+        List<OverlayOptions> list=new ArrayList<>();
+        for (ResponseQueryExpressBar.ListFreshCabinetBean bean:queryExpressBar.getListFreshCabinet()
+             ) {
+            LatLng latlng=new LatLng(bean.getLatitude(),bean.getLongitude());
+            BitmapDescriptor bitmapDescriptor= BitmapDescriptorFactory.fromResource(R.drawable.icon_express_bar);
+            OverlayOptions textOption = new MarkerOptions()
+                    .icon(bitmapDescriptor)
+                    .title(bean.getCabinetName())
+                    .position(latlng);
+            list.add(textOption);
+        }
+
+//在地图上添加该文字对象并显示
+        baiduMap.addOverlays(list);
+    }
 
 
-
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bggray"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <include layout="@layout/base_text_title" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/bggray"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:paddingLeft="19dp"
+                android:gravity="center_vertical|right"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="收货人"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    />
+
+                <EditText
+                    android:id="@+id/address_add_receiver"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:gravity="center_vertical|left"
+                    android:hint="小火车"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp"
+                    android:paddingLeft="60dp"/>
+            </LinearLayout>
+
+            <include layout="@layout/base_view_line_marginleft"></include>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/address_add_lin2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="19dp"
+                    android:gravity="center_vertical"
+                    android:text="联系电话"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/address_add_lin2">
+
+                    <RelativeLayout
+                        android:id="@+id/rl_linkman"
+                        android:layout_width="46dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentRight="true">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:src="@drawable/log_linkman" />
+                    </RelativeLayout>
+
+                    <EditText
+                        android:id="@+id/address_add_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toLeftOf="@id/rl_linkman"
+                        android:background="@null"
+                        android:gravity="center_vertical|left"
+                        android:hint="@string/input_phone_number"
+                        android:inputType="phone"
+                        android:maxLength="11"
+                        android:paddingRight="15dp"
+                        android:textColor="@color/text_color_somber"
+                        android:textSize="15sp"
+                        android:layout_marginLeft="60dp"/>
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <include layout="@layout/base_view_line"></include>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:paddingLeft="19dp"
+                android:gravity="center_vertical|right"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="所在地区"
+
+                    android:gravity="center_vertical"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/address_add_province"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:gravity="center_vertical|right"
+                    android:text="广东省深圳市"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp"
+                    android:layout_marginRight="16dp"
+                    android:layout_weight="1"
+                    android:drawableRight="@drawable/ic_gray_next"
+                    android:drawablePadding="@dimen/dp_10"
+                    android:maxLines="1"/>
+            </LinearLayout>
+            <include layout="@layout/base_view_line"></include>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:paddingLeft="19dp"
+                android:gravity="center_vertical|right"
+                android:background="@color/white">
+
+                <TextView
+
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="街道"
+
+                    android:gravity="center_vertical"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/address_add_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:gravity="center_vertical|right"
+                    android:text="粤海街道"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp"
+                    android:layout_marginRight="16dp"
+                    android:layout_weight="1"
+                    android:drawableRight="@drawable/ic_gray_next"
+                    android:drawablePadding="@dimen/dp_10"
+                    android:maxLines="1"/>
+            </LinearLayout>
+            <include layout="@layout/base_view_line"></include>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                android:orientation="horizontal"
+                android:paddingLeft="19dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:id="@+id/address_add_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="详细地址"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="10dp"
+                    />
+
+            </LinearLayout>
+            <include layout="@layout/base_view_line"></include>
+
+            <RelativeLayout
+                android:id="@+id/address_add_delete"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="15dp"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="19dp"
+                    android:gravity="center_vertical"
+                    android:text="删除地址"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp" />
+
+            </RelativeLayout>
+
+            <include layout="@layout/base_view_line"></include>
+        </LinearLayout>
+    </ScrollView>
+
+    <include layout="@layout/base_view_line" />
+
+</LinearLayout>

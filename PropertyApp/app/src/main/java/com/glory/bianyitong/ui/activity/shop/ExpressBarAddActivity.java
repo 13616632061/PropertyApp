@@ -1,5 +1,6 @@
 package com.glory.bianyitong.ui.activity.shop;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -68,6 +69,9 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
     // TODO: 2017/7/11 快递柜列表
     private ExpressBarAddAdapter  addAdapter;
     private List<ItemMenu<ResponseQueryExpressBar.ListFreshCabinetBean>> data=new ArrayList<>();
+
+    // TODO: 2017/7/12 跳转地图
+    private ResponseQueryExpressBar queryExpressBar;
     @Override
     protected int getContentId() {
         return R.layout.activity_express_bar_add;
@@ -96,6 +100,7 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
                 break;
             case R.id.clean_word://地图
                 Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_EXPRESS_MAP)
+                        .with("data",queryExpressBar)
                         .go(this);
                 break;
         }
@@ -106,6 +111,7 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
         if ((actionId == 0 || actionId == 3) && event != null) {
             String keyWord=etSearchAreaTxt.getText().toString().trim();
             if(!TextUtils.isEmpty(keyWord)){
+                data.clear();
                 queryExpressBarByKeyWord(keyWord);
             }else {
                 showShort("搜索关键字不能为空");
@@ -123,13 +129,13 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
         (Double) mCache.getAsObject("latitude"));
         map.put("shippingAddress", new RequestQueryExpressBarByLocal(local));
         String json = new Gson().toJson(map);
-        data.clear();
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
                 ResponseQueryExpressBar expressBar=new Gson().fromJson(s,ResponseQueryExpressBar.class);
                 if(expressBar.getStatusCode()==1){
                     data.clear();
+                    queryExpressBar=expressBar;
                     for (ResponseQueryExpressBar.ListFreshCabinetBean bean:expressBar.getListFreshCabinet()
                          ) {
                         data.add(new ItemMenu<ResponseQueryExpressBar.ListFreshCabinetBean>(bean));
@@ -169,13 +175,13 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
         RequestQueryExpressBarByKeyWord.KeyWord keyWord = new RequestQueryExpressBarByKeyWord.KeyWord(keyWords);
         map.put("shippingAddress", new RequestQueryExpressBarByKeyWord(keyWord));
         String json = new Gson().toJson(map);
-        data.clear();
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
                 ResponseQueryExpressBar expressBar=new Gson().fromJson(s,ResponseQueryExpressBar.class);
                 if(expressBar.getStatusCode()==1){
                     data.clear();
+                    queryExpressBar=expressBar;
                     for (ResponseQueryExpressBar.ListFreshCabinetBean bean:expressBar.getListFreshCabinet()
                             ) {
                         data.add(new ItemMenu<ResponseQueryExpressBar.ListFreshCabinetBean>(bean));
@@ -213,6 +219,12 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
+        ResponseQueryExpressBar.ListFreshCabinetBean bean=data.get(position).getData();
+        if(bean!=null){
+            Intent intent=new Intent();
+            intent.putExtra("data",bean);
+            setResult(RESULT_OK,intent);
+            finish();
+        }
     }
 }

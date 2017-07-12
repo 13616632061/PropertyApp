@@ -2,6 +2,7 @@ package com.glory.bianyitong.bean.entity.response;
 
 import com.glory.bianyitong.bean.BaseResponseBean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * 查询快递柜
  */
 
-public class ResponseQueryExpressBar extends BaseResponseBean {
+public class ResponseQueryExpressBar extends BaseResponseBean implements Serializable{
 
     /**
      * addressID : 0
@@ -45,7 +46,7 @@ public class ResponseQueryExpressBar extends BaseResponseBean {
         this.listFreshCabinet = listFreshCabinet;
     }
 
-    public static class ListFreshCabinetBean {
+    public static class ListFreshCabinetBean implements Serializable{
         /**
          * cabinetID : 13
          * cabinetName : 生鲜柜一号
@@ -67,6 +68,24 @@ public class ResponseQueryExpressBar extends BaseResponseBean {
         private double distance;
         private Object listFreshCabinetDetail;
         private Object listArea;
+        private double longitude;//经度
+        private double latitude;//维度
+
+        public double getLongitude() {
+            return longitude;
+        }
+
+        public void setLongitude(double longitude) {
+            this.longitude = longitude;
+        }
+
+        public double getLatitude() {
+            return latitude;
+        }
+
+        public void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
 
         public int getCabinetID() {
             return cabinetID;

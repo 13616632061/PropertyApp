@@ -44,6 +44,7 @@ public class RouterMapping  {
     public static final String ROUTER_ACTIVITY_MY_ADDRESS_MANAGER="ROUTER_ACTIVITY_MY_ADDRESS_MANAGER";//收货地址管理
     public static final String ROUTER_ACTIVITY_MY_ADDRESS_EXPRESS_ADD="ROUTER_ACTIVITY_MY_ADDRESS_EXPRESS_ADD";//绑定收货柜
     public static final String ROUTER_ACTIVITY_MY_ADDRESS_EXPRESS_MAP="ROUTER_ACTIVITY_MY_ADDRESS_EXPRESS_MAP";//绑定收货柜
+    public static final String ROUTER_ACTIVITY_MY_ADDRESS_ADD="ROUTER_ACTIVITY_MY_ADDRESS_ADD";//编辑和添加地址
 
     /**
      * 小区信息

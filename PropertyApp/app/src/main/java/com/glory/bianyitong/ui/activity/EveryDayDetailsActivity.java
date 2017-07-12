@@ -335,7 +335,7 @@ public class EveryDayDetailsActivity extends BaseActivity {
                 "\"userID\":\"" + userID + "\"}";
 //        String json = "{\"news\":{newsID:6},\"controllerName\":\"News\",\"actionName\":\"StructureQuery\"," +
 //                "\"userID\":\"" + userID + "\"}";
-        String url = HttpURL.HTTP_LOGIN_AREA + "/NewsComment/StructureQuery";
+        String url ="/NewsComment/StructureQuery";
 //        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/NewsComment/StructureQuery")
 //                .tag(this)//
 ////                .headers("", "")//
