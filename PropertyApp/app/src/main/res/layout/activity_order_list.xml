@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bggray"
+    android:fitsSystemWindows="true">
+    <include layout="@layout/base_text_title"></include>
+    <include layout="@layout/base_view_line"></include>
     <android.support.design.widget.TabLayout
         android:id="@+id/order_list_tab"
         android:layout_width="match_parent"

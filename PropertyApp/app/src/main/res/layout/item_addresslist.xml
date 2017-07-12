@@ -66,14 +66,18 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:text="设为默认"
+                            android:drawablePadding="5dp"
                             android:textColor="@color/small_text_color_gray"
                             android:button="@drawable/selector_shoppingcart_select"
                             />
                         <TextView
+                            android:id="@+id/address_list_delete"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:text="删除"/>
+                            android:text="删除"
+                            android:drawablePadding="5dp"
+                            android:drawableLeft="@drawable/icon_remove"/>
                     </RelativeLayout>
 
                 </LinearLayout>

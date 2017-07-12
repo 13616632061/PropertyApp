@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bggray"
+    android:fitsSystemWindows="true">
+    <include layout="@layout/base_text_title"></include>
+    <include layout="@layout/base_view_line"></include>
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:paddingLeft="19dp"
+        android:gravity="center_vertical|right"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="发票信息"
+
+            android:gravity="center_vertical"
+            android:textColor="@color/text_color_somber"
+            android:textSize="15sp"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:id="@+id/address_add_province"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="center_vertical|right"
+            android:text="明细(电子)-个人"
+            android:textColor="@color/text_color_somber"
+            android:textSize="15sp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:drawableRight="@drawable/ic_gray_next"
+            android:drawablePadding="@dimen/dp_10"
+            android:maxLines="1"/>
+    </LinearLayout>
+    <include layout="@layout/base_view_line"></include>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:paddingLeft="19dp"
+        android:gravity="center_vertical|right"
+        android:background="@color/white">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="优惠券"
+
+            android:gravity="center_vertical"
+            android:textColor="@color/text_color_somber"
+            android:textSize="15sp"
+            android:layout_weight="1"
+            />
+
+        <TextView
+            android:id="@+id/firm_order_coupon"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="center_vertical|right"
+            android:text="无可用"
+            android:textColor="@color/text_color_somber"
+            android:textSize="15sp"
+            android:layout_marginRight="16dp"
+            android:layout_weight="1"
+            android:drawableRight="@drawable/ic_gray_next"
+            android:drawablePadding="@dimen/dp_10"
+            android:maxLines="1"/>
+    </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:paddingLeft="19dp"
+                android:gravity="center_vertical|right"
+                android:background="@color/white"
+                android:layout_marginTop="5dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="运费"
+
+                    android:gravity="center_vertical"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/firm_order_carry_money"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:gravity="center_vertical|right"
+                    android:text="￥ 12.80"
+                    android:textColor="#eb0002"
+                    android:textSize="15sp"
+                    android:layout_marginRight="16dp"
+                    android:layout_weight="1"
+                    android:drawableRight="@drawable/ic_gray_next"
+                    android:drawablePadding="@dimen/dp_10"
+                    android:maxLines="1"/>
+            </LinearLayout>
+            <include layout="@layout/base_view_line" ></include>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:paddingLeft="19dp"
+                android:gravity="center_vertical|right"
+                android:background="@color/white">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="商品总额"
+                    android:gravity="center_vertical"
+                    android:textColor="@color/text_color_somber"
+                    android:textSize="15sp"
+                    android:layout_weight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/firm_order_all_money"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@null"
+                    android:gravity="center_vertical|right"
+                    android:text="￥ 12.80"
+                    android:textColor="#eb0002"
+                    android:textSize="15sp"
+                    android:layout_marginRight="16dp"
+                    android:layout_weight="1"
+                    android:drawableRight="@drawable/ic_gray_next"
+                    android:drawablePadding="@dimen/dp_10"
+                    android:maxLines="1"/>
+            </LinearLayout>
+            <include layout="@layout/base_view_line"></include>
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>

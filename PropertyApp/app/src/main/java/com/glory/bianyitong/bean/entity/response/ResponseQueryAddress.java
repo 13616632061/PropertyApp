@@ -2,6 +2,7 @@ package com.glory.bianyitong.bean.entity.response;
 
 import com.glory.bianyitong.bean.BaseResponseBean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * 查询地址列表
  */
 
-public class ResponseQueryAddress extends BaseResponseBean {
+public class ResponseQueryAddress extends BaseResponseBean implements Serializable{
 
     /**
      * addressID : 0
@@ -35,7 +36,7 @@ public class ResponseQueryAddress extends BaseResponseBean {
         this.listShippingAddress = listShippingAddress;
     }
 
-    public static class ListShippingAddressBean {
+    public static class ListShippingAddressBean implements Serializable {
         /**
          * addressID : 9
          * cabinetID : 13
@@ -110,7 +111,7 @@ public class ResponseQueryAddress extends BaseResponseBean {
             this.freshCabinet = freshCabinet;
         }
 
-        public static class FreshCabinetBean {
+        public static class FreshCabinetBean implements Serializable {
             /**
              * cabinetID : 13
              * cabinetName : 生鲜柜一号

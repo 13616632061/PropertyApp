@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
@@ -113,6 +114,8 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             case R.id.shopping_cart_pay://支付或删除
                 if(isEditStatus){//删除
                     showShort("结算");
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
+                            .go(this);
                 }else {
                     removeShoppingCard(0);
                 }

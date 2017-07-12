@@ -73,9 +73,10 @@
 
                     <RelativeLayout
                         android:id="@+id/rl_linkman"
-                        android:layout_width="46dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:layout_alignParentRight="true">
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="19dp">
 
                         <ImageView
                             android:layout_width="wrap_content"
@@ -88,7 +89,6 @@
                         android:id="@+id/address_add_phone"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_toLeftOf="@id/rl_linkman"
                         android:background="@null"
                         android:gravity="center_vertical|left"
                         android:hint="@string/input_phone_number"
@@ -97,7 +97,10 @@
                         android:paddingRight="15dp"
                         android:textColor="@color/text_color_somber"
                         android:textSize="15sp"
-                        android:layout_marginLeft="60dp"/>
+                        android:layout_alignParentTop="true"
+                        android:layout_toLeftOf="@+id/rl_linkman"
+                        android:layout_toStartOf="@+id/rl_linkman"
+                        android:paddingLeft="45dp"/>
                 </RelativeLayout>
             </RelativeLayout>
 
@@ -182,7 +185,8 @@
                 android:layout_height="96dp"
                 android:orientation="horizontal"
                 android:paddingLeft="19dp"
-                android:background="@color/white">
+                android:background="@color/white"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/address_add_address"
@@ -193,6 +197,7 @@
                     android:textSize="15sp"
                     android:layout_weight="1"
                     android:layout_marginTop="10dp"
+                    android:visibility="gone"
                     />
 
             </LinearLayout>
@@ -211,8 +216,9 @@
                     android:layout_marginLeft="19dp"
                     android:gravity="center_vertical"
                     android:text="删除地址"
-                    android:textColor="@color/text_color_somber"
-                    android:textSize="15sp" />
+                    android:textColor="#eb0002"
+                    android:textSize="15sp"
+                    />
 
             </RelativeLayout>
 

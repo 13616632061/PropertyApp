@@ -66,6 +66,10 @@ public class HttpURL {
     public static String HTTP_POST_QUERY_ADDRESS="/ApiShopAddress/Query";
     //添加收货地址
     public static String HTTP_POST_ADD_ADDRESS="/ApiShopAddress/Add";
+    //删除收货地址
+    public static String HTTP_POST_DELETE_ADDRESS="/ApiShopAddress/Delete";
+    //默认收货地址、编辑地址
+    public static String HTTP_POST_INIT_ADDRESS="/ApiShopAddress/Edit";
     //附近生鲜柜
     public static String HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_LOCAL="/ApiShopAddress/OtherOne";
     //搜索生鲜柜
