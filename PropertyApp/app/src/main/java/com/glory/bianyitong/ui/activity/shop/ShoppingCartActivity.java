@@ -1,9 +1,7 @@
 package com.glory.bianyitong.ui.activity.shop;
 
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -20,7 +18,6 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
-import com.glory.bianyitong.bean.entity.request.RequestShoppingCartAdd;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingUpDate;
 import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
 import com.glory.bianyitong.http.HttpURL;
@@ -37,7 +34,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
@@ -114,8 +110,14 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             case R.id.shopping_cart_pay://支付或删除
                 if(isEditStatus){//删除
                     showShort("结算");
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
-                            .go(this);
+                    if(commitData.size()>0){
+                        String json=new Gson().toJson(commitData.values());
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
+                                .with("shops",json)
+                                .with("type",2)
+                                .go(this);
+                    }
+
                 }else {
                     removeShoppingCard(0);
                 }

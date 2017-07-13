@@ -7,11 +7,7 @@
 
     <include layout="@layout/base_view_line"></include>
 
-    <HorizontalScrollView
-        android:id="@+id/hs_scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
+
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -41,7 +37,6 @@
                         android:id="@+id/address_list_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="精选西红柿200g"
                         android:textColor="@color/text_color_title"
                         android:textSize="14sp" />
                     <!--300g-->
@@ -50,17 +45,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:text="四季鲜果"
                         android:maxLines="2"
                         android:textColor="@color/small_text_color_gray"
                         android:textSize="12sp" />
-                    <include layout="@layout/base_view_line"></include>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingTop="8dp"
-                        android:paddingBottom="8dp">
+                        android:paddingBottom="8dp"
+                        android:visibility="gone">
                         <CheckBox
                             android:id="@+id/iv_button"
                             android:layout_width="wrap_content"
@@ -98,7 +92,5 @@
                 android:textColor="@color/white"
                 android:textSize="15sp"/>
         </LinearLayout>
-
-    </HorizontalScrollView>
     <include layout="@layout/base_view_line"></include>
 </LinearLayout>

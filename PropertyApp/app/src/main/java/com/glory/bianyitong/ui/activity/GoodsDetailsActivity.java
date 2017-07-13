@@ -30,6 +30,7 @@ import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.entity.request.RequestCollectionAdd;
+import com.glory.bianyitong.bean.entity.request.RequestCommitOrderByCart;
 import com.glory.bianyitong.bean.entity.request.RequestProductDetail;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingCartAdd;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
@@ -177,6 +178,14 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
 
                 break;
             case R.id.detail_addshopping_payproduct://立即购买
+                if(product!=null){
+                    RequestCommitOrderByCart.OrderDetail orderDetail=new RequestCommitOrderByCart.OrderDetail(product.getMerchant_ID(),0,product.getFreshID(),1,product.getFreshPrice(),product.getFreshPrice());
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
+                            .with("shop",new Gson().toJson(productDetail))
+                            .with("type",1)
+                            .go(this);
+                }
+
                 break;
         }
     }

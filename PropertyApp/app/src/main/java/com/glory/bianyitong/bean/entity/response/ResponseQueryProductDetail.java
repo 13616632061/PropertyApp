@@ -2,6 +2,7 @@ package com.glory.bianyitong.bean.entity.response;
 
 import com.glory.bianyitong.bean.BaseResponseBean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * 商品详情
  */
 
-public class ResponseQueryProductDetail extends BaseResponseBean {
+public class ResponseQueryProductDetail extends BaseResponseBean implements Serializable{
 
     private List<ListfreshBean> listfresh;
 
@@ -21,7 +22,7 @@ public class ResponseQueryProductDetail extends BaseResponseBean {
         this.listfresh = listfresh;
     }
 
-    public static class ListfreshBean {
+    public static class ListfreshBean implements Serializable{
         /**
          * freshID : 4
          * freshTypeID : 12

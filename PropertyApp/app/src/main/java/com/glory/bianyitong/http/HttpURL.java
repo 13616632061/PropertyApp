@@ -180,4 +180,10 @@ public class HttpURL {
      */
     public static String HTTP_POST_COLLECTION_ADD="/ApiFreshCollection/Add";//添加
     public static String HTTP_POST_COLLECTION_DELETE="/ApiFreshCollection/Delete";//删除
+
+
+    /**
+     * 订单
+     */
+    public static String HTTP_POST_ORDER_COMMIT="/ApiOrder/Add";//购物车提交订单
 }

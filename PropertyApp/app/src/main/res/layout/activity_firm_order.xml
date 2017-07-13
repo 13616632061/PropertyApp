@@ -8,30 +8,33 @@
     <include layout="@layout/base_text_title"></include>
     <include layout="@layout/base_view_line"></include>
 
+    <LinearLayout
+        android:id="@+id/firm_order_address_lin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
+    </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginTop="5dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/white">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/firm_order_recycle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
 
-
-
+        </LinearLayout>
+    </ScrollView>
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-
-    </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-    </android.support.v7.widget.RecyclerView>
-    <LinearLayout
+        android:id="@+id/firm_order_lin_bill"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:orientation="horizontal"
@@ -51,7 +54,7 @@
             />
 
         <TextView
-            android:id="@+id/address_add_province"
+            android:id="@+id/firm_order_bill"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@null"
@@ -68,6 +71,7 @@
     <include layout="@layout/base_view_line"></include>
 
     <LinearLayout
+        android:id="@+id/firm_order_lin_coupon"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:orientation="horizontal"
@@ -103,76 +107,104 @@
     </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:orientation="horizontal"
-                android:paddingLeft="19dp"
-                android:gravity="center_vertical|right"
-                android:background="@color/white"
-                android:layout_marginTop="5dp">
+    <LinearLayout
+        android:id="@+id/firm_order_"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:paddingLeft="19dp"
+        android:gravity="center_vertical|right"
+        android:background="@color/white"
+        android:layout_marginTop="5dp">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="运费"
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="运费"
 
-                    android:gravity="center_vertical"
-                    android:textColor="@color/text_color_somber"
-                    android:textSize="15sp"
-                    android:layout_weight="1"
-                    />
+            android:gravity="center_vertical"
+            android:textColor="@color/text_color_somber"
+            android:textSize="15sp"
+            android:layout_weight="1"
+            />
 
-                <TextView
-                    android:id="@+id/firm_order_carry_money"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:gravity="center_vertical|right"
-                    android:text="￥ 12.80"
-                    android:textColor="#eb0002"
-                    android:textSize="15sp"
-                    android:layout_marginRight="16dp"
-                    android:layout_weight="1"
-                    android:drawableRight="@drawable/ic_gray_next"
-                    android:drawablePadding="@dimen/dp_10"
-                    android:maxLines="1"/>
-            </LinearLayout>
-            <include layout="@layout/base_view_line" ></include>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:orientation="horizontal"
-                android:paddingLeft="19dp"
-                android:gravity="center_vertical|right"
-                android:background="@color/white">
+        <TextView
+            android:id="@+id/firm_order_carry_money"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="center_vertical|right"
+            android:text="￥ 0.00"
+            android:textColor="#eb0002"
+            android:textSize="15sp"
+            android:layout_marginRight="25dp"
+            android:layout_weight="1"
+            android:maxLines="1"/>
+    </LinearLayout>
+    <include layout="@layout/base_view_line" ></include>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:paddingLeft="19dp"
+        android:gravity="center_vertical|right"
+        android:background="@color/white">
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="商品总额"
-                    android:gravity="center_vertical"
-                    android:textColor="@color/text_color_somber"
-                    android:textSize="15sp"
-                    android:layout_weight="1"
-                    />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="商品总额"
+            android:gravity="center_vertical"
+            android:textColor="@color/text_color_somber"
+            android:textSize="15sp"
+            android:layout_weight="1"
+            />
 
-                <TextView
-                    android:id="@+id/firm_order_all_money"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@null"
-                    android:gravity="center_vertical|right"
-                    android:text="￥ 12.80"
-                    android:textColor="#eb0002"
-                    android:textSize="15sp"
-                    android:layout_marginRight="16dp"
-                    android:layout_weight="1"
-                    android:drawableRight="@drawable/ic_gray_next"
-                    android:drawablePadding="@dimen/dp_10"
-                    android:maxLines="1"/>
-            </LinearLayout>
-            <include layout="@layout/base_view_line"></include>
-        </LinearLayout>
-    </ScrollView>
+        <TextView
+            android:id="@+id/firm_order_all_money"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:gravity="center_vertical|right"
+            android:text="￥ 12.80"
+            android:textColor="#eb0002"
+            android:textSize="15sp"
+            android:layout_marginRight="25dp"
+            android:layout_weight="1"
+            android:maxLines="1"/>
+    </LinearLayout>
+    <include layout="@layout/base_view_line"></include>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white">
+
+        <Button
+            android:id="@+id/firm_order_commit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="提交订单"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textColor="@color/white"
+            android:background="@drawable/selector_add_pay_cart"/>
+
+        <TextView
+            android:id="@+id/firm_order_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/firm_order_commit"
+            android:text="￥ 11.6"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/firm_order_price"
+            android:text="合计"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"/>
+    </RelativeLayout>
+
 </LinearLayout>

@@ -2,6 +2,7 @@ package com.glory.bianyitong.bean.entity.response;
 
 import com.glory.bianyitong.bean.BaseResponseBean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * 查询购物车
  */
 
-public class ResponseShoppingCart extends BaseResponseBean {
+public class ResponseShoppingCart extends BaseResponseBean implements Serializable{
 
     private List<ListShoppingCartBean> listShoppingCart;
 
@@ -21,7 +22,7 @@ public class ResponseShoppingCart extends BaseResponseBean {
         this.listShoppingCart = listShoppingCart;
     }
 
-    public static class ListShoppingCartBean {
+    public static class ListShoppingCartBean implements Serializable{
         /**
          * cartID : 8
          * freshID : 1
@@ -43,7 +44,7 @@ public class ResponseShoppingCart extends BaseResponseBean {
         private String addTime;
         private Object endAddTime;
         private int quantity;
-        private float price;
+        private double price;
         private FreshBean fresh;
 
         public int getCartID() {
@@ -110,11 +111,11 @@ public class ResponseShoppingCart extends BaseResponseBean {
             this.quantity = quantity;
         }
 
-        public float getPrice() {
+        public double getPrice() {
             return price;
         }
 
-        public void setPrice(float price) {
+        public void setPrice(double price) {
             this.price = price;
         }
 
@@ -162,6 +163,15 @@ public class ResponseShoppingCart extends BaseResponseBean {
             private String freshContent;
             private Object freshDetail;
             private Object freshContents;
+
+
+            public FreshBean() {
+            }
+
+            public FreshBean(String freshPicture,int merchant_ID) {
+                this.freshPicture = freshPicture;
+                this.merchant_ID=merchant_ID;
+            }
 
             public int getFreshID() {
                 return freshID;

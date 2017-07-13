@@ -1,17 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:id="@+id/address_list_lin">
+    android:layout_height="wrap_content">
 
 
     <include layout="@layout/base_view_line"></include>
 
-    <HorizontalScrollView
-        android:id="@+id/hs_scrollview"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -28,6 +22,22 @@
                 android:paddingRight="12dp"
                 android:paddingTop="5dp"
                 android:orientation="horizontal">
+
+                <!--<CheckBox-->
+                    <!--android:id="@+id/iv_button"-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:layout_centerVertical="true"-->
+                    <!--android:layout_gravity="center"-->
+                    <!--android:layout_marginRight="11dp"-->
+                    <!--android:button="@drawable/selector_shoppingcart_select" />-->
+
+                <ImageView
+                    android:id="@+id/iv_list_item_goods_pic"
+                    android:layout_width="120dp"
+                    android:layout_height="100dp"
+                    android:scaleType="fitXY" />
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -38,7 +48,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/address_list_name"
+                        android:id="@+id/tv_list_item_goods_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="精选西红柿200g"
@@ -46,59 +56,45 @@
                         android:textSize="14sp" />
                     <!--300g-->
                     <TextView
-                        android:id="@+id/address_list_address"
+                        android:id="@+id/tv_list_item_goods_content"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="15dp"
                         android:text="四季鲜果"
-                        android:maxLines="2"
                         android:textColor="@color/small_text_color_gray"
                         android:textSize="12sp" />
-                    <include layout="@layout/base_view_line"></include>
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/tv_list_item_goods_price"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="8dp"
-                        android:paddingBottom="8dp">
-                        <CheckBox
-                            android:id="@+id/iv_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="设为默认"
-                            android:drawablePadding="5dp"
-                            android:textColor="@color/small_text_color_gray"
-                            android:button="@drawable/selector_shoppingcart_select"
-                            />
-                        <TextView
-                            android:id="@+id/address_list_delete"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentRight="true"
-                            android:text="删除"
-                            android:drawablePadding="5dp"
-                            android:drawableLeft="@drawable/icon_remove"/>
-                    </RelativeLayout>
-
+                        android:layout_marginTop="26dp"
+                        android:text="￥12"
+                        android:textColor="@color/color_red_del"
+                        android:textSize="15sp" />
                 </LinearLayout>
 
+                <com.glory.bianyitong.widght.shop.AmountView
+                    android:id="@+id/amount_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_gravity="bottom">
 
+                </com.glory.bianyitong.widght.shop.AmountView>
 
             </LinearLayout>
-
             <TextView
-                android:id="@+id/tv_shop_edit"
+                android:id="@+id/tv_shop_delete"
                 android:layout_width="60dp"
                 android:layout_height="match_parent"
                 android:layout_toRightOf="@+id/lay_list_item_goods"
-                android:background="@color/green1"
+                android:background="@color/color_red_del"
                 android:gravity="center"
-                android:text="编辑"
+                android:text="@string/delete"
                 android:textColor="@color/white"
                 android:textSize="15sp"/>
         </LinearLayout>
-
-    </HorizontalScrollView>
     <include layout="@layout/base_view_line"></include>
 </LinearLayout>

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chenenyu.router.Router;
+import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
@@ -70,6 +71,8 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
 
     private AddressListAdapter adapter;
     private List<ItemMenu<ResponseQueryAddress.ListShippingAddressBean>> data=new ArrayList<>();
+    @InjectParam(key = "source")
+    boolean isFirmOrder=false;
     @Override
     protected int getContentId() {
         return R.layout.activity_address;
@@ -78,14 +81,28 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
     @Override
     protected void init() {
         super.init();
+        Router.injectParams(this);
         inintTitle("管理收货地址",false,"");
-        adapter=new AddressListAdapter(R.layout.item_addresslist,data,this);
-        adapter.setOnItemChildClickListener(this);
+//        isFirmOrder=getIntent().getBooleanExtra("source",false);
+
+
+
+        initView();
+    }
+
+    private void initView() {
+        if(isFirmOrder){
+            adapter=new AddressListAdapter(R.layout.item_addresslist2,data,this,isFirmOrder);
+            adapter.setOnItemClickListener(onItemClickListener);
+        }else {
+            adapter=new AddressListAdapter(R.layout.item_addresslist,data,this,isFirmOrder);
+            adapter.setOnItemChildClickListener(this);
+
+        }
         LinearLayoutManager layout=new LinearLayoutManager(this);
         recycleList.setLayoutManager(layout);
         recycleList.setAdapter(adapter);
         adapter.bindToRecyclerView(recycleList);
-
     }
 
     @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2,R.id.btn_add})
@@ -96,7 +113,6 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
                 finish();
                 break;
             case R.id.btn_add:
-
                 Intent intent=new Intent(this, ExpressBarAddActivity.class);
                 startActivityForResult(intent,200);
                 break;
@@ -297,6 +313,21 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
                 setInitAddress(bean.getAddressID(),true);
                 break;
         }
+
+
     }
+
+    BaseQuickAdapter.OnItemClickListener onItemClickListener=new BaseQuickAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            ResponseQueryAddress.ListShippingAddressBean bean=data.get(position).getData();
+            if(bean!=null){
+                Intent intent=new Intent();
+                intent.putExtra("data",bean);
+                setResult(RESULT_OK,intent);
+                finish();
+            }
+        }
+    };
 
 }
