@@ -12,6 +12,9 @@ import com.github.lazylibrary.util.ToastUtils;
 import org.greenrobot.eventbus.EventBus;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
+
+import static butterknife.ButterKnife.bind;
 
 /**
  * Created by Administrator on 2017/7/3.
@@ -21,6 +24,7 @@ public abstract class RootFragment extends Fragment {
 
 
     protected View rootView;
+    private Unbinder unbinder;
     /**
      * rootView是否初始化标志，防止回调函数在rootView为空的时候触发
      */
@@ -48,7 +52,7 @@ public abstract class RootFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(createViewLayoutId(),container,false);
         this.rootView=rootView;
-        ButterKnife.bind(this,rootView);
+         unbinder= ButterKnife.bind(this,rootView);
         initView();
         initData();
         return rootView;
@@ -117,5 +121,6 @@ public abstract class RootFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        unbinder.unbind();
     }
 }

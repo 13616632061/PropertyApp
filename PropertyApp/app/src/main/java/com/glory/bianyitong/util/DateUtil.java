@@ -8,6 +8,7 @@ import java.util.Date;
  * 日期时间转换工具类
  */
 public class DateUtil {
+    public static String DEFAULT_PATTERN_POINT = "yyyy.MM.dd";
     public static String DEFAULT_PATTERN = "yyyy-MM-dd";
     public static String DIR_PATTERN = "yyyy/MM/dd/";
     public static String TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss";

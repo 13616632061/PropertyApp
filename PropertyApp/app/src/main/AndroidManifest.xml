@@ -423,7 +423,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-
+        <!--购物车-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.ShoppingCartActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -431,18 +431,22 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
+        <!--选择地址-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.SelectLocalActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+
+        <!--收货地址列表-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.AddressActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+        <!--选择地址地图-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.ExpressMapActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -450,6 +454,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
+        <!--添加生鲜柜-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.ExpressBarAddActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -457,12 +462,15 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
+        <!--编辑收货地址-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.AddressAddAndEditActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+
+        <!--提交订单-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.FirmOrderActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -470,6 +478,28 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
+        <!--支付页面-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.shop.PayActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <!--新增发票-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.shop.ReceiptAddActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+
+        <!--优惠券列表-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.shop.CouponListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
 
         <service
             android:name="com.glory.bianyitong.widght.update.service.DownloadService"

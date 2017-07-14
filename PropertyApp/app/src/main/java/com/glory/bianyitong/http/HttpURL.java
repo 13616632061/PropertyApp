@@ -186,4 +186,9 @@ public class HttpURL {
      * 订单
      */
     public static String HTTP_POST_ORDER_COMMIT="/ApiOrder/Add";//购物车提交订单
+
+    /**
+     * 优惠券
+     */
+    public static String HTTP_POST_COUPON_QUERY_LIST="/ApiCoupon/Query";//我的优惠券列表查询
 }

@@ -1,9 +1,13 @@
 package com.glory.bianyitong.ui.activity.shop;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -19,7 +23,10 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.entity.request.RequestCommitOrderByCart;
+import com.glory.bianyitong.bean.entity.request.RequestQueryConponListByYes;
+import com.glory.bianyitong.bean.entity.request.RequestQueryCouponList;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryCouponList;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
 import com.glory.bianyitong.http.HttpURL;
@@ -148,6 +155,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 ResponseShoppingCart.ListShoppingCartBean bean=new ResponseShoppingCart.ListShoppingCartBean();
                 bean.setQuantity(1);
                 bean.setFreshTypeName(freshBean.getFreshTypeName());
+                bean.setFreshTypeID(freshBean.getFreshTypeID());
                 bean.setFreshName(freshBean.getFreshName());
                 bean.setFreshID(freshBean.getFreshID());
                 bean.setFresh(new ResponseShoppingCart.ListShoppingCartBean.FreshBean(freshBean.getFreshPicture(),freshBean.getMerchant_ID()));
@@ -156,7 +164,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             }
         }
         updateShoppingCardPrice();
-
+        queryCouponForYES();
     }
 
     @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2,R.id.firm_order_lin_bill,R.id.firm_order_lin_coupon,R.id.firm_order_commit,R.id.firm_order_address_lin})
@@ -169,8 +177,15 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             case R.id.firm_order_lin_bill://发票
                 break;
             case R.id.firm_order_lin_coupon://优惠券
+                Router.build(RouterMapping.ROUTER_ACTIVITY_COUPON_LIST)
+                        .with("source",2)
+                        .go(this);
                 break;
             case R.id.firm_order_commit://提交订单
+                if(addressBean==null){
+                    showShort("请选择收货地址");
+                    return;
+                }
                 orderCommit();
                 break;
             case R.id.firm_order_address_lin://选择地址
@@ -196,13 +211,30 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
      */
     private RequestCommitOrderByCart  dataFormat(){
 
-        RequestCommitOrderByCart orderByCart=new RequestCommitOrderByCart(0f,addressBean.getAddressID(),addressBean.getCabinetID(),addressBean.getCabinetName());
-        List<RequestCommitOrderByCart.OrderDetail> orderDetails=new ArrayList<>();
-        for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
-             ) {
-            orderDetails.add(new RequestCommitOrderByCart.OrderDetail(0,0,bean.getData().getFreshID(),bean.getData().getQuantity(),bean.getData().getPrice(),bean.getData().getPrice()*bean.getData().getQuantity()));
+        /**
+         * 订单组装数据
+         * 运费，收货ID，收货柜ID，收货柜名称，优惠券ID，减免金额(总金额-优惠金额)，总金额
+         */
+        RequestCommitOrderByCart orderByCart=new RequestCommitOrderByCart(0f,addressBean.getAddressID(),addressBean.getCabinetID(),addressBean.getCabinetName(),0,allPrice,allPrice);
+
+
+        if(type==1){//直接下单
+            List<RequestCommitOrderByCart.OrderDetail> orderDetails=new ArrayList<>();
+            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
+                    ) {
+                orderDetails.add(new RequestCommitOrderByCart.OrderDetail(new RequestCommitOrderByCart.OrderDetail.Fresh(bean.getData().getFreshTypeID(),bean.getData().getFresh().getMerchant_ID()),0,bean.getData().getFreshID(),bean.getData().getQuantity(),bean.getData().getPrice(),bean.getData().getPrice()*bean.getData().getQuantity()));
+            }
+            orderByCart.setListOrderDetail(orderDetails);
+        }else if(type==2){//购物车下单
+            List<Integer> list=new ArrayList<>();
+            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
+                    ) {
+                if(bean.getData().getCartID()!=0){
+                    list.add(bean.getData().getCartID());
+                }
+            }
+            orderByCart.setShoppingCarts(list);
         }
-        orderByCart.setListOrderDetail(orderDetails);
         return orderByCart;
     }
 
@@ -211,8 +243,6 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
      */
     private void orderCommit(){
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        RequestCommitOrderByCart orderByCart=new RequestCommitOrderByCart(0f,addressBean.getAddressID(),addressBean.getCabinetID(),addressBean.getCabinetName());
-        List<RequestCommitOrderByCart.OrderDetail> orderDetails=new ArrayList<>();
 
         map.put("order",dataFormat());
         String json=new Gson().toJson(map);
@@ -243,12 +273,76 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             }
         }).getEntityData(HttpURL.HTTP_POST_ORDER_COMMIT,json);
     }
+
+
+    private RequestQueryConponListByYes dataFormatByYES(){
+        RequestQueryConponListByYes list=new RequestQueryConponListByYes(new RequestQueryConponListByYes.CouponReceive(0));
+        if(type==1){//直接下单
+            List<RequestQueryConponListByYes.OrderDetail> orderDetails=new ArrayList<>();
+            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
+                    ) {
+                orderDetails.add(new RequestQueryConponListByYes.OrderDetail(new RequestCommitOrderByCart.OrderDetail.Fresh(bean.getData().getFreshTypeID(),bean.getData().getFresh().getMerchant_ID()),0,bean.getData().getFreshID(),bean.getData().getQuantity(),bean.getData().getPrice(),bean.getData().getPrice()*bean.getData().getQuantity()));
+            }
+            list.setListOrderDetail(orderDetails);
+        }else if(type==2){//购物车下单
+            List<Integer> lists=new ArrayList<>();
+            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
+                    ) {
+                if(bean.getData().getCartID()!=0){
+                    lists.add(bean.getData().getCartID());
+                }
+            }
+            list.setShoppingCarts(lists);
+        }
+        return list;
+    }
+
+    private void queryCouponForYES(){
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("couponReceive",dataFormatByYES());
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryCouponList bean=new Gson().fromJson(s,ResponseQueryCouponList.class);
+                if(bean.getStatusCode()==1){
+                    if(bean.getCouponReceive()!=null && bean.getCouponReceive().getNotused()>0){//可使用
+                        firmOrderLinCoupon.setEnabled(true);
+                        firmOrderCoupon.setText("可用 *"+bean.getCouponReceive().getNotused());
+                    }else {//无可使用ss
+                        firmOrderLinCoupon.setEnabled(false);
+                        firmOrderCoupon.setText("无可用");
+                    }
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_COUPON_QUERY_LIST,json);
+
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode==RESULT_OK){
             if(requestCode==REQUEST_CODE_ADDRESS){
-                showShort("测试");
                 ResponseQueryAddress.ListShippingAddressBean addressBean= (ResponseQueryAddress.ListShippingAddressBean) data.getSerializableExtra("data");
                 if(addressBean!=null){
                     this.addressBean=addressBean;
@@ -258,7 +352,10 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                         TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
                         txtName.setText(this.addressBean.getCabinetName());
                         txtAddress.setText(this.addressBean.getFreshCabinet().getProvinceName()+this.addressBean.getFreshCabinet().getCityName()+this.addressBean.getFreshCabinet().getDistrictName()+this.addressBean.getFreshCabinet().getStreetAddress());
-                        txtNumber.setText("11/16");
+
+                        SpannableString spannable=new SpannableString("11/16");
+                        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        txtNumber.setText(spannable);
                     }else {
                         firmOrderAddressLin.removeAllViews();
                         firmOrderAddressLin.addView(addressInitView);
@@ -292,5 +389,6 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         firmOrderAllMoney.setText("￥" + allPrice);
         firmOrderPrice.setText("￥" + allPrice);
         this.allPrice=allPrice;
+        queryCouponForYES();
     }
 }

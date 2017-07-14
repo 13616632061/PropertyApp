@@ -80,4 +80,10 @@ public class RouterMapping  {
      * 购物车
      */
     public static final String ROUTER_ACTIVITY_SHOPPINGCART="ROUTER_ACTIVITY_SHOPPINGCART";//购物车
+
+
+    /**
+     * 优惠券
+     */
+    public static final String ROUTER_ACTIVITY_COUPON_LIST="ROUTER_ACTIVITY_COUPON_LIST";//优惠券列表
 }
