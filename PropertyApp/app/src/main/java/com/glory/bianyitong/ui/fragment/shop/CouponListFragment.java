@@ -1,5 +1,7 @@
 package com.glory.bianyitong.ui.fragment.shop;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.github.lazylibrary.util.StringUtils;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.entity.request.RequestQueryCouponList;
@@ -19,6 +23,7 @@ import com.glory.bianyitong.ui.fragment.RootFragment;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +35,7 @@ import butterknife.Unbinder;
  * Created by Administrator on 2017/7/14.
  */
 
-public class CouponListFragment extends RootFragment {
+public class CouponListFragment extends RootFragment implements BaseQuickAdapter.OnItemChildClickListener {
     @BindView(R.id.coupon_fr_list)
     RecyclerView couponFrList;
 
@@ -41,6 +46,9 @@ public class CouponListFragment extends RootFragment {
     // TODO: 2017/7/14 来源 1:我的优惠券 2:可用优惠券(提交订单页面)
     private int source=1;
 
+    // TODO: 2017/7/18 来源数据
+    private String couponJson;
+
     private List<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>> data=new ArrayList<>();
     private CouponListAdapter adapter;
     @Override
@@ -48,10 +56,13 @@ public class CouponListFragment extends RootFragment {
         type=getArguments().getInt("type");
         num=getArguments().getInt("num");
         source=getArguments().getInt("source");
+        couponJson=getArguments().getString("coupon");
         LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
-        adapter=new CouponListAdapter(R.layout.item_fr_couponlist,data);
+        adapter=new CouponListAdapter(R.layout.item_fr_couponlist,data,type);
         couponFrList.setLayoutManager(layoutManager);
         couponFrList.setAdapter(adapter);
+        adapter.bindToRecyclerView(couponFrList);
+        adapter.setOnItemChildClickListener(this);
     }
 
     @Override
@@ -77,20 +88,25 @@ public class CouponListFragment extends RootFragment {
     }
 
     private void requestCouponList(int status){
+
+        if(source==2 && type==0){
+            if(!StringUtils.isEmpty(couponJson)){
+                formatData(couponJson);
+            }else {
+                adapter.setEmptyView(R.layout.layout_empty);
+            }
+            return;
+        }
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("couponReceive",new RequestQueryCouponList(status));
+        Map<String,Object> mapValues=new HashMap<>();
+        mapValues.put("couponReceive",new RequestQueryCouponList(status));
+        map.put("entityCouponReceive",mapValues);
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                ResponseQueryCouponList bean=new Gson().fromJson(s,ResponseQueryCouponList.class);
-                if(bean.getStatusCode()==1){
-                    for (ResponseQueryCouponList.ListCouponReceiveBean entity:bean.getListCouponReceive()
-                         ) {
-                        data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
-                    }
-                    adapter.notifyDataSetChanged();
-                }
+                formatData(s);
             }
 
             @Override
@@ -116,4 +132,27 @@ public class CouponListFragment extends RootFragment {
 
     }
 
+    private void formatData(String json){
+        ResponseQueryCouponList bean=new Gson().fromJson(json,ResponseQueryCouponList.class);
+        if(bean.getStatusCode()==1){
+            for (ResponseQueryCouponList.ListCouponReceiveBean entity:bean.getListCouponReceive()
+                    ) {
+                data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
+            }
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        if(source==2 && type==0){
+            ResponseQueryCouponList.ListCouponReceiveBean bena=data.get(position).getData();
+            if(bena!=null){
+                Intent intent=new Intent();
+                intent.putExtra("data",new Gson().toJson(bena));
+                getActivity().setResult(Activity.RESULT_OK,intent);
+                getActivity().finish();
+            }
+        }
+    }
 }

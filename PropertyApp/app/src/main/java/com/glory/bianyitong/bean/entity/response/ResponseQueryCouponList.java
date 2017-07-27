@@ -2,6 +2,7 @@ package com.glory.bianyitong.bean.entity.response;
 
 import com.glory.bianyitong.bean.BaseResponseBean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -9,7 +10,7 @@ import java.util.List;
  * 查询优惠券列表
  */
 
-public class ResponseQueryCouponList extends BaseResponseBean {
+public class ResponseQueryCouponList extends BaseResponseBean implements Serializable{
 
     /**
      * receiveID : 0
@@ -45,7 +46,7 @@ public class ResponseQueryCouponList extends BaseResponseBean {
         this.listCouponReceive = listCouponReceive;
     }
 
-    public static class CouponReceiveBean {
+    public static class CouponReceiveBean implements Serializable{
         /**
          * notused : 2
          * used : 1
@@ -81,7 +82,7 @@ public class ResponseQueryCouponList extends BaseResponseBean {
         }
     }
 
-    public static class ListCouponReceiveBean {
+    public static class ListCouponReceiveBean implements Serializable{
         /**
          * receiveID : 2
          * couponID : 4
@@ -157,12 +158,21 @@ public class ResponseQueryCouponList extends BaseResponseBean {
             private double minimumAmount;
             private String beginDate;
             private String endDate;
-            private int freeType;
+            private int freeType=-1;
             private double freeMoney;
             private double freeHighestPrice;
             private String publishDateTime;
             private int couponNumber;
             private String couponName;//优惠券名称
+            private float freePercentage;//减免百分比
+
+            public float getFreePercentage() {
+                return freePercentage;
+            }
+
+            public void setFreePercentage(float freePercentage) {
+                this.freePercentage = freePercentage;
+            }
 
             public String getCouponName() {
                 return couponName;

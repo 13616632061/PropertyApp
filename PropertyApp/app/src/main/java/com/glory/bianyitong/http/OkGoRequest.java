@@ -50,15 +50,16 @@ public class OkGoRequest {
 
 
     public void getEntityData(String url,final String request) {
+        LogUtils.d("OkGoGo","---------------------start----------------------");
+        LogUtils.d("OkGoGo","URL:   "+HttpURL.HTTP_NEW_URL+url);
+        LogUtils.d("OkGoGo","params:    "+request);
         OkGo.post(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
                 .tag(this)
                 .params("request", request)
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
-                        LogUtils.d("OkGoGo","---------------------start----------------------");
-                        LogUtils.d("OkGoGo","URL:   "+response.request().url());
-                        LogUtils.d("OkGoGo","params:    "+request);
+
                         LogUtils.d("OkGoGo","response:    "+s);
                         LogUtils.d("OkGoGo","----------------------end-----------------------");
 

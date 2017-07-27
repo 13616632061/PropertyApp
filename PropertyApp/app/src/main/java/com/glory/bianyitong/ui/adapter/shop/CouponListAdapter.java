@@ -2,6 +2,7 @@ package com.glory.bianyitong.ui.adapter.shop;
 
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.widget.Button;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -17,8 +18,10 @@ import java.util.List;
  */
 
 public class CouponListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>,BaseViewHolder> {
-    public CouponListAdapter(@LayoutRes int layoutResId, @Nullable List<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>> data) {
+    int type;
+    public CouponListAdapter(@LayoutRes int layoutResId, @Nullable List<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>> data,int type) {
         super(layoutResId, data);
+        this.type=type;
     }
 
     @Override
@@ -36,10 +39,40 @@ public class CouponListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryCo
 
 
         int conponType=item.getData().getCouponStatus();
-        if(conponType==9){//可使用优惠券
+        Button btn=helper.getView(R.id.item_fr_couponlist_btn);
 
-        }else {//一般优惠券
 
+        switch (conponType){
+            case 0://我的优惠券列表未使用
+                if(type==-1){
+                    btn.setText("已过期");
+                    btn.setBackgroundResource(R.drawable.shape_item_couponlist_logo_normal);
+                }
+                else{
+                    btn.setText("未使用");
+                    btn.setBackgroundResource(R.drawable.shape_item_couponlist_logo);
+                }
+
+                btn.setEnabled(false);
+
+                break;
+            case 1://我的优惠券列表已使用
+                btn.setText("已使用");
+                btn.setEnabled(false);
+                btn.setBackgroundResource(R.drawable.shape_item_couponlist_logo_normal);
+                break;
+            case -1://我的优惠券列表已过期
+                btn.setText("已过期");
+                btn.setEnabled(false);
+                btn.setBackgroundResource(R.drawable.shape_item_couponlist_logo_normal);
+                break;
+            case 9://可用优惠券列表可用
+                btn.setText("立即使用");
+                btn.setEnabled(true);
+                btn.setBackgroundResource(R.drawable.shape_item_couponlist_logo);
+                break;
         }
+        helper.addOnClickListener(R.id.item_fr_couponlist_btn);
+
     }
 }

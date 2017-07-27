@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,15 +17,18 @@ import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryCouponList;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.fragment.RootFragment;
 import com.glory.bianyitong.ui.fragment.shop.CouponListFragment;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by Administrator on 2017/7/14.
@@ -59,7 +64,12 @@ public class CouponListActivity extends BaseActivity {
     // TODO: 2017/7/14 来源 1:我的优惠券 2:可用优惠券(提交订单页面)
     @InjectParam(key = "source")
     int source=1;
-    
+
+    @InjectParam(key = "formValue")
+    String jsonValue;
+
+    private ResponseQueryCouponList couponList;
+
     private List<CouponListFragment> listFragments=new ArrayList<>();
     private String[] title={"未使用","已使用","过期"};
 
@@ -69,7 +79,27 @@ public class CouponListActivity extends BaseActivity {
         super.init();
         inintTitle("优惠券", false, "");
         Router.injectParams(this);
+        beforInitData();
         initView();
+    }
+
+    private void beforInitData() {
+        if(!TextUtils.isEmpty(jsonValue)){
+            couponList=new Gson().fromJson(jsonValue,ResponseQueryCouponList.class);
+            title[0]="未使用("+couponList.getCouponReceive().getNotused()+")";
+            title[1]="已使用("+couponList.getCouponReceive().getUsed()+")";
+            title[2]="过期("+couponList.getCouponReceive().getTimeout()+")";
+        }
+    }
+
+    @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2})
+    void onClickBtn(View view ){
+        switch (view.getId()){
+            case R.id.iv_title_back:
+            case R.id.iv_title_text_left2:
+                finish();
+                break;
+        }
     }
 
     private void initView() {
@@ -81,6 +111,9 @@ public class CouponListActivity extends BaseActivity {
             bundle.putInt("source" ,source);
             bundle.putInt("type" ,i);
             bundle.putInt("num" ,1);
+            bundle.putString("coupon",jsonValue);
+            if(i==2)
+                bundle.putInt("type" ,-1);
             listFragment.setArguments(bundle);
             listFragments.add(listFragment);
         }

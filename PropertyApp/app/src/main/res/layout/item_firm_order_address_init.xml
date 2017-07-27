@@ -49,7 +49,6 @@
                             android:id="@+id/firm_order_item_name"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="一号柜"
                             android:textColor="@color/text_color_title"
                             android:textSize="14sp"
                             android:layout_marginRight="5dp"/>
@@ -59,7 +58,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentRight="true"
-                            android:text="11/66"
                             android:layout_marginLeft="5dp" />
                     </RelativeLayout>
 
@@ -69,7 +67,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:maxLines="2"
-                        android:text="收货地址：xxxxxxxxxxxxxx"
                         android:textColor="@color/text_color_title"
                         android:textSize="12sp"
                         android:layout_weight="1"/>

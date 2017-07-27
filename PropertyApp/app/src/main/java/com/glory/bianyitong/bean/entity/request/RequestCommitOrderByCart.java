@@ -33,7 +33,7 @@ public class RequestCommitOrderByCart implements Serializable{
         this.listOrderDetail = listOrderDetail;
     }
 
-    public RequestCommitOrderByCart(double freight, int addressID, int cabinetID, String cabinetName, int couponReceiveID, double freePrice, double orderPrice) {
+    public RequestCommitOrderByCart(int couponReceiveID,double freight, int addressID, int cabinetID, String cabinetName, double freePrice, double orderPrice) {
         this.freight = freight;
         this.addressID = addressID;
         this.cabinetID = cabinetID;

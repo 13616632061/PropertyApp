@@ -10,7 +10,7 @@ import java.util.List;
 
 public class RequestQueryConponListByYes implements Serializable{
     private List<Integer> shoppingCarts;//购物车
-    private List<OrderDetail> listOrderDetail;//商品信息
+    private List<OrderDetail> listDetail;//商品信息
     private CouponReceive couponReceive;//优惠实体对象
 
     public RequestQueryConponListByYes(CouponReceive couponReceive) {
@@ -25,12 +25,12 @@ public class RequestQueryConponListByYes implements Serializable{
         this.shoppingCarts = shoppingCarts;
     }
 
-    public List<OrderDetail>   getListOrderDetail() {
-        return listOrderDetail;
+    public List<OrderDetail>   getListDetail() {
+        return listDetail;
     }
 
-    public void setListOrderDetail(List<OrderDetail>  listOrderDetail) {
-        this.listOrderDetail = listOrderDetail;
+    public void setListOrderDetail(List<OrderDetail>  listDetail) {
+        this.listDetail = listDetail;
     }
 
     public CouponReceive getCouponReceive() {
@@ -81,6 +81,9 @@ public class RequestQueryConponListByYes implements Serializable{
             this.totalPrice = totalPrice;
         }
 
+
+        public OrderDetail() {
+        }
 
         public RequestCommitOrderByCart.OrderDetail.Fresh getFresh() {
             return fresh;
