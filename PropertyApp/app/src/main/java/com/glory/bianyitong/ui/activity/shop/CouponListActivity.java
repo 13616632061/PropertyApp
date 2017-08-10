@@ -86,9 +86,11 @@ public class CouponListActivity extends BaseActivity {
     private void beforInitData() {
         if(!TextUtils.isEmpty(jsonValue)){
             couponList=new Gson().fromJson(jsonValue,ResponseQueryCouponList.class);
-            title[0]="未使用("+couponList.getCouponReceive().getNotused()+")";
-            title[1]="已使用("+couponList.getCouponReceive().getUsed()+")";
-            title[2]="过期("+couponList.getCouponReceive().getTimeout()+")";
+            if(couponList!=null) {
+                title[0] = "未使用(" + couponList.getCouponReceive().getNotused() + ")";
+                title[1] = "已使用(" + couponList.getCouponReceive().getUsed() + ")";
+                title[2] = "过期(" + couponList.getCouponReceive().getTimeout() + ")";
+            }
         }
     }
 

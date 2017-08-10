@@ -67,6 +67,7 @@ public class RouterMapping  {
      */
     public static final String ROUTER_ACTIVITY_ORDER="ROUTER_ACTIVITY_ORDER";//订单列表
     public static final String ROUTER_ACTIVITY_ORDER_FIRM="ROUTER_ACTIVITY_ORDER_FIRM";//提交订单
+    public static final String ROUTER_ACTIVITY_ORDER_PAY="ROUTER_ACTIVITY_ORDER_PAY";//订单支付
 
 
     /**

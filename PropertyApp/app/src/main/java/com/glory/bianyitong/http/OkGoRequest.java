@@ -81,7 +81,7 @@ public class OkGoRequest {
                     @Override
                     public void onError(Call call, Response response, Exception e) {
                         Log.i("resultString", "请求错误------");
-                        ToastUtils.showToast(Database.currentActivity, "未能连接到服务器");
+                        com.github.lazylibrary.util.ToastUtils.showToast(Database.currentActivity, "未能连接到服务器");
                         if (onOkGoUtilListener != null) {
                             onOkGoUtilListener.onError();
                         }

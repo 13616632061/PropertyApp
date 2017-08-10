@@ -18,7 +18,7 @@ public class RequestCommitOrderByCart implements Serializable{
     private int couponReceiveID;//优惠券ID
     private double freePrice;//减免金额
     private double orderPrice;//订单总额
-    private List<Integer> shoppingCarts;//购物车ID集合
+//    private List<Integer> shoppingCarts;//购物车ID集合
 
 
     private CouponReceive couponReceive;//可用优惠券查询通用
@@ -76,13 +76,13 @@ public class RequestCommitOrderByCart implements Serializable{
         this.orderPrice = orderPrice;
     }
 
-    public List<Integer> getShoppingCarts() {
-        return shoppingCarts;
-    }
+//    public List<Integer> getShoppingCarts() {
+//        return shoppingCarts;
+//    }
 
-    public void setShoppingCarts(List<Integer> shoppingCarts) {
-        this.shoppingCarts = shoppingCarts;
-    }
+//    public void setShoppingCarts(List<Integer> shoppingCarts) {
+//        this.shoppingCarts = shoppingCarts;
+//    }
 
     public double getFreight() {
         return freight;

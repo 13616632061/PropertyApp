@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingRight="16dp">
+
+
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_marginLeft="16dp">
+        <ImageView
+            android:id="@+id/order_list_item_body_img"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:scaleType="fitXY"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="@dimen/dp_10"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="3"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="5dp">
+
+        <TextView
+            android:id="@+id/order_list_item_body_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="精选西红柿200g"
+            android:textColor="@color/black"
+            android:maxLines="2"
+            android:textSize="16sp"/>
+        <TextView
+            android:id="@+id/order_list_item_body_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="四季鲜果"
+            android:gravity="center_vertical"
+            android:layout_marginTop="3dp"
+            android:maxLines="1"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="@dimen/dp_10">
+
+        <TextView
+            android:id="@+id/order_list_item_body_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="¥ 18"
+            android:gravity="center_vertical|right"
+            android:textColor="@color/black"/>
+        <TextView
+            android:id="@+id/order_list_item_body_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="x1"
+            android:gravity="center_vertical|right"/>
+    </LinearLayout>
+
+</LinearLayout>

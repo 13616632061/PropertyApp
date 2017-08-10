@@ -25,6 +25,7 @@ import com.chenenyu.router.RouteResult;
 import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
+import com.github.lazylibrary.util.ToastUtils;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
@@ -336,7 +337,8 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
             @Override
             public void onSuccess(String s) {
                 BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
-                showShort(bean.getAlertMessage());
+                ToastUtils.showToast(GoodsDetailsActivity.this,bean.getAlertMessage());
+//                showShort(bean.getAlertMessage());
 
             }
 

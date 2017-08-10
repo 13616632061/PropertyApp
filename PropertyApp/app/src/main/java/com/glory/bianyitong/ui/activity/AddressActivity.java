@@ -289,6 +289,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
     @Override
     protected void onResume() {
         super.onResume();
+        data.clear();
         queryAddress();
     }
 

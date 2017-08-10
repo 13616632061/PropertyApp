@@ -31,6 +31,7 @@ import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryCouponList;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
+import com.glory.bianyitong.bean.entity.response.ResponseSubmitOrder;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
@@ -52,7 +53,7 @@ import butterknife.OnClick;
 
 /**
  * Created by Administrator on 2017/7/12.
- * 提交订单
+ * 确认订单
  */
 
 @Route(value = RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM, interceptors = RouterMapping.INTERCEPTOR_LOGIN)
@@ -221,14 +222,10 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
      */
     private RequestCommitOrderByCart  dataFormat(){
 
-
-
-
         /**
          * 订单组装数据
          * 运费，收货ID，收货柜ID，收货柜名称，优惠券ID，减免金额，总金额
          */
-
         RequestCommitOrderByCart orderByCart=new RequestCommitOrderByCart(couponBean.getCouponID(),0f,addressBean.getAddressID(),addressBean.getCabinetID(),addressBean.getCabinetName(),allFreePrice,allPrice);
         List<RequestCommitOrderByCart.OrderDetail> orderDetails=new ArrayList<>();
         List<Integer> list=new ArrayList<>();
@@ -249,10 +246,25 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             }
 
         }
-        orderByCart.setShoppingCarts(list);
+//        orderByCart.setShoppingCarts(list);
         orderByCart.setListOrderDetail(orderDetails);
         return orderByCart;
     }
+
+
+    private List<Integer> shoppingCart(){
+        List<Integer> list=new ArrayList<>();
+        if(type==2){
+            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
+                    ) {
+                if(bean.getData().getCartID()!=0){
+                    list.add(bean.getData().getCartID());
+                }
+            }
+        }
+        return  list;
+    }
+
 
     /**
      * 提交订单
@@ -261,13 +273,20 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         Map<String,Object> maps=new HashMap<>();
         maps.put("order",dataFormat());
+        maps.put("shoppingCarts",shoppingCart());
         map.put("entityOrder",maps);
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
-                showShort(bean.getAlertMessage());
+                ResponseSubmitOrder bean=new Gson().fromJson(s,ResponseSubmitOrder.class);
+                if(bean.getStatusCode()==1){
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_PAY)
+                            .with("data",bean)
+                            .go(FirmOrderActivity.this);
+                }else {
+                    showShort(bean.getAlertMessage());
+                }
             }
 
             @Override
@@ -330,7 +349,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                     if(bean.getCouponReceive()!=null && bean.getCouponReceive().getNotused()>0){//可使用
                         firmOrderLinCoupon.setEnabled(true);
                         firmOrderCoupon.setText("可用 *"+bean.getCouponReceive().getNotused());
-                    }else {//无可使用ss
+                    }else {//无可使用
                         firmOrderLinCoupon.setEnabled(false);
                         firmOrderCoupon.setText("无可用");
                     }

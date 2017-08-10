@@ -42,9 +42,6 @@ public abstract class RootFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Bundle bundle = getArguments();
-        if (bundle != null && bundle.size() > 0) {
-        }
         initVariable();
     }
 
