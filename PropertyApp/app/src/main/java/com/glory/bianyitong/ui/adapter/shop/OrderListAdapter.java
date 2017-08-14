@@ -1,5 +1,7 @@
 package com.glory.bianyitong.ui.adapter.shop;
 
+import android.text.TextUtils;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
@@ -48,6 +50,16 @@ public class OrderListAdapter extends BaseMultiItemQuickAdapter<MultiItemView<Re
             case MultiItemView.FOOTER://脚步view
                 break;
             case MultiItemView.OPERATION://操作view
+                helper.setText(R.id.order_list_item_opera_btn1,item.getMsg1());
+                helper.setText(R.id.order_list_item_opera_btn2,item.getMsg2());
+                if(TextUtils.isEmpty(item.getMsg1()))
+                    helper.setVisible(R.id.order_list_item_opera_btn1,false);
+
+                if(TextUtils.isEmpty(item.getMsg2()))
+                    helper.setVisible(R.id.order_list_item_opera_btn2,false);
+
+                helper.addOnClickListener(R.id.order_list_item_opera_btn1);
+                helper.addOnClickListener(R.id.order_list_item_opera_btn2);
                 break;
         }
     }

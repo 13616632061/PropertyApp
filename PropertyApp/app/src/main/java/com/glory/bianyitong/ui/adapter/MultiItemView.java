@@ -15,14 +15,17 @@ public class MultiItemView <T> implements MultiItemEntity {
     private int itemType;
     private T data;
     private String msg1,msg2;//其他参数
+    private int status;
+    private long ordeId;
 
     public MultiItemView(int itemType) {
         this.itemType = itemType;
     }
 
-    public MultiItemView(int itemType,T data) {
+    public MultiItemView(int itemType,T data,int status) {
         this.itemType = itemType;
         this.data=data;
+        this.status=status;
     }
 
     @Override
@@ -40,11 +43,43 @@ public class MultiItemView <T> implements MultiItemEntity {
         this.msg2 = msg2;
     }
 
+
+    public MultiItemView(int itemType, String msg1, String msg2, int status) {
+        this.itemType = itemType;
+        this.msg1 = msg1;
+        this.msg2 = msg2;
+        this.status = status;
+    }
+
+    /**
+     *
+     * @param itemType
+     * @param msg1
+     * @param msg2
+     * @param status
+     * @param ordeId 订单ID
+     */
+    public MultiItemView(int itemType, String msg1, String msg2, int status,long ordeId) {
+        this.itemType = itemType;
+        this.msg1 = msg1;
+        this.msg2 = msg2;
+        this.status = status;
+        this.ordeId=ordeId;
+    }
+
     public String getMsg1() {
         return msg1;
     }
 
     public String getMsg2() {
         return msg2;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public long getOrdeId() {
+        return ordeId;
     }
 }

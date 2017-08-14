@@ -19,7 +19,7 @@ public class BaseRequestBean{
     private String accessToken=TextUtils.isEmpty(Database.accessToken)?"0":Database.accessToken;
     private String version;
     private int deviceType=3;
-    private int currentPageNumber=0;
+    private int currentPageNumber=1;
 
     private int pageRowNumber=10;
     private String controllerName;
