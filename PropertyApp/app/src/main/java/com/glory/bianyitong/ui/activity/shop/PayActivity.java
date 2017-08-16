@@ -51,8 +51,11 @@ public class PayActivity extends BaseActivity {
 
 
 
-    @InjectParam(key = "data")
-    ResponseSubmitOrder order;
+    @InjectParam(key = "orderId")
+    long orderId;
+
+    @InjectParam(key = "price")
+    float price;
 
     @Override
     protected int getContentId() {
@@ -64,8 +67,9 @@ public class PayActivity extends BaseActivity {
         super.init();
         Router.injectParams(this);
         inintTitle("收银台",false,"");
-        if(order!=null)
+        if(orderId>0)
             initView();
+
     }
 
     @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2})
@@ -78,8 +82,8 @@ public class PayActivity extends BaseActivity {
         }
     }
     private void initView(){
-        orderPayNumber.setText(order.getOrderID()+"");
-        orderPayMoney.setText("¥ "+order.getOrderPrice());
+        orderPayNumber.setText(orderId+"");
+        orderPayMoney.setText("¥ "+price);
     }
 
 

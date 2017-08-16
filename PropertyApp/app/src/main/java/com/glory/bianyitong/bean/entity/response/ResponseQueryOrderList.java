@@ -2,6 +2,7 @@ package com.glory.bianyitong.bean.entity.response;
 
 import com.glory.bianyitong.bean.BaseResponseBean;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public class ResponseQueryOrderList extends BaseResponseBean {
         this.list_Order = list_Order;
     }
 
-    public static class ListOrderBean {
+    public static class ListOrderBean implements Serializable{
         /**
          * orderID : 111
          * orderCode : 4417080904221566209
@@ -45,7 +46,7 @@ public class ResponseQueryOrderList extends BaseResponseBean {
         private String orderCode;
         private String orderTime;
         private int userID;
-        private int orderPrice;
+        private float orderPrice;
         private int orderStatus;
         private int freight;
         private int freePrice;
@@ -90,11 +91,11 @@ public class ResponseQueryOrderList extends BaseResponseBean {
             this.userID = userID;
         }
 
-        public int getOrderPrice() {
+        public float getOrderPrice() {
             return orderPrice;
         }
 
-        public void setOrderPrice(int orderPrice) {
+        public void setOrderPrice(float orderPrice) {
             this.orderPrice = orderPrice;
         }
 
@@ -186,7 +187,7 @@ public class ResponseQueryOrderList extends BaseResponseBean {
             this.listOrderDetail = listOrderDetail;
         }
 
-        public static class ListOrderDetailBean {
+        public static class ListOrderDetailBean implements Serializable{
             /**
              * detailID : 171
              * orderID : 111
@@ -202,7 +203,7 @@ public class ResponseQueryOrderList extends BaseResponseBean {
             private int freshID;
             private int freshQuantity;
             private int price;
-            private int totalPrice;
+            private float totalPrice;
             private FreshBean fresh;
 
             public int getDetailID() {
@@ -245,11 +246,11 @@ public class ResponseQueryOrderList extends BaseResponseBean {
                 this.price = price;
             }
 
-            public int getTotalPrice() {
+            public float getTotalPrice() {
                 return totalPrice;
             }
 
-            public void setTotalPrice(int totalPrice) {
+            public void setTotalPrice(float totalPrice) {
                 this.totalPrice = totalPrice;
             }
 
@@ -261,7 +262,7 @@ public class ResponseQueryOrderList extends BaseResponseBean {
                 this.fresh = fresh;
             }
 
-            public static class FreshBean {
+            public static class FreshBean implements Serializable{
                 /**
                  * freshID : 4
                  * freshTypeID : 12

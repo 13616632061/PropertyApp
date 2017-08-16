@@ -1,6 +1,7 @@
 package com.glory.bianyitong.ui.adapter;
 
 import com.chad.library.adapter.base.entity.MultiItemEntity;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryOrderList;
 
 /**
  * Created by billlamian on 17-8-10.
@@ -17,6 +18,8 @@ public class MultiItemView <T> implements MultiItemEntity {
     private String msg1,msg2;//其他参数
     private int status;
     private long ordeId;
+    private float totalMoney;//订单总金额
+    private ResponseQueryOrderList.ListOrderBean  bean;//评论需要数据
 
     public MultiItemView(int itemType) {
         this.itemType = itemType;
@@ -59,12 +62,14 @@ public class MultiItemView <T> implements MultiItemEntity {
      * @param status
      * @param ordeId 订单ID
      */
-    public MultiItemView(int itemType, String msg1, String msg2, int status,long ordeId) {
+    public MultiItemView(int itemType, String msg1, String msg2, int status,long ordeId,float totalMoney,ResponseQueryOrderList.ListOrderBean  bean) {
         this.itemType = itemType;
         this.msg1 = msg1;
         this.msg2 = msg2;
         this.status = status;
         this.ordeId=ordeId;
+        this.totalMoney=totalMoney;
+        this.bean=bean;
     }
 
     public String getMsg1() {
@@ -81,5 +86,13 @@ public class MultiItemView <T> implements MultiItemEntity {
 
     public long getOrdeId() {
         return ordeId;
+    }
+
+    public float getTotalMoney() {
+        return totalMoney;
+    }
+
+    public ResponseQueryOrderList.ListOrderBean   getBean() {
+        return bean;
     }
 }

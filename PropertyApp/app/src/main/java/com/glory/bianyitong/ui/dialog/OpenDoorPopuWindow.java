@@ -59,19 +59,19 @@ import okhttp3.Response;
  */
 public class OpenDoorPopuWindow extends PopupWindow implements View.OnClickListener {
 //    ArrayList<LinkedTreeMap<String, Object>> locklist;
-    List<UserLockInfo.ListUserLockMappingBean> locklist;
-    ImageView iv_open_ad; //广告图
-    TextView tv_switch_area_od;//切换小区
-    TextView tv_key_manager; //钥匙管理
-    HorizontalScrollView hs_open_door_lay;
-    LinearLayout ll_open_the_door; //门
-    LinearLayout ll_open_door_lay; //2个以内
-    LinearLayout lay_door1;
-    TextView tv_door_name1;
-    LinearLayout lay_door2;
-    TextView tv_door_name2;
-    ImageView iv_opendoor_close; //关闭
-    ProgressDialog progressDialog;
+private List<UserLockInfo.ListUserLockMappingBean> locklist;
+    private ImageView iv_open_ad; //广告图
+    private TextView tv_switch_area_od;//切换小区
+    private TextView tv_key_manager; //钥匙管理
+    private HorizontalScrollView hs_open_door_lay;
+    private LinearLayout ll_open_the_door; //门
+    private LinearLayout ll_open_door_lay; //2个以内
+    private LinearLayout lay_door1;
+    private TextView tv_door_name1;
+    private LinearLayout lay_door2;
+    private TextView tv_door_name2;
+    private ImageView iv_opendoor_close; //关闭
+    private ProgressDialog progressDialog;
     private Context context;
     private View mMenuView;
     private LayoutInflater inflater;

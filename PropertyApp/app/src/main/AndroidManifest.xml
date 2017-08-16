@@ -485,6 +485,14 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+
+        <!--评论页面-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.shop.CommentActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <!--新增发票-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.ReceiptAddActivity"

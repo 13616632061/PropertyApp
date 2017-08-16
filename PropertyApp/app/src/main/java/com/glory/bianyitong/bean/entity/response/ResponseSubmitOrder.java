@@ -17,7 +17,7 @@ public class ResponseSubmitOrder extends BaseResponseBean implements Serializabl
      */
 
     private int orderID;
-    private double OrderPrice;
+    private float OrderPrice;
 
     public int getOrderID() {
         return orderID;
@@ -27,11 +27,11 @@ public class ResponseSubmitOrder extends BaseResponseBean implements Serializabl
         this.orderID = orderID;
     }
 
-    public double getOrderPrice() {
+    public float getOrderPrice() {
         return OrderPrice;
     }
 
-    public void setOrderPrice(double OrderPrice) {
+    public void setOrderPrice(float OrderPrice) {
         this.OrderPrice = OrderPrice;
     }
 }

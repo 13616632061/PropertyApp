@@ -187,6 +187,8 @@ public class HttpURL {
      */
     public static String HTTP_POST_ORDER_COMMIT="/ApiOrder/Add";//购物车提交订单
     public static String HTTP_POST_ORDER_QUERY="/ApiOrder/Query";//查询订单
+    public static String HTTP_POST_ORDER_EDIT="/ApiOrder/Edit";//订单状态更改
+    public static String HTTP_POST_ORDER_DELETE="/ApiOrder/Delete";//订单删除
 
     /**
      * 优惠券

@@ -1,21 +1,31 @@
 package com.glory.bianyitong.ui.fragment.shop;
 
+import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chenenyu.router.RouteCallback;
+import com.chenenyu.router.RouteResult;
+import com.chenenyu.router.Router;
 import com.github.lazylibrary.util.ToastUtils;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.entity.request.RequestOrderList;
+import com.glory.bianyitong.bean.entity.request.RequestOrderOperation;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryOrderList;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.activity.shop.FirmOrderActivity;
 import com.glory.bianyitong.ui.adapter.MultiItemView;
 import com.glory.bianyitong.ui.adapter.shop.OrderListAdapter;
+import com.glory.bianyitong.ui.dialog.CallPhoneDialog;
+import com.glory.bianyitong.ui.dialog.OkDialog;
 import com.glory.bianyitong.ui.fragment.RootFragment;
 import com.glory.bianyitong.util.FilterExclusionStrategy;
 import com.google.gson.Gson;
@@ -82,11 +92,11 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("currentPageNumber",currentPageNumber);
         map.put("entityOrder",new RequestOrderList(new RequestOrderList.OrderStatus(orderStatus)));
-        if(orderStatus== Constant.ORDER_STATUS.STATUS_PAY_ALL){//全部订单
-            json=new GsonBuilder().addSerializationExclusionStrategy(new FilterExclusionStrategy("orderStatus")).create().toJson(map);
-        }else {
+//        if(orderStatus== Constant.ORDER_STATUS.STATUS_PAY_ALL){//全部订单
+//            json=new GsonBuilder().addSerializationExclusionStrategy(new FilterExclusionStrategy("orderStatus")).create().toJson(map);
+//        }else {
             json=new Gson().toJson(map);
-        }
+//        }
 
 
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
@@ -103,7 +113,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                             data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.BODY,bean,listBean.getOrderStatus()));
                         }
                         data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.FOOTER));
-                        setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID());//添加操作菜单
+                        setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID(),listBean.getOrderPrice(),listBean);//添加操作菜单
                     }
                     adapter.notifyDataSetChanged();
                     if(currentPageNumber<entity.getPageRowNumber()){
@@ -151,7 +161,14 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
         }).getEntityData(HttpURL.HTTP_POST_ORDER_QUERY,json);
     }
 
-    private void setOperationMenu(int viewType,int status,int orderId){
+    /**
+     * 设置操作menu
+     * @param viewType
+     * @param status
+     * @param orderId
+     * @param price
+     */
+    private void setOperationMenu(int viewType,int status,int orderId,float price,ResponseQueryOrderList.ListOrderBean  bean){
         String msg1,msg2;
         switch (status){
             case Constant.ORDER_STATUS.STATUS_PAY_WAIT://待付款
@@ -175,9 +192,14 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 msg2="";
                 break;
         }
-        data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(viewType,msg1,msg2,status,orderId));
+        data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(viewType,msg1,msg2,status,orderId,price,bean));
     }
 
+    /**
+     * 获取状态描述
+     * @param status
+     * @return
+     */
     private String getStatusName(int status){
         switch (status){
             case Constant.ORDER_STATUS.STATUS_PAY_WAIT://待付款
@@ -198,9 +220,13 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
         orderListFrRefresh.setRefreshing(true);
         currentPageNumber=1;
         data.clear();
+        adapter.notifyItemRangeRemoved(0,adapter.getItemCount());
         requestOrderList(orderType);
     }
 
+    /**
+     * 自动刷新列表
+     */
     public void onAutoRefresh(){
         orderListFrRefresh.post(new Runnable() {
             @Override
@@ -208,6 +234,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 orderListFrRefresh.setRefreshing(true);
                 currentPageNumber=1;
                 data.clear();
+                adapter.notifyItemRangeRemoved(0,adapter.getItemCount());
                 requestOrderList(orderType);
             }
         });
@@ -236,15 +263,25 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 
     }
 
+    /**
+     * 订单操作
+     * @param btnType
+     * @param position
+     */
     private void checkOperation(int btnType,int position){
         int status= data.get(position).getStatus();
 
         switch (status){
             case Constant.ORDER_STATUS.STATUS_PAY_WAIT://待付款
                 if (btnType==1){//
-                    ToastUtils.showToast(getActivity(),"付款");
+//                    if(showDialog("确认付款 "+data.get(position).getOrdeId()))
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_PAY)
+                            .with("orderId",data.get(position).getOrdeId())
+                            .with("price",data.get(position).getTotalMoney())
+                            .go(getActivity());
                 }else {
-                    ToastUtils.showToast(getActivity(),"取消订单");
+//                    if(showDialog("确认取消订单 "+data.get(position).getOrdeId()))
+                    operationProduct(data.get(position).getOrdeId(),status);
                 }
                 break;
             case Constant.ORDER_STATUS.STATUS_PAY_FINSH://待发货
@@ -255,17 +292,126 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
             case Constant.ORDER_STATUS.STATUS_PAY_SEND://待收货
                 if (btnType==1){//
                     ToastUtils.showToast(getActivity(),"确认收货");
+//                    if(showDialog("确认收货 "+data.get(position).getOrdeId()))
+                    operationProduct(data.get(position).getOrdeId(),status);
                 }else {
                     ToastUtils.showToast(getActivity(),"查看物流");
                 }
                 break;
             case Constant.ORDER_STATUS.STATUS_PAY_GOODSRECEPIT://待评价
                 if (btnType==1){//
-                    ToastUtils.showToast(getActivity(),"评价");
+                    ResponseQueryOrderList.ListOrderBean   bean=data.get(position).getBean();
+                    if(bean!=null){
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_COMMENT)
+                                .with("data",bean)
+                                .go(getActivity());
+                    }
+
                 }else {
                     ToastUtils.showToast(getActivity(),"删除订单");
+//                    if(showDialog("确认删除订单 "+data.get(position).getOrdeId()))
+                    deleteOrder(data.get(position).getOrdeId());
                 }
                 break;
         }
     }
+
+    /**
+     * 改变订单状态  收货，取消
+     * @param orderId
+     * @param status
+     */
+    private void operationProduct(long orderId,int status){
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("entityOrder",new RequestOrderOperation(new RequestOrderOperation.OrderStatus(status,orderId)));
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                BaseResponseBean entity=new Gson().fromJson(s,BaseResponseBean.class);
+                showToast(entity.getAlertMessage());
+                if(entity.getStatusCode()==1){
+                    onAutoRefresh();
+                }else {
+                    showToast(entity.getAlertMessage());
+                }
+            }
+
+            @Override
+            public void onError() {
+                showToast(getString(R.string.system_error));
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_ORDER_EDIT,json);
+    }
+
+    /**
+     * 删除订单
+     * @param orderId
+     */
+    private void deleteOrder(long orderId){
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("entityOrder",new RequestOrderOperation(new RequestOrderOperation.OrderStatus(orderType,orderId)));
+        String json=new GsonBuilder().addSerializationExclusionStrategy(new FilterExclusionStrategy("orderStatus")).create().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                BaseResponseBean entity=new Gson().fromJson(s,BaseResponseBean.class);
+                if(entity.getStatusCode()==1){
+                    onAutoRefresh();
+                }else {
+                    showToast(entity.getAlertMessage());
+                }
+            }
+
+            @Override
+            public void onError() {
+                showToast(getString(R.string.system_error));
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(HttpURL.HTTP_POST_ORDER_DELETE,json);
+    }
+
+    private void showDialog(String msg,long orderId,int status){
+         OkDialog dialog=new OkDialog(getActivity()).createDialog(msg, new OkDialog.OnDialogClickListener() {
+            @Override
+            public void onClickOk(OkDialog okDialog) {
+                okDialog.dismiss();
+            }
+
+            @Override
+            public void onClickCancel() {
+            }
+        });
+        dialog.show();
+    }
+
 }

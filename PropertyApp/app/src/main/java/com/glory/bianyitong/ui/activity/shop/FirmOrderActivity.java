@@ -282,7 +282,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 ResponseSubmitOrder bean=new Gson().fromJson(s,ResponseSubmitOrder.class);
                 if(bean.getStatusCode()==1){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_PAY)
-                            .with("data",bean)
+//                            .with("data",bean)
+                            .with("orderId",bean.getOrderID())
+                            .with("price",bean.getOrderPrice())
                             .go(FirmOrderActivity.this);
                 }else {
                     showShort(bean.getAlertMessage());

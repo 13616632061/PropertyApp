@@ -1,7 +1,6 @@
 package com.glory.bianyitong.ui.adapter.shop;
 
 import android.text.TextUtils;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
