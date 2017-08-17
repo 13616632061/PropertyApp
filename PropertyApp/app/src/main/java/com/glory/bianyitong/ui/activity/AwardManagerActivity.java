@@ -239,7 +239,7 @@ public class AwardManagerActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_LOCKMAPPING_QUERY,jsons);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCKMAPPING_QUERY,jsons);
     }
 
     /**
@@ -284,7 +284,7 @@ public class AwardManagerActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_LOCKMAPPING_DELETE,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCKMAPPING_DELETE,json);
     }
 
 }

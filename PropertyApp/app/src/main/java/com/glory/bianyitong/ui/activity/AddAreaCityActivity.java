@@ -262,7 +262,7 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY, json);
     }
     //获取附近小区
     private void request_community(double latitude, double longitude) {
@@ -301,7 +301,7 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
             @Override
             public void onAfter() {
             }
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA, json);
     }
 
     @Override

@@ -448,7 +448,7 @@ public class IndexFragment extends BaseFragment {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_GET_AD,json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_GET_AD,json);
     }
 
 

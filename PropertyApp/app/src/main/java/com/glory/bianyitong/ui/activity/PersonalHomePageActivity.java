@@ -237,7 +237,7 @@ public class PersonalHomePageActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_MY_GETSEND_INFO,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_MY_GETSEND_INFO,json);
 
 
     }
@@ -266,7 +266,7 @@ public class PersonalHomePageActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(HttpURL.HTTP_POST_QUERY_USER_INFO,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_QUERY_USER_INFO,json);
     }
 
     //显示用户个人信息

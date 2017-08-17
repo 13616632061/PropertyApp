@@ -273,7 +273,7 @@ public class NeighbourFragment extends BaseFragment {
                 }
                 base_pullToRefreshView.onHeaderRefreshComplete();
             }
-        }).getEntityData(HttpURL.HTTP_POST_FRIEND_QUERY,json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_FRIEND_QUERY,json);
 
     }
 

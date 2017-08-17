@@ -425,7 +425,7 @@ public class EveryDayDetailsActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() { }
-        }).getEntityData(url,json);
+        }).getEntityData(this,url,json);
     }
 
     private void request_like(int newsID, int commentToID) { //点赞
@@ -666,7 +666,7 @@ public class EveryDayDetailsActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(url, json);
+        }).getEntityData(this,url, json);
     }
 
 }

@@ -299,7 +299,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
             public void onAfter() {
 
             }
-        }).getEntityData("/ApiUserKey/Query",json);
+        }).getEntityData(context,"/ApiUserKey/Query",json);
     }
 
     private void OpenLock(int lockID) { //开锁
@@ -343,7 +343,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_OPEN_LOCK,json);
+        }).getEntityData(context,HttpURL.HTTP_POST_OPEN_LOCK,json);
     }
 
     /**
@@ -390,7 +390,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_GET_AD,json);
+        }).getEntityData(context,HttpURL.HTTP_POST_GET_AD,json);
     }
 
     private boolean checkPermission() {

@@ -157,7 +157,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_QUERY_ADDRESS, json);
 
     }
 
@@ -195,7 +195,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_ADD_ADDRESS,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_ADD_ADDRESS,json);
     }
 
 
@@ -232,7 +232,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_DELETE_ADDRESS,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_DELETE_ADDRESS,json);
     }
 
     private void setInitAddress(int addressId,boolean isChecked){
@@ -268,7 +268,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_INIT_ADDRESS,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_INIT_ADDRESS,json);
     }
 
 

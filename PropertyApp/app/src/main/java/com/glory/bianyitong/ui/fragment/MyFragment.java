@@ -296,7 +296,7 @@ public class MyFragment extends BaseFragment {
             @Override
             public void onAfter() {
             }
-        }).getEntityData(HttpURL.HTTP_POST_MY_GETSHARE, json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_MY_GETSHARE, json);
     }
 
     @Override

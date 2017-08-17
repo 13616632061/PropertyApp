@@ -182,7 +182,7 @@ public class AuthAreaActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData("/ApiUserCommnunity/Query", jsons);
+        }).getEntityData(this,"/ApiUserCommnunity/Query", jsons);
     }
 
 }

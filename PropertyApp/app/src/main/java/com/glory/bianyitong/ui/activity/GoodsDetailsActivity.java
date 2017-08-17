@@ -323,7 +323,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_FRESH_QUERY_DETAIL, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_FRESH_QUERY_DETAIL, json);
     }
 
     /**
@@ -361,7 +361,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_SHOPPINGCART_ADD,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_SHOPPINGCART_ADD,json);
     }
 
     /**
@@ -403,7 +403,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_COLLECTION_ADD,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_COLLECTION_ADD,json);
     }
 
     /**
@@ -446,7 +446,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_COLLECTION_DELETE,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_COLLECTION_DELETE,json);
     }
 
     private void load(String html) {

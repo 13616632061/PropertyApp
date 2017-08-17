@@ -156,7 +156,7 @@ public class AddressAddAndEditActivity extends BaseActivity {
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_INIT_ADDRESS,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_INIT_ADDRESS,json);
     }
 
 

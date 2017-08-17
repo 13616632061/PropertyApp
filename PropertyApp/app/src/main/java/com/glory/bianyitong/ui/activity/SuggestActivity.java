@@ -387,7 +387,7 @@ public class SuggestActivity extends BaseActivity implements ChooseAdapter.OnItm
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_COMPLAINTS_ADD,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_COMPLAINTS_ADD,json);
 
 
 
@@ -440,7 +440,7 @@ public class SuggestActivity extends BaseActivity implements ChooseAdapter.OnItm
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_GET_ALIYUN,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_GET_ALIYUN,json);
 
     }
 

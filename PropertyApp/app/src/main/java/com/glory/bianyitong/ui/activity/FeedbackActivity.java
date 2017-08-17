@@ -118,7 +118,7 @@ public class FeedbackActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_FEEDBACK_ADD,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_FEEDBACK_ADD,json);
     }
 
 }

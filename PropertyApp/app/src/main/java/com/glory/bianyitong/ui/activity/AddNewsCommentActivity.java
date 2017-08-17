@@ -155,7 +155,7 @@ public class AddNewsCommentActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url,json);
+        }).getEntityData(this,url,json);
     }
 
 }

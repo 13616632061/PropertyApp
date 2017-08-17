@@ -17,7 +17,7 @@ import com.glory.bianyitong.util.TextUtil;
 public class UserInterceptor implements RouteInterceptor {
     @Override
     public boolean intercept(Context context, RouteRequest routeRequest) {
-        if(TextUtil.isEmpty(Database.accessToken)){
+        if((!TextUtil.isEmpty(Database.accessToken)) && Database.accessToken.equals("0")){
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
             return true;
         }

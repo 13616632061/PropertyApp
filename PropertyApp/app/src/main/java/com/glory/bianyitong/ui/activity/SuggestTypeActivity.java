@@ -170,7 +170,7 @@ public class SuggestTypeActivity extends BaseActivity {
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_COMPLAINTS_TYPE,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_COMPLAINTS_TYPE,json);
 
     }
 

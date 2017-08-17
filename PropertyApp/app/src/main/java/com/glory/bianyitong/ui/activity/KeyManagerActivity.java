@@ -232,7 +232,7 @@ public class KeyManagerActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_KEY_MANAGER, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_KEY_MANAGER, json);
     }
 
     private void save() { //保存 钥匙排序
@@ -260,7 +260,7 @@ public class KeyManagerActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_KEY_SORT, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_KEY_SORT, json);
     }
 
     private void sort() { //排序

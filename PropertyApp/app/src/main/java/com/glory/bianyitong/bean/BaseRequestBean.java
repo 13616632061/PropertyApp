@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class BaseRequestBean{
     private String timeStemp;
-    private String accessToken=TextUtils.isEmpty(Database.accessToken)?"0":Database.accessToken;
+    public String accessToken=TextUtils.isEmpty(Database.accessToken)?"0":Database.accessToken;
     private String version;
     private int deviceType=3;
     private int currentPageNumber=1;

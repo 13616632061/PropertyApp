@@ -289,7 +289,7 @@ public class CommunityBulletinActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE,json);
     }
 
     @Override

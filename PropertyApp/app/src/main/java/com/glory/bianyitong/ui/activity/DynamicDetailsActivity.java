@@ -417,7 +417,7 @@ public class DynamicDetailsActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_FRIEND_DETAIL,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_DETAIL,json);
     }
 
     /**
@@ -453,7 +453,7 @@ public class DynamicDetailsActivity extends BaseActivity {
             public void onAfter() {
                 lay_like_dy.setClickable(true);
             }
-        }).getEntityData(HttpURL.HTTP_POST_FRIEND_LIKE,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_LIKE,json);
 
     }
 
@@ -489,7 +489,7 @@ public class DynamicDetailsActivity extends BaseActivity {
             public void onAfter() {
                 lay_like_dy.setClickable(true);
             }
-        }).getEntityData(HttpURL.HTTP_POST_FRIEND_LIKE_CANCEL,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_LIKE_CANCEL,json);
     }
 
     private void reports(int reportType, int reportID, String reportUserID, String reportUserName, String publisherID) {
@@ -517,7 +517,7 @@ public class DynamicDetailsActivity extends BaseActivity {
             public void onBefore() { }
             @Override
             public void onAfter() { }
-        }).getEntityData(HttpURL.HTTP_POST_FRIEND_COMMENT_REPORT, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_COMMENT_REPORT, json);
     }
 
 }

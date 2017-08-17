@@ -182,7 +182,7 @@ public class MessageDetailsActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(url,json);
+        }).getEntityData(this,url,json);
     }
 
 }

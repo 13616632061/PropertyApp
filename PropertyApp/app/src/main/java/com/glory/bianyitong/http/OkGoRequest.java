@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.BuildConfig;
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.exception.MyApplication;
@@ -49,10 +50,23 @@ public class OkGoRequest {
     }
 
 
-    public void getEntityData(String url,final String request) {
+    public void getEntityData(Context context,String url, String request) {
         LogUtils.d("OkGoGo","---------------------start----------------------");
         LogUtils.d("OkGoGo","URL:   "+HttpURL.HTTP_NEW_URL+url);
         LogUtils.d("OkGoGo","params:    "+request);
+
+        final Gson gson=new Gson();
+        BaseRequestBean requestBean=gson.fromJson(request, BaseRequestBean.class);
+        if((!TextUtil.isEmpty(requestBean.accessToken)) && requestBean.accessToken.equals("0")){
+            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
+            if(onOkGoUtilListener!=null)
+                onOkGoUtilListener.onError();
+            return;
+        }
+
+
+
+
         OkGo.post(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
                 .tag(this)
                 .params("request", request)
@@ -115,6 +129,7 @@ public class OkGoRequest {
     }
 
     public void getEntityData(String url, Map<String,String> map) {
+        map.remove("phoneNumber");
         OkGo.post(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
                 .tag(this)
                 .params(map,false)
@@ -134,6 +149,64 @@ public class OkGoRequest {
                             if(bean.getStatusCode()==-105){
                                 Database.accessToken=null;
                             }
+                            if (onOkGoUtilListener != null) {
+                                onOkGoUtilListener.onSuccess(s);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onError(Call call, Response response, Exception e) {
+                        Log.i("resultString", "请求错误------");
+                        ToastUtils.showToast(Database.currentActivity, "未能连接到服务器");
+                        if (onOkGoUtilListener != null) {
+                            onOkGoUtilListener.onError();
+                        }
+                    }
+
+                    @Override
+                    public void parseError(Call call, Exception e) {
+                        super.parseError(call, e);
+                        Log.i("resultString", "网络解析错误------");
+                        if (onOkGoUtilListener != null) {
+                            onOkGoUtilListener.parseError();
+                        }
+                    }
+
+                    @Override
+                    public void onBefore(BaseRequest request) {
+                        super.onBefore(request);
+                        if (onOkGoUtilListener != null) {
+                            onOkGoUtilListener.onBefore();
+                        }
+                    }
+
+                    @Override
+                    public void onAfter(@Nullable String s, @Nullable Exception e) {
+                        super.onAfter(s, e);
+                        if (onOkGoUtilListener != null) {
+                            onOkGoUtilListener.onAfter();
+                        }
+                    }
+                });
+    }
+
+    public void getEntityDataForGet(String url, Map<String,String> map) {
+        OkGo.get(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
+                .tag(this)
+                .params(map,false)
+                .execute(new StringCallback() {
+                    @Override
+                    public void onSuccess(String s, Call call, Response response) {
+                        LogUtils.d("OkGoGo","---------------------start----------------------");
+                        LogUtils.d("OkGoGo","URL:   "+response.request().url());
+//                        LogUtils.d("OkGoGo","params:    "+request);
+                        LogUtils.d("OkGoGo","response:    "+s);
+                        LogUtils.d("OkGoGo","----------------------end-----------------------");
+
+                        if(TextUtil.isEmpty(s)){
+                            onOkGoUtilListener.onError();
+                        }else {
                             if (onOkGoUtilListener != null) {
                                 onOkGoUtilListener.onSuccess(s);
                             }

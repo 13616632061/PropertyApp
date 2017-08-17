@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onAfter() {
             }
-        }).getEntityData(url, json);
+        }).getEntityData(this,url, json);
     }
 
     private void requestlist() { //获取社区
@@ -431,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA,jsons);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA,jsons);
     }
 
     @Override
@@ -591,7 +591,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onAfter() {
             }
-        }).getEntityData(url, jsons);
+        }).getEntityData(this,url, jsons);
 
     }
 

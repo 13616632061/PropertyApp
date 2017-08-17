@@ -185,7 +185,7 @@ public class AddRoomActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY_BUILD,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_BUILD,json);
     }
 
     /**
@@ -222,7 +222,7 @@ public class AddRoomActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY_UNIT,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_UNIT,json);
     }
 
     /**
@@ -261,7 +261,7 @@ public class AddRoomActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY_ROOM,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_ROOM,json);
     }
 
 
@@ -319,7 +319,7 @@ public class AddRoomActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_ADD_COMMNUNITY,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_ADD_COMMNUNITY,json);
     }
 
     @Override

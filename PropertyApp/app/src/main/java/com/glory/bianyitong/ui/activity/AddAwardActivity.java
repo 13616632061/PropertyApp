@@ -347,7 +347,7 @@ public class AddAwardActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(url, json);
+        }).getEntityData(this,url, json);
     }
 
     @Override

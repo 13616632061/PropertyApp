@@ -208,7 +208,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_SHOPPINGCART_QUERY, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_SHOPPINGCART_QUERY, json);
     }
 
 
@@ -301,7 +301,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_SHOPPINGCART_EDIT,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_SHOPPINGCART_EDIT,json);
     }
 
     /**
@@ -365,7 +365,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_SHOPPINGCART_DELETE, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_SHOPPINGCART_DELETE, json);
     }
 
 

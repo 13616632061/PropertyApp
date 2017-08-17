@@ -141,7 +141,7 @@ public class BulletinDetailsActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE,json);
     }
 
     private void initview() {

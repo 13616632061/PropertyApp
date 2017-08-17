@@ -217,7 +217,7 @@ public class SelectLocalActivity extends BaseActivity implements BaseSectionQuic
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_MY_LOCAL,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_MY_LOCAL,json);
 
     }
 
@@ -259,7 +259,7 @@ public class SelectLocalActivity extends BaseActivity implements BaseSectionQuic
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_SHOP_QUERY_LOCAL,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_SHOP_QUERY_LOCAL,json);
     }
 
     void initLocalData(){

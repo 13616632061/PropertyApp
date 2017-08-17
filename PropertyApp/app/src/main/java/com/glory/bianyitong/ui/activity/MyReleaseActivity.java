@@ -342,7 +342,7 @@ public class MyReleaseActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_MY_GETSEND_INFO,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_MY_GETSEND_INFO,json);
 //        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/Neighborhood/StructureQuery") //我的发布
 //                .tag(this)//
 //                .params("request", json)

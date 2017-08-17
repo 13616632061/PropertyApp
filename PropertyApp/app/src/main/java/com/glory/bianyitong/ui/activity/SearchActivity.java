@@ -277,7 +277,7 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_FRESH_QUERY_SEARCH,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_FRESH_QUERY_SEARCH,json);
 
     }
 
@@ -319,7 +319,7 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_FRESH_QUERY_TAG,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_FRESH_QUERY_TAG,json);
 
     }
 

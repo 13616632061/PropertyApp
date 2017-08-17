@@ -158,7 +158,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_ORDER_QUERY,json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_ORDER_QUERY,json);
     }
 
     /**
@@ -356,7 +356,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_ORDER_EDIT,json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_ORDER_EDIT,json);
     }
 
     /**
@@ -397,7 +397,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_ORDER_DELETE,json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_ORDER_DELETE,json);
     }
 
     private void showDialog(String msg,long orderId,int status){

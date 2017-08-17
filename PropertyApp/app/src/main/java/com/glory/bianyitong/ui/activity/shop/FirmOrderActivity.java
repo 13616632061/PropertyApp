@@ -310,7 +310,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_ORDER_COMMIT,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_ORDER_COMMIT,json);
     }
 
 
@@ -377,7 +377,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_COUPON_QUERY_LIST,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_COUPON_QUERY_LIST,json);
 
     }
     @Override

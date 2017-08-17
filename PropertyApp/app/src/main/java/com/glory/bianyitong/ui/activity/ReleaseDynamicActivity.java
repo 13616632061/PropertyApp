@@ -358,7 +358,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ChooseAdapte
                 }
                 iv_title_text_right.setClickable(true);
             }
-        }).getEntityData(HttpURL.HTTP_POST_FRIEND_ADD,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_ADD,json);
 
 
     }
@@ -410,7 +410,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ChooseAdapte
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_GET_ALIYUN,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_GET_ALIYUN,json);
 
     }
 

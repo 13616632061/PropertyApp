@@ -128,7 +128,7 @@ public class CouponListFragment extends RootFragment implements BaseQuickAdapter
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_COUPON_QUERY_LIST,json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_COUPON_QUERY_LIST,json);
 
     }
 

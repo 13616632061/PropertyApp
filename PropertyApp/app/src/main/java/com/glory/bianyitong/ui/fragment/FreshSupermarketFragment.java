@@ -413,7 +413,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_SHOP_QUERY_INFO,json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_SHOP_QUERY_INFO,json);
     }
 
 
@@ -463,7 +463,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_FRESH_TYPE,json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_FRESH_TYPE,json);
     }
 
 
@@ -523,7 +523,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             public void onAfter() {
 
             }
-        }).getEntityData(url, json);
+        }).getEntityData(getActivity(),url, json);
     }
 
 
@@ -568,7 +568,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_MY_LOCAL,json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_MY_LOCAL,json);
 
     }
 

@@ -167,7 +167,7 @@ public class StewardActivity extends BaseActivity {
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_OWNER_MANAGER,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_OWNER_MANAGER,json);
 
     }
 

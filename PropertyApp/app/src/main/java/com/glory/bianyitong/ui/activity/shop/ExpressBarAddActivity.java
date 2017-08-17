@@ -166,7 +166,7 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_LOCAL, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_LOCAL, json);
 
     }
 
@@ -212,7 +212,7 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_SEARCH, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_SEARCH, json);
 
     }
 

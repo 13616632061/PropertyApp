@@ -136,7 +136,7 @@ public class ShearPicturesActivity extends BaseActivity implements OnClickListen
                                 save_btn.setClickable(true);
                                 ShearPicturesActivity.this.finish();
                             }
-                        }).getEntityData(HttpURL.HTTP_POST_MY_EDITUSERINFO,json);
+                        }).getEntityData(ShearPicturesActivity.this,HttpURL.HTTP_POST_MY_EDITUSERINFO,json);
 
                     } else {
                         if (progressDialog != null) {
@@ -381,7 +381,7 @@ public class ShearPicturesActivity extends BaseActivity implements OnClickListen
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_GET_ALIYUN,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_GET_ALIYUN,json);
 
     }
 

@@ -325,7 +325,7 @@ public class MessageActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_GET_MESSAGE,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_GET_MESSAGE,json);
 
     }
 

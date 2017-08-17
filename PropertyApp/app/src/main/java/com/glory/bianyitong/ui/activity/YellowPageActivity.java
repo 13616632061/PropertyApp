@@ -175,7 +175,7 @@ public class YellowPageActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_YELLOWPAGE_QUERY,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_YELLOWPAGE_QUERY,json);
 
     }
 
@@ -247,7 +247,7 @@ public class YellowPageActivity extends BaseActivity {
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_YELLOWITEM_QUERY,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_YELLOWITEM_QUERY,json);
 
 
     }

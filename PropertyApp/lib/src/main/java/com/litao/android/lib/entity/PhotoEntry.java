@@ -1,9 +1,11 @@
 package com.litao.android.lib.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by 16/4/21.
  */
-public class PhotoEntry {
+public class PhotoEntry implements Serializable{
 
     private int bucketId;
     private int imageId;

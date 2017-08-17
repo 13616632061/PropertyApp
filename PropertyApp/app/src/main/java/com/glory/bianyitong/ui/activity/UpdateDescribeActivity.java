@@ -127,7 +127,7 @@ public class UpdateDescribeActivity extends BaseActivity {
             public void onAfter() {
 
             }
-        }).getEntityData(HttpURL.HTTP_POST_MY_EDITUSERINFO,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_MY_EDITUSERINFO,json);
 
     }
 

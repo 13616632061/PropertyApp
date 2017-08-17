@@ -136,7 +136,7 @@ public class AddCommentActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(HttpURL.HTTP_POST_FRIEND_COMMENT_ADD, json);
+        }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_COMMENT_ADD, json);
     }
 
 }
