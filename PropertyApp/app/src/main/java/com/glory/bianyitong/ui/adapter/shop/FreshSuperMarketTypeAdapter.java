@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.glory.bianyitong.R;
+import com.glory.bianyitong.bean.FreshTypeInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryShopInfo;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 
@@ -20,16 +21,16 @@ import java.util.List;
  * 生鲜首页类型列表
  */
 
-public class FreshSuperMarketTypeAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryShopInfo.ListFreshMerchantBean.ListTypeBean>,BaseViewHolder> {
+public class FreshSuperMarketTypeAdapter extends BaseQuickAdapter<ItemMenu<FreshTypeInfo.ListFreshTypeBean>,BaseViewHolder> {
     private Context context;
-    public FreshSuperMarketTypeAdapter(@LayoutRes int layoutResId, @Nullable List<ItemMenu<ResponseQueryShopInfo.ListFreshMerchantBean.ListTypeBean>> data, Context context) {
+    public FreshSuperMarketTypeAdapter(@LayoutRes int layoutResId, @Nullable List<ItemMenu<FreshTypeInfo.ListFreshTypeBean>> data, Context context) {
         super(layoutResId, data);
         this.context = context;
     }
     private int position=0;
 
     @Override
-    protected void convert(BaseViewHolder helper, ItemMenu<ResponseQueryShopInfo.ListFreshMerchantBean.ListTypeBean> item) {
+    protected void convert(BaseViewHolder helper, ItemMenu<FreshTypeInfo.ListFreshTypeBean> item) {
         helper.setText(R.id.item_fresh_type_content,item.getData().getFreshTypeName());
         TextView textView=helper.getView(R.id.item_fresh_type_content);
         if(helper.getAdapterPosition()==position)

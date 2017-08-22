@@ -133,12 +133,17 @@
             android:layout_width="1dp"
             android:layout_height="match_parent"
             android:background="@color/linegray"></View>
-        <android.support.v7.widget.RecyclerView
-            android:background="@color/linegray"
-            android:id="@+id/rec_right_list"
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/fresh_list_fr_refresh"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.RecyclerView
+                android:background="@color/linegray"
+                android:id="@+id/rec_right_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-        </android.support.v7.widget.RecyclerView>
+            </android.support.v7.widget.RecyclerView>
+        </android.support.v4.widget.SwipeRefreshLayout>
     </LinearLayout>
 </LinearLayout>

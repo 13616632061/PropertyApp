@@ -167,6 +167,7 @@ public class HttpURL {
     public static String HTTP_POST_SHOP_QUERY_INFO="/ApiFreshMerchant/Query";//查询商户信息
     public static String HTTP_POST_SHOP_QUERY_LOCAL="/ApiArea/FuzzyQuery";//地区搜索
     public static String HTTP_POST_SHOP_QUERY_GOOD_SHOP="/ApiFresh/QueryFreshChoice";//生鲜精品
+    public static String HTTP_POST_SHOP_QUERY_TTPE_RIGHT="/ApiArea/Query";//生鲜首页左侧
 
     /**
      * 购物车

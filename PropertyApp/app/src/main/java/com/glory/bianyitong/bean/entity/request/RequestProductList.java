@@ -8,11 +8,11 @@ package com.glory.bianyitong.bean.entity.request;
 public class RequestProductList {
     private int freshTypeID;
     private String orderBy;
-    private int merchant_ID;
-    public RequestProductList(int freshTypeID, String orderBy, int merchant_id) {
+    private int freshLeafID;
+    public RequestProductList(int freshTypeID, String orderBy, int freshLeafID) {
         this.freshTypeID = freshTypeID;
         this.orderBy = orderBy;
-        merchant_ID = merchant_id;
+        this.freshLeafID = freshLeafID;
     }
 
     public int getFreshTypeID() {
@@ -32,10 +32,10 @@ public class RequestProductList {
     }
 
     public int getMerchant_ID() {
-        return merchant_ID;
+        return freshLeafID;
     }
 
     public void setMerchant_ID(int merchant_ID) {
-        this.merchant_ID = merchant_ID;
+        this.freshLeafID = freshLeafID;
     }
 }

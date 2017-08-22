@@ -32,6 +32,6 @@ public class FreshPopTypeTwoAdapter extends BaseQuickAdapter<ItemMenu<ResponseQu
 //        }
 
         helper.setText(R.id.tv_fenlei,item.getData().getFreshTypeName());
-        helper.setText(R.id.tv_number,item.getData().getInverntoryQuantity()+"");
+//        helper.setText(R.id.tv_number,item.getData().getInverntoryQuantity()+"");
     }
 }
