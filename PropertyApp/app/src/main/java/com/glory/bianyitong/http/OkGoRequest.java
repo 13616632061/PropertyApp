@@ -63,6 +63,11 @@ public class OkGoRequest {
                 onOkGoUtilListener.onError();
             return;
         }
+//        else  if(requestBean.accessToken.equals("-1")){
+//            Map<String,Object> map=new Gson().fromJson(request,new TypeToken<Map<String,Object>>(){}.getType());
+//            map.put("accessToken","0");
+//            request=new Gson().toJson(map);
+//        }
 
 
 
@@ -129,10 +134,11 @@ public class OkGoRequest {
     }
 
     public void getEntityData(String url, Map<String,String> map) {
-        map.remove("phoneNumber");
+        JSONObject request=new JSONObject(map);
+
         OkGo.post(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
                 .tag(this)
-                .params(map,false)
+                .params("request",request.toString())
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {

@@ -24,7 +24,7 @@ public class HttpURL {
 //
 //    public static String HTTP_LOGIN3 = "http://ad.51maimai.com.cn/";
 
-    public static String HTTP_NEW_URL = "http://192.168.1.113:1756";
+    public static String HTTP_NEW_URL = "http://192.168.1.113:1757";
 
 
     /**
@@ -75,7 +75,8 @@ public class HttpURL {
     //搜索生鲜柜
     public static String HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_SEARCH="/ApiShopAddress/FuzzyQuery";
 
-
+    //评价
+    public static String HTTP_POST_APIFRESHEVALUATION_ADD="/ApiFreshEvaluation/Add";
 
     /**
      * 社区

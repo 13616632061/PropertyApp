@@ -220,7 +220,8 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
         orderListFrRefresh.setRefreshing(true);
         currentPageNumber=1;
         data.clear();
-        adapter.notifyItemRangeRemoved(0,adapter.getItemCount());
+//        adapter.notifyItemRangeRemoved(0,adapter.getItemCount());
+        adapter.notifyDataSetChanged();
         requestOrderList(orderType);
     }
 
@@ -234,7 +235,8 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 orderListFrRefresh.setRefreshing(true);
                 currentPageNumber=1;
                 data.clear();
-                adapter.notifyItemRangeRemoved(0,adapter.getItemCount());
+//                adapter.notifyItemRangeRemoved(0,adapter.getItemCount());
+                adapter.notifyDataSetChanged();
                 requestOrderList(orderType);
             }
         });
@@ -293,7 +295,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 if (btnType==1){//
                     ToastUtils.showToast(getActivity(),"确认收货");
 //                    if(showDialog("确认收货 "+data.get(position).getOrdeId()))
-                    operationProduct(data.get(position).getOrdeId(),status);
+                    operationProduct(data.get(position).getOrdeId(),4);
                 }else {
                     ToastUtils.showToast(getActivity(),"查看物流");
                 }

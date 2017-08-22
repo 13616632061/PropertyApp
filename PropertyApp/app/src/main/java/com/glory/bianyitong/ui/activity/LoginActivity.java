@@ -138,8 +138,8 @@ public class LoginActivity extends BaseActivity {
                     ToastUtils.showToast(LoginActivity.this, getString(R.string.please_enter_a_valid_phone_number));//请输入正确的手机号
                 } else {
                     time.start();// 开始计时
-//                    createCode(phone);
-                    getCode(phone);
+                    createCode(phone);
+//                    getCode(phone);
                 }
                 break;
             case R.id.btn_Login: //登录
@@ -167,44 +167,44 @@ public class LoginActivity extends BaseActivity {
     }
 
     //生成验证码
-//    private void createCode(final String phone) {
-//        Map<String,String> map=new HashMap<>();
-//        map.put("phoneNumber",phone);
-//        String url = "/SMSCode/GetSMSCheck";
-//        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-//            @Override
-//            public void onSuccess(String s) {
-//                Log.i("resultString", "------------");
-//                Log.i("resultString", s);
-//                Log.i("resultString", "------------");
-//                try {
-//                    JSONObject jo = new JSONObject(s);
-//                    GetSMSCheckInfo smsinfo = new Gson().fromJson(jo.toString(), GetSMSCheckInfo.class);
-//                    if(smsinfo!=null && smsinfo.getStatusCode() == 1){
-//                        getCode(phone);
-//                        login_code.setFocusable(true);
-//                        login_code.setFocusableInTouchMode(true);
-//                        login_code.requestFocus();
-//                    }else if(smsinfo!=null && smsinfo.getAlertMessage()!=null){
-//                        ToastUtils.showToast(LoginActivity.this, smsinfo.getAlertMessage());
-//                    }else {
-//                        ToastUtils.showToast(LoginActivity.this, getString(R.string.failed_to_generate_verification_code));//生成验证码失败
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//
-//            }
-//            @Override
-//            public void onError() {}
-//            @Override
-//            public void parseError() {}
-//            @Override
-//            public void onBefore() {}
-//            @Override
-//            public void onAfter() {}
-//        }).getEntityData(url, map);
-//    }
+    private void createCode(final String phone) {
+        Map<String,String> map=new HashMap<>();
+        map.put("phoneNum",phone);
+        String url = "/SMSCode/GetSMSCheck";
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                Log.i("resultString", "------------");
+                Log.i("resultString", s);
+                Log.i("resultString", "------------");
+                try {
+                    JSONObject jo = new JSONObject(s);
+                    GetSMSCheckInfo smsinfo = new Gson().fromJson(jo.toString(), GetSMSCheckInfo.class);
+                    if(smsinfo!=null && smsinfo.getStatusCode() == 1){
+                        getCode(phone);
+                        login_code.setFocusable(true);
+                        login_code.setFocusableInTouchMode(true);
+                        login_code.requestFocus();
+                    }else if(smsinfo!=null && smsinfo.getAlertMessage()!=null){
+                        ToastUtils.showToast(LoginActivity.this, smsinfo.getAlertMessage());
+                    }else {
+                        ToastUtils.showToast(LoginActivity.this, getString(R.string.failed_to_generate_verification_code));//生成验证码失败
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+            @Override
+            public void onError() {}
+            @Override
+            public void parseError() {}
+            @Override
+            public void onBefore() {}
+            @Override
+            public void onAfter() {}
+        }).getEntityData(url, map);
+    }
 
     //获取验证码
     private void getCode(String phone) {

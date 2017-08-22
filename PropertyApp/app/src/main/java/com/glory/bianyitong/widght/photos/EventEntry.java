@@ -16,9 +16,18 @@ public class EventEntry {
 
     public List<PhotoEntry> photos;
     public int id;
+    public int ratingBar;
+    public String comment;
+    public int position;
 
     public EventEntry(List<PhotoEntry> photos, int id){
         this.photos = photos;
         this.id = id;
+    }
+
+    public EventEntry(List<PhotoEntry> photos, int id, int position) {
+        this.photos = photos;
+        this.id = id;
+        this.position = position;
     }
 }

@@ -234,10 +234,10 @@ public class MyFragment extends BaseFragment {
             //头像
             if (Database.accessToken != null && Database.USER_MAP != null) {
                 String pic = Database.USER_MAP.getCustomerPhoto();
-                if (!customerPhoto.equals(pic)) {
-                    ServiceDialog.setPicture(pic, headPortraitCiv, null);
-                    customerPhoto = pic;
-                }
+//                if (!customerPhoto.equals(pic)) {
+//                    ServiceDialog.setPicture(pic, headPortraitCiv, null);
+//                    customerPhoto = pic;
+//                }
             } else {
                 headPortraitCiv.setImageResource(R.drawable.head);
             }

@@ -2,6 +2,7 @@ package com.glory.bianyitong.widght.photos;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,7 @@ public class PhotosActivity extends BaseGalleryActivity implements View.OnClickL
     private TextView mTextViewSelectedCount;
     private TextView mTextViewSend;
     private List<PhotoEntry> mSelectedPhotos;
+    private int position;
 
 
     @Override
@@ -46,6 +48,7 @@ public class PhotosActivity extends BaseGalleryActivity implements View.OnClickL
         tv_title_text2 = (TextView) findViewById(R.id.tv_title_text2);
         left_return_btn.setOnClickListener(this);
         tv_title_text.setText(getString(R.string.choose_a_photo));
+        position = getIntent().getIntExtra("position", -1);
         initView();
         attachFragment(R.id.gallery_root);
         //        setTitle("选择照片");
@@ -148,7 +151,7 @@ public class PhotosActivity extends BaseGalleryActivity implements View.OnClickL
 
     @Override
     public void onChoosePhotos(List<PhotoEntry> entries) {
-        EventBus.getDefault().post(new EventEntry(entries, EventEntry.RECEIVED_PHOTOS_ID));
+        EventBus.getDefault().post(new EventEntry(entries, EventEntry.RECEIVED_PHOTOS_ID,position));
         finish();
     }
 

@@ -378,6 +378,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void requestlist() { //获取社区
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("accessToken","-1");
         map.put("userCommnunityMapping",new Object());
         String jsons=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
