@@ -3,9 +3,10 @@ package com.glory.bianyitong.ui.activity;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -15,11 +16,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -29,14 +28,12 @@ import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
-import com.glory.bianyitong.bean.FreashInfo;
 import com.glory.bianyitong.bean.entity.request.RequestSearchFresh;
 import com.glory.bianyitong.bean.entity.response.ResponseSearchFresh;
 import com.glory.bianyitong.bean.entity.response.ResponseSearchTag;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.FruitListAdapter;
 import com.glory.bianyitong.ui.adapter.GridSearchTagAdapter;
@@ -44,16 +41,8 @@ import com.glory.bianyitong.ui.adapter.shop.FreshSearchAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.JsonHelper;
-import com.glory.bianyitong.util.ToastUtils;
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.BaseRequest;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,15 +50,14 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import okhttp3.Call;
-import okhttp3.Response;
+import butterknife.ButterKnife;
 
 /**
  * Created by lucy on 2016/11/14.
  * 搜索页
  */
 @Route(RouterMapping.ROUTER_ACTIVITY_PRODUCT_SEARCH)
-public class SearchActivity extends BaseActivity implements View.OnKeyListener,BaseQuickAdapter.OnItemClickListener,BaseQuickAdapter.RequestLoadMoreListener,TextWatcher {
+public class SearchActivity extends BaseActivity implements View.OnKeyListener, BaseQuickAdapter.OnItemClickListener, BaseQuickAdapter.RequestLoadMoreListener, TextWatcher, SwipeRefreshLayout.OnRefreshListener {
     @BindView(R.id.tv_search_cancel)
     TextView tv_search_cancel;
     @BindView(R.id.clean_word)
@@ -91,6 +79,8 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
             LinearLayout lay_search_nothing;
     @BindView(R.id.search_listView)
     RecyclerView search_listView;
+    @BindView(R.id.search_list_fr_refresh)
+    SwipeRefreshLayout searchListFrRefresh;
 
     private FruitListAdapter fruitListAdapter;
     private ProgressDialog progressDialog = null;
@@ -103,12 +93,14 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
     private Handler cc_handler;
 
     private FreshSearchAdapter adapter;
-    private List<ItemMenu<ResponseSearchFresh.ListfreshBean>> datas=new ArrayList<>();
+    private List<ItemMenu<ResponseSearchFresh.ListfreshBean>> datas = new ArrayList<>();
 
     private GridSearchTagAdapter hotTagAdapter;
-    private List<String> hotTag=new ArrayList<>();//热门标签数据
+    private List<String> hotTag = new ArrayList<>();//热门标签数据
     private GridSearchTagAdapter localTagAdapter;
-    private List<String> localTag=new ArrayList<>();//最近搜索标签数据
+    private List<String> localTag = new ArrayList<>();//最近搜索标签数据
+    //    @InjectParam(key = "cabinetID")
+    int cabinetID;
 
     @Override
     protected int getContentId() {
@@ -118,13 +110,16 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
     @Override
     protected void init() {
         super.init();
-        adapter=new FreshSearchAdapter(R.layout.view_item_commodity,datas);
-        LinearLayoutManager layoutManager=new LinearLayoutManager(this);
+        cabinetID = getIntent().getIntExtra("cabinetID", 0);
+        Log.v("cabinetID", cabinetID + "");
+        searchListFrRefresh.setOnRefreshListener(this);
+        adapter = new FreshSearchAdapter(R.layout.view_item_commodity, datas);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         search_listView.setLayoutManager(layoutManager);
         search_listView.setAdapter(adapter);
         adapter.setOnItemClickListener(this);
         adapter.setEnableLoadMore(true);
-        adapter.setOnLoadMoreListener(this,search_listView);
+        adapter.setOnLoadMoreListener(this, search_listView);
 
 
         cc_handler = new Handler() {
@@ -134,17 +129,17 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
                 switch (msg.what) {
                     case 0: // 输入框
                         freshName = msg.obj.toString();
-                        index_page=1;
-                            lay_search_last.setVisibility(View.GONE);
-                            lay_search_hot.setVisibility(View.GONE);
-                            tv_search_txt.setText(freshName);
-                            tv_search_txt.setSelection(freshName.length());
-                            request2(index_page, freshName);//, tag_str, 0
-                        if(!localTag.contains(freshName)){
+                        index_page = 1;
+                        lay_search_last.setVisibility(View.GONE);
+                        lay_search_hot.setVisibility(View.GONE);
+                        tv_search_txt.setText(freshName);
+                        tv_search_txt.setSelection(freshName.length());
+                        request2(index_page, freshName);//, tag_str, 0
+                        if (!localTag.contains(freshName)) {
                             localTag.add(freshName);
                             localTagAdapter.notifyDataSetChanged();
                         }
-                        if(!TextUtils.isEmpty(freshName)){
+                        if (!TextUtils.isEmpty(freshName)) {
                             datas.clear();
                             request2(index_page, freshName);
                         }
@@ -152,30 +147,30 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
 
                         break;
                     case 1: //热门搜索标签
-                        index_page=1;
+                        index_page = 1;
                         freshName = msg.obj.toString();
-                            progressDialog = ProgressDialog.show(SearchActivity.this, "", "", true);
-                            progressDialog.setCanceledOnTouchOutside(true);
+                        progressDialog = ProgressDialog.show(SearchActivity.this, "", "", true);
+                        progressDialog.setCanceledOnTouchOutside(true);
 
-                            lay_search_last.setVisibility(View.GONE);
-                            lay_search_hot.setVisibility(View.GONE);
-                            tv_search_txt.setText(freshName);
-                            tv_search_txt.setSelection(freshName.length());
-                        if(!TextUtils.isEmpty(freshName)){
+                        lay_search_last.setVisibility(View.GONE);
+                        lay_search_hot.setVisibility(View.GONE);
+                        tv_search_txt.setText(freshName);
+                        tv_search_txt.setSelection(freshName.length());
+                        if (!TextUtils.isEmpty(freshName)) {
                             datas.clear();
                             request2(index_page, freshName);
                         }
                         break;
                     case 2: // 最近搜索
-                        index_page=1;
-                        freshName=localTag.get(msg.arg1);
-                        if(!TextUtils.isEmpty(freshName)){
+                        index_page = 1;
+                        freshName = localTag.get(msg.arg1);
+                        if (!TextUtils.isEmpty(freshName)) {
                             lay_search_last.setVisibility(View.GONE);
                             lay_search_hot.setVisibility(View.GONE);
                             tv_search_txt.setText(freshName);
                             tv_search_txt.setSelection(freshName.length());
                             datas.clear();
-                            request2(index_page,freshName);
+                            request2(index_page, freshName);
                         }
 
                         break;
@@ -184,8 +179,8 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
         };
 
 
-        hotTagAdapter=new GridSearchTagAdapter(this,hotTag,cc_handler,1);
-        localTagAdapter=new GridSearchTagAdapter(this,localTag,cc_handler,2);
+        hotTagAdapter = new GridSearchTagAdapter(this, hotTag, cc_handler, 1);
+        localTagAdapter = new GridSearchTagAdapter(this, localTag, cc_handler, 2);
 
         gv_search_hot.setAdapter(hotTagAdapter);
         gv_search_last.setAdapter(localTagAdapter);
@@ -205,9 +200,10 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
      * 初始化搜索记录
      */
     private void initSearch() {
-        String json=mCache.getAsString(Constant.SEARCH);
-        if(!TextUtils.isEmpty(json)){
-            List<String> list=new Gson().fromJson(json,new TypeToken<List<String>>(){}.getType());
+        String json = mCache.getAsString(Constant.SEARCH);
+        if (!TextUtils.isEmpty(json)) {
+            List<String> list = new Gson().fromJson(json, new TypeToken<List<String>>() {
+            }.getType());
             localTag.addAll(list);
         }
 
@@ -226,37 +222,50 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
 
     /**
      * 查询商品列表
+     *
      * @param page
      * @param name
      */
-    private void request2(int page, String name) { //1 热门标签搜索  0 输入框搜索 , String tag, int type
+    private void request2(final int page, String name) { //1 热门标签搜索  0 输入框搜索 , String tag, int type
 
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("fresh",new RequestSearchFresh(name));
-        map.put("currentPageNumber",page);
-        String json=new Gson().toJson(map);
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("fresh", new RequestSearchFresh(name));
+        map.put("currentPageNumber", page);
+        map.put("cabinetID", cabinetID);
+        String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                ResponseSearchFresh searchFresh=new Gson().fromJson(s,ResponseSearchFresh.class);
-                if(searchFresh.getStatusCode()==1){
-                    List<ResponseSearchFresh.ListfreshBean> list=searchFresh.getListfresh();
+                searchListFrRefresh.setRefreshing(false);
+                ResponseSearchFresh searchFresh = new Gson().fromJson(s, ResponseSearchFresh.class);
+                if (searchFresh.getStatusCode() == 1) {
+                    List<ResponseSearchFresh.ListfreshBean> list = searchFresh.getListfresh();
 
                     search_listView.setAdapter(adapter);
-                    if(!(list==null || list.size()<=0)){
-                        for (ResponseSearchFresh.ListfreshBean bean:list
+                    if (!(list == null || list.size() <= 0)) {
+                        for (ResponseSearchFresh.ListfreshBean bean : list
                                 ) {
                             datas.add(new ItemMenu<ResponseSearchFresh.ListfreshBean>(bean));
                         }
                         adapter.notifyDataSetChanged();
-                    }else {
+                    } else {
 
                     }
+                    if(page<searchFresh.getPageRowNumber()){
+                        adapter.setEnableLoadMore(true);
+                        adapter.loadMoreComplete();
+                    }else {
+                        adapter.setEnableLoadMore(false);
+                        adapter.loadMoreEnd();
+                    }
+                }else {
+                        adapter.loadMoreEnd();
                 }
             }
 
             @Override
             public void onError() {
+                searchListFrRefresh.setRefreshing(false);
                 ServiceDialog.showRequestFailed();
             }
 
@@ -277,7 +286,7 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
                     progressDialog = null;
                 }
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_FRESH_QUERY_SEARCH,json);
+        }).getEntityData(this, HttpURL.HTTP_POST_FRESH_QUERY_SEARCH, json);
 
     }
 
@@ -285,18 +294,19 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
      * 热门搜索标签
      */
     private void request_hottag() { //获取热门搜索
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        String json=new Gson().toJson(map);
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("cabinetID", cabinetID);
+        String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
                 hotTag.clear();
                 HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
                 });
-                ResponseSearchTag tags=new Gson().fromJson(s,ResponseSearchTag.class);
-                if(tags.getStatusCode()==1){
-                        hotTag.addAll(tags.getTags());
-                        hotTagAdapter.notifyDataSetChanged();
+                ResponseSearchTag tags = new Gson().fromJson(s, ResponseSearchTag.class);
+                if (tags.getStatusCode() == 1) {
+                    hotTag.addAll(tags.getTags());
+                    hotTagAdapter.notifyDataSetChanged();
                 }
             }
 
@@ -319,7 +329,7 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
             public void onAfter() {
 
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_FRESH_QUERY_TAG,json);
+        }).getEntityData(this, HttpURL.HTTP_POST_FRESH_QUERY_TAG, json);
 
     }
 
@@ -339,6 +349,7 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
                 }
                 lay_search_hot.setVisibility(View.VISIBLE);
                 search_listView.setAdapter(null);
+
                 break;
             case R.id.lay_search_last_delete:
                 lay_search_last.setVisibility(View.GONE);
@@ -348,7 +359,6 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
                 break;
         }
     }
-
 
 
     @Override
@@ -361,9 +371,9 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
             }
             //这里写发送信息的方法
             String tag_name = tv_search_txt.getText().toString().trim();
-            if(TextUtils.isEmpty(tag_name)){
+            if (TextUtils.isEmpty(tag_name)) {
                 showShort(getString(R.string.search_can_not_be_empty));
-            }else {
+            } else {
                 Message msg = new Message();
                 msg.obj = tag_name;
                 msg.what = 0;
@@ -377,7 +387,7 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
         Router.build(RouterMapping.ROUTER_ACTIVITY_PRODUCT_DETAIL)
-                .with("data",datas.get(position).getData())
+                .with("data", datas.get(position).getData())
                 .go(this);
     }
 
@@ -411,6 +421,21 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener,B
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mCache.put(Constant.SEARCH,new Gson().toJson(localTag));
+        mCache.put(Constant.SEARCH, new Gson().toJson(localTag));
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+
+    @Override
+    public void onRefresh() {
+        searchListFrRefresh.setRefreshing(true);
+        datas.clear();
+        adapter.notifyDataSetChanged();
+        request2(1, freshName);
     }
 }

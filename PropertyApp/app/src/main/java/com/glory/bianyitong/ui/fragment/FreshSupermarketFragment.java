@@ -120,7 +120,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     private int twoTypeFreshLeafID, twoTypeMerchantId, typeFreshLeafID = 99;//查询二级分类所需参数  类型ID  商户ID
     private boolean listModel = true;//是列表模式
     private ResponseQueryMyLocal.ListAreaBean nowLocal;//当前行政区对象
-    private int cabinetID;
+    public int cabinetID;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -149,6 +149,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
             case R.id.iv_title_left://搜索
                 Router.build(RouterMapping.ROUTER_ACTIVITY_PRODUCT_SEARCH)
+                        .with("cabinetID",cabinetID)
                         .go(getActivity());
                 break;
             case R.id.iv_title_right://购物车

@@ -152,7 +152,10 @@
             android:verticalSpacing="10dp">
         </GridView>
     </LinearLayout>
-
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/search_list_fr_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_listView"
         android:layout_width="match_parent"
@@ -161,6 +164,7 @@
         android:layoutAnimation="@anim/navagation_gridview_anim"
         android:listSelector="@android:color/transparent"
         android:visibility="visible" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <LinearLayout
         android:id="@+id/lay_search_nothing"
