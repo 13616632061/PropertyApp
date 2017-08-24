@@ -25,6 +25,7 @@
             />
 
         <RatingBar
+            style="@style/MyRatingBar"
             android:id="@+id/ratingba"
             android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"

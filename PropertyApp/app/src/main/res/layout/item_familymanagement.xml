@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/lay_list_item_award"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/white"
+        android:paddingLeft="19dp"
+        android:paddingRight="19dp">
+
+        <ImageView
+            android:id="@+id/iv_item_award_pic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/log_award_pic" />
+
+        <ImageView
+            android:id="@+id/tv_list_item_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_gray_next" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_toLeftOf="@+id/tv_list_item_right"
+            android:layout_toRightOf="@+id/iv_item_award_pic"
+            android:orientation="vertical">
+            <!--小樱-->
+            <TextView
+                android:id="@+id/item_award_people_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="@color/text_color_somber"
+                android:textSize="17sp" />
+            <!--家人-->
+            <TextView
+                android:id="@+id/item_award_people_role"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="13dp"
+                android:text=""
+                android:textColor="@color/small_text_color_gray"
+                android:textSize="14sp" />
+            <!--无限制-->
+            <TextView
+                android:id="@+id/item_award_people_limit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text=""
+                android:textColor="@color/small_text_color_gray"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <!--<TextView
+        android:id="@+id/view_award_line"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"
+        android:background="@color/bggray" />-->
+</LinearLayout>

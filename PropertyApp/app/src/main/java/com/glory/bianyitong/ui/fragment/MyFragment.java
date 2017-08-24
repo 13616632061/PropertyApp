@@ -25,7 +25,6 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.share.ShareUtil;
-import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
@@ -68,6 +67,34 @@ public class MyFragment extends BaseFragment {
     RelativeLayout myFragmentAllorder;
     @BindView(R.id.tv_address_manager)
     TextView tvAddressManager;
+    @BindView(R.id.tv_family_manager)//家庭管理
+            TextView tvFamilyManager;
+    @BindView(R.id.cim_my_head_portrait)
+    CircleImageView cimMyHeadPortrait;
+    @BindView(R.id.tv_shopping_cart)
+    TextView tvShoppingCart;
+    @BindView(R.id.tv_cart_number)
+    TextView tvCartNumber;
+    @BindView(R.id.lay_home_notice)
+    RelativeLayout layHomeNotice;
+    @BindView(R.id.tv_favorite_product)
+    TextView tvFavoriteProduct;
+    @BindView(R.id.tv_coupon)
+    TextView tvCoupon;
+    @BindView(R.id.tv_customer_service)
+    TextView tvCustomerService;
+    @BindView(R.id.tv_pending_payment)
+    TextView tvPendingPayment;
+    @BindView(R.id.tv_to_be_delivered)
+    TextView tvToBeDelivered;
+    @BindView(R.id.tv_to_be_received)
+    TextView tvToBeReceived;
+    @BindView(R.id.tv_be_evaluated)
+    TextView tvBeEvaluated;
+    @BindView(R.id.tv_refund_sale)
+    TextView tvRefundSale;
+    @BindView(R.id.lay_fg_my)
+    LinearLayout layFgMy;
     private View view_my;
     private CircleImageView headPortraitCiv; //个人信息
     private String customerPhoto = "";
@@ -122,6 +149,14 @@ public class MyFragment extends BaseFragment {
         txtUserInfo.setOnClickListener(this);
         myFragmentAllorder.setOnClickListener(this);
         tvAddressManager.setOnClickListener(this);
+        tvFamilyManager.setOnClickListener(this);
+        tvPendingPayment.setOnClickListener(this);
+        tvToBeDelivered.setOnClickListener(this);
+        tvToBeReceived.setOnClickListener(this);
+        tvBeEvaluated.setOnClickListener(this);
+        tvRefundSale.setOnClickListener(this);
+        tvShoppingCart.setOnClickListener(this);
+        tvCoupon.setOnClickListener(this);
         getShareInfo();
     }
 
@@ -211,6 +246,39 @@ public class MyFragment extends BaseFragment {
 
             case R.id.my_fragment_allorder://我的订单
                 Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
+                        .with("type", 0)
+                        .go(this);
+                break;
+            case R.id.tv_pending_payment://待付款
+                Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
+                        .with("type", 1)
+                        .go(this);
+                break;
+            case R.id.tv_to_be_delivered://待发货
+                Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
+                        .with("type", 2)
+                        .go(this);
+                break;
+            case R.id.tv_to_be_received://待收货
+                Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
+                        .with("type", 3)
+                        .go(this);
+                break;
+            case R.id.tv_be_evaluated://待评价
+                Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
+                        .with("type", 4)
+                        .go(this);
+                break;
+            case R.id.tv_family_manager://家庭管理
+                Router.build(RouterMapping.ROUTER_ACTIVITY_FAMILYMANAGEMENT)
+                        .go(this);
+                break;
+            case R.id.tv_shopping_cart://购物车
+                Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
+                        .go(this);
+                break;
+            case R.id.tv_coupon://优惠券券
+                Router.build(RouterMapping.ROUTER_ACTIVITY_COUPON_LIST)
                         .go(this);
                 break;
         }
@@ -296,7 +364,7 @@ public class MyFragment extends BaseFragment {
             @Override
             public void onAfter() {
             }
-        }).getEntityData(getActivity(),HttpURL.HTTP_POST_MY_GETSHARE, json);
+        }).getEntityData(getActivity(), HttpURL.HTTP_POST_MY_GETSHARE, json);
     }
 
     @Override

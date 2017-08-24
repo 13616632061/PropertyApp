@@ -210,6 +210,7 @@
     <string name="change_username">修改昵称</string>
     <string name="name_is_required">名称不能为空</string>
     <string name="family">家人</string>
+    <string name="familymanagement">家人列表</string>
     <string name="tenant">租客</string>
     <string name="temporary_guest">临时客人</string>
     <string name="unlimited">无限制</string>
@@ -229,10 +230,12 @@
     <string name="no_licensees">暂无授权人</string>
     <string name="djtjxdsq_jkmdxqsygt">点击添加新的授权,将开门的权限授予给他</string>
     <string name="add_a_new_license">添加新的授权</string>
+    <string name="add_a_new_family">添加新的家人</string>
     <string name="authorized_list">被授权人列表</string>
     <string name="there_is_no_news_yet">暂时没有消息</string>
     <string name="comments_zero">评论 0</string>
     <string name="praise_zero">赞 0</string>
+    <string name="good_details">好评度</string>
     <string name="share_it">分享</string>
     <string name="goods_details">产品详情</string>
     <string name="net_weight">净含量</string>
@@ -294,13 +297,14 @@
 
     <string name="refund_sale">退款/售后</string>
     <string name="be_evaluated">待评价</string>
+    <string name="evaluated">评价</string>
     <string name="to_be_received">待收货</string>
     <string name="to_be_delivered">待发货</string>
     <string name="pending_payment">待付款</string>
     <string name="view_all_orders">查看全部订单</string>
     <string name="my_order">我的订单</string>
     <string name="system_error">系统异常</string>
-
+    <string name="look_more">查看更多评论</string>
 
     <string name="Comprehensive_ranking">综合排序</string>
     <string name="Lowest_price">价格最低</string>

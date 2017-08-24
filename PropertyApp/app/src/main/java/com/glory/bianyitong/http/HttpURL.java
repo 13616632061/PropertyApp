@@ -51,6 +51,8 @@ public class HttpURL {
     public static String HTTP_POST_LOCKMAPPING_QUERY="/ApiUserLockMapping/Query";
     //删除授权
     public static String HTTP_POST_LOCKMAPPING_DELETE="/ApiUserLockMapping/Delete";
+    //查询家庭管理成员列表
+    public static String HTTP_POST_APIFAMILY_QUERY="/ApiFamily/Query";
     //意见反馈
     public static String HTTP_POST_FEEDBACK_ADD="/ApiFeedback/Add";
     //编辑用户信息

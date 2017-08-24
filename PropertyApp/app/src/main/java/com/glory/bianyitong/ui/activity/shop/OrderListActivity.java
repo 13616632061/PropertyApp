@@ -51,6 +51,7 @@ public class OrderListActivity extends BaseActivity {
     @Override
     protected void init() {
         super.init();
+        int type=getIntent().getIntExtra("type",0);
         inintTitle("我的订单",false,null);
         order_All=orderListTab.newTab().setText("全部");
         wait_pay=orderListTab.newTab().setText("待付款");
@@ -101,6 +102,7 @@ public class OrderListActivity extends BaseActivity {
         adapter=new OrderPageAdapter(getSupportFragmentManager());
         viewPager.setAdapter(adapter);
         orderListTab.setupWithViewPager(viewPager);
+        viewPager.setCurrentItem(type);
     }
 
 

@@ -289,6 +289,13 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+        <!--家庭管理-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.FamilyManagementActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <!--认证小区-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.AuthAreaActivity"

@@ -35,6 +35,7 @@ public class RouterMapping  {
     public static final String ROUTER_ACTIVITY_AAWARD_MY_RELEASE="ROUTER_ACTIVITY_AAWARD_MY_RELEASE";//我的发布
     public static final String ROUTER_ACTIVITY_SETTING="ROUTER_ACTIVITY_SETTING";//设置
     public static final String ROUTER_ACTIVITY_FEEDBACK="ROUTER_ACTIVITY_FEEDBACK";//意见反馈
+    public static final String ROUTER_ACTIVITY_FAMILYMANAGEMENT="ROUTER_ACTIVITY_FAMILYMANAGEMENT";//家庭管理
 
     /**
      * 个人信息
