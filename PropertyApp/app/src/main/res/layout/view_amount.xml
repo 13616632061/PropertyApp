@@ -9,7 +9,7 @@
     <Button
         android:id="@+id/btnDecrease"
         android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_height="21dp"
         android:layout_weight="1"
         android:gravity="center"
         android:background="@mipmap/minus"/>
@@ -30,7 +30,7 @@
     <Button
         android:id="@+id/btnIncrease"
         android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_height="21dp"
         android:layout_weight="1"
         android:gravity="center"
         android:background="@mipmap/add"/>

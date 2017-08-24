@@ -76,7 +76,7 @@ public class ResponseQueryProductDetail extends BaseResponseBean implements Seri
         private String merchantTel;
         private int number;
         private Object freshDetail;
-        private Object freshContents;
+        private Object freshContents="";
         private List<ListfreshPictureBean> listfreshPicture;
         private boolean collectionStatu=false;//是否已收藏
 

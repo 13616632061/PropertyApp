@@ -296,7 +296,9 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
 //                    ScrollViewLayout(GoodsDetailsActivity.this, picture_list, lay_goodsImage_list);
                         }
                     }
-
+                    if (!detail.getListfresh().get(0).getFreshContents().toString().equals("")){
+                        load(detail.getListfresh().get(0).getFreshContents().toString());
+                    }
 
                 } else {
                     showShort(detail.getAlertMessage());
@@ -451,7 +453,8 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback{
 
     private void load(String html) {
         //加载需要显示的网页
-        webview_ervery.loadUrl(html);
+//        webview_ervery.loadUrl(html);
+        webview_ervery.loadDataWithBaseURL("",html, "textml", "UTF-8", "");
         //设置WebView属性，能够执行Javascript脚本
         webview_ervery.getSettings().setPluginState(WebSettings.PluginState.ON); //支持插件
         WebSettings webSettings = webview_ervery.getSettings();  //android 5.0以上

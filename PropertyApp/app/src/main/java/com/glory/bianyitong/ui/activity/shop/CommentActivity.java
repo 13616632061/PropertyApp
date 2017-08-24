@@ -126,69 +126,14 @@ public class CommentActivity extends BaseActivity implements BaseQuickAdapter.On
             super.handleMessage(msg);
             switch (msg.what) {//判断传入的消息
                 case 1:
+
                     break;
                 case 2:
                     CommInfo commInfo = (CommInfo) msg.obj;
                     list.add(commInfo);
                     Log.v("jsonss",picSize+"----"+commInfo.getHand());
                     if (picSize==commInfo.getHand()){
-                        commlist = new ArrayList<>();
-//                        listEvaluationPicBeanlist = new ArrayList<>();
-                        for (int i=0;i<bean.getListOrderDetail().size();i++){
-                            commentInfo = new CommentInfo();
-                            listEvaluationPicBeanlist=new ArrayList<>();
-                            for (int j=0;j<list.size();j++){
-                                Log.v("jsonss",list.get(j).getPosition()+"---"+list.get(j).getPath());
-                                if (list.get(j).getPosition()==i){
-                                    CommentInfo.ListEvaluationPicBean picBean=new CommentInfo.ListEvaluationPicBean();
-                                    picBean.setPicturePath(list.get(j).getPath());
-                                    listEvaluationPicBeanlist.add(picBean);
-//                                    commentInfo.getListEvaluationPic().add(picBean);
-                                }
-                            }
-                            commentInfo.setEvaluationLevel(imageList.get(i).ratingBar+"");
-                            commentInfo.setEvaluationContext(imageList.get(i).comment);
-                            commentInfo.setOrderID(bean.getListOrderDetail().get(i).getOrderID());
-                            commentInfo.setFreshID(bean.getListOrderDetail().get(i).getFresh().getFreshID());
-                            commentInfo.setMerchant_ID(bean.getListOrderDetail().get(i).getFresh().getMerchant_ID());
-                            commentInfo.setListEvaluationPic(listEvaluationPicBeanlist);
-                            commlist.add(commentInfo);
-                        }
-
-                        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-                        map.put("listFreshEvaluation",commlist);
-                        String json=new Gson().toJson(map);
-                        Log.v("jsonss",json);
-                        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-                            @Override
-                            public void onSuccess(String s) {
-                                progressDialog.dismiss();
-                                progressDialog = null;
-                                Toast.makeText(getApplicationContext(),"评论成功",Toast.LENGTH_SHORT).show();
-                                finish();
-                            }
-
-                            @Override
-                            public void onError() {
-
-                            }
-
-                            @Override
-                            public void parseError() {
-
-                            }
-
-                            @Override
-                            public void onBefore() {
-
-                            }
-
-                            @Override
-                            public void onAfter() {
-
-                            }
-                        }).getEntityData(getApplicationContext(),HttpURL.HTTP_POST_APIFRESHEVALUATION_ADD,json);
-
+                       postComment();
                     }
 
 
@@ -198,6 +143,8 @@ public class CommentActivity extends BaseActivity implements BaseQuickAdapter.On
                     break;
             }
         }
+
+
     };
     private List<CommentInfo.ListEvaluationPicBean> listEvaluationPicBeanlist;
     private CommentInfo commentInfo;
@@ -256,9 +203,85 @@ public class CommentActivity extends BaseActivity implements BaseQuickAdapter.On
                 finish();
                 break;
             case R.id.iv_title_text_right://发布
-                goRest();
+                boolean flag=false;
+                for (int i=0;i<imageList.size();i++){
+                    if (imageList.get(i).photos.size()!=0){
+                        flag=false;
+                        goRest();
+
+                        return;
+                    }else {
+                        flag=true;
+                    }
+                }
+                if (flag){
+                    postComment();
+                }
                 break;
+
         }
+    }
+
+    private void postComment(){
+        commlist = new ArrayList<>();
+//                        listEvaluationPicBeanlist = new ArrayList<>();
+        for (int i=0;i<bean.getListOrderDetail().size();i++){
+            commentInfo = new CommentInfo();
+            listEvaluationPicBeanlist=new ArrayList<>();
+            for (int j=0;j<list.size();j++){
+                Log.v("jsonss",list.get(j).getPosition()+"---"+list.get(j).getPath());
+                if (list.get(j).getPosition()==i){
+                    CommentInfo.ListEvaluationPicBean picBean=new CommentInfo.ListEvaluationPicBean();
+                    picBean.setPicturePath(list.get(j).getPath());
+                    listEvaluationPicBeanlist.add(picBean);
+//                                    commentInfo.getListEvaluationPic().add(picBean);
+                }
+            }
+            commentInfo.setEvaluationLevel(imageList.get(i).ratingBar+"");
+            commentInfo.setEvaluationContext(imageList.get(i).comment);
+            commentInfo.setOrderID(bean.getListOrderDetail().get(i).getOrderID());
+            commentInfo.setFreshID(bean.getListOrderDetail().get(i).getFresh().getFreshID());
+            commentInfo.setMerchant_ID(bean.getListOrderDetail().get(i).getFresh().getMerchant_ID());
+            commentInfo.setListEvaluationPic(listEvaluationPicBeanlist);
+            commlist.add(commentInfo);
+        }
+
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("listFreshEvaluation",commlist);
+        String json=new Gson().toJson(map);
+        Log.v("jsonss",json);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                if (progressDialog!=null){
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
+                Toast.makeText(getApplicationContext(),"评论成功",Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(getApplicationContext(),HttpURL.HTTP_POST_APIFRESHEVALUATION_ADD,json);
+
     }
 
 
@@ -428,11 +451,11 @@ public class CommentActivity extends BaseActivity implements BaseQuickAdapter.On
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void photosMessageEvent(EventEntry entries) {
         if (entries.id == EventEntry.RECEIVED_PHOTOS_ID) {
-            imageList.set(entries.position,new EventEntry(new ArrayList<PhotoEntry>(),0));
-            imageList.set(entries.position,entries);
-//            imageList.get(entries.position)=entries;
-            addAdapter.setImageList(imageList,entries.position);
-            addAdapter.notifyDataSetChanged();
+                imageList.set(entries.position,new EventEntry(new ArrayList<PhotoEntry>(),0));
+                imageList.set(entries.position,entries);
+                addAdapter.setImageList(imageList,entries.position);
+                addAdapter.notifyDataSetChanged();
+
         }
         Log.i("imageList",imageList.size()+"");
     }

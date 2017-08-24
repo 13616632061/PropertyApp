@@ -66,23 +66,23 @@ public class CommentAddAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryOr
         imageList.get(helper.getLayoutPosition()).comment=editText.getText().toString().trim();
         imageList.get(helper.getLayoutPosition()).ratingBar=(int)rating;
         helper.addOnClickListener(R.id.comment_photo_select);
-        if(imageList.size()>0 &&imageList.size()> helper.getLayoutPosition()&&imageList.get(helper.getLayoutPosition()).photos.size()>0){
-            if (tag!=-1&&tag==helper.getLayoutPosition()){
+
+        if (tag!=-1&&tag==helper.getLayoutPosition()){
+            Log.v("layout.getChildCount()",layout.getChildCount()+"");
+            for (int i = 0; i < layout.getChildCount(); i++){
+                if (layout.getChildCount()!=1){
+                    layout.removeViewAt(0);
+                }
+            }
+            if(imageList.size()>0 &&imageList.size()> helper.getLayoutPosition()&&imageList.get(helper.getLayoutPosition()).photos.size()>0){
+
                 insertPhoto(layout,imageList.get(helper.getLayoutPosition()).photos);
             }
         }
     }
 
-    public interface CallBack {
-        /**
-         *
-         */
-        public int  solve(int position);
-    }
-
     private void insertPhoto(LinearLayout layout,List<PhotoEntry> photos){
         if(photos!=null && photos.size()>0){
-
             for (int i=0;i<photos.size();i++){
                 ImageView image=new ImageView(context);
                 LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(130, 130);

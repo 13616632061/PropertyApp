@@ -179,6 +179,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 msg1="";
                 msg2="提醒发货";
                 break;
+            case Constant.ORDER_STATUS.STATUS_PAY_LOCAL:
             case Constant.ORDER_STATUS.STATUS_PAY_SEND://待收货
                 msg1="查看物流";
                 msg2="确认收货";
@@ -206,6 +207,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 return "等待买家付款";
             case Constant.ORDER_STATUS.STATUS_PAY_FINSH://待发货
                 return "等待卖家发货";
+            case Constant.ORDER_STATUS.STATUS_PAY_LOCAL:
             case Constant.ORDER_STATUS.STATUS_PAY_SEND://待收货
                 return "卖家已发货";
             case Constant.ORDER_STATUS.STATUS_PAY_GOODSRECEPIT://待评价
@@ -283,7 +285,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                             .go(getActivity());
                 }else {
 //                    if(showDialog("确认取消订单 "+data.get(position).getOrdeId()))
-                    operationProduct(data.get(position).getOrdeId(),status);
+                    operationProduct(data.get(position).getOrdeId(),-3);
                 }
                 break;
             case Constant.ORDER_STATUS.STATUS_PAY_FINSH://待发货
@@ -291,6 +293,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                     ToastUtils.showToast(getActivity(),"提醒发货");
                 }
                 break;
+            case Constant.ORDER_STATUS.STATUS_PAY_LOCAL:
             case Constant.ORDER_STATUS.STATUS_PAY_SEND://待收货
                 if (btnType==1){//
                     ToastUtils.showToast(getActivity(),"确认收货");
