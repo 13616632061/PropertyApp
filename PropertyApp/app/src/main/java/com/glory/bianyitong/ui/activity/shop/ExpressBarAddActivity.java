@@ -81,7 +81,7 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
     protected void init() {
         super.init();
         inintTitle("添加新地址",false,"");
-
+        cleanWord.setVisibility(View.GONE);
         LinearLayoutManager layoutManager=new LinearLayoutManager(this);
         expressBarAddlist.setLayoutManager(layoutManager);
         addAdapter=new ExpressBarAddAdapter(R.layout.item_address_express,data);
@@ -127,7 +127,7 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         RequestQueryExpressBarByLocal.Local local = new RequestQueryExpressBarByLocal.Local((Double) mCache.getAsObject("longitude"),
         (Double) mCache.getAsObject("latitude"));
-        map.put("shippingAddress", new RequestQueryExpressBarByLocal(local));
+        map.put("freshCabinet", local);
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -172,8 +172,10 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
 
     private void queryExpressBarByKeyWord(String keyWords) {
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        RequestQueryExpressBarByKeyWord.KeyWord keyWord = new RequestQueryExpressBarByKeyWord.KeyWord(keyWords);
-        map.put("shippingAddress", new RequestQueryExpressBarByKeyWord(keyWord));
+//        RequestQueryExpressBarByKeyWord.KeyWord keyWord = new RequestQueryExpressBarByKeyWord.KeyWord(keyWords);
+        Map<String, Object> map2 = new BaseRequestBean().getBaseRequest();
+        map2.put("cabinetName",etSearchAreaTxt.getText().toString().trim());
+        map.put("freshCabinet", map2);
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override

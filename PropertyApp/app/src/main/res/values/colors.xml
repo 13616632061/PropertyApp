@@ -56,7 +56,7 @@
 
     <!--tab-->
     <color name="line_tab">#3C3C3C</color>
-
+    <color name="black_66">#666666</color>
     <!--近邻-->
     <!-- 灰色 小字 -->
     <color name="small_text_color_gray">#787679</color>
@@ -76,6 +76,8 @@
     <!--精选-->
     <!--价格颜色-->
     <color name="price_red_color">#FA0404</color>
+    <!--评论查看按钮-->
+    <color name="button_orange_color">#fe9042</color>
     <!--模块名称颜色-->
     <color name="module_green_color">#2F961E</color>
 

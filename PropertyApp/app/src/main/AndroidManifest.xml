@@ -485,6 +485,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 
+        <!--查看全部评论-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.AllEvaluationActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <!--支付页面-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.PayActivity"

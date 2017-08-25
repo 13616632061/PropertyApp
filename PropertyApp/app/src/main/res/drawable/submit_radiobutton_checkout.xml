@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 四个角全部是圆角边框  -->
+    <!-- <solid android:color>设置了背景颜色。
+         android:topLeftRadius、android:topRightRadius、android:bottomLeftRadius、android:bottomRightRadius
+                        分别是左上角、右上角、左下角、右下角的半径值，设置了半径值，相应的角就是圆角，半径值越大，圆角就越大。
+         <stroke>设置边界属性，如边界的宽度、颜色等。
+    -->
+    <solid android:color="@color/white" />
+
+    <corners
+        android:bottomLeftRadius="5dp"
+        android:bottomRightRadius="5dp"
+        android:topLeftRadius="5dp"
+        android:topRightRadius="5dp" />
+
+    <stroke
+        android:width="1dp"
+        android:color="@color/black_66" />
+</shape>

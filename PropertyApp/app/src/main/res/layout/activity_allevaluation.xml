@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
+    <include layout="@layout/base_text_title"></include>
+    <include layout="@layout/base_view_line"></include>
+    <!--<android.support.design.widget.TabLayout-->
+        <!--android:id="@+id/order_list_tab"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content">-->
+    <!--</android.support.design.widget.TabLayout>-->
+    <RadioGroup
+        android:id="@+id/rg_all"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <RadioButton
+            android:id="@+id/rb_tab_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/alleva_tab_bottom"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:text="全部"/>
+        <RadioButton
+            android:id="@+id/rb_tab_2"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/alleva_tab_bottom"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:text="全部"/>
+        <RadioButton
+            android:id="@+id/rb_tab_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/alleva_tab_bottom"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:text="全部"/>
+        <RadioButton
+            android:id="@+id/rb_tab_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/alleva_tab_bottom"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:text="全部"/>
+    </RadioGroup>
+    <include layout="@layout/base_view_line"></include>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fresh_list_fr_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:background="@color/linegray"
+            android:id="@+id/rec_right_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

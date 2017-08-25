@@ -128,4 +128,20 @@
         <item name="android:gravity">center_horizontal|bottom</item>
         <item name="android:layout_weight">1.0</item>
     </style>
+    <style name="alleva_tab_bottom">
+        <item name="android:textSize">15dp</item>
+        <item name="android:textColor">@drawable/botton_text_color</item>
+        <!-- 跑马灯效果 -->
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:gravity">center</item>
+        <item name="android:background">@drawable/button_check</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">fill_parent</item>
+        <!-- 去掉按钮的立体效果的属性 -->
+        <item name="android:button">@null</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:layout_weight">1.0</item>
+    </style>
 </resources>

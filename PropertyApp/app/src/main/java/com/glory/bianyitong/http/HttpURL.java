@@ -73,7 +73,7 @@ public class HttpURL {
     //默认收货地址、编辑地址
     public static String HTTP_POST_INIT_ADDRESS="/ApiShopAddress/Edit";
     //附近生鲜柜
-    public static String HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_LOCAL="/ApiShopAddress/OtherOne";
+    public static String HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_LOCAL="/ApiShopAddress/NearbyCabinet";
     //搜索生鲜柜
     public static String HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_SEARCH="/ApiShopAddress/FuzzyQuery";
 

@@ -70,7 +70,7 @@ public class RouterMapping  {
     public static final String ROUTER_ACTIVITY_ORDER_FIRM="ROUTER_ACTIVITY_ORDER_FIRM";//提交订单
     public static final String ROUTER_ACTIVITY_ORDER_PAY="ROUTER_ACTIVITY_ORDER_PAY";//订单支付
     public static final String ROUTER_ACTIVITY_ORDER_COMMENT="ROUTER_ACTIVITY_ORDER_COMMENT";//订单评论
-
+    public static final String ROUTER_ACTIVITY_ALLORDER_COMMENT="ROUTER_ACTIVITY_ALLORDER_COMMENT";//查看全部评论
 
     /**
      * 生鲜

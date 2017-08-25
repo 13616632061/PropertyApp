@@ -173,7 +173,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         requestProductDetail(product.getFreshID());
     }
 
-    @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct})
+    @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct,R.id.tv_look_all})
     void onClickBtn(View view) {
         switch (view.getId()) {
             case R.id.detail_kefu://客服
@@ -213,6 +213,12 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
                             .with("shop", new Gson().toJson(productDetail))
                             .with("type", 1)
+                            .go(this);
+                }
+                break;
+            case R.id.tv_look_all://查看全部评论
+                if (product != null) {
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_ALLORDER_COMMENT)
                             .go(this);
                 }
 

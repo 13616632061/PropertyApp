@@ -70,6 +70,15 @@ public class ResponseQueryExpressBar extends BaseResponseBean implements Seriali
         private Object listArea;
         private double longitude;//经度
         private double latitude;//维度
+        private String address;
+
+        public String getAddress() {
+            return address;
+        }
+
+        public void setAddress(String address) {
+            this.address = address;
+        }
 
         public double getLongitude() {
             return longitude;
