@@ -118,8 +118,8 @@ public class AddressAddAndEditActivity extends BaseActivity {
     private void initView() {
         addressAddReceiver.setText(listShippingAddressBean.getHarvesterName());
         addressAddPhone.setText(listShippingAddressBean.getHarvestePhone());
-        addressAddProvince.setText(listShippingAddressBean.getFreshCabinet().getProvinceName()+listShippingAddressBean.getFreshCabinet().getCityName()+listShippingAddressBean.getFreshCabinet().getDistrictName());
-        addressAddArea.setText(listShippingAddressBean.getFreshCabinet().getStreetAddress());
+        addressAddProvince.setText(listShippingAddressBean.getFreshCabinet().getCommunity().getProvinceName()+listShippingAddressBean.getFreshCabinet().getCommunity().getCityName()+listShippingAddressBean.getFreshCabinet().getCommunity().getDistrictName());
+        addressAddArea.setText(listShippingAddressBean.getFreshCabinet().getCommunity().getStreet());
 
     }
 

@@ -27,7 +27,9 @@ public class AddressListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryA
     private int position=-1;
     private Context context;
     private boolean isFirmOrder=false;
-    public AddressListAdapter(@LayoutRes int layoutResId, @Nullable List<ItemMenu<ResponseQueryAddress.ListShippingAddressBean>> data,Context context,boolean isFirmOrder) {
+
+
+    public AddressListAdapter(@LayoutRes int layoutResId, @Nullable List<ItemMenu<ResponseQueryAddress.ListShippingAddressBean>> data, Context context, boolean isFirmOrder) {
         super(layoutResId, data);
         this.context=context;
         this.isFirmOrder=isFirmOrder;
@@ -36,8 +38,9 @@ public class AddressListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryA
     @Override
     protected void convert(BaseViewHolder helper, ItemMenu<ResponseQueryAddress.ListShippingAddressBean> item) {
         helper.setText(R.id.address_list_name,item.getData().getCabinetName());
-        helper.setText(R.id.address_list_address,item.getData().getFreshCabinet().getProvinceName()+" "+item.getData().getFreshCabinet().getCityName()+" "+item.getData().getFreshCabinet().getDistrictName()+" "+item.getData().getFreshCabinet().getStreetAddress());
-
+        helper.setText(R.id.address_list_address,item.getData().getFreshCabinet().getCommunity().getProvinceName()+" "+item.getData().getFreshCabinet().getCommunity().getCityName()+" "+item.getData().getFreshCabinet().getCommunity().getDistrictName()+" "+item.getData().getFreshCabinet().getCommunity().getStreet()+" "+item.getData().getFreshCabinet().getCommunity().getAddressNumber());
+            helper.setText(R.id.address_been_used,item.getData().getFreshCabinet().getUsed()+"");
+            helper.setText(R.id.address_total,"/"+item.getData().getFreshCabinet().getNum());
 
 
 

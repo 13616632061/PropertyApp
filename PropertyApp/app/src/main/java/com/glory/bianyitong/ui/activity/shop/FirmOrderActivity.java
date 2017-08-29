@@ -397,7 +397,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                     TextView txtNumber=ButterKnife.findById(addressInitView,R.id.firm_order_item_number);
                     TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
                     txtName.setText(this.addressBean.getCabinetName());
-                    txtAddress.setText(this.addressBean.getFreshCabinet().getProvinceName()+this.addressBean.getFreshCabinet().getCityName()+this.addressBean.getFreshCabinet().getDistrictName()+this.addressBean.getFreshCabinet().getStreetAddress());
+                    txtAddress.setText(this.addressBean.getFreshCabinet().getCommunity().getProvinceName()+this.addressBean.getFreshCabinet().getCommunity().getCityName()+this.addressBean.getFreshCabinet().getCommunity().getDistrictName()+this.addressBean.getFreshCabinet().getCommunity().getStreet());
 
                     SpannableString spannable=new SpannableString("11/16");
                     spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);

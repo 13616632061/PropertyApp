@@ -55,6 +55,7 @@ import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.internal.Streams;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -135,6 +136,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
     private String[] images;
     private List<String> imageList = new ArrayList<String>();
+    private ResponseQueryProductDetail.ListfreshBean.FreshEvaluationBean freshEvaluation;//好评中评差评数量bean
 
 
     @InjectParam(key = "data")
@@ -219,6 +221,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
             case R.id.tv_look_all://查看全部评论
                 if (product != null) {
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ALLORDER_COMMENT)
+                            .with("freshEvaluation",freshEvaluation)
                             .go(this);
                 }
 
@@ -298,6 +301,8 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         map.put("fresh", new RequestProductDetail(freshId));
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+
+
             @Override
             public void onSuccess(String s) {
                 ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
@@ -320,19 +325,31 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                             tvPlnr.setText(productDetail.getList_FreshEvaluation().get(0).getEvaluationContext());
                             ServiceDialog.setPicture(productDetail.getList_FreshEvaluation().get(0).getUser().getCustomerPhoto(), ivHeadPic, null);
                             ratingba.setRating(productDetail.getList_FreshEvaluation().get(0).getEvaluationLevel());
-                            if (productDetail.getList_FreshEvaluation().get(0).getAnonymous().equals("")){
+                            if (productDetail.getList_FreshEvaluation().get(0).getAnonymous()==null){
                                 ivName.setText(productDetail.getList_FreshEvaluation().get(0).getUser().getLoginName());
                             }else {
                                 ivName.setText(productDetail.getList_FreshEvaluation().get(0).getAnonymous());
                             }
                         }
-                        totalEvaluation.setText( "宝贝评价数量("+productDetail.getTotalEvaluation()+")");
-                        tvPercentage.setText(productDetail.getPraiseEvaluation());
+                        totalEvaluation.setText( "宝贝评价数量("+productDetail.getFreshEvaluation().getTotalEvaluation()+")");
+                        // 创建一个数值格式化对象
+
+                        NumberFormat numberFormat = NumberFormat.getInstance();
+
+                        // 设置精确到小数点后2位
+
+                        numberFormat.setMaximumFractionDigits(0);
+
+                        String result = numberFormat.format((float) productDetail.getFreshEvaluation().getPraiseNum() / (float) productDetail.getFreshEvaluation().getTotalEvaluation() * 100);
+
+                        tvPercentage.setText(result+"%");
                         List<String> imageUrlList=new ArrayList<String>();
                         //获取评论图片
                         for (int i=0;i<productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().size();i++){
                             imageUrlList.add(productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().get(i).getPicturePath());
                         }
+                        //好评中评差评数量bean
+                        freshEvaluation = productDetail.getFreshEvaluation();
 
                         //评论图片
                         CommentPicAdapter commentPicAdapter = new CommentPicAdapter(R.layout.item_commentpic,getApplicationContext());
@@ -361,7 +378,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                         }
 
                     }
-                    if (!detail.getListfresh().get(0).getFreshContents().toString().equals("")) {
+                    if (detail.getListfresh().get(0).getFreshContents()!=null) {
                         load(detail.getListfresh().get(0).getFreshContents().toString());
                     }
 

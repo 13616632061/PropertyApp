@@ -12,12 +12,15 @@ import java.util.List;
 
 public class ResponseQueryAddress extends BaseResponseBean implements Serializable{
 
+
     /**
      * addressID : 0
-     * listShippingAddress : [{"addressID":9,"cabinetID":13,"cabinetName":"生鲜柜一号","defaults":true,"harvesterName":"测试用户","harvestePhone":"13510012206","freshCabinet":{"cabinetID":13,"cabinetName":"生鲜柜一号","area_ID":18,"area_Name":"龙岗区","longitude":113.957228,"latitude":22.582978,"provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","districtID":440305,"districtName":"南山区","streetAddress":"what?","row":2,"columns":2,"listFreshCabinetDetail":null,"listArea":null}},{"addressID":10,"cabinetID":20,"cabinetName":"生鲜柜二号","defaults":false,"harvesterName":"测试用户","harvestePhone":"13510012206","freshCabinet":{"cabinetID":20,"cabinetName":"生鲜柜二号","area_ID":18,"area_Name":"龙岗区","longitude":113.957663,"latitude":22.582366,"provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","districtID":440305,"districtName":"南山区","streetAddress":"waht?","row":2,"columns":2,"listFreshCabinetDetail":null,"listArea":null}},{"addressID":11,"cabinetID":21,"cabinetName":"生鲜柜三号","defaults":false,"harvesterName":"测试用户","harvestePhone":"13510012206","freshCabinet":{"cabinetID":21,"cabinetName":"生鲜柜三号","area_ID":18,"area_Name":"龙岗区","longitude":113.957822,"latitude":22.58295,"provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","districtID":440306,"districtName":"宝安区","streetAddress":"2","row":1,"columns":2,"listFreshCabinetDetail":null,"listArea":null}},{"addressID":12,"cabinetID":24,"cabinetName":"生鲜柜六号","defaults":false,"harvesterName":"测试用户","harvestePhone":"13510012206","freshCabinet":{"cabinetID":24,"cabinetName":"生鲜柜六号","area_ID":18,"area_Name":"龙岗区","longitude":113.957143,"latitude":22.582559,"provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","districtID":440307,"districtName":"龙岗区","streetAddress":"what？","row":1,"columns":2,"listFreshCabinetDetail":null,"listArea":null}},{"addressID":13,"cabinetID":22,"cabinetName":"生鲜柜四号","defaults":false,"harvesterName":"测试用户","harvestePhone":"13510012206","freshCabinet":{"cabinetID":22,"cabinetName":"生鲜柜四号","area_ID":18,"area_Name":"龙岗区","longitude":113.957114,"latitude":22.58243,"provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","districtID":440307,"districtName":"龙岗区","streetAddress":"what?","row":10,"columns":1,"listFreshCabinetDetail":null,"listArea":null}}]
+     * listShippingAddress : [{"addressID":1,"cabinetID":13,"cabinetName":"生鲜柜一号","defaults":true,"harvesterName":"帆","harvestePhone":"18255155899","freshCabinet":{"cabinetID":13,"cabinetName":"生鲜柜一号","longitude":113.957228,"latitude":22.582978,"communityID":1,"createDate":"2017-08-17T00:00:00","createUserID":1,"lockAccount":"12345","lockPassword":"123","num":48,"used":0,"community":{"communityID":1,"communityName":"西丽小区","provinceID":440000,"cityID":440300,"districtID":440305,"longitude":113.957228,"latitude":22.582978,"provinceName":"广东省","cityName":"深圳市","districtName":"南山区","street":"西丽大街","addressNumber":"15号","postCode":546987}}}]
+     * listFreshCabinet : null
      */
 
     private int addressID;
+    private Object listFreshCabinet;
     private List<ListShippingAddressBean> listShippingAddress;
 
     public int getAddressID() {
@@ -28,6 +31,14 @@ public class ResponseQueryAddress extends BaseResponseBean implements Serializab
         this.addressID = addressID;
     }
 
+    public Object getListFreshCabinet() {
+        return listFreshCabinet;
+    }
+
+    public void setListFreshCabinet(Object listFreshCabinet) {
+        this.listFreshCabinet = listFreshCabinet;
+    }
+
     public List<ListShippingAddressBean> getListShippingAddress() {
         return listShippingAddress;
     }
@@ -36,15 +47,15 @@ public class ResponseQueryAddress extends BaseResponseBean implements Serializab
         this.listShippingAddress = listShippingAddress;
     }
 
-    public static class ListShippingAddressBean implements Serializable {
+    public static class ListShippingAddressBean implements Serializable{
         /**
-         * addressID : 9
+         * addressID : 1
          * cabinetID : 13
          * cabinetName : 生鲜柜一号
          * defaults : true
-         * harvesterName : 测试用户
-         * harvestePhone : 13510012206
-         * freshCabinet : {"cabinetID":13,"cabinetName":"生鲜柜一号","area_ID":18,"area_Name":"龙岗区","longitude":113.957228,"latitude":22.582978,"provinceID":440000,"provinceName":"广东省","cityID":440300,"cityName":"深圳市","districtID":440305,"districtName":"南山区","streetAddress":"what?","row":2,"columns":2,"listFreshCabinetDetail":null,"listArea":null}
+         * harvesterName : 帆
+         * harvestePhone : 18255155899
+         * freshCabinet : {"cabinetID":13,"cabinetName":"生鲜柜一号","longitude":113.957228,"latitude":22.582978,"communityID":1,"createDate":"2017-08-17T00:00:00","createUserID":1,"lockAccount":"12345","lockPassword":"123","num":48,"used":0,"community":{"communityID":1,"communityName":"西丽小区","provinceID":440000,"cityID":440300,"districtID":440305,"longitude":113.957228,"latitude":22.582978,"provinceName":"广东省","cityName":"深圳市","districtName":"南山区","street":"西丽大街","addressNumber":"15号","postCode":546987}}
          */
 
         private int addressID;
@@ -111,44 +122,34 @@ public class ResponseQueryAddress extends BaseResponseBean implements Serializab
             this.freshCabinet = freshCabinet;
         }
 
-        public static class FreshCabinetBean implements Serializable {
+        public static class FreshCabinetBean {
             /**
              * cabinetID : 13
              * cabinetName : 生鲜柜一号
-             * area_ID : 18
-             * area_Name : 龙岗区
              * longitude : 113.957228
              * latitude : 22.582978
-             * provinceID : 440000
-             * provinceName : 广东省
-             * cityID : 440300
-             * cityName : 深圳市
-             * districtID : 440305
-             * districtName : 南山区
-             * streetAddress : what?
-             * row : 2
-             * columns : 2
-             * listFreshCabinetDetail : null
-             * listArea : null
+             * communityID : 1
+             * createDate : 2017-08-17T00:00:00
+             * createUserID : 1
+             * lockAccount : 12345
+             * lockPassword : 123
+             * num : 48
+             * used : 0
+             * community : {"communityID":1,"communityName":"西丽小区","provinceID":440000,"cityID":440300,"districtID":440305,"longitude":113.957228,"latitude":22.582978,"provinceName":"广东省","cityName":"深圳市","districtName":"南山区","street":"西丽大街","addressNumber":"15号","postCode":546987}
              */
 
             private int cabinetID;
             private String cabinetName;
-            private int area_ID;
-            private String area_Name;
             private double longitude;
             private double latitude;
-            private int provinceID;
-            private String provinceName;
-            private int cityID;
-            private String cityName;
-            private int districtID;
-            private String districtName;
-            private String streetAddress;
-            private int row;
-            private int columns;
-            private Object listFreshCabinetDetail;
-            private Object listArea;
+            private int communityID;
+            private String createDate;
+            private int createUserID;
+            private String lockAccount;
+            private String lockPassword;
+            private int num;
+            private int used;
+            private CommunityBean community;
 
             public int getCabinetID() {
                 return cabinetID;
@@ -164,22 +165,6 @@ public class ResponseQueryAddress extends BaseResponseBean implements Serializab
 
             public void setCabinetName(String cabinetName) {
                 this.cabinetName = cabinetName;
-            }
-
-            public int getArea_ID() {
-                return area_ID;
-            }
-
-            public void setArea_ID(int area_ID) {
-                this.area_ID = area_ID;
-            }
-
-            public String getArea_Name() {
-                return area_Name;
-            }
-
-            public void setArea_Name(String area_Name) {
-                this.area_Name = area_Name;
             }
 
             public double getLongitude() {
@@ -198,92 +183,204 @@ public class ResponseQueryAddress extends BaseResponseBean implements Serializab
                 this.latitude = latitude;
             }
 
-            public int getProvinceID() {
-                return provinceID;
+            public int getCommunityID() {
+                return communityID;
             }
 
-            public void setProvinceID(int provinceID) {
-                this.provinceID = provinceID;
+            public void setCommunityID(int communityID) {
+                this.communityID = communityID;
             }
 
-            public String getProvinceName() {
-                return provinceName;
+            public String getCreateDate() {
+                return createDate;
             }
 
-            public void setProvinceName(String provinceName) {
-                this.provinceName = provinceName;
+            public void setCreateDate(String createDate) {
+                this.createDate = createDate;
             }
 
-            public int getCityID() {
-                return cityID;
+            public int getCreateUserID() {
+                return createUserID;
             }
 
-            public void setCityID(int cityID) {
-                this.cityID = cityID;
+            public void setCreateUserID(int createUserID) {
+                this.createUserID = createUserID;
             }
 
-            public String getCityName() {
-                return cityName;
+            public String getLockAccount() {
+                return lockAccount;
             }
 
-            public void setCityName(String cityName) {
-                this.cityName = cityName;
+            public void setLockAccount(String lockAccount) {
+                this.lockAccount = lockAccount;
             }
 
-            public int getDistrictID() {
-                return districtID;
+            public String getLockPassword() {
+                return lockPassword;
             }
 
-            public void setDistrictID(int districtID) {
-                this.districtID = districtID;
+            public void setLockPassword(String lockPassword) {
+                this.lockPassword = lockPassword;
             }
 
-            public String getDistrictName() {
-                return districtName;
+            public int getNum() {
+                return num;
             }
 
-            public void setDistrictName(String districtName) {
-                this.districtName = districtName;
+            public void setNum(int num) {
+                this.num = num;
             }
 
-            public String getStreetAddress() {
-                return streetAddress;
+            public int getUsed() {
+                return used;
             }
 
-            public void setStreetAddress(String streetAddress) {
-                this.streetAddress = streetAddress;
+            public void setUsed(int used) {
+                this.used = used;
             }
 
-            public int getRow() {
-                return row;
+            public CommunityBean getCommunity() {
+                return community;
             }
 
-            public void setRow(int row) {
-                this.row = row;
+            public void setCommunity(CommunityBean community) {
+                this.community = community;
             }
 
-            public int getColumns() {
-                return columns;
-            }
+            public static class CommunityBean {
+                /**
+                 * communityID : 1
+                 * communityName : 西丽小区
+                 * provinceID : 440000
+                 * cityID : 440300
+                 * districtID : 440305
+                 * longitude : 113.957228
+                 * latitude : 22.582978
+                 * provinceName : 广东省
+                 * cityName : 深圳市
+                 * districtName : 南山区
+                 * street : 西丽大街
+                 * addressNumber : 15号
+                 * postCode : 546987
+                 */
 
-            public void setColumns(int columns) {
-                this.columns = columns;
-            }
+                private int communityID;
+                private String communityName;
+                private int provinceID;
+                private int cityID;
+                private int districtID;
+                private double longitude;
+                private double latitude;
+                private String provinceName;
+                private String cityName;
+                private String districtName;
+                private String street;
+                private String addressNumber;
+                private int postCode;
 
-            public Object getListFreshCabinetDetail() {
-                return listFreshCabinetDetail;
-            }
+                public int getCommunityID() {
+                    return communityID;
+                }
 
-            public void setListFreshCabinetDetail(Object listFreshCabinetDetail) {
-                this.listFreshCabinetDetail = listFreshCabinetDetail;
-            }
+                public void setCommunityID(int communityID) {
+                    this.communityID = communityID;
+                }
 
-            public Object getListArea() {
-                return listArea;
-            }
+                public String getCommunityName() {
+                    return communityName;
+                }
 
-            public void setListArea(Object listArea) {
-                this.listArea = listArea;
+                public void setCommunityName(String communityName) {
+                    this.communityName = communityName;
+                }
+
+                public int getProvinceID() {
+                    return provinceID;
+                }
+
+                public void setProvinceID(int provinceID) {
+                    this.provinceID = provinceID;
+                }
+
+                public int getCityID() {
+                    return cityID;
+                }
+
+                public void setCityID(int cityID) {
+                    this.cityID = cityID;
+                }
+
+                public int getDistrictID() {
+                    return districtID;
+                }
+
+                public void setDistrictID(int districtID) {
+                    this.districtID = districtID;
+                }
+
+                public double getLongitude() {
+                    return longitude;
+                }
+
+                public void setLongitude(double longitude) {
+                    this.longitude = longitude;
+                }
+
+                public double getLatitude() {
+                    return latitude;
+                }
+
+                public void setLatitude(double latitude) {
+                    this.latitude = latitude;
+                }
+
+                public String getProvinceName() {
+                    return provinceName;
+                }
+
+                public void setProvinceName(String provinceName) {
+                    this.provinceName = provinceName;
+                }
+
+                public String getCityName() {
+                    return cityName;
+                }
+
+                public void setCityName(String cityName) {
+                    this.cityName = cityName;
+                }
+
+                public String getDistrictName() {
+                    return districtName;
+                }
+
+                public void setDistrictName(String districtName) {
+                    this.districtName = districtName;
+                }
+
+                public String getStreet() {
+                    return street;
+                }
+
+                public void setStreet(String street) {
+                    this.street = street;
+                }
+
+                public String getAddressNumber() {
+                    return addressNumber;
+                }
+
+                public void setAddressNumber(String addressNumber) {
+                    this.addressNumber = addressNumber;
+                }
+
+                public int getPostCode() {
+                    return postCode;
+                }
+
+                public void setPostCode(int postCode) {
+                    this.postCode = postCode;
+                }
             }
         }
     }

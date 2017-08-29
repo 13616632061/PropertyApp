@@ -1,15 +1,18 @@
 package com.glory.bianyitong.ui.activity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
 import com.glory.bianyitong.router.RouterMapping;
 
 import butterknife.BindView;
@@ -38,6 +41,8 @@ public class AllEvaluationActivity extends BaseActivity implements RadioGroup.On
     ImageView ivTitleBack;
     @BindView(R.id.iv_title_text_left2)
     TextView ivTitleTextLeft2;
+    private ResponseQueryProductDetail.ListfreshBean.FreshEvaluationBean freshEvaluation;
+
 
     @Override
     protected int getContentId() {
@@ -50,6 +55,17 @@ public class AllEvaluationActivity extends BaseActivity implements RadioGroup.On
         inintTitle("查看评论", false, null);
         rgAll.setOnCheckedChangeListener(this);
         rgAll.check(R.id.rb_tab_1);
+        freshEvaluation = (ResponseQueryProductDetail.ListfreshBean.FreshEvaluationBean) getIntent().getSerializableExtra("freshEvaluation");
+        rbTab1.setText("全部("+freshEvaluation.getTotalEvaluation()+")");
+        rbTab2.setText("好评("+freshEvaluation.getPraiseNum()+")");
+        rbTab3.setText("中评("+freshEvaluation.getCommentsNum()+")");
+        rbTab4.setText("差评("+freshEvaluation.getBadNum()+")");
+    }
+
+    @Override
+    protected void loadDatas() {
+        super.loadDatas();
+
     }
 
     @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2})
