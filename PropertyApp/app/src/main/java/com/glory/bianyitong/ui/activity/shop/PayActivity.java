@@ -50,7 +50,6 @@ public class PayActivity extends BaseActivity {
     RadioGroup orderPayGroup;
 
 
-
     @InjectParam(key = "orderId")
     long orderId;
 
