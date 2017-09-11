@@ -178,6 +178,7 @@ public class HttpURL {
     public static String HTTP_POST_SHOPPINGCART_QUERY="/ApiShoppingCart/Query";//查询
     public static String HTTP_POST_SHOPPINGCART_DELETE="/ApiShoppingCart/Delete";//删除
     public static String HTTP_POST_SHOPPINGCART_EDIT="/ApiShoppingCart/Edit";//购物车编辑
+    public static String HTTP_POST_EVALUATION_QUERY="/ApiFreshEvaluation/Query";//查看商品 评价
 
     /**
      * 收藏

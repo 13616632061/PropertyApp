@@ -3,6 +3,7 @@ package com.glory.bianyitong.bean.entity.response;
 import com.glory.bianyitong.bean.BaseResponseBean;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,7 +84,7 @@ public class ResponseQueryProductDetail extends BaseResponseBean implements Seri
         private String tag;
         private String nutritiveValue;
         private int merchant_ID;
-        private String merchantName;
+        private String merchantName="";
         private boolean isChoice;
         private int choiceType;
         private boolean enable;
@@ -426,7 +427,7 @@ public class ResponseQueryProductDetail extends BaseResponseBean implements Seri
             private int orderID;
             private int freshID;
             private int merchant_ID;
-            private String evaluationContext;
+            private String evaluationContext="";
             private int evaluationLevel;
             private String evaluationDateTime;
             private String anonymous="";
@@ -435,7 +436,7 @@ public class ResponseQueryProductDetail extends BaseResponseBean implements Seri
             private int praiseNum;
             private int commentsNum;
             private int badNum;
-            private List<ListEvaluationPicBean> listEvaluationPic;
+            private List<ListEvaluationPicBean> listEvaluationPic=new ArrayList<>();
 
             public int getEvaluationID() {
                 return evaluationID;

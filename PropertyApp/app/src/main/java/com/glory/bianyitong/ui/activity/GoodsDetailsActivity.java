@@ -137,12 +137,14 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
     private String[] images;
     private List<String> imageList = new ArrayList<String>();
     private ResponseQueryProductDetail.ListfreshBean.FreshEvaluationBean freshEvaluation;//好评中评差评数量bean
+    private int godownNumber;
 
 
     @InjectParam(key = "data")
     ResponseSearchFresh.ListfreshBean product;
 
     private ResponseQueryProductDetail.ListfreshBean productDetail = null;
+    private boolean enable;//是否下架
 
     @Override
     protected int getContentId() {
@@ -181,47 +183,62 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
             case R.id.detail_kefu://客服
                 break;
             case R.id.detail_shoucang://收藏
-                if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
-                    if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
-                        if (productDetail.isCollectionStatu()) {
-                            deleteCollection();
+                if (enable){
+                        if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
+                            if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
+                                if (productDetail.isCollectionStatu()) {
+                                    deleteCollection();
+                                } else {
+                                    addCollection();
+                                }
+                            } else {
+                                showShort("数据异常,请返回重试");
+                            }
                         } else {
-                            addCollection();
+                            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                                    .go(this, this);
                         }
-                    } else {
-                        showShort("数据异常,请返回重试");
-                    }
-                } else {
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
-                            .go(this, this);
+
+                }else {
+                    showShort("该商品已下架");
                 }
+
                 break;
             case R.id.detail_addshopping_cart://加入购物车
-
-                if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
-                    if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
-                        addShoppingCart();
+                if (godownNumber>0) {//库存大于0时才可以购买，加入购物车
+                    if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
+                        if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
+                            addShoppingCart();
+                        } else {
+                            showShort("数据异常,请返回重试");
+                        }
                     } else {
-                        showShort("数据异常,请返回重试");
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                                .go(this, this);
                     }
-                } else {
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
-                            .go(this, this);
+                }else {
+                    showShort("当前商品无库存，不能加入购物车");
                 }
 
                 break;
             case R.id.detail_addshopping_payproduct://立即购买
-                if (product != null) {
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
-                            .with("shop", new Gson().toJson(productDetail))
-                            .with("type", 1)
-                            .go(this);
+                if (godownNumber>0){//库存大于0时才可以购买，加入购物车
+                    if (product != null) {
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
+                                .with("shop", new Gson().toJson(productDetail))
+                                .with("type", 1)
+                                .go(this);
+                    }
+                }else {
+                    showShort("当前商品无库存，不能购买");
                 }
+
                 break;
             case R.id.tv_look_all://查看全部评论
                 if (product != null) {
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ALLORDER_COMMENT)
                             .with("freshEvaluation",freshEvaluation)
+                            .with("freshId",productDetail.getFreshID())
                             .go(this);
                 }
 
@@ -321,33 +338,40 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                         tv_nutritiveValue.setText(detail.getListfresh().get(0).getNutritiveValue() + ""); //营养价值
                         collectionChange(productDetail.isCollectionStatu());
                         //评论内容
-                        if (productDetail.getList_FreshEvaluation().size()>0){
-                            tvPlnr.setText(productDetail.getList_FreshEvaluation().get(0).getEvaluationContext());
-                            ServiceDialog.setPicture(productDetail.getList_FreshEvaluation().get(0).getUser().getCustomerPhoto(), ivHeadPic, null);
-                            ratingba.setRating(productDetail.getList_FreshEvaluation().get(0).getEvaluationLevel());
-                            if (productDetail.getList_FreshEvaluation().get(0).getAnonymous()==null){
-                                ivName.setText(productDetail.getList_FreshEvaluation().get(0).getUser().getLoginName());
-                            }else {
-                                ivName.setText(productDetail.getList_FreshEvaluation().get(0).getAnonymous());
+                        if (productDetail.getList_FreshEvaluation()!=null){
+                            if (productDetail.getList_FreshEvaluation().size()>0){
+                                tvPlnr.setText(productDetail.getList_FreshEvaluation().get(0).getEvaluationContext());
+                                ServiceDialog.setPicture(productDetail.getList_FreshEvaluation().get(0).getUser().getCustomerPhoto(), ivHeadPic, null);
+                                ratingba.setRating(productDetail.getList_FreshEvaluation().get(0).getEvaluationLevel());
+                                if (productDetail.getList_FreshEvaluation().get(0).getAnonymous()==null){
+                                    ivName.setText(productDetail.getList_FreshEvaluation().get(0).getUser().getLoginName());
+                                }else {
+                                    ivName.setText(productDetail.getList_FreshEvaluation().get(0).getAnonymous());
+                                }
                             }
                         }
+
                         totalEvaluation.setText( "宝贝评价数量("+productDetail.getFreshEvaluation().getTotalEvaluation()+")");
                         // 创建一个数值格式化对象
-
                         NumberFormat numberFormat = NumberFormat.getInstance();
 
                         // 设置精确到小数点后2位
-
                         numberFormat.setMaximumFractionDigits(0);
 
                         String result = numberFormat.format((float) productDetail.getFreshEvaluation().getPraiseNum() / (float) productDetail.getFreshEvaluation().getTotalEvaluation() * 100);
+                        godownNumber = productDetail.getGodownNumber();
+
+                        enable = productDetail.isEnable();
 
                         tvPercentage.setText(result+"%");
                         List<String> imageUrlList=new ArrayList<String>();
-                        //获取评论图片
-                        for (int i=0;i<productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().size();i++){
-                            imageUrlList.add(productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().get(i).getPicturePath());
+                        if (productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic()!=null){
+                            //获取评论图片
+                            for (int i=0;i<productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().size();i++){
+                                imageUrlList.add(productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().get(i).getPicturePath());
+                            }
                         }
+
                         //好评中评差评数量bean
                         freshEvaluation = productDetail.getFreshEvaluation();
 

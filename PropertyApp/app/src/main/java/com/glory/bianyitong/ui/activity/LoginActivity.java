@@ -268,6 +268,7 @@ public class LoginActivity extends BaseActivity {
 
         map.put("phoneNumber",phone);
         map.put("smsCheckCode",code);
+        map.put("deviceType",3);
         map.put("accessToken","-1");//此接口不需要token验证
 //        Log.i("resultString", "registrationId---------" + Database.registrationId);
 //        String query = "\"phoneNumber\":\""+phone+"\",\"smsCheckCode\":\""+code+"\"";

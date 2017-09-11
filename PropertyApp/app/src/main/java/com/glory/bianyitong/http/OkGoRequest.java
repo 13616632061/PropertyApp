@@ -20,6 +20,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.callback.StringCallback;
+import com.lzy.okgo.model.HttpHeaders;
 import com.lzy.okgo.model.HttpParams;
 import com.lzy.okgo.request.BaseRequest;
 
@@ -75,6 +76,7 @@ public class OkGoRequest {
         OkGo.post(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
                 .tag(this)
                 .params("request", request)
+//                .headers(new HttpHeaders("Content-Type","application/x-www-form-urlencoded"))
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {
@@ -101,6 +103,7 @@ public class OkGoRequest {
                     public void onError(Call call, Response response, Exception e) {
                         Log.i("resultString", "请求错误------");
 //                        com.github.lazylibrary.util.ToastUtils.showToast(Database.currentActivity, "未能连接到服务器");
+
                         if (onOkGoUtilListener != null) {
                             onOkGoUtilListener.onError();
                         }

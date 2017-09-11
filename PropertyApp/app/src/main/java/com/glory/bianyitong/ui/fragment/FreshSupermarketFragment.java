@@ -159,7 +159,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             case R.id.iv_rec_line://切换列表样式
                 listModel = !listModel;
                 if (listModel) {//列表
-                    shopListAdapter = new FreshShopListAdapter(R.layout.item_fresh_list, shopData);
+                    shopListAdapter = new FreshShopListAdapter(R.layout.item_fresh_list, shopData,getActivity());
                     shopListAdapter.setOnLoadMoreListener(this);
                     shopListAdapter.setOnItemClickListener(this);
                     gridLayoutManager = new GridLayoutManager(getActivity(), 1);
@@ -167,7 +167,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                     recRightList.setAdapter(shopListAdapter);
                     shopListAdapter.notifyDataSetChanged();
                 } else {
-                    shopListAdapter = new FreshShopListAdapter(R.layout.item_fresh_list_v, shopData);
+                    shopListAdapter = new FreshShopListAdapter(R.layout.item_fresh_list_v, shopData,getActivity());
                     shopListAdapter.setOnLoadMoreListener(this);
                     shopListAdapter.setOnItemClickListener(this);
                     gridLayoutManager = new GridLayoutManager(getActivity(), 2);
@@ -223,7 +223,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         recLeftButton.setAdapter(typeAdapter);
 
 
-        shopListAdapter = new FreshShopListAdapter(R.layout.item_fresh_list, shopData);
+        shopListAdapter = new FreshShopListAdapter(R.layout.item_fresh_list, shopData,getActivity());
         shopListAdapter.setOnItemClickListener(this);
         shopListAdapter.setOnLoadMoreListener(this);
         gridLayoutManager = new GridLayoutManager(getActivity(), 1);
@@ -411,7 +411,9 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         //可选，默认false，设置是否需要过滤GPS仿真结果，默认需要
         client.setLocOption(option);
         client.registerLocationListener(this);
+        Log.v("song","1");
         if (AndPermission.hasPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            Log.v("song","2");
 
             client.start();
         } else {
@@ -571,7 +573,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         map.put("currentPageNumber",currentPageNumber);
         map.put("cabinetID", cabinetID);
         if (isAll) {
-            Map<String, Object> map2 = new BaseRequestBean().getBaseRequest();
+            Map<String, Object> map2 = new HashMap<>();
             map2.put("orderBy", "");
             map2.put("freshLeafID", typeFreshLeafID);
             map.put("fresh", map2);
