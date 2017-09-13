@@ -18,20 +18,20 @@ import java.util.List;
  * 提交订单
  */
 
-public class FirmOrderAdapter extends BaseQuickAdapter<ItemMenu<ResponseShoppingCart.ListShoppingCartBean>,BaseViewHolder> {
+public class FirmOrderAdapter extends BaseQuickAdapter<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>,BaseViewHolder> {
     private AmountView.OnAmountChangeListener amountChangeListener;
-    public FirmOrderAdapter(@LayoutRes int layoutResId, @Nullable List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean>> data, AmountView.OnAmountChangeListener amountChangeListener) {
+    public FirmOrderAdapter(@LayoutRes int layoutResId, @Nullable List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> data, AmountView.OnAmountChangeListener amountChangeListener) {
         super(layoutResId, data);
         this.amountChangeListener=amountChangeListener;
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, ItemMenu<ResponseShoppingCart.ListShoppingCartBean> item) {
+    protected void convert(BaseViewHolder helper, ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> item) {
         int position=helper.getAdapterPosition();
         ImageView imageView=helper.getView(R.id.iv_list_item_goods_pic);
         ServiceDialog.setPicture(item.getData().getFresh().getFreshPicture(),imageView,null);
-        helper.setText(R.id.tv_list_item_goods_name,item.getData().getFreshName());
-        helper.setText(R.id.tv_list_item_goods_content,item.getData().getFreshTypeName());
+        helper.setText(R.id.tv_list_item_goods_name,item.getData().getFresh().getFreshName());
+        helper.setText(R.id.tv_list_item_goods_content,item.getData().getFresh().getFreshTypeName());
         helper.setText(R.id.tv_list_item_goods_price,"￥"+item.getData().getPrice());
         AmountView amountView=helper.getView(R.id.amount_view);
         amountView.setGoods_storage(1000);

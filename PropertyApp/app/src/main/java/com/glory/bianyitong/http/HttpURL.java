@@ -185,6 +185,7 @@ public class HttpURL {
      */
     public static String HTTP_POST_COLLECTION_ADD="/ApiFreshCollection/Add";//添加
     public static String HTTP_POST_COLLECTION_DELETE="/ApiFreshCollection/Delete";//删除
+    public static String HTTP_POST_COLLECTION_QUERY="/ApiFreshCollection/Query";//查询我的收藏
 
 
     /**

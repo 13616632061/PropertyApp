@@ -25,7 +25,7 @@ public class AmountView extends LinearLayout implements View.OnClickListener, Te
     public void setAmount(int amount) {
         this.amount = amount;
         etAmount.setText(this.amount + "");
-        if (this.amount>0){
+        if (this.amount>=0){
             etAmount.setVisibility(VISIBLE);
             btnDecrease.setVisibility(VISIBLE);
         }
@@ -83,7 +83,7 @@ public class AmountView extends LinearLayout implements View.OnClickListener, Te
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.btnDecrease) {
-            if (amount > 0) {
+            if (amount >= 0) {
                 amount--;
                 etAmount.setText(amount + "");
                 if (amount==0){
@@ -95,7 +95,7 @@ public class AmountView extends LinearLayout implements View.OnClickListener, Te
             if (amount < goods_storage) {
                 amount++;
                 etAmount.setText(amount + "");
-                if (amount>0){
+                if (amount>=0){
                     etAmount.setVisibility(VISIBLE);
                     btnDecrease.setVisibility(VISIBLE);
                 }

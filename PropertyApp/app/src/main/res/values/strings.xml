@@ -80,6 +80,8 @@
     <string name="download_update">正在下载更新</string>
 
     <string name="now_no_network">当前网络不可用</string>
+    <string name="cancel_collection">取消收藏</string>
+    <string name="collection_mounth">最近一个月收藏</string>
 
     <string name="the_district_is_still_under_review">该小区还在审核中</string>
     <string name="please_login_first">请先登录</string>

@@ -326,7 +326,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
                 Intent intent=new Intent();
                 intent.putExtra("data",bean);
                 setResult(RESULT_OK,intent);
-                finish();
+                AddressActivity.this.finish();
             }
         }
     };

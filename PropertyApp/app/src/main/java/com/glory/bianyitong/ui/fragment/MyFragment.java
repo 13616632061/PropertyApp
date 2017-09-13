@@ -157,6 +157,7 @@ public class MyFragment extends BaseFragment {
         tvRefundSale.setOnClickListener(this);
         tvShoppingCart.setOnClickListener(this);
         tvCoupon.setOnClickListener(this);
+        tvFavoriteProduct.setOnClickListener(this);
         getShareInfo();
     }
 
@@ -279,6 +280,10 @@ public class MyFragment extends BaseFragment {
                 break;
             case R.id.tv_coupon://优惠券券
                 Router.build(RouterMapping.ROUTER_ACTIVITY_COUPON_LIST)
+                        .go(this);
+                break;
+            case R.id.tv_favorite_product://收藏
+                Router.build(RouterMapping.ROUTER_ACTIVITY_COLLECTION_LIST)
                         .go(this);
                 break;
         }

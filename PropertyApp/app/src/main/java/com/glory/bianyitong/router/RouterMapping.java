@@ -89,4 +89,8 @@ public class RouterMapping  {
      * 优惠券
      */
     public static final String ROUTER_ACTIVITY_COUPON_LIST="ROUTER_ACTIVITY_COUPON_LIST";//优惠券列表
+    /**
+     * 收藏
+     */
+    public static final String ROUTER_ACTIVITY_COLLECTION_LIST="ROUTER_ACTIVITY_COLLECTION_LIST";//收藏
 }

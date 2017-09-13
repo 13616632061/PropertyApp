@@ -22,155 +22,72 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
         this.listShoppingCart = listShoppingCart;
     }
 
-    public static class ListShoppingCartBean implements Serializable{
+    public static class ListShoppingCartBean {
         /**
-         * cartID : 8
-         * freshID : 1
-         * freshName : 进口甜虾一斤
-         * freshTypeID : 28
-         * freshTypeName : 虾
-         * addTime : 2017-07-05T11:38:48
-         * endAddTime : null
-         * quantity : 1
-         * price : 58
-         * fresh : {"freshID":1,"freshTypeID":28,"freshTypeName":"虾","freshTypeLeaf":"水产","freshName":"进口甜虾一斤","freshPrice":58,"freshPicture":"https://byt.bytsz.com.cn/images/Fresh/shrimp.jpg","weight":"500.00","originName":"","merchant_ID":22,"merchantName":"宜家生鲜店","choiceType":1,"sortingName":"","freshContent":"御鲜轩 加拿大熟冻北极甜虾 大规格80+ 1kg 北极冰虾 即食海鲜","freshDetail":null,"freshContents":null}
+         * merchantID : 29
+         * merchantName : 宝安44区生鲜店
+         * listShopping : [{"cartID":70,"freshID":11,"quantity":1,"price":11,"fresh":{"freshID":11,"freshTypeID":118,"freshTypeName":"核果类","freshTypeLeaf":"四季鲜果","freshName":"石榴","freshPrice":11,"freshPicture":"http://byt.bytsz.com.cn/images/Fresh/Pomegranate.jpg","originName":"","merchant_ID":29,"merchantName":"宝安44区生鲜店","enable":false,"isDelete":null,"godownNumber":0,"list_FreshEvaluation":null,"freshEvaluation":null,"freshContents":null}}]
+         * isHave : false
          */
 
-        private int cartID;
-        private int freshID;
-        private String freshName;
-        private int freshTypeID;
-        private String freshTypeName;
-        private String addTime;
-        private Object endAddTime;
-        private int quantity;
-        private double price;
-        private FreshBean fresh;
+        private int merchantID;
+        private String merchantName;
+        private boolean isHave;
+        private List<ListShoppingBean> listShopping;
 
-        public int getCartID() {
-            return cartID;
+        public int getMerchantID() {
+            return merchantID;
         }
 
-        public void setCartID(int cartID) {
-            this.cartID = cartID;
+        public void setMerchantID(int merchantID) {
+            this.merchantID = merchantID;
         }
 
-        public int getFreshID() {
-            return freshID;
+        public String getMerchantName() {
+            return merchantName;
         }
 
-        public void setFreshID(int freshID) {
-            this.freshID = freshID;
+        public void setMerchantName(String merchantName) {
+            this.merchantName = merchantName;
         }
 
-        public String getFreshName() {
-            return freshName;
+        public boolean isIsHave() {
+            return isHave;
         }
 
-        public void setFreshName(String freshName) {
-            this.freshName = freshName;
+        public void setIsHave(boolean isHave) {
+            this.isHave = isHave;
         }
 
-        public int getFreshTypeID() {
-            return freshTypeID;
+        public List<ListShoppingBean> getListShopping() {
+            return listShopping;
         }
 
-        public void setFreshTypeID(int freshTypeID) {
-            this.freshTypeID = freshTypeID;
+        public void setListShopping(List<ListShoppingBean> listShopping) {
+            this.listShopping = listShopping;
         }
 
-        public String getFreshTypeName() {
-            return freshTypeName;
-        }
-
-        public void setFreshTypeName(String freshTypeName) {
-            this.freshTypeName = freshTypeName;
-        }
-
-        public String getAddTime() {
-            return addTime;
-        }
-
-        public void setAddTime(String addTime) {
-            this.addTime = addTime;
-        }
-
-        public Object getEndAddTime() {
-            return endAddTime;
-        }
-
-        public void setEndAddTime(Object endAddTime) {
-            this.endAddTime = endAddTime;
-        }
-
-        public int getQuantity() {
-            return quantity;
-        }
-
-        public void setQuantity(int quantity) {
-            this.quantity = quantity;
-        }
-
-        public double getPrice() {
-            return price;
-        }
-
-        public void setPrice(double price) {
-            this.price = price;
-        }
-
-        public FreshBean getFresh() {
-            return fresh;
-        }
-
-        public void setFresh(FreshBean fresh) {
-            this.fresh = fresh;
-        }
-
-        public static class FreshBean {
+        public static class ListShoppingBean {
             /**
-             * freshID : 1
-             * freshTypeID : 28
-             * freshTypeName : 虾
-             * freshTypeLeaf : 水产
-             * freshName : 进口甜虾一斤
-             * freshPrice : 58
-             * freshPicture : https://byt.bytsz.com.cn/images/Fresh/shrimp.jpg
-             * weight : 500.00
-             * originName :
-             * merchant_ID : 22
-             * merchantName : 宜家生鲜店
-             * choiceType : 1
-             * sortingName :
-             * freshContent : 御鲜轩 加拿大熟冻北极甜虾 大规格80+ 1kg 北极冰虾 即食海鲜
-             * freshDetail : null
-             * freshContents : null
+             * cartID : 70
+             * freshID : 11
+             * quantity : 1
+             * price : 11.0
+             * fresh : {"freshID":11,"freshTypeID":118,"freshTypeName":"核果类","freshTypeLeaf":"四季鲜果","freshName":"石榴","freshPrice":11,"freshPicture":"http://byt.bytsz.com.cn/images/Fresh/Pomegranate.jpg","originName":"","merchant_ID":29,"merchantName":"宝安44区生鲜店","enable":false,"isDelete":null,"godownNumber":0,"list_FreshEvaluation":null,"freshEvaluation":null,"freshContents":null}
              */
 
+            private int cartID;
             private int freshID;
-            private int freshTypeID;
-            private String freshTypeName;
-            private String freshTypeLeaf;
-            private String freshName;
-            private int freshPrice;
-            private String freshPicture;
-            private String weight;
-            private String originName;
-            private int merchant_ID;
-            private String merchantName;
-            private int choiceType;
-            private String sortingName;
-            private String freshContent;
-            private Object freshDetail;
-            private Object freshContents;
+            private int quantity=0;
+            private double price=0;
+            private FreshBean fresh;
 
-
-            public FreshBean() {
+            public int getCartID() {
+                return cartID;
             }
 
-            public FreshBean(String freshPicture,int merchant_ID) {
-                this.freshPicture = freshPicture;
-                this.merchant_ID=merchant_ID;
+            public void setCartID(int cartID) {
+                this.cartID = cartID;
             }
 
             public int getFreshID() {
@@ -181,124 +98,199 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
                 this.freshID = freshID;
             }
 
-            public int getFreshTypeID() {
-                return freshTypeID;
+            public int getQuantity() {
+                return quantity;
             }
 
-            public void setFreshTypeID(int freshTypeID) {
-                this.freshTypeID = freshTypeID;
+            public void setQuantity(int quantity) {
+                this.quantity = quantity;
             }
 
-            public String getFreshTypeName() {
-                return freshTypeName;
+            public double getPrice() {
+                return price;
             }
 
-            public void setFreshTypeName(String freshTypeName) {
-                this.freshTypeName = freshTypeName;
+            public void setPrice(double price) {
+                this.price = price;
             }
 
-            public String getFreshTypeLeaf() {
-                return freshTypeLeaf;
+            public FreshBean getFresh() {
+                return fresh;
             }
 
-            public void setFreshTypeLeaf(String freshTypeLeaf) {
-                this.freshTypeLeaf = freshTypeLeaf;
+            public void setFresh(FreshBean fresh) {
+                this.fresh = fresh;
             }
 
-            public String getFreshName() {
-                return freshName;
-            }
+            public static class FreshBean {
+                /**
+                 * freshID : 11
+                 * freshTypeID : 118
+                 * freshTypeName : 核果类
+                 * freshTypeLeaf : 四季鲜果
+                 * freshName : 石榴
+                 * freshPrice : 11.0
+                 * freshPicture : http://byt.bytsz.com.cn/images/Fresh/Pomegranate.jpg
+                 * originName :
+                 * merchant_ID : 29
+                 * merchantName : 宝安44区生鲜店
+                 * enable : false
+                 * isDelete : null
+                 * godownNumber : 0
+                 * list_FreshEvaluation : null
+                 * freshEvaluation : null
+                 * freshContents : null
+                 */
 
-            public void setFreshName(String freshName) {
-                this.freshName = freshName;
-            }
+                private int freshID;
+                private int freshTypeID;
+                private String freshTypeName;
+                private String freshTypeLeaf;
+                private String freshName;
+                private double freshPrice;
+                private String freshPicture;
+                private String originName;
+                private int merchant_ID;
+                private String merchantName;
+                private boolean enable;
+                private boolean isDelete=false;
+                private int godownNumber;
+                private Object list_FreshEvaluation;
+                private Object freshEvaluation;
+                private Object freshContents;
 
-            public int getFreshPrice() {
-                return freshPrice;
-            }
 
-            public void setFreshPrice(int freshPrice) {
-                this.freshPrice = freshPrice;
-            }
+                public FreshBean(String freshPicture,int merchant_ID) {
+                    this.freshPicture = freshPicture;
+                    this.merchant_ID=merchant_ID;
+                }
+                public int getFreshID() {
+                    return freshID;
+                }
 
-            public String getFreshPicture() {
-                return freshPicture;
-            }
+                public void setFreshID(int freshID) {
+                    this.freshID = freshID;
+                }
 
-            public void setFreshPicture(String freshPicture) {
-                this.freshPicture = freshPicture;
-            }
+                public int getFreshTypeID() {
+                    return freshTypeID;
+                }
 
-            public String getWeight() {
-                return weight;
-            }
+                public void setFreshTypeID(int freshTypeID) {
+                    this.freshTypeID = freshTypeID;
+                }
 
-            public void setWeight(String weight) {
-                this.weight = weight;
-            }
+                public String getFreshTypeName() {
+                    return freshTypeName;
+                }
 
-            public String getOriginName() {
-                return originName;
-            }
+                public void setFreshTypeName(String freshTypeName) {
+                    this.freshTypeName = freshTypeName;
+                }
 
-            public void setOriginName(String originName) {
-                this.originName = originName;
-            }
+                public String getFreshTypeLeaf() {
+                    return freshTypeLeaf;
+                }
 
-            public int getMerchant_ID() {
-                return merchant_ID;
-            }
+                public void setFreshTypeLeaf(String freshTypeLeaf) {
+                    this.freshTypeLeaf = freshTypeLeaf;
+                }
 
-            public void setMerchant_ID(int merchant_ID) {
-                this.merchant_ID = merchant_ID;
-            }
+                public String getFreshName() {
+                    return freshName;
+                }
 
-            public String getMerchantName() {
-                return merchantName;
-            }
+                public void setFreshName(String freshName) {
+                    this.freshName = freshName;
+                }
 
-            public void setMerchantName(String merchantName) {
-                this.merchantName = merchantName;
-            }
+                public double getFreshPrice() {
+                    return freshPrice;
+                }
 
-            public int getChoiceType() {
-                return choiceType;
-            }
+                public void setFreshPrice(double freshPrice) {
+                    this.freshPrice = freshPrice;
+                }
 
-            public void setChoiceType(int choiceType) {
-                this.choiceType = choiceType;
-            }
+                public String getFreshPicture() {
+                    return freshPicture;
+                }
 
-            public String getSortingName() {
-                return sortingName;
-            }
+                public void setFreshPicture(String freshPicture) {
+                    this.freshPicture = freshPicture;
+                }
 
-            public void setSortingName(String sortingName) {
-                this.sortingName = sortingName;
-            }
+                public String getOriginName() {
+                    return originName;
+                }
 
-            public String getFreshContent() {
-                return freshContent;
-            }
+                public void setOriginName(String originName) {
+                    this.originName = originName;
+                }
 
-            public void setFreshContent(String freshContent) {
-                this.freshContent = freshContent;
-            }
+                public int getMerchant_ID() {
+                    return merchant_ID;
+                }
 
-            public Object getFreshDetail() {
-                return freshDetail;
-            }
+                public void setMerchant_ID(int merchant_ID) {
+                    this.merchant_ID = merchant_ID;
+                }
 
-            public void setFreshDetail(Object freshDetail) {
-                this.freshDetail = freshDetail;
-            }
+                public String getMerchantName() {
+                    return merchantName;
+                }
 
-            public Object getFreshContents() {
-                return freshContents;
-            }
+                public void setMerchantName(String merchantName) {
+                    this.merchantName = merchantName;
+                }
 
-            public void setFreshContents(Object freshContents) {
-                this.freshContents = freshContents;
+                public boolean isEnable() {
+                    return enable;
+                }
+
+                public void setEnable(boolean enable) {
+                    this.enable = enable;
+                }
+
+                public boolean getIsDelete() {
+                    return isDelete;
+                }
+
+                public void setIsDelete(boolean isDelete) {
+                    this.isDelete = isDelete;
+                }
+
+                public int getGodownNumber() {
+                    return godownNumber;
+                }
+
+                public void setGodownNumber(int godownNumber) {
+                    this.godownNumber = godownNumber;
+                }
+
+                public Object getList_FreshEvaluation() {
+                    return list_FreshEvaluation;
+                }
+
+                public void setList_FreshEvaluation(Object list_FreshEvaluation) {
+                    this.list_FreshEvaluation = list_FreshEvaluation;
+                }
+
+                public Object getFreshEvaluation() {
+                    return freshEvaluation;
+                }
+
+                public void setFreshEvaluation(Object freshEvaluation) {
+                    this.freshEvaluation = freshEvaluation;
+                }
+
+                public Object getFreshContents() {
+                    return freshContents;
+                }
+
+                public void setFreshContents(Object freshContents) {
+                    this.freshContents = freshContents;
+                }
             }
         }
     }

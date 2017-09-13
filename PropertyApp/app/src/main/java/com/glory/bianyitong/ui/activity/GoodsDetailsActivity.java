@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.SslErrorHandler;
@@ -44,7 +45,6 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.CommentPicAdapter;
-import com.glory.bianyitong.ui.adapter.shop.FreshShopListAdapter;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.NetworkImageHolderView;
 import com.glory.bianyitong.widght.CircleImageView;
@@ -53,7 +53,6 @@ import com.glory.bianyitong.widght.convenientbanner.holder.CBViewHolderCreator;
 import com.glory.bianyitong.widght.convenientbanner.listener.OnItemClickListener;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.internal.Streams;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -122,17 +121,19 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
     @BindView(R.id.tv_percentage)
     TextView tvPercentage;
     @BindView(R.id.iv_head_pic)//用户头像
-    CircleImageView ivHeadPic;
+            CircleImageView ivHeadPic;
     @BindView(R.id.iv_name)//用户名称
-    TextView ivName;
+            TextView ivName;
     @BindView(R.id.ratingba)//评星
-    RatingBar ratingba;
+            RatingBar ratingba;
     @BindView(R.id.tv_plnr)//评论内容
-    TextView tvPlnr;
+            TextView tvPlnr;
     @BindView(R.id.tv_look_all)//查看所有评论
-    Button tvLookAll;
+            Button tvLookAll;
     @BindView(R.id.rec_pic)//图片列表
-    RecyclerView rec_pic;
+            RecyclerView rec_pic;
+    @BindView(R.id.pingjia)
+    LinearLayout pingjia;
 
     private String[] images;
     private List<String> imageList = new ArrayList<String>();
@@ -177,35 +178,35 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         requestProductDetail(product.getFreshID());
     }
 
-    @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct,R.id.tv_look_all})
+    @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct, R.id.tv_look_all})
     void onClickBtn(View view) {
         switch (view.getId()) {
             case R.id.detail_kefu://客服
                 break;
             case R.id.detail_shoucang://收藏
-                if (enable){
-                        if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
-                            if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
-                                if (productDetail.isCollectionStatu()) {
-                                    deleteCollection();
-                                } else {
-                                    addCollection();
-                                }
+                if (enable) {
+                    if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
+                        if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
+                            if (productDetail.isCollectionStatu()) {
+                                deleteCollection();
                             } else {
-                                showShort("数据异常,请返回重试");
+                                addCollection();
                             }
                         } else {
-                            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
-                                    .go(this, this);
+                            showShort("数据异常,请返回重试");
                         }
+                    } else {
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                                .go(this, this);
+                    }
 
-                }else {
+                } else {
                     showShort("该商品已下架");
                 }
 
                 break;
             case R.id.detail_addshopping_cart://加入购物车
-                if (godownNumber>0) {//库存大于0时才可以购买，加入购物车
+                if (godownNumber > 0) {//库存大于0时才可以购买，加入购物车
                     if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
                         if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
                             addShoppingCart();
@@ -216,20 +217,20 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                         Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
                                 .go(this, this);
                     }
-                }else {
+                } else {
                     showShort("当前商品无库存，不能加入购物车");
                 }
 
                 break;
             case R.id.detail_addshopping_payproduct://立即购买
-                if (godownNumber>0){//库存大于0时才可以购买，加入购物车
+                if (godownNumber > 0) {//库存大于0时才可以购买，加入购物车
                     if (product != null) {
                         Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
                                 .with("shop", new Gson().toJson(productDetail))
                                 .with("type", 1)
                                 .go(this);
                     }
-                }else {
+                } else {
                     showShort("当前商品无库存，不能购买");
                 }
 
@@ -237,8 +238,8 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
             case R.id.tv_look_all://查看全部评论
                 if (product != null) {
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ALLORDER_COMMENT)
-                            .with("freshEvaluation",freshEvaluation)
-                            .with("freshId",productDetail.getFreshID())
+                            .with("freshEvaluation", freshEvaluation)
+                            .with("freshId", productDetail.getFreshID())
                             .go(this);
                 }
 
@@ -338,50 +339,52 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                         tv_nutritiveValue.setText(detail.getListfresh().get(0).getNutritiveValue() + ""); //营养价值
                         collectionChange(productDetail.isCollectionStatu());
                         //评论内容
-                        if (productDetail.getList_FreshEvaluation()!=null){
-                            if (productDetail.getList_FreshEvaluation().size()>0){
+                        if (productDetail.getList_FreshEvaluation() != null) {
+                            if (productDetail.getList_FreshEvaluation().size() > 0) {
                                 tvPlnr.setText(productDetail.getList_FreshEvaluation().get(0).getEvaluationContext());
                                 ServiceDialog.setPicture(productDetail.getList_FreshEvaluation().get(0).getUser().getCustomerPhoto(), ivHeadPic, null);
                                 ratingba.setRating(productDetail.getList_FreshEvaluation().get(0).getEvaluationLevel());
-                                if (productDetail.getList_FreshEvaluation().get(0).getAnonymous()==null){
+                                if (productDetail.getList_FreshEvaluation().get(0).getAnonymous() == null) {
                                     ivName.setText(productDetail.getList_FreshEvaluation().get(0).getUser().getLoginName());
-                                }else {
+                                } else {
                                     ivName.setText(productDetail.getList_FreshEvaluation().get(0).getAnonymous());
                                 }
                             }
                         }
 
-                        totalEvaluation.setText( "宝贝评价数量("+productDetail.getFreshEvaluation().getTotalEvaluation()+")");
-                        // 创建一个数值格式化对象
-                        NumberFormat numberFormat = NumberFormat.getInstance();
+                        if (productDetail.getFreshEvaluation().getTotalEvaluation() > 0) {
+                            totalEvaluation.setText("宝贝评价数量(" + productDetail.getFreshEvaluation().getTotalEvaluation() + ")");
+                            // 创建一个数值格式化对象
+                            NumberFormat numberFormat = NumberFormat.getInstance();
 
-                        // 设置精确到小数点后2位
-                        numberFormat.setMaximumFractionDigits(0);
+                            // 设置精确到小数点后2位
+                            numberFormat.setMaximumFractionDigits(0);
 
-                        String result = numberFormat.format((float) productDetail.getFreshEvaluation().getPraiseNum() / (float) productDetail.getFreshEvaluation().getTotalEvaluation() * 100);
-                        godownNumber = productDetail.getGodownNumber();
+                            String result = numberFormat.format((float) productDetail.getFreshEvaluation().getPraiseNum() / (float) productDetail.getFreshEvaluation().getTotalEvaluation() * 100);
+                            godownNumber = productDetail.getGodownNumber();
 
-                        enable = productDetail.isEnable();
+                            enable = productDetail.isEnable();
 
-                        tvPercentage.setText(result+"%");
-                        List<String> imageUrlList=new ArrayList<String>();
-                        if (productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic()!=null){
+                            tvPercentage.setText(result + "%");
+                            List<String> imageUrlList = new ArrayList<String>();
+
                             //获取评论图片
-                            for (int i=0;i<productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().size();i++){
+                            for (int i = 0; i < productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().size(); i++) {
                                 imageUrlList.add(productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().get(i).getPicturePath());
                             }
+                            //好评中评差评数量bean
+                            freshEvaluation = productDetail.getFreshEvaluation();
+
+                            //评论图片
+                            CommentPicAdapter commentPicAdapter = new CommentPicAdapter(R.layout.item_commentpic, getApplicationContext());
+                            GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 4);
+                            rec_pic.setLayoutManager(gridLayoutManager);
+                            rec_pic.setAdapter(commentPicAdapter);
+                            commentPicAdapter.addData(imageUrlList);
+                            commentPicAdapter.notifyDataSetChanged();
+                        } else {
+                            pingjia.setVisibility(View.GONE);
                         }
-
-                        //好评中评差评数量bean
-                        freshEvaluation = productDetail.getFreshEvaluation();
-
-                        //评论图片
-                        CommentPicAdapter commentPicAdapter = new CommentPicAdapter(R.layout.item_commentpic,getApplicationContext());
-                        GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 4);
-                        rec_pic.setLayoutManager(gridLayoutManager);
-                        rec_pic.setAdapter(commentPicAdapter);
-                        commentPicAdapter.addData(imageUrlList);
-                        commentPicAdapter.notifyDataSetChanged();
 
 
                         List<ResponseQueryProductDetail.ListfreshBean.ListfreshPictureBean> picture_list = detail.getListfresh().get(0).getListfreshPicture();
@@ -402,7 +405,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                         }
 
                     }
-                    if (detail.getListfresh().get(0).getFreshContents()!=null) {
+                    if (detail.getListfresh().get(0).getFreshContents() != null) {
                         load(detail.getListfresh().get(0).getFreshContents().toString());
                     }
 

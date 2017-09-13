@@ -122,7 +122,7 @@ public class ResponseQueryAddress extends BaseResponseBean implements Serializab
             this.freshCabinet = freshCabinet;
         }
 
-        public static class FreshCabinetBean {
+        public static class FreshCabinetBean implements Serializable{
             /**
              * cabinetID : 13
              * cabinetName : 生鲜柜一号
@@ -247,7 +247,7 @@ public class ResponseQueryAddress extends BaseResponseBean implements Serializab
                 this.community = community;
             }
 
-            public static class CommunityBean {
+            public static class CommunityBean implements Serializable{
                 /**
                  * communityID : 1
                  * communityName : 西丽小区

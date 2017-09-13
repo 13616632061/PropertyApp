@@ -8,6 +8,7 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.ShopcartInfo;
 import com.glory.bianyitong.bean.entity.request.RequestCommitOrderByCart;
 import com.glory.bianyitong.bean.entity.request.RequestQueryConponListByYes;
 import com.glory.bianyitong.bean.entity.request.RequestQueryCouponList;
@@ -113,7 +115,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
     // TODO: 2017/7/13 商品列表
     private FirmOrderAdapter adapter;
-    private List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean>> data=new ArrayList<>();
+    private List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> data=new ArrayList<>();
 
     // TODO: 2017/7/13 订单准备数据
     private double allPrice;//订单总金额
@@ -154,22 +156,21 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
         if(type==2){//购物车下单
             if(!TextUtils.isEmpty(shoppingCartData)){
-                List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean>> datas=new Gson().fromJson(shoppingCartData,new TypeToken<List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean>>>(){}.getType());
+                List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> datas=new Gson().fromJson(shoppingCartData,new TypeToken<List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>>>(){}.getType());
                 data.addAll(datas);
             }
         }else if(type==1){//直接下单
-
             if(!TextUtils.isEmpty(listfreshBean)){
                 ResponseQueryProductDetail.ListfreshBean freshBean=new Gson().fromJson(listfreshBean,new TypeToken<ResponseQueryProductDetail.ListfreshBean>(){}.getType());
-                ResponseShoppingCart.ListShoppingCartBean bean=new ResponseShoppingCart.ListShoppingCartBean();
+                ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean bean=new ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean();
                 bean.setQuantity(1);
-                bean.setFreshTypeName(freshBean.getFreshTypeName());
-                bean.setFreshTypeID(freshBean.getFreshTypeID());
-                bean.setFreshName(freshBean.getFreshName());
-                bean.setFreshID(freshBean.getFreshID());
-                bean.setFresh(new ResponseShoppingCart.ListShoppingCartBean.FreshBean(freshBean.getFreshPicture(),freshBean.getMerchant_ID()));
+                bean.setFresh(new ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean.FreshBean(freshBean.getFreshPicture(),freshBean.getMerchant_ID()));
                 bean.setPrice(freshBean.getFreshPrice());
-                data.add(new ItemMenu<ResponseShoppingCart.ListShoppingCartBean>(bean));
+                bean.getFresh().setFreshName(freshBean.getFreshName());
+                bean.getFresh().setFreshTypeName(freshBean.getFreshTypeName());
+                bean.getFresh().setFreshTypeID(freshBean.getFreshTypeID());
+                bean.setFreshID(freshBean.getFreshID());
+                data.add(new ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>(bean));
             }
         }
         updateShoppingCardPrice();
@@ -231,14 +232,14 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         List<Integer> list=new ArrayList<>();
         if(type==1){//直接下单
 
-            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
+            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean:data
                     ) {
-                orderDetails.add(new RequestCommitOrderByCart.OrderDetail(new RequestCommitOrderByCart.OrderDetail.Fresh(bean.getData().getFreshTypeID(),bean.getData().getFresh().getMerchant_ID()),0,bean.getData().getFreshID(),bean.getData().getQuantity(),bean.getData().getPrice(),bean.getData().getPrice()*bean.getData().getQuantity()));
+                orderDetails.add(new RequestCommitOrderByCart.OrderDetail(new RequestCommitOrderByCart.OrderDetail.Fresh(bean.getData().getFresh().getFreshTypeID(),bean.getData().getFresh().getMerchant_ID()),0,bean.getData().getFreshID(),bean.getData().getQuantity(),bean.getData().getPrice(),bean.getData().getPrice()*bean.getData().getQuantity()));
             }
 
         }else if(type==2){//购物车下单
 
-            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
+            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean:data
                     ) {
                 if(bean.getData().getCartID()!=0){
                     list.add(bean.getData().getCartID());
@@ -255,7 +256,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     private List<Integer> shoppingCart(){
         List<Integer> list=new ArrayList<>();
         if(type==2){
-            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
+            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean:data
                     ) {
                 if(bean.getData().getCartID()!=0){
                     list.add(bean.getData().getCartID());
@@ -319,14 +320,14 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         List<RequestQueryConponListByYes.OrderDetail> orderDetails=new ArrayList<>();
         if(type==1){//直接下单
 
-            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
+            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean:data
                     ) {
-                orderDetails.add(new RequestQueryConponListByYes.OrderDetail(new RequestCommitOrderByCart.OrderDetail.Fresh(bean.getData().getFreshTypeID(),bean.getData().getFresh().getMerchant_ID()),0,bean.getData().getFreshID(),bean.getData().getQuantity(),bean.getData().getPrice(),bean.getData().getPrice()*bean.getData().getQuantity()));
+                orderDetails.add(new RequestQueryConponListByYes.OrderDetail(new RequestCommitOrderByCart.OrderDetail.Fresh(bean.getData().getFresh().getFreshTypeID(),bean.getData().getFresh().getMerchant_ID()),0,bean.getData().getFreshID(),bean.getData().getQuantity(),bean.getData().getPrice(),bean.getData().getPrice()*bean.getData().getQuantity()));
             }
             list.setListOrderDetail(orderDetails);
         }else if(type==2){//购物车下单
             List<Integer> lists=new ArrayList<>();
-            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean:data
+            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean:data
                     ) {
                 if(bean.getData().getCartID()!=0){
                     lists.add(bean.getData().getCartID());
@@ -437,9 +438,8 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
     private void updateShoppingCardPrice() {
         double allPrice = 0;
-        for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean : data
-                ) {
-            ResponseShoppingCart.ListShoppingCartBean entity = bean.getData();
+        for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean : data) {
+            ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean entity = bean.getData();
             allPrice += entity.getPrice() * entity.getQuantity();
         }
 

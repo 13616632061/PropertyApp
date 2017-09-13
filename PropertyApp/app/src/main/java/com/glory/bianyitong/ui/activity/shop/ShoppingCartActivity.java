@@ -2,6 +2,7 @@ package com.glory.bianyitong.ui.activity.shop;
 
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chenenyu.router.Router;
@@ -18,6 +20,7 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.ShopcartInfo;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingUpDate;
 import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
 import com.glory.bianyitong.http.HttpURL;
@@ -72,8 +75,8 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
     Button shoppingCartPay;
     private ShoppingCardAdapter adapter;
     private boolean isEditStatus=true;//编辑   true编辑  false完成
-    private List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean>> data = new ArrayList<>();
-    private Map<Integer, ItemMenu<ResponseShoppingCart.ListShoppingCartBean>> commitData = new HashMap<>();
+    private List<ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> data = new ArrayList<>();
+    private Map<Integer, ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> commitData = new HashMap<>();
 
     @Override
     protected int getContentId() {
@@ -178,9 +181,15 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                     List<ResponseShoppingCart.ListShoppingCartBean> list = bean.getListShoppingCart();
                     if (!(list == null || list.size() <= 0)) {
                         data.clear();
-                        for (ResponseShoppingCart.ListShoppingCartBean entity : list
-                                ) {
-                            data.add(new ItemMenu<ResponseShoppingCart.ListShoppingCartBean>(entity));
+//                        for (ResponseShoppingCart.ListShoppingCartBean entity : list
+//                                ) {
+//                            data.add(new ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean>(entity));
+//                        }
+                        for (int i=0;i<list.size();i++){
+                            data.add(new ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>(true,list.get(i).getMerchantName(), list.get(i).isIsHave()));
+                            for (int j=0;j<list.get(i).getListShopping().size();j++){
+                                data.add((new ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>(list.get(i).getListShopping().get(j))));
+                            }
                         }
                     }
                     adapter.notifyDataSetChanged();
@@ -224,7 +233,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
         int position = (int) buttonView.getTag(R.id.shopCard_check);
         if (position < 0)
             return;
-        ItemMenu<ResponseShoppingCart.ListShoppingCartBean> bean = data.get(position);
+        ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean = data.get(position);
         if (!(bean == null || bean.getData() == null)) {
 
             if (isChecked) {
@@ -244,10 +253,13 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
     private void updateShoppingCardPrice() {
         double allPrice = 0;
-        for (Integer data : commitData.keySet()
-                ) {
-            ResponseShoppingCart.ListShoppingCartBean bean = commitData.get(data).getData();
-            allPrice += bean.getPrice() * bean.getQuantity();
+        for (Integer data : commitData.keySet()) {
+            ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean bean = commitData.get(data).getData();
+            if (!commitData.get(data).isHeader&&bean.getFresh().isEnable()&&!bean.getFresh().getIsDelete()&&bean.getFresh().getGodownNumber()>0){
+                allPrice += bean.getPrice() * bean.getQuantity();
+
+            }
+
         }
 
         allMoney.setText("￥" + allPrice);
@@ -371,6 +383,9 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onAmountChange(View view, int amount,int position) {
+        if (amount==data.get(position).getData().getFresh().getGodownNumber()){
+            showShort("亲，宝贝不能购买更多哦！");
+        }
         if(amount>0)
         upDateShoppingCart(position,amount);
     }

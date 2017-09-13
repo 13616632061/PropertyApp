@@ -2,15 +2,18 @@ package com.glory.bianyitong.ui.adapter.shop;
 
 import android.content.Context;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseSectionQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.glory.bianyitong.R;
+import com.glory.bianyitong.bean.ShopcartInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.ScreenUtil;
@@ -24,7 +27,7 @@ import java.util.logging.Logger;
  * Created by Administrator on 2017/7/5.
  */
 
-public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ItemMenu<ResponseShoppingCart.ListShoppingCartBean>,BaseViewHolder> {
+public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>,BaseViewHolder> {
     /**
      * Same as QuickAdapter#QuickAdapter(Context,int) but with
      * some initialization data.
@@ -36,9 +39,9 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ItemMenu<Respon
     private  Context context;
     private boolean isAllSelected=false;
     private CompoundButton.OnCheckedChangeListener onCheckedChangeListener;
-    private Map<Integer, ItemMenu<ResponseShoppingCart.ListShoppingCartBean>> commitData;
+    private Map<Integer, ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> commitData;
     private AmountView.OnAmountChangeListener amountChangeListener;
-    public ShoppingCardAdapter(int layoutResId, int sectionHeadResId, List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean>> data, Context context, CompoundButton.OnCheckedChangeListener onCheckedChangeListener, Map<Integer, ItemMenu<ResponseShoppingCart.ListShoppingCartBean>> commitData, AmountView.OnAmountChangeListener amountChangeListener) {
+    public ShoppingCardAdapter(int layoutResId, int sectionHeadResId, List<ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> data, Context context, CompoundButton.OnCheckedChangeListener onCheckedChangeListener, Map<Integer, ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> commitData, AmountView.OnAmountChangeListener amountChangeListener) {
         super(layoutResId, sectionHeadResId, data);
         this.context=context;
         this.onCheckedChangeListener=onCheckedChangeListener;
@@ -47,24 +50,26 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ItemMenu<Respon
     }
 
     @Override
-    protected void convertHead(BaseViewHolder helper, ItemMenu<ResponseShoppingCart.ListShoppingCartBean> item) {
+    protected void convertHead(BaseViewHolder helper, ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> item) {
         helper.setText(R.id.item_title_shoppingcart_name,item.header);
+        helper.setVisible(R.id.tv_coupon,item.isMore());
+
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, ItemMenu<ResponseShoppingCart.ListShoppingCartBean> item) {
+    protected void convert(BaseViewHolder helper, ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> item) {
         int position=helper.getAdapterPosition();
         ImageView imageView=helper.getView(R.id.iv_list_item_goods_pic);
-        ServiceDialog.setPicture(item.getData().getFresh().getFreshPicture(),imageView,null);
-        helper.setText(R.id.tv_list_item_goods_name,item.getData().getFreshName());
-        helper.setText(R.id.tv_list_item_goods_content,item.getData().getFreshTypeName());
+//        ServiceDialog.setPicture(item.getData().getFresh().getFreshPicture(),imageView,null);
+        Glide.with(context).load(item.getData().getFresh().getFreshPicture()).error(R.drawable.wait).placeholder(R.drawable.wait).into(imageView);
+        helper.setText(R.id.tv_list_item_goods_name,item.getData().getFresh().getFreshName());
+        helper.setText(R.id.tv_list_item_goods_content,item.getData().getFresh().getFreshTypeName());
         helper.setText(R.id.tv_list_item_goods_price,"￥"+item.getData().getPrice());
         AmountView amountView=helper.getView(R.id.amount_view);
-        amountView.setGoods_storage(1000);
+        amountView.setGoods_storage(item.getData().getFresh().getGodownNumber());
         amountView.setAmount(item.getData().getQuantity());
         amountView.setPosition(position);
         amountView.setOnAmountChangeListener(amountChangeListener);
-
 
 
         LinearLayout linearLayout=helper.getView(R.id.lay_list_item_goods);
@@ -78,6 +83,26 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ItemMenu<Respon
 
         checkBox.setTag(R.id.shopCard_check,position);
         helper.addOnClickListener(R.id.tv_shop_delete);
+
+        if (!item.getData().getFresh().isEnable()){//是否上架
+            helper.setVisible(R.id.shixiao,true);
+            helper.setVisible(R.id.iv_button,false);
+            amountView.setVisibility(View.GONE);
+            helper.setText(R.id.tv_list_item_goods_price,"商品未上架");
+            helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.text_color));
+        }else if(item.getData().getFresh().getIsDelete()){//是否删除
+            helper.setVisible(R.id.shixiao,true);
+            amountView.setVisibility(View.GONE);
+            helper.setVisible(R.id.iv_button,false);
+            helper.setText(R.id.tv_list_item_goods_price,"商品已删除");
+            helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.text_color));
+        }else if (item.getData().getFresh().getGodownNumber()<=0){//是否有库存
+            helper.setVisible(R.id.shixiao,true);
+            helper.setVisible(R.id.iv_button,false);
+            amountView.setVisibility(View.GONE);
+            helper.setText(R.id.tv_list_item_goods_price,"商品没有库存");
+            helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.text_color));
+        }
 
         if(commitData.containsKey(position)){
             if(commitData.get(position).getData().getCartID()==item.getData().getCartID()){

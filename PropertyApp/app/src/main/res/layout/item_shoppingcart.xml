@@ -36,6 +36,19 @@
                     android:layout_gravity="center"
                     android:layout_marginRight="11dp"
                     android:button="@drawable/selector_shoppingcart_select" />
+                <TextView
+                    android:id="@+id/shixiao"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:padding="3dp"
+                    android:layout_marginRight="5dp"
+                    android:textSize="9sp"
+                    android:text="失效"
+                    android:background="@drawable/shape_gray" />
 
                 <ImageView
                     android:id="@+id/iv_list_item_goods_pic"
