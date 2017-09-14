@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -325,6 +326,8 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
             if(bean!=null){
                 Intent intent=new Intent();
                 intent.putExtra("data",bean);
+                String json = new Gson().toJson(bean);
+                Log.i("jsoss",json);
                 setResult(RESULT_OK,intent);
                 AddressActivity.this.finish();
             }

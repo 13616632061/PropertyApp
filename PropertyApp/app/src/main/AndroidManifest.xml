@@ -456,7 +456,6 @@
         <activity
             android:name="com.glory.bianyitong.ui.activity.AddressActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <!--选择地址地图-->
@@ -487,7 +486,6 @@
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.FirmOrderActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
 

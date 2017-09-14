@@ -18,6 +18,7 @@ public class RequestCommitOrderByCart implements Serializable{
     private int couponReceiveID;//优惠券ID
     private double freePrice;//减免金额
     private double orderPrice;//订单总额
+
 //    private List<Integer> shoppingCarts;//购物车ID集合
 
 
@@ -25,7 +26,8 @@ public class RequestCommitOrderByCart implements Serializable{
 
 
 
-    public RequestCommitOrderByCart( double freight, int addressID, int cabinetID, String cabinetName, List<OrderDetail> listOrderDetail) {
+
+    public RequestCommitOrderByCart(double freight, int addressID, int cabinetID, String cabinetName, List<OrderDetail> listOrderDetail) {
         this.freight = freight;
         this.addressID = addressID;
         this.cabinetID = cabinetID;
@@ -125,104 +127,21 @@ public class RequestCommitOrderByCart implements Serializable{
     }
 
     public static class  OrderDetail implements Serializable{
-        private int orderID;//	int	订单ID(默认0)
-        private int freshID;//	int	生鲜ID
-        private int freshQuantity;//	int	数量
-        private double price;//	money	单价
-        private double totalPrice;//	money	商品总价
-        private Fresh fresh;//生鲜信息
+//        private int orderID;//	int	订单ID(默认0)
+//        private int freshID;//	int	生鲜ID
+//        private int freshQuantity;//	int	数量
+//        private double price;//	money	单价
+//        private double totalPrice;//	money	商品总价
 
-        public OrderDetail(Fresh fresh,int orderID, int freshID, int freshQuantity, double price, double totalPrice) {
-            this.orderID = orderID;
+//        private List<Fresh> fresh;//生鲜信息
+        private int freshID;//生鲜类型ID
+        private int freshQuantity;//数量
+        public OrderDetail(int freshID, int freshQuantity) {
             this.freshID = freshID;
-            this.freshQuantity = freshQuantity;
-            this.price = price;
-            this.totalPrice = totalPrice;
-            this.fresh=fresh;
-        }
-
-        public OrderDetail(int freshID, int freshQuantity, double price, double totalPrice) {
-            this.freshID = freshID;
-            this.freshQuantity = freshQuantity;
-            this.price = price;
-            this.totalPrice = totalPrice;
+            this.freshQuantity =freshQuantity;
         }
 
 
-        public Fresh getFresh() {
-            return fresh;
-        }
-
-        public void setFresh(Fresh fresh) {
-            this.fresh = fresh;
-        }
-
-        public int getOrderID() {
-            return orderID;
-        }
-
-        public void setOrderID(int orderID) {
-            this.orderID = orderID;
-        }
-
-        public int getFreshID() {
-            return freshID;
-        }
-
-        public void setFreshID(int freshID) {
-            this.freshID = freshID;
-        }
-
-        public int getFreshQuantity() {
-            return freshQuantity;
-        }
-
-        public void setFreshQuantity(int freshQuantity) {
-            this.freshQuantity = freshQuantity;
-        }
-
-        public double getPrice() {
-            return price;
-        }
-
-        public void setPrice(double price) {
-            this.price = price;
-        }
-
-        public double getTotalPrice() {
-            return totalPrice;
-        }
-
-        public void setTotalPrice(double totalPrice) {
-            this.totalPrice = totalPrice;
-        }
-
-
-        public static class Fresh{
-            private int freshTypeID;//生鲜类型ID
-            private int mer_chentID;//商户ID
-
-            public Fresh(int freshTypeID, int mer_chentID) {
-                this.freshTypeID = freshTypeID;
-                this.mer_chentID =mer_chentID;
-            }
-
-            public int getFreshTypeID() {
-                return freshTypeID;
-            }
-
-            public void setFreshTypeID(int freshTypeID) {
-                this.freshTypeID = freshTypeID;
-            }
-
-            public int getMerchentID() {
-                return mer_chentID;
-            }
-
-            public void setMerchentID(int mer_chentID) {
-                this.mer_chentID = mer_chentID;
-            }
-        }
     }
     // TODO: 2017/7/14 查询可用优惠券
     public static class CouponReceive{

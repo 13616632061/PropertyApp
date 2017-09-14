@@ -35,6 +35,7 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.GodownDetailInfo;
 import com.glory.bianyitong.bean.entity.request.RequestCollectionAdd;
 import com.glory.bianyitong.bean.entity.request.RequestProductDetail;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingCartAdd;
@@ -223,17 +224,8 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
                 break;
             case R.id.detail_addshopping_payproduct://立即购买
-                if (godownNumber > 0) {//库存大于0时才可以购买，加入购物车
-                    if (product != null) {
-                        Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
-                                .with("shop", new Gson().toJson(productDetail))
-                                .with("type", 1)
-                                .go(this);
-                    }
-                } else {
-                    showShort("当前商品无库存，不能购买");
-                }
 
+                godownFind();
                 break;
             case R.id.tv_look_all://查看全部评论
                 if (product != null) {
@@ -245,6 +237,56 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
                 break;
         }
+    }
+
+    /**
+     * 立即购买时查询商品剩余
+     */
+    private void godownFind() {//库存大于0时才可以购买
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        List<GodownDetailInfo.ListDetailBean> list=new ArrayList<>();
+        list.add(new GodownDetailInfo.ListDetailBean(productDetail.getFreshID(),1));
+        map.put("listDetail", list);
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
+                if (detail.getStatusCode() == 1) {
+                    if (product != null) {
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
+                                .with("shop", new Gson().toJson(productDetail))
+                                .with("type", 1)
+                                .go(GoodsDetailsActivity.this);
+                    }
+                }else {
+                    showShort(detail.getAlertMessage());
+
+                }
+
+            }
+
+
+            @Override
+            public void onError() {
+                showShort("系统异常");
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_SHOP_QUERY_GODOWNDETAIL, json);
     }
 
     /**
@@ -319,11 +361,9 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         map.put("fresh", new RequestProductDetail(freshId));
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-
-
             @Override
             public void onSuccess(String s) {
-                ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
+                ResponseQueryProductDetail detail =  new Gson().fromJson(s, ResponseQueryProductDetail.class);
                 if (detail.getStatusCode() == 1) {
                     if (detail.getListfresh() == null || detail.getListfresh().size() <= 0) {
                         showShort(detail.getAlertMessage());

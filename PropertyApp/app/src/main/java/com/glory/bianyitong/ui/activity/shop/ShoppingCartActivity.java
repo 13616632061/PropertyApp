@@ -20,8 +20,10 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.GodownDetailInfo;
 import com.glory.bianyitong.bean.ShopcartInfo;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingUpDate;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
@@ -30,6 +32,7 @@ import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.glory.bianyitong.ui.adapter.shop.ShoppingCardAdapter;
 import com.glory.bianyitong.widght.shop.AmountView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,18 +115,21 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                 break;
             case R.id.shopping_cart_pay://支付或删除
                 if(isEditStatus){//删除
-                    showShort("结算");
-                    if(commitData.size()>0){
-                        String json=new Gson().toJson(commitData.values());
-                        Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
-                                .with("shops",json)
-                                .with("type",2)
-                                .go(this);
-                    }
-
+//                    showShort("结算");
+//                    if(commitData.size()>0){
+//                        String json=new Gson().toJson(commitData.values());
+//                        Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
+//                                .with("shops",json)
+//                                .with("type",2)
+//                                .go(ShoppingCartActivity.this);
+//                        Log.i("json",json);
+//
+//                    }
+                    godownFind();
                 }else {
                     removeShoppingCard(0);
                 }
+
                 break;
             case R.id.iv_title_text_right://编辑
                 if(isEditStatus){//完成状态
@@ -148,6 +154,64 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                 break;
         }
     }
+    /**
+     * 立即购买时查询商品剩余
+     */
+    private void godownFind() {//库存大于0时才可以购买
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        final String shops=new Gson().toJson(commitData.values());
+        List<GodownDetailInfo.ListDetailBean> list=new ArrayList<>();
+        List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> datas=new Gson().fromJson(shops,new TypeToken<List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>>>(){}.getType());
+        for (int i=0;i<datas.size();i++){
+            if (!datas.get(i).isHeader)
+            list.add(new GodownDetailInfo.ListDetailBean(datas.get(i).getData().getFreshID(),datas.get(i).getData().getQuantity()));
+        }
+
+        map.put("listDetail", list);
+        final String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
+                if (detail.getStatusCode() == 1) {
+                    showShort("结算");
+                    if(commitData.size()>0){
+
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
+                                .with("shops",shops)
+                                .with("type",2)
+                                .go(ShoppingCartActivity.this);
+                    }
+                }else {
+                    showShort(detail.getAlertMessage());
+
+                }
+
+            }
+
+
+            @Override
+            public void onError() {
+                showShort("系统异常");
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_SHOP_QUERY_GODOWNDETAIL, json);
+    }
+
 
     @OnCheckedChanged(R.id.iv_buttons)
     void onChangesBtn(CompoundButton view, boolean isCheck) {
@@ -328,9 +392,11 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
         if(!isEditStatus){//编辑状态
             for (Integer i:commitData.keySet()
                  ) {
+                if (!commitData.get(i).isHeader)
                 listCartID.add(commitData.get(i).getData().getCartID());
             }
         }else {
+            if (!commitData.get(position).isHeader)
             listCartID.add(data.get(position).getData().getCartID());
         }
         if(listCartID.size()<=0){

@@ -63,16 +63,16 @@ public class RequestQueryConponListByYes implements Serializable{
         private int freshQuantity;//	int	数量
         private double price;//	money	单价
         private double totalPrice;//	money	商品总价
-        private RequestCommitOrderByCart.OrderDetail.Fresh fresh;//生鲜信息
-
-        public OrderDetail(RequestCommitOrderByCart.OrderDetail.Fresh fresh, int orderID, int freshID, int freshQuantity, double price, double totalPrice) {
-            this.orderID = orderID;
-            this.freshID = freshID;
-            this.freshQuantity = freshQuantity;
-            this.price = price;
-            this.totalPrice = totalPrice;
-            this.fresh=fresh;
-        }
+//        private RequestCommitOrderByCart.OrderDetail.Fresh fresh;//生鲜信息
+//
+//        public OrderDetail(RequestCommitOrderByCart.OrderDetail.Fresh fresh, int orderID, int freshID, int freshQuantity, double price, double totalPrice) {
+//            this.orderID = orderID;
+//            this.freshID = freshID;
+//            this.freshQuantity = freshQuantity;
+//            this.price = price;
+//            this.totalPrice = totalPrice;
+//            this.fresh=fresh;
+//        }
 
         public OrderDetail(int freshID, int freshQuantity, double price, double totalPrice) {
             this.freshID = freshID;
@@ -85,13 +85,13 @@ public class RequestQueryConponListByYes implements Serializable{
         public OrderDetail() {
         }
 
-        public RequestCommitOrderByCart.OrderDetail.Fresh getFresh() {
-            return fresh;
-        }
-
-        public void setFresh(RequestCommitOrderByCart.OrderDetail.Fresh fresh) {
-            this.fresh = fresh;
-        }
+//        public RequestCommitOrderByCart.OrderDetail.Fresh getFresh() {
+//            return fresh;
+//        }
+//
+//        public void setFresh(RequestCommitOrderByCart.OrderDetail.Fresh fresh) {
+//            this.fresh = fresh;
+//        }
 
         public int getOrderID() {
             return orderID;
