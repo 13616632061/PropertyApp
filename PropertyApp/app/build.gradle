@@ -2,7 +2,15 @@ apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
 apply plugin: 'com.chenenyu.router'
 android {
-    compileSdkVersion 24
+    signingConfigs {
+        config {
+            keyAlias 'Keystore'
+            keyPassword 'mx333589'
+            storeFile file('D:/便易通一期资料/keystore.jks')
+            storePassword 'mx333589'
+        }
+    }
+    compileSdkVersion 23
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.glory.bianyitong"
@@ -28,15 +36,18 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            signingConfig signingConfigs.config
+        }
     }
     productFlavors {
     }
-    lintOptions{
+    lintOptions {
         checkReleaseBuilds false
         abortOnError false
     }
-    sourceSets{
-        main{
+    sourceSets {
+        main {
             jniLibs.srcDir('libs')
         }
     }
@@ -71,4 +82,6 @@ dependencies {
     //图片压缩
     compile 'com.yanzhenjie:permission:1.0.4'
     compile files('libs/BaiduLBS_Android.jar')
+//        compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:1.0.2'
+    compile files('libs/libammsdk.jar')
 }
