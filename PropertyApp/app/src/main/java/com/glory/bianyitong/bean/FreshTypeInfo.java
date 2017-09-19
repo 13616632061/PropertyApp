@@ -131,6 +131,15 @@ public class FreshTypeInfo extends BaseResponseBean{
         private Object listFreshCabinetDetail;
         private Object listArea;
         private CommunityBean community;
+        private String communityName;
+
+        public String getCommunityName() {
+            return communityName;
+        }
+
+        public void setCommunityName(String communityName) {
+            this.communityName = communityName;
+        }
 
         public int getCabinetID() {
             return cabinetID;

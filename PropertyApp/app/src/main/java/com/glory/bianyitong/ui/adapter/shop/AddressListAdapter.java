@@ -37,13 +37,10 @@ public class AddressListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryA
 
     @Override
     protected void convert(BaseViewHolder helper, ItemMenu<ResponseQueryAddress.ListShippingAddressBean> item) {
-        helper.setText(R.id.address_list_name,item.getData().getCabinetName());
+        helper.setText(R.id.address_list_name,item.getData().getFreshCabinet().getCommunityName()+item.getData().getFreshCabinet().getCabinetName());
         helper.setText(R.id.address_list_address,item.getData().getFreshCabinet().getCommunity().getProvinceName()+" "+item.getData().getFreshCabinet().getCommunity().getCityName()+" "+item.getData().getFreshCabinet().getCommunity().getDistrictName()+" "+item.getData().getFreshCabinet().getCommunity().getStreet()+" "+item.getData().getFreshCabinet().getCommunity().getAddressNumber());
             helper.setText(R.id.address_been_used,item.getData().getFreshCabinet().getUsed()+"");
             helper.setText(R.id.address_total,"/"+item.getData().getFreshCabinet().getNum());
-
-
-
 
 
         if(isFirmOrder){//来源:提交订单  不做任何监听

@@ -2,12 +2,16 @@ package com.glory.bianyitong.ui.activity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +43,7 @@ import com.glory.bianyitong.bean.GodownDetailInfo;
 import com.glory.bianyitong.bean.entity.request.RequestCollectionAdd;
 import com.glory.bianyitong.bean.entity.request.RequestProductDetail;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingCartAdd;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseSearchFresh;
 import com.glory.bianyitong.constants.Database;
@@ -140,6 +145,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
     private List<String> imageList = new ArrayList<String>();
     private ResponseQueryProductDetail.ListfreshBean.FreshEvaluationBean freshEvaluation;//好评中评差评数量bean
     private int godownNumber;
+    private ResponseQueryAddress.ListShippingAddressBean addressBeabean=null;
 
 
     @InjectParam(key = "data")
@@ -224,8 +230,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
                 break;
             case R.id.detail_addshopping_payproduct://立即购买
-
-                godownFind();
+                queryAddress();
                 break;
             case R.id.tv_look_all://查看全部评论
                 if (product != null) {
@@ -254,8 +259,10 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                 ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
                 if (detail.getStatusCode() == 1) {
                     if (product != null) {
+                        String  addressBean= new Gson().toJson(addressBeabean);
                         Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
                                 .with("shop", new Gson().toJson(productDetail))
+                                .with("addressBean",addressBean)
                                 .with("type", 1)
                                 .go(GoodsDetailsActivity.this);
                     }
@@ -556,6 +563,61 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_COLLECTION_ADD, json);
+    }
+
+    /**
+     * //默认收货地址
+     */
+    private void queryAddress() {
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("shippingAddress", new Object());
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+
+
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryAddress queryAddress=new Gson().fromJson(s,ResponseQueryAddress.class);
+                if(queryAddress.getStatusCode()==1){
+                    if(queryAddress.getListShippingAddress()!=null && queryAddress.getListShippingAddress().size()>0){
+                        for (ResponseQueryAddress.ListShippingAddressBean bean:queryAddress.getListShippingAddress()) {
+                            if (bean.isDefaults()){
+                                addressBeabean = bean;
+                            }
+                        }
+                        if (addressBeabean==null){
+                            showShort("请添加默认收货地址");
+                        }else {
+                            godownFind();//
+                        }
+                    }
+                }else if (queryAddress.getStatusCode()==2){
+                    showShort("请添加默认收货地址");
+                    finish();
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(this,HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+
     }
 
     /**

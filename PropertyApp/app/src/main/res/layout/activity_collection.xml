@@ -37,14 +37,20 @@
             android:textSize="12.5sp"
             android:text="@string/collection_mounth"/>
     </LinearLayout>
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rec_collection"
-        android:background="@color/bggray"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fresh_list_fr_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rec_collection"
+            android:background="@color/bggray"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-    </android.support.v7.widget.RecyclerView>
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
     <LinearLayout
         android:id="@+id/ll_cancle_collection"
         android:layout_width="match_parent"

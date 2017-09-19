@@ -311,7 +311,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
 
             case R.id.iv_button://设置默认地址
                 this.adapter.setPosition(position);
-                showShort(bean.getCabinetName()+"设置默认地址");
+                showShort(bean.getFreshCabinet().getCommunityName()+bean.getFreshCabinet().getCabinetName()+"设置默认地址");
                 setInitAddress(bean.getAddressID(),true);
                 break;
         }

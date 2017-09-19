@@ -15,6 +15,7 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.activity.shop.PayActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -145,6 +146,9 @@ public class WelcomeActivity extends BaseActivity {
                 .with("TypeID", TypeID)
                 .with("PushID", PushID)
                 .go(this);
+        WelcomeActivity.this.finish();
+        Intent intent2 = new Intent(WelcomeActivity.this, PayActivity.class);
+        startActivity(intent2);
         WelcomeActivity.this.finish();
 //        if (code.equals(Constant.VERSIONCODE)) {//版本号
 //            WelcomeActivity.this.startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));

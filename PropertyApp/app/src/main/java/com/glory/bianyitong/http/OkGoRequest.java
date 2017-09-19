@@ -56,14 +56,14 @@ public class OkGoRequest {
         LogUtils.d("OkGoGo","URL:   "+HttpURL.HTTP_NEW_URL+url);
         LogUtils.d("OkGoGo","params:    "+request);
 
-        final Gson gson=new Gson();
-        BaseRequestBean requestBean=gson.fromJson(request, BaseRequestBean.class);
-        if((!TextUtil.isEmpty(requestBean.accessToken)) && requestBean.accessToken.equals("0")){
-            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
-            if(onOkGoUtilListener!=null)
-                onOkGoUtilListener.onError();
-            return;
-        }
+//        final Gson gson=new Gson();
+//        BaseRequestBean requestBean=gson.fromJson(request, BaseRequestBean.class);
+//        if((!TextUtil.isEmpty(requestBean.accessToken)) && requestBean.accessToken.equals("0")){
+//            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
+//            if(onOkGoUtilListener!=null)
+//                onOkGoUtilListener.onError();
+//            return;
+//        }
 //        else  if(requestBean.accessToken.equals("-1")){
 //            Map<String,Object> map=new Gson().fromJson(request,new TypeToken<Map<String,Object>>(){}.getType());
 //            map.put("accessToken","0");
@@ -73,7 +73,8 @@ public class OkGoRequest {
 
 
 
-        OkGo.post(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
+//        OkGo.post(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
+        OkGo.post(HttpURL.HTTP_URl+url)
                 .tag(this)
                 .params("request", request)
 //                .headers(new HttpHeaders("Content-Type","application/x-www-form-urlencoded"))

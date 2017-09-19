@@ -71,7 +71,7 @@ public class AllEvaluationActivity extends BaseActivity implements RadioGroup.On
         super.init();
         inintTitle("查看评论", false, null);
         rgAll.setOnCheckedChangeListener(this);
-        rgAll.check(R.id.rb_tab_1);
+//        rgAll.check(R.id.rb_tab_1);
         freshEvaluation = (ResponseQueryProductDetail.ListfreshBean.FreshEvaluationBean) getIntent().getSerializableExtra("freshEvaluation");
         freshId = getIntent().getIntExtra("freshId",0);
         rbTab1.setText("全部(" + freshEvaluation.getTotalEvaluation() + ")");
@@ -84,7 +84,7 @@ public class AllEvaluationActivity extends BaseActivity implements RadioGroup.On
 
     private void initView() {
 
-        adapter = new AllEvaluationAdapter(R.layout.item_allevaluation, data);
+        adapter = new AllEvaluationAdapter(R.layout.item_allevaluation, data,this);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         recRightList.setAdapter(adapter);
         recRightList.setLayoutManager(linearLayout);
@@ -93,10 +93,12 @@ public class AllEvaluationActivity extends BaseActivity implements RadioGroup.On
     }
 
     private void onRefrush() {
+        data.clear();
+        adapter.notifyDataSetChanged();
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         Map<String, Object> freshMap=new HashMap<>();
         freshMap.put("freshID",freshId);
-        freshMap.put("evaluationLevel",evaluationLevel);//评价等级（0全部，1好评，3中评，3差评）
+        freshMap.put("evaluationLevel",evaluationLevel);//评价等级（0全部，1好评，3中评，5差评）
         map.put("freshEvaluation",freshMap);
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
@@ -106,7 +108,6 @@ public class AllEvaluationActivity extends BaseActivity implements RadioGroup.On
                 if (bean.getStatusCode() == 1) {
                     List<AllEvaluationInfo.ListFreshEvaluationBean> list = bean.getListFreshEvaluation();
                     if (!(list == null || list.size() <= 0)) {
-                        data.clear();
                         for (AllEvaluationInfo.ListFreshEvaluationBean entity : list) {
                             data.add(new ItemMenu<AllEvaluationInfo.ListFreshEvaluationBean>(entity));
                         }
@@ -172,17 +173,17 @@ public class AllEvaluationActivity extends BaseActivity implements RadioGroup.On
                 break;
             case R.id.rb_tab_2://好评
                 data.clear();
-                evaluationLevel=1;
+                evaluationLevel=5;
                 onRefrush();
                 break;
             case R.id.rb_tab_3://中评
                 data.clear();
-                evaluationLevel=2;
+                evaluationLevel=3;
                 onRefrush();
                 break;
             case R.id.rb_tab_4://差评
                 data.clear();
-                evaluationLevel=3;
+                evaluationLevel=1;
                 onRefrush();
                 break;
         }

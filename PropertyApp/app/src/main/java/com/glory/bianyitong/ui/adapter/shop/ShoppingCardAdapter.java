@@ -15,8 +15,10 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.bean.ShopcartInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
+import com.glory.bianyitong.ui.activity.shop.ShoppingCartActivity;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.ScreenUtil;
+import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.shop.AmountView;
 
 import java.util.List;
@@ -57,7 +59,7 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> item) {
+    protected void convert(final BaseViewHolder helper, final ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> item) {
         int position=helper.getAdapterPosition();
         ImageView imageView=helper.getView(R.id.iv_list_item_goods_pic);
 //        ServiceDialog.setPicture(item.getData().getFresh().getFreshPicture(),imageView,null);
@@ -79,7 +81,7 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
         linearLayout.setLayoutParams(layoutParams);
 
 
-        CheckBox checkBox=helper.getView(R.id.iv_button);
+        final CheckBox checkBox=helper.getView(R.id.iv_button);
 
         checkBox.setTag(R.id.shopCard_check,position);
         helper.addOnClickListener(R.id.tv_shop_delete);
@@ -105,14 +107,31 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
         }
 
         if(commitData.containsKey(position)){
-            if(commitData.get(position).getData().getCartID()==item.getData().getCartID()){
-                checkBox.setChecked(true);
+            if (item.getData().isvalid()){
+                if(commitData.get(position).getData().getCartID()==item.getData().getCartID()){
+                    checkBox.setChecked(true);
+                }else {
+                    checkBox.setChecked(false);
+                }
             }else {
                 checkBox.setChecked(false);
+                ToastUtils.showShort(context, "无法配送到当前生鲜柜");
             }
+
         }else {
             checkBox.setChecked(false);
         }
+
+        checkBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!item.getData().isvalid()){
+                    checkBox.setChecked(false);
+                    ToastUtils.showShort(context, "无法配送到当前生鲜柜");
+                }
+            }
+        });
+
         helper.setOnCheckedChangeListener(R.id.iv_button,onCheckedChangeListener);
 
 

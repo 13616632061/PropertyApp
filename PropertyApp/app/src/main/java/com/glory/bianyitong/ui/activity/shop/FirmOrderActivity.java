@@ -106,6 +106,10 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     @InjectParam(key = "shops")
      String shoppingCartData;
 
+    // TODO: 2017/7/13 收货地址数据
+    @InjectParam(key = "addressBean")
+    String addressBeabean;
+
     // TODO: 2017/7/13 数据来源，1：直接购买  2：购物车
     @InjectParam(key = "type")
     int type;
@@ -154,12 +158,10 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
     }
     private void initData(){
-
+        addressBean= new Gson().fromJson(addressBeabean,ResponseQueryAddress.ListShippingAddressBean.class);
         if(type==2){//购物车下单
             if(!TextUtils.isEmpty(shoppingCartData)){
                 List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> datas=new Gson().fromJson(shoppingCartData,new TypeToken<List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>>>(){}.getType());
-                String s = new Gson().toJson(datas);
-                Log.i("dataas",s);
                 for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean:datas){
                     if (!bean.isHeader)
                         data.add(bean);
@@ -181,8 +183,26 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 data.add(new ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>(bean));
             }
         }
+        initAddress();
         updateShoppingCardPrice();
         queryCouponForYES();
+    }
+
+    private void initAddress() {
+        if(isHaveAddress==false){
+            firmOrderAddressLin.removeAllViews();
+            firmOrderAddressLin.addView(addressInitView);
+            isHaveAddress=true;
+        }
+        TextView txtName=ButterKnife.findById(addressInitView,R.id.firm_order_item_name);
+        TextView txtNumber=ButterKnife.findById(addressInitView,R.id.firm_order_item_number);
+        TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
+        txtName.setText(this.addressBean.getFreshCabinet().getCommunityName()+this.addressBean.getFreshCabinet().getCabinetName());
+        txtAddress.setText(this.addressBean.getFreshCabinet().getCommunity().getProvinceName()+this.addressBean.getFreshCabinet().getCommunity().getCityName()+this.addressBean.getFreshCabinet().getCommunity().getDistrictName()+this.addressBean.getFreshCabinet().getCommunity().getStreet());
+
+        SpannableString spannable=new SpannableString(addressBean.getFreshCabinet().getUsed()+"/"+addressBean.getFreshCabinet().getNum());
+        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        txtNumber.setText(spannable);
     }
 
     @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2,R.id.firm_order_lin_bill,R.id.firm_order_lin_coupon,R.id.firm_order_commit,R.id.firm_order_address_lin})
@@ -213,13 +233,10 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 orderCommit();
                 break;
             case R.id.firm_order_address_lin://选择地址
-                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
-                        .with("source",true)
-                        .requestCode(REQUEST_CODE_ADDRESS)
-                        .go(this);
-//                    Intent intent=new Intent(this, AddressActivity.class);
-//                    intent.putExtra("source",true);
-//                    startActivityForResult(intent,REQUEST_CODE_ADDRESS);
+//                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
+//                        .with("source",true)
+//                        .requestCode(REQUEST_CODE_ADDRESS)
+//                        .go(this);
                 break;
         }
     }
@@ -235,7 +252,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
          * 订单组装数据
          * 运费，收货ID，收货柜ID，收货柜名称，优惠券ID，减免金额，总金额
          */
-        RequestCommitOrderByCart orderByCart=new RequestCommitOrderByCart(couponBean.getCouponID(),0f,addressBean.getAddressID(),addressBean.getCabinetID(),addressBean.getCabinetName(),allFreePrice,allPrice);
+        RequestCommitOrderByCart orderByCart=new RequestCommitOrderByCart(couponBean.getCouponID(),0f,addressBean.getAddressID(),addressBean.getCabinetID(),addressBean.getFreshCabinet().getCommunityName()+addressBean.getFreshCabinet().getCabinetName(),allFreePrice,allPrice);
         List<RequestCommitOrderByCart.OrderDetail> orderDetails=new ArrayList<>();
         List<Integer> list=new ArrayList<>();
         if(type==1){//直接下单
@@ -401,7 +418,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                     TextView txtName=ButterKnife.findById(addressInitView,R.id.firm_order_item_name);
                     TextView txtNumber=ButterKnife.findById(addressInitView,R.id.firm_order_item_number);
                     TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
-                    txtName.setText(this.addressBean.getCabinetName());
+                    txtName.setText(this.addressBean.getFreshCabinet().getCommunityName()+this.addressBean.getFreshCabinet().getCabinetName());
                     txtAddress.setText(this.addressBean.getFreshCabinet().getCommunity().getProvinceName()+this.addressBean.getFreshCabinet().getCommunity().getCityName()+this.addressBean.getFreshCabinet().getCommunity().getDistrictName()+this.addressBean.getFreshCabinet().getCommunity().getStreet());
 
                     SpannableString spannable=new SpannableString("11/16");

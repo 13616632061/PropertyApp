@@ -81,6 +81,16 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
             private int quantity=0;
             private double price=0;
             private FreshBean fresh;
+            private boolean isvalid;
+
+            public boolean isvalid() {
+
+                return isvalid;
+            }
+
+            public void setIsvalid(boolean isvalid) {
+                this.isvalid = isvalid;
+            }
 
             public int getCartID() {
                 return cartID;

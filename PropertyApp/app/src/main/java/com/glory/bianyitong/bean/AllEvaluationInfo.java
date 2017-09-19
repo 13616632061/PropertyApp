@@ -7,8 +7,9 @@ import java.util.List;
  */
 public class AllEvaluationInfo {
 
+
     /**
-     * listFreshEvaluation : [{"evaluationID":17,"orderID":35,"freshID":11,"merchant_ID":22,"evaluationContext":"东西还可以，中评！","evaluationLevel":0,"evaluationDateTime":"2017-07-06T14:14:26","endEvaluationDateTime":null,"anonymous":"A**       ","listEvaluationPic":[]},{"evaluationID":14,"orderID":35,"freshID":11,"merchant_ID":22,"evaluationContext":"东西还可以，中评！","evaluationLevel":0,"evaluationDateTime":"2017-07-06T14:11:52","endEvaluationDateTime":null,"anonymous":"A**       ","listEvaluationPic":[]},{"evaluationID":6,"orderID":1,"freshID":11,"merchant_ID":22,"evaluationContext":" ","evaluationLevel":4,"evaluationDateTime":"2017-06-30T00:00:00","endEvaluationDateTime":null,"user":{"jgPushID":null,"jgPushName":null,"status":null,"loginName":"A","customerPhoto":"https://byt.bytsz.com.cn/images/head/Head.jpg"},"listEvaluationPic":[{"pic_ID":1,"evaluationID":6,"picturePath":"http"},{"pic_ID":2,"evaluationID":6,"picturePath":"http"}]},{"evaluationID":13,"orderID":1,"freshID":11,"merchant_ID":22,"evaluationContext":" ","evaluationLevel":4,"evaluationDateTime":"2017-06-30T00:00:00","endEvaluationDateTime":null,"user":{"jgPushID":null,"jgPushName":null,"status":null,"loginName":"A","customerPhoto":"https://byt.bytsz.com.cn/images/head/Head.jpg"},"listEvaluationPic":[]}]
+     * listFreshEvaluation : [{"evaluationID":6,"orderID":1,"freshID":11,"merchant_ID":22,"evaluationContext":" ","evaluationLevel":4,"evaluationDateTime":"2017-06-30T00:00:00","endEvaluationDateTime":null,"user":{"jgPushID":null,"jgPushName":null,"status":null,"loginName":"A","customerPhoto":"https://byt.bytsz.com.cn/images/head/Head.jpg"},"listEvaluationPic":[{"pic_ID":1,"evaluationID":6,"picturePath":"http"},{"pic_ID":2,"evaluationID":6,"picturePath":"http"}]}]
      * statusCode : 1
      * alertMessage : 消息处理成功
      * currentPageNumber : 0
@@ -63,17 +64,16 @@ public class AllEvaluationInfo {
 
     public static class ListFreshEvaluationBean {
         /**
-         * evaluationID : 17
-         * orderID : 35
+         * evaluationID : 6
+         * orderID : 1
          * freshID : 11
          * merchant_ID : 22
-         * evaluationContext : 东西还可以，中评！
-         * evaluationLevel : 0
-         * evaluationDateTime : 2017-07-06T14:14:26
+         * evaluationContext :
+         * evaluationLevel : 4
+         * evaluationDateTime : 2017-06-30T00:00:00
          * endEvaluationDateTime : null
-         * anonymous : A**
-         * listEvaluationPic : []
          * user : {"jgPushID":null,"jgPushName":null,"status":null,"loginName":"A","customerPhoto":"https://byt.bytsz.com.cn/images/head/Head.jpg"}
+         * listEvaluationPic : [{"pic_ID":1,"evaluationID":6,"picturePath":"http"},{"pic_ID":2,"evaluationID":6,"picturePath":"http"}]
          */
 
         private int evaluationID;
@@ -84,9 +84,8 @@ public class AllEvaluationInfo {
         private int evaluationLevel;
         private String evaluationDateTime;
         private Object endEvaluationDateTime;
-        private String anonymous;
         private UserBean user;
-        private List<?> listEvaluationPic;
+        private List<ListEvaluationPicBean> listEvaluationPic;
 
         public int getEvaluationID() {
             return evaluationID;
@@ -152,14 +151,6 @@ public class AllEvaluationInfo {
             this.endEvaluationDateTime = endEvaluationDateTime;
         }
 
-        public String getAnonymous() {
-            return anonymous;
-        }
-
-        public void setAnonymous(String anonymous) {
-            this.anonymous = anonymous;
-        }
-
         public UserBean getUser() {
             return user;
         }
@@ -168,11 +159,11 @@ public class AllEvaluationInfo {
             this.user = user;
         }
 
-        public List<?> getListEvaluationPic() {
+        public List<ListEvaluationPicBean> getListEvaluationPic() {
             return listEvaluationPic;
         }
 
-        public void setListEvaluationPic(List<?> listEvaluationPic) {
+        public void setListEvaluationPic(List<ListEvaluationPicBean> listEvaluationPic) {
             this.listEvaluationPic = listEvaluationPic;
         }
 
@@ -229,6 +220,42 @@ public class AllEvaluationInfo {
 
             public void setCustomerPhoto(String customerPhoto) {
                 this.customerPhoto = customerPhoto;
+            }
+        }
+
+        public static class ListEvaluationPicBean {
+            /**
+             * pic_ID : 1
+             * evaluationID : 6
+             * picturePath : http
+             */
+
+            private int pic_ID;
+            private int evaluationID;
+            private String picturePath;
+
+            public int getPic_ID() {
+                return pic_ID;
+            }
+
+            public void setPic_ID(int pic_ID) {
+                this.pic_ID = pic_ID;
+            }
+
+            public int getEvaluationID() {
+                return evaluationID;
+            }
+
+            public void setEvaluationID(int evaluationID) {
+                this.evaluationID = evaluationID;
+            }
+
+            public String getPicturePath() {
+                return picturePath;
+            }
+
+            public void setPicturePath(String picturePath) {
+                this.picturePath = picturePath;
             }
         }
     }

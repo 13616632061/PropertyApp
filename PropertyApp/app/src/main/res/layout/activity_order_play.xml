@@ -108,6 +108,7 @@
                     android:drawablePadding="5dp"/>/>
                 <include layout="@layout/base_view_line"></include>
                 <RadioButton
+                    android:visibility="gone"
                     android:id="@+id/order_pay_group_apay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

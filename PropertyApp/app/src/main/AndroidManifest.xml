@@ -17,6 +17,13 @@
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!--微信支付-->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+
 
     <!-- Optional. Required for location feature -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" /> <!-- 用于开启 debug 版本的应用在6.0 系统上 层叠窗口权限 -->
@@ -674,6 +681,24 @@
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
             android:value="jtkte4ngSXfrfbW9ZtHHmVIxurwUNpdf" />
+        <!-- 微信支付 -->
+        <activity
+            android:name="com.glory.bianyitong.wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"    >
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="wxd2ec5fc5fab63695"/> <!-- 需修改 -->
+            </intent-filter>
+        </activity>
+
+        <receiver android:name="com.glory.bianyitong.util.AppRegister" >
+            <intent-filter>
+                <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

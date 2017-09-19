@@ -1,6 +1,7 @@
 package com.glory.bianyitong.ui.activity.shop;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioButton;
@@ -13,8 +14,21 @@ import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.WeiXinInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseSubmitOrder;
+import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
+import com.google.gson.Gson;
+import com.tencent.mm.sdk.modelpay.PayReq;
+import com.tencent.mm.sdk.openapi.IWXAPI;
+import com.tencent.mm.sdk.openapi.WXAPIFactory;
+
+import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,12 +85,15 @@ public class PayActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2})
+    @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2,R.id.order_pay_btn})
     void onClickGroup(View view){
         switch (view.getId()){
             case R.id.iv_title_text_left2:
             case R.id.iv_title_back:
                 finish();
+                break;
+            case R.id.order_pay_btn:
+                orderCommit();
                 break;
         }
     }
@@ -85,5 +102,143 @@ public class PayActivity extends BaseActivity {
         orderPayMoney.setText("¥ "+price);
     }
 
+    /**
+     * 支付回调
+     */
+    private void orderCommit(){
+        Map<String,Object> map=new HashMap<>();
+        map.put("OrderID",22);
+        map.put("DeviceType",2);//,1、ios 2、android
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                WeiXinInfo bean=new Gson().fromJson(s,WeiXinInfo.class);
+                WeiXinPayRequest(bean);
+            }
 
+            @Override
+            public void onError() {
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_COUPON_PAY,json);
+    }
+
+    private void weChatPay(WeiXinInfo bean) {
+        IWXAPI api = WXAPIFactory.createWXAPI(this, bean.getAppId(),true);
+        api.registerApp(bean.getAppId());
+        PayReq req = new PayReq();
+        req.appId = bean.getAppId();
+        req.partnerId =bean.getPartnerid();
+        req.prepayId =bean.getPrepayid();
+        req.packageValue = bean.getPackageX();
+        req.nonceStr = bean.getNonceStr();
+        req.timeStamp = bean.getTimeStamp();
+        req.sign = bean.getPaySign();
+        boolean b = api.sendReq(req);
+        Log.i("sign", b+"");
+
+//        api.openWXApp();
+    }
+
+    public void WeiXinPayRequest(final WeiXinInfo bean ) {
+        new Thread() {
+            public void run() {
+
+//                // 随机数
+//                String nonceStr = GenRandom(9);
+//                nonceStr=weixin_nonceStr;
+                // 时间戳
+                String timeStamp = System.currentTimeMillis() + "";
+                timeStamp = timeStamp.substring(0, 10);
+
+                TreeMap<String, String> treeMap = new TreeMap<String, String>();
+                // 应用ID
+                treeMap.put("appid",  bean.getAppId());
+                // 商户号
+                treeMap.put("partnerid", bean.getPartnerid());
+                // 预支付交易会话ID
+                treeMap.put("prepayid", bean.getPrepayid());
+                // 随机字符串
+                treeMap.put("noncestr", bean.getNonceStr());
+                // 时间戳
+                treeMap.put("timestamp", bean.getTimeStamp());
+                // 扩展字段
+                treeMap.put("package", "Sign=WXPay");
+                //   treeMap.put("extData", "app data");
+
+                StringBuilder sb = new StringBuilder();
+                for (String key : treeMap.keySet()) {
+                    sb.append(key).append("=").append(treeMap.get(key))
+                            .append("&");
+                }
+//                sb.append("key=" + weiXin_miyao);
+                System.out.println("支付-签名前字符串_" + sb.toString());
+
+                // 签名
+                String sign = bean.getPaySign();
+                System.out.println("支付-签名后sign_" + sign);
+
+                PayReq req = new PayReq();
+
+				/*
+				 * // 应用ID req.appId = weiXin_appid; // 商户号 req.partnerId =
+				 * weiXin_shangHuHao; // 预支付交易会话ID req.prepayId =
+				 * wenxin_Prepay_id; // 随机字符串 req.nonceStr = nonceStr; // 时间戳
+				 * req.timeStamp = timeStamp; // 扩展字段 req.packageValue =
+				 * "Sign=WXPay"; // 签名 req.sign = sign; //req.extData =
+				 * "app data"; // optional
+				 */
+
+
+                    // 应用ID
+                    req.appId =  bean.getAppId();;
+                    // 商户号
+                    req.partnerId  = bean.getPartnerid();;
+                    // 预支付交易会话ID
+                    req.prepayId =  bean.getPrepayid();
+                    // 随机字符串
+                    req.nonceStr =     bean.getNonceStr();
+                    // 时间戳
+                    req.timeStamp =    bean.getTimeStamp();
+                    // 扩展字段
+                    req.packageValue =  bean.getPackageX();
+                    // 签名
+                    req.sign =  bean.getPaySign();
+
+
+
+
+
+				/*
+				 * MyToast.makeText(ClearingCentreActivity.this, "正常调起支付",
+				 * Toast.LENGTH_SHORT).show();
+				 */
+                // handlerNew.sendEmptyMessage(9);
+
+                // 在支付之前，如果应用没有注册到微信，应该先调用IWXMsg.registerApp将应用注册到微信
+                // 将该app注册到微信
+                IWXAPI api = WXAPIFactory.createWXAPI(PayActivity.this, bean.getAppId());
+                api.registerApp(bean.getAppId());
+               boolean b= api.sendReq(req);
+                Log.i("sign", b+"");
+                //修改微信支付成功后退出支付中心界面
+//               finish();
+            }
+        }.start();
+    }
 }

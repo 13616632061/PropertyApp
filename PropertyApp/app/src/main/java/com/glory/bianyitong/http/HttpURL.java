@@ -12,6 +12,8 @@ public class HttpURL {
     public static String HTTP_LOGIN = "https://byt.bytsz.com.cn/WebApi/Post";
     public static String HTTP_LOGIN_AREA = "https://byt.bytsz.com.cn";
 
+    public static String HTTP_URl = "http://dev.bytsz.com.cn";
+
     //请求地址
 //    public static String HTTP_LOGIN = "http://192.168.26.114:1755/WebApi/Post";
 //    public static String HTTP_LOGIN_AREA = "http://192.168.26.114:1755";
@@ -201,4 +203,9 @@ public class HttpURL {
      * 优惠券
      */
     public static String HTTP_POST_COUPON_QUERY_LIST="/ApiCoupon/Query";//我的优惠券列表查询
+
+    /**+
+     * 支付
+     */
+    public static String HTTP_POST_COUPON_PAY="/ApiWXPay/WXPayAPP";//我的优惠券列表查询
 }

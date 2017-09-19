@@ -1,8 +1,15 @@
 package com.glory.bianyitong.ui.activity.shop;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -11,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chenenyu.router.Router;
@@ -23,6 +29,7 @@ import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.GodownDetailInfo;
 import com.glory.bianyitong.bean.ShopcartInfo;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingUpDate;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
 import com.glory.bianyitong.http.HttpURL;
@@ -40,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 
@@ -47,7 +55,7 @@ import butterknife.OnClick;
  * 购物车
  */
 @Route(value = RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART, interceptors = RouterMapping.INTERCEPTOR_LOGIN)
-public class ShoppingCartActivity extends BaseActivity implements View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener, CompoundButton.OnCheckedChangeListener,AmountView.OnAmountChangeListener {
+public class ShoppingCartActivity extends BaseActivity implements View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener, CompoundButton.OnCheckedChangeListener, AmountView.OnAmountChangeListener {
 
 
     @BindView(R.id.iv_title_back)
@@ -76,10 +84,15 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
     Button shoppingCartCollection;
     @BindView(R.id.shopping_cart_pay)
     Button shoppingCartPay;
+    @BindView(R.id.firm_order_address_lin)
+    LinearLayout firmOrderAddressLin;
     private ShoppingCardAdapter adapter;
-    private boolean isEditStatus=true;//编辑   true编辑  false完成
+    private boolean isEditStatus = true;//编辑   true编辑  false完成
     private List<ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> data = new ArrayList<>();
     private Map<Integer, ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> commitData = new HashMap<>();
+    private ResponseQueryAddress.ListShippingAddressBean addressBeabean=null;//默认收货地址实体类
+    private final int REQUEST_CODE_ADDRESS=100;//选择地址
+    private View addressInitView;
 
     @Override
     protected int getContentId() {
@@ -95,18 +108,18 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
     private void initView() {
         inintTitle("购物车", false, "编辑");
-        adapter = new ShoppingCardAdapter(R.layout.item_shoppingcart, R.layout.item_title_shoppingcart, data, this, this,commitData,this);
+        adapter = new ShoppingCardAdapter(R.layout.item_shoppingcart, R.layout.item_title_shoppingcart, data, this, this, commitData, this);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this);
         recShoppingcart.setAdapter(adapter);
         recShoppingcart.setLayoutManager(linearLayout);
         adapter.setOnItemChildClickListener(this);
         adapter.bindToRecyclerView(recShoppingcart);
-        shoppingCartPay.setText("结算("+commitData.size()+")");
-        queryShoppingCart();
+        shoppingCartPay.setText("结算(" + commitData.size() + ")");
+        queryAddress();
     }
 
 
-    @OnClick({R.id.iv_title_back, R.id.iv_title_text_left2, R.id.iv_title_text_right,R.id.shopping_cart_pay,R.id.shopping_cart_collection})
+    @OnClick({R.id.iv_title_back, R.id.iv_title_text_left2, R.id.iv_title_text_right, R.id.shopping_cart_pay, R.id.shopping_cart_collection, R.id.firm_order_address_lin})
     void OnclickViews(View view) {
         switch (view.getId()) {
             case R.id.iv_title_text_left2:
@@ -114,7 +127,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                 finish();
                 break;
             case R.id.shopping_cart_pay://支付或删除
-                if(isEditStatus){//删除
+                if (isEditStatus) {//删除
 //                    showShort("结算");
 //                    if(commitData.size()>0){
 //                        String json=new Gson().toJson(commitData.values());
@@ -126,45 +139,54 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 //
 //                    }
                     godownFind();
-                }else {
+                } else {
                     removeShoppingCard(0);
                 }
 
                 break;
             case R.id.iv_title_text_right://编辑
-                if(isEditStatus){//完成状态
+                if (isEditStatus) {//完成状态
 
-                    ivTitleTextRight.setText("编辑");
+                    ivTitleTextRight.setText("完成");
                     shoppingCartCollection.setVisibility(View.GONE);
                     shoppingCartTxtYunfei.setVisibility(View.VISIBLE);
 
-                }else {//编辑状态
+                } else {//编辑状态
 
-                    ivTitleTextRight.setText("完成");
+                    ivTitleTextRight.setText("编辑");
                     shoppingCartCollection.setVisibility(View.VISIBLE);
                     shoppingCartTxtYunfei.setVisibility(View.GONE);
 
                 }
 
-                isEditStatus=isEditStatus?false:true;
+                isEditStatus = isEditStatus ? false : true;
                 updateShoppingCardPrice();
                 break;
 
             case R.id.shopping_cart_collection://收藏
                 break;
+
+            case R.id.firm_order_address_lin://选择地址
+                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
+                        .with("source",true)
+                        .requestCode(REQUEST_CODE_ADDRESS)
+                        .go(this);
+                break;
         }
     }
+
     /**
      * 立即购买时查询商品剩余
      */
     private void godownFind() {//库存大于0时才可以购买
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        final String shops=new Gson().toJson(commitData.values());
-        List<GodownDetailInfo.ListDetailBean> list=new ArrayList<>();
-        List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> datas=new Gson().fromJson(shops,new TypeToken<List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>>>(){}.getType());
-        for (int i=0;i<datas.size();i++){
+        final String shops = new Gson().toJson(commitData.values());
+        List<GodownDetailInfo.ListDetailBean> list = new ArrayList<>();
+        List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> datas = new Gson().fromJson(shops, new TypeToken<List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>>>() {
+        }.getType());
+        for (int i = 0; i < datas.size(); i++) {
             if (!datas.get(i).isHeader)
-            list.add(new GodownDetailInfo.ListDetailBean(datas.get(i).getData().getFreshID(),datas.get(i).getData().getQuantity()));
+                list.add(new GodownDetailInfo.ListDetailBean(datas.get(i).getData().getFreshID(), datas.get(i).getData().getQuantity()));
         }
 
         map.put("listDetail", list);
@@ -175,14 +197,16 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                 ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
                 if (detail.getStatusCode() == 1) {
                     showShort("结算");
-                    if(commitData.size()>0){
+                    if (commitData.size() > 0) {
+                        String  addressBean= new Gson().toJson(addressBeabean);
 
                         Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
-                                .with("shops",shops)
-                                .with("type",2)
+                                .with("shops", shops)
+                                .with("addressBean",addressBean)
+                                .with("type", 2)
                                 .go(ShoppingCartActivity.this);
                     }
-                }else {
+                } else {
                     showShort(detail.getAlertMessage());
 
                 }
@@ -212,17 +236,106 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
         }).getEntityData(this, HttpURL.HTTP_POST_SHOP_QUERY_GODOWNDETAIL, json);
     }
 
+    private void queryAddress() {//默认收货地址
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("shippingAddress", new Object());
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryAddress queryAddress=new Gson().fromJson(s,ResponseQueryAddress.class);
+                if(queryAddress.getStatusCode()==1){
+                    if(queryAddress.getListShippingAddress()!=null && queryAddress.getListShippingAddress().size()>0){
+                        for (ResponseQueryAddress.ListShippingAddressBean bean:queryAddress.getListShippingAddress()) {
+                            if (bean.isDefaults()){
+                                addressBeabean = bean;
+                            }
+                        }
+                        if (addressBeabean==null){
+                            showShort("请添加默认收货地址");
+                            finish();
+                        }else {
+                            addressInitView = LayoutInflater.from(ShoppingCartActivity.this).inflate(R.layout.item_firm_order_address_init, null);
+                            firmOrderAddressLin.removeAllViews();
+                            firmOrderAddressLin.addView(addressInitView);
+
+                            TextView txtName=ButterKnife.findById(addressInitView,R.id.firm_order_item_name);
+                            TextView txtNumber=ButterKnife.findById(addressInitView,R.id.firm_order_item_number);
+                            TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
+                            txtName.setText(addressBeabean.getFreshCabinet().getCommunityName()+addressBeabean.getFreshCabinet().getCabinetName());
+                            txtAddress.setText(addressBeabean.getFreshCabinet().getCommunity().getProvinceName()+addressBeabean.getFreshCabinet().getCommunity().getCityName()+addressBeabean.getFreshCabinet().getCommunity().getDistrictName()+addressBeabean.getFreshCabinet().getCommunity().getStreet());
+                            SpannableString spannable=new SpannableString(addressBeabean.getFreshCabinet().getUsed()+"/"+addressBeabean.getFreshCabinet().getNum());
+                            spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                            txtNumber.setText(spannable);
+                            queryShoppingCart();
+
+                        }
+                    }
+                }else if (queryAddress.getStatusCode()==2){
+                    showShort("请添加默认收货地址");
+                    finish();
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(this,HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode==RESULT_OK) {
+            if (requestCode == REQUEST_CODE_ADDRESS) {
+                ResponseQueryAddress.ListShippingAddressBean addressBeabean = (ResponseQueryAddress.ListShippingAddressBean) data.getSerializableExtra("data");
+                if (addressBeabean != null) {
+                    this.addressBeabean = addressBeabean;
+                    firmOrderAddressLin.removeAllViews();
+                    firmOrderAddressLin.addView(addressInitView);
+                    TextView txtName = ButterKnife.findById(addressInitView, R.id.firm_order_item_name);
+                    TextView txtNumber = ButterKnife.findById(addressInitView, R.id.firm_order_item_number);
+                    TextView txtAddress = ButterKnife.findById(addressInitView, R.id.address_list_address);
+                    txtName.setText(this.addressBeabean.getFreshCabinet().getCommunityName()+this.addressBeabean.getFreshCabinet().getCabinetName());
+                    txtAddress.setText(this.addressBeabean.getFreshCabinet().getCommunity().getProvinceName() + this.addressBeabean.getFreshCabinet().getCommunity().getCityName() + this.addressBeabean.getFreshCabinet().getCommunity().getDistrictName() + this.addressBeabean.getFreshCabinet().getCommunity().getStreet());
+
+                    SpannableString spannable = new SpannableString(addressBeabean.getFreshCabinet().getUsed()+"/"+addressBeabean.getFreshCabinet().getNum());
+                    spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    txtNumber.setText(spannable);
+
+                }
+            }
+        }
+    }
 
     @OnCheckedChanged(R.id.iv_buttons)
     void onChangesBtn(CompoundButton view, boolean isCheck) {
 
-        if(isCheck) {
+        if (isCheck) {
             commitData.clear();
             for (int i = 0; i < data.size(); i++) {
                 commitData.put(i, data.get(i));
             }
-        }else {
-            if(commitData.size()==data.size()){
+        } else {
+            if (commitData.size() == data.size()) {
                 commitData.clear();
             }
 
@@ -236,6 +349,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
      */
     private void queryShoppingCart() {
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("cabinetID",addressBeabean.getCabinetID());
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -249,15 +363,15 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 //                                ) {
 //                            data.add(new ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean>(entity));
 //                        }
-                        for (int i=0;i<list.size();i++){
-                            data.add(new ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>(true,list.get(i).getMerchantName(), list.get(i).isIsHave()));
-                            for (int j=0;j<list.get(i).getListShopping().size();j++){
+                        for (int i = 0; i < list.size(); i++) {
+                            data.add(new ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>(true, list.get(i).getMerchantName(), list.get(i).isIsHave()));
+                            for (int j = 0; j < list.get(i).getListShopping().size(); j++) {
                                 data.add((new ShopcartInfo<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>(list.get(i).getListShopping().get(j))));
                             }
                         }
                     }
                     adapter.notifyDataSetChanged();
-                }else {
+                } else {
                     adapter.setEmptyView(R.layout.layout_empty);
                 }
             }
@@ -281,13 +395,14 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             public void onAfter() {
 
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_SHOPPINGCART_QUERY, json);
+        }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_QUERY, json);
     }
 
 
     @Override
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
         if (view.getId() == R.id.tv_shop_delete) {//删除
+            Log.i("ppositionposition",position+"");
             removeShoppingCard(position);
         }
     }
@@ -302,7 +417,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
             if (isChecked) {
                 commitData.put(position, bean);
-                if(commitData.size()==data.size()){
+                if (commitData.size() == data.size()) {
                     ivButton.setChecked(isChecked);
                 }
             } else {
@@ -319,7 +434,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
         double allPrice = 0;
         for (Integer data : commitData.keySet()) {
             ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean bean = commitData.get(data).getData();
-            if (!commitData.get(data).isHeader&&bean.getFresh().isEnable()&&!bean.getFresh().getIsDelete()&&bean.getFresh().getGodownNumber()>0){
+            if (!commitData.get(data).isHeader && bean.getFresh().isEnable() && !bean.getFresh().getIsDelete() && bean.getFresh().getGodownNumber() > 0) {
                 allPrice += bean.getPrice() * bean.getQuantity();
 
             }
@@ -327,30 +442,31 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
         }
 
         allMoney.setText("￥" + allPrice);
-        if(isEditStatus){
-            shoppingCartPay.setText("结算("+commitData.size()+")");
-        }else {
+        if (isEditStatus) {
+            shoppingCartPay.setText("结算(" + commitData.size() + ")");
+        } else {
             shoppingCartPay.setText("删除");
         }
     }
 
     /**
      * 更新购物车
+     *
      * @param position
      * @param num
      */
-    private void upDateShoppingCart(final int position, final int num){
-        int cartId=data.get(position).getData().getCartID();
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("shoppingCart",new RequestShoppingUpDate(cartId,num));
-        String json=new Gson().toJson(map);
+    private void upDateShoppingCart(final int position, final int num) {
+        int cartId = data.get(position).getData().getCartID();
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("shoppingCart", new RequestShoppingUpDate(cartId, num));
+        String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
-                if(bean.getStatusCode()==1){
+                BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
+                if (bean.getStatusCode() == 1) {
                     data.get(position).getData().setQuantity(num);
-                    if(commitData.containsKey(position)){
+                    if (commitData.containsKey(position)) {
                         commitData.get(position).getData().setQuantity(num);
                         updateShoppingCardPrice();
                     }
@@ -377,7 +493,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             public void onAfter() {
 
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_SHOPPINGCART_EDIT,json);
+        }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_EDIT, json);
     }
 
     /**
@@ -385,21 +501,20 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
      *
      * @param position
      */
-    private void removeShoppingCard(final int  position) {
+    private void removeShoppingCard(final int position) {
 
         List<Integer> listCartID = new ArrayList<>();
 
-        if(!isEditStatus){//编辑状态
-            for (Integer i:commitData.keySet()
-                 ) {
+        if (!isEditStatus) {//编辑状态
+            for (Integer i : commitData.keySet()) {
                 if (!commitData.get(i).isHeader)
-                listCartID.add(commitData.get(i).getData().getCartID());
+                    listCartID.add(commitData.get(i).getData().getCartID());
             }
-        }else {
-            if (!commitData.get(position).isHeader)
-            listCartID.add(data.get(position).getData().getCartID());
+        } else {
+//            if (!commitData.get(position).isHeader)
+                listCartID.add(data.get(position).getData().getCartID());
         }
-        if(listCartID.size()<=0){
+        if (listCartID.size() <= 0) {
             showShort("请先选择商品");
             return;
         }
@@ -411,12 +526,12 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             public void onSuccess(String s) {
                 BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
                 if (bean.getStatusCode() == 1) {
-                    if(!isEditStatus){
+                    if (!isEditStatus) {
                         data.removeAll(commitData.values());
                         commitData.clear();
                         adapter.notifyDataSetChanged();
                         updateShoppingCardPrice();
-                    }else {
+                    } else {
                         adapter.remove(position);
                     }
 
@@ -443,16 +558,36 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             public void onAfter() {
 
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_SHOPPINGCART_DELETE, json);
+        }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_DELETE, json);
     }
 
 
     @Override
-    public void onAmountChange(View view, int amount,int position) {
-        if (amount==data.get(position).getData().getFresh().getGodownNumber()){
+    public void onAmountChange(View view, int amount, int position) {
+        if (amount == data.get(position).getData().getFresh().getGodownNumber()) {
             showShort("亲，宝贝不能购买更多哦！");
         }
-        if(amount>0)
-        upDateShoppingCart(position,amount);
+        if (amount > 0)
+            upDateShoppingCart(position, amount);
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+
+    private boolean isOne=false;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (isOne){
+            data.clear();
+            queryShoppingCart();
+        }else {
+            isOne=true;
+        }
+
     }
 }

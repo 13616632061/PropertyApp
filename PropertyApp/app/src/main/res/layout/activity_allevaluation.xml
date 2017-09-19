@@ -24,6 +24,7 @@
             style="@style/alleva_tab_bottom"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
+            android:checked="true"
             android:text="全部"/>
         <RadioButton
             android:id="@+id/rb_tab_2"
