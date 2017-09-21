@@ -8,6 +8,8 @@
     <color name="line_color">#5A9DE4</color>
     <!-- 红色 -->
     <color name="red">#c50000</color>
+    <!-- 红色 -->
+    <color name="red1">#eb0002</color>
 
     <!--金色-->
     <color name="golden">#ffc526</color>

@@ -30,7 +30,9 @@
             android:text="生鲜"
             android:textColor="@color/text_color_title"
             android:textSize="17sp" />
-
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
         <ImageView
             android:id="@+id/iv_title_right"
             android:layout_width="wrap_content"
@@ -41,6 +43,19 @@
             android:paddingLeft="12dp"
             android:paddingRight="15dp"
             android:src="@mipmap/gouwuche" />
+        <TextView
+            android:id="@+id/tv_cart_number"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="-25dp"
+            android:layout_toRightOf="@id/iv_title_right"
+            android:background="@drawable/log_notice_text"
+            android:gravity="center"
+            android:text="0"
+            android:textColor="@color/white"
+            android:textSize="11sp"/>
+    </RelativeLayout>
     </RelativeLayout>
     <include layout="@layout/base_view_line"></include>
 

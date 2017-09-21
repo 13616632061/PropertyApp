@@ -15,6 +15,7 @@
         android:layout_marginRight="16dp">
 
         <TextView
+            android:id="@+id/tv_in_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="共1件商品"/>
@@ -29,6 +30,7 @@
             android:text="28.80"/>
 
         <TextView
+            android:id="@+id/tv_yunfei"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="(含运费 ¥10.00 元)"/>

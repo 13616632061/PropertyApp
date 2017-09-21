@@ -147,9 +147,9 @@ public class WelcomeActivity extends BaseActivity {
                 .with("PushID", PushID)
                 .go(this);
         WelcomeActivity.this.finish();
-        Intent intent2 = new Intent(WelcomeActivity.this, PayActivity.class);
-        startActivity(intent2);
-        WelcomeActivity.this.finish();
+//        Intent intent2 = new Intent(WelcomeActivity.this, PayActivity.class);
+//        startActivity(intent2);
+//        WelcomeActivity.this.finish();
 //        if (code.equals(Constant.VERSIONCODE)) {//版本号
 //            WelcomeActivity.this.startActivity(new Intent(WelcomeActivity.this, HomeActivity.class));
 //            WelcomeActivity.this.finish();

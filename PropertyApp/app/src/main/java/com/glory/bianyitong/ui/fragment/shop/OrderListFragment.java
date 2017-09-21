@@ -1,9 +1,11 @@
 package com.glory.bianyitong.ui.fragment.shop;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -22,6 +24,7 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.activity.shop.FirmOrderActivity;
+import com.glory.bianyitong.ui.activity.shop.OrderDetailsActivity;
 import com.glory.bianyitong.ui.adapter.MultiItemView;
 import com.glory.bianyitong.ui.adapter.shop.OrderListAdapter;
 import com.glory.bianyitong.ui.dialog.CallPhoneDialog;
@@ -41,7 +44,7 @@ import butterknife.BindView;
  * Created by Administrator on 2017/7/3.
  */
 
-public class OrderListFragment extends RootFragment implements SwipeRefreshLayout.OnRefreshListener,BaseQuickAdapter.RequestLoadMoreListener,BaseQuickAdapter.OnItemChildClickListener{
+public class OrderListFragment extends RootFragment implements SwipeRefreshLayout.OnRefreshListener,BaseQuickAdapter.RequestLoadMoreListener,BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.OnItemClickListener {
 
 
     @BindView(R.id.order_list_fr_recycle)
@@ -60,8 +63,9 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
         orderType=getArguments().getInt("type");
         LinearLayoutManager layoutManager=new LinearLayoutManager(getActivity());
         orderListFrRecycle.setLayoutManager(layoutManager);
-        adapter=new OrderListAdapter(data);
+        adapter=new OrderListAdapter(data,getActivity());
         adapter.setOnItemChildClickListener(this);
+        adapter.setOnItemClickListener(this);
         adapter.setOnLoadMoreListener(this,orderListFrRecycle);
         orderListFrRecycle.setAdapter(adapter);
         orderListFrRefresh.setOnRefreshListener(this);
@@ -100,19 +104,24 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 
 
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+
+
             @Override
             public void onSuccess(String s) {
                 orderListFrRefresh.setRefreshing(false);
                 ResponseQueryOrderList entity=new Gson().fromJson(s,ResponseQueryOrderList.class);
                 if(entity.getStatusCode()==1){
-                    for (ResponseQueryOrderList.ListOrderBean listBean:
-                            entity.getList_Order()) {
-                        data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.TITLE,"便宜通生鲜",getStatusName(listBean.getOrderStatus())));
+                    for (ResponseQueryOrderList.ListOrderBean listBean: entity.getList_Order()) {
+                        data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.TITLE,listBean.getMerchant_Name(),getStatusName(listBean.getOrderStatus())));
                         for (ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean bean:listBean.getListOrderDetail()
                              ) {
-                            data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.BODY,bean,listBean.getOrderStatus()));
+                            MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.BODY, bean, listBean.getOrderStatus());
+                            listOrderDetailBeanMultiItemView.getData().setOrderID(listBean.getOrderID());
+                            data.add(listOrderDetailBeanMultiItemView);
                         }
-                        data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.FOOTER));
+                        MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.FOOTER);
+                        listOrderDetailBeanMultiItemView.setFreight(listBean.getFreight());
+                        data.add(listOrderDetailBeanMultiItemView);
                         setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID(),listBean.getOrderPrice(),listBean);//添加操作菜单
                     }
                     adapter.notifyDataSetChanged();
@@ -419,4 +428,11 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
         dialog.show();
     }
 
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        Intent intent=new Intent(getActivity(), OrderDetailsActivity.class);
+        Log.i("orderid",data.get(position).getData().getOrderID()+"-----------"+position);
+        intent.putExtra("orderID",data.get(position).getData().getOrderID());
+        startActivity(intent);
+    }
 }

@@ -19,6 +19,16 @@ public class MultiItemView <T> implements MultiItemEntity {
     private int status;
     private long ordeId;
     private float totalMoney;//订单总金额
+    private float freight;//运费
+
+    public float getFreight() {
+        return freight;
+    }
+
+    public void setFreight(float freight) {
+        this.freight = freight;
+    }
+
     private ResponseQueryOrderList.ListOrderBean  bean;//评论需要数据
 
     public MultiItemView(int itemType) {

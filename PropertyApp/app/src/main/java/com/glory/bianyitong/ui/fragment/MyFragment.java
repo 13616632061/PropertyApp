@@ -1,6 +1,7 @@
 package com.glory.bianyitong.ui.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -18,6 +19,7 @@ import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.OrderNumberInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseShare;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
@@ -25,6 +27,7 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.share.ShareUtil;
+import com.glory.bianyitong.ui.activity.shop.RefundMoneyActivity;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
@@ -95,6 +98,16 @@ public class MyFragment extends BaseFragment {
     TextView tvRefundSale;
     @BindView(R.id.lay_fg_my)
     LinearLayout layFgMy;
+    @BindView(R.id.tv_pending_payment_number)
+    TextView tvPendingPaymentNumber;
+    @BindView(R.id.tv_to_be_delivered_number)
+    TextView tvToBeDeliveredNumber;
+    @BindView(R.id.tv_to_be_received_number)
+    TextView tvToBeReceivedNumber;
+    @BindView(R.id.tv_be_evaluated_number)
+    TextView tvBeEvaluatedNumber;
+    @BindView(R.id.tv_refund_sale_number)
+    TextView tvRefundSaleNumber;
     private View view_my;
     private CircleImageView headPortraitCiv; //个人信息
     private String customerPhoto = "";
@@ -128,6 +141,7 @@ public class MyFragment extends BaseFragment {
         view_my = inflater.inflate(R.layout.fg_my2, container, false);
         context = getActivity();
         ButterKnife.bind(this, view_my);
+        getShowNumber();
         return view_my;
     }
 
@@ -158,6 +172,8 @@ public class MyFragment extends BaseFragment {
         tvShoppingCart.setOnClickListener(this);
         tvCoupon.setOnClickListener(this);
         tvFavoriteProduct.setOnClickListener(this);
+
+        tvRefundSale.setOnClickListener(this);
         getShareInfo();
     }
 
@@ -286,6 +302,9 @@ public class MyFragment extends BaseFragment {
                 Router.build(RouterMapping.ROUTER_ACTIVITY_COLLECTION_LIST)
                         .go(this);
                 break;
+            case R.id.tv_refund_sale://退款
+                startActivity(new Intent(getActivity(), RefundMoneyActivity.class));
+                break;
         }
     }
 
@@ -371,6 +390,73 @@ public class MyFragment extends BaseFragment {
             }
         }).getEntityData(getActivity(), HttpURL.HTTP_POST_MY_GETSHARE, json);
     }
+
+    //获取订单数量 购物车数量
+    private void getShowNumber() {
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                if (TextUtil.isEmpty(s)) {
+                    showShort("系统异常");
+                    return;
+                }
+                OrderNumberInfo share = new Gson().fromJson(s, OrderNumberInfo.class);
+                if (share.getStatusCode() == 1) {
+                    tvCartNumber.setText(share.getOrder().getCartNum() + "");
+                    tvPendingPaymentNumber.setText(share.getOrder().getPaid() + "");
+                    tvToBeDeliveredNumber.setText(share.getOrder().getShipped() + "");
+                    tvToBeReceivedNumber.setText(share.getOrder().getReceived() + "");
+                    tvBeEvaluatedNumber.setText(share.getOrder().getEvaluation() + "");
+                    tvRefundSaleNumber.setText(share.getOrder().getRefund() + "");
+
+                    if (share.getOrder().getCartNum()==0){
+                        tvCartNumber.setVisibility(View.GONE);
+                    }
+                    if (share.getOrder().getPaid()==0){
+                        tvPendingPaymentNumber.setVisibility(View.GONE);
+                    }
+                    if (share.getOrder().getShipped()==0){
+                        tvToBeDeliveredNumber.setVisibility(View.GONE);
+                    }
+                    if (share.getOrder().getReceived()==0){
+                        tvToBeReceivedNumber.setVisibility(View.GONE);
+                    }
+                    if (share.getOrder().getEvaluation()==0){
+                        tvBeEvaluatedNumber.setVisibility(View.GONE);
+                    }
+                    if (share.getOrder().getRefund()==0){
+                        tvRefundSaleNumber.setVisibility(View.GONE);
+                    }
+                }else {
+                        tvCartNumber.setVisibility(View.GONE);
+                        tvPendingPaymentNumber.setVisibility(View.GONE);
+                        tvToBeDeliveredNumber.setVisibility(View.GONE);
+                        tvToBeReceivedNumber.setVisibility(View.GONE);
+                        tvBeEvaluatedNumber.setVisibility(View.GONE);
+                        tvRefundSaleNumber.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError() {
+            }
+
+            @Override
+            public void parseError() {
+            }
+
+            @Override
+            public void onBefore() {
+            }
+
+            @Override
+            public void onAfter() {
+            }
+        }).getEntityData(getActivity(), HttpURL.HTTP_POST_ORDER_OTHERONE, json);
+    }
+
 
     @Override
     public void onResume() {

@@ -133,17 +133,15 @@
 
                     <TextView
                         android:id="@+id/tv_cart_number"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
                         android:layout_marginLeft="-17dp"
-                        android:layout_marginTop="-3dp"
                         android:layout_toRightOf="@id/tv_shopping_cart"
                         android:background="@drawable/log_notice_text"
                         android:gravity="center"
                         android:text="0"
                         android:textColor="@color/white"
-                        android:textSize="11sp"
-                        android:visibility="gone" />
+                        android:textSize="11sp"/>
                 </RelativeLayout>
 
                 <TextView
@@ -233,9 +231,13 @@
                 android:paddingBottom="6dp"
                 android:paddingTop="8dp">
 
+                <RelativeLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1">
                 <TextView
                     android:id="@+id/tv_pending_payment"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_weight="1"
@@ -246,57 +248,127 @@
                     android:textColor="@color/tv_color_name"
                     android:textSize="13sp" />
 
-                <TextView
-                    android:id="@+id/tv_to_be_delivered"
+                    <TextView
+                        android:id="@+id/tv_pending_payment_number"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginLeft="-35dp"
+                        android:layout_toRightOf="@id/tv_pending_payment"
+                        android:background="@drawable/log_notice_text"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="11sp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                <TextView
+                    android:id="@+id/tv_to_be_delivered"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
                     android:drawablePadding="4dp"
                     android:drawableTop="@mipmap/daifahuo"
                     android:gravity="center"
                     android:text="@string/to_be_delivered"
                     android:textColor="@color/tv_color_name"
                     android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/tv_to_be_received"
+                    <TextView
+                        android:id="@+id/tv_to_be_delivered_number"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginLeft="-35dp"
+                        android:layout_toRightOf="@id/tv_to_be_delivered"
+                        android:background="@drawable/log_notice_text"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="11sp"/>
+                </RelativeLayout>
+                <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                <TextView
+                    android:id="@+id/tv_to_be_received"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
                     android:drawablePadding="4dp"
                     android:drawableTop="@mipmap/daishouhuo"
                     android:gravity="center"
                     android:text="@string/to_be_received"
                     android:textColor="@color/tv_color_name"
                     android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/tv_be_evaluated"
+                    <TextView
+                        android:id="@+id/tv_to_be_received_number"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginLeft="-35dp"
+                        android:layout_toRightOf="@id/tv_to_be_received"
+                        android:background="@drawable/log_notice_text"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="11sp"/>
+                </RelativeLayout>
+                <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                <TextView
+                    android:id="@+id/tv_be_evaluated"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
                     android:drawablePadding="4dp"
                     android:drawableTop="@mipmap/daipingjia"
                     android:gravity="center"
                     android:text="@string/be_evaluated"
                     android:textColor="@color/tv_color_name"
                     android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/tv_refund_sale"
+                    <TextView
+                        android:id="@+id/tv_be_evaluated_number"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginLeft="-35dp"
+                        android:layout_toRightOf="@id/tv_be_evaluated"
+                        android:background="@drawable/log_notice_text"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="11sp"/>
+                </RelativeLayout>
+                <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1">
+                <TextView
+                    android:id="@+id/tv_refund_sale"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_weight="1"
                     android:drawablePadding="4dp"
                     android:drawableTop="@mipmap/tuikuan"
                     android:gravity="center"
                     android:text="@string/refund_sale"
                     android:textColor="@color/tv_color_name"
                     android:textSize="13sp" />
+                    <TextView
+                        android:id="@+id/tv_refund_sale_number"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:layout_marginLeft="-35dp"
+                        android:layout_toRightOf="@id/tv_refund_sale"
+                        android:background="@drawable/log_notice_text"
+                        android:gravity="center"
+                        android:text="0"
+                        android:textColor="@color/white"
+                        android:textSize="11sp"/>
+                </RelativeLayout>
             </LinearLayout>
 
             <View

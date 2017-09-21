@@ -1,8 +1,10 @@
 package com.glory.bianyitong.ui.adapter.shop;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.glory.bianyitong.R;
@@ -17,18 +19,21 @@ import java.util.List;
  */
 
 public class OrderListAdapter extends BaseMultiItemQuickAdapter<MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>,BaseViewHolder>{
+    private Context context;
+
     /**
      * Same as QuickAdapter#QuickAdapter(Context,int) but with
      * some initialization data.
      *
      * @param data A new list is created out of this one to avoid mutable list
      */
-    public OrderListAdapter(List<MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>> data) {
+    public OrderListAdapter(List<MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>> data,Context context) {
         super(data);
         addItemType(MultiItemView.TITLE, R.layout.item_order_list_title);
         addItemType(MultiItemView.BODY, R.layout.item_order_list_body);
         addItemType(MultiItemView.FOOTER, R.layout.item_order_list_footer);
         addItemType(MultiItemView.OPERATION, R.layout.item_order_list_operation);
+        this.context=context;
     }
 
     @Override
@@ -40,13 +45,20 @@ public class OrderListAdapter extends BaseMultiItemQuickAdapter<MultiItemView<Re
                 break;
             case MultiItemView.BODY://内容view
                 ImageView imageView=helper.getView(R.id.order_list_item_body_img);
-                ServiceDialog.setPicture(item.getData().getFresh().getFreshPicture(),imageView,null);
+//                ServiceDialog.setPicture(item.getData().getFresh().getFreshPicture(),imageView,null);
+                Glide.with(context).load(item.getData().getFresh().getFreshPicture()).error(R.drawable.wait).placeholder(R.drawable.wait).into(imageView);
                 helper.setText(R.id.order_list_item_body_name,item.getData().getFresh().getFreshContent());
                 helper.setText(R.id.order_list_item_body_type,item.getData().getFresh().getFreshTypeLeaf());
                 helper.setText(R.id.order_list_item_body_price,"¥ "+item.getData().getFresh().getFreshPrice());
                 helper.setText(R.id.order_list_item_body_number,"x "+item.getData().getFreshQuantity());
                 break;
             case MultiItemView.FOOTER://脚步view
+                if (item.getFreight()==0){
+                    helper.setText(R.id.tv_yunfei,"(不含运费)");
+                }else {
+                    helper.setText(R.id.tv_yunfei,"(含运费"+item.getFreight()+"元");
+
+                }
                 break;
             case MultiItemView.OPERATION://操作view
                 helper.setText(R.id.order_list_item_opera_btn1,item.getMsg1());

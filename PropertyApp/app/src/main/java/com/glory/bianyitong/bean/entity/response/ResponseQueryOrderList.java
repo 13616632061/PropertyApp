@@ -57,7 +57,16 @@ public class ResponseQueryOrderList extends BaseResponseBean {
         private int channelType;
         private int totalPageNumber;
         private int nowPageNumber;
+        private String merchant_Name;
         private List<ListOrderDetailBean> listOrderDetail;
+
+        public String getMerchant_Name() {
+            return merchant_Name;
+        }
+
+        public void setMerchant_Name(String merchant_Name) {
+            this.merchant_Name = merchant_Name;
+        }
 
         public int getOrderID() {
             return orderID;
@@ -206,6 +215,7 @@ public class ResponseQueryOrderList extends BaseResponseBean {
             private float totalPrice;
             private FreshBean fresh;
 
+
             public int getDetailID() {
                 return detailID;
             }
@@ -290,6 +300,15 @@ public class ResponseQueryOrderList extends BaseResponseBean {
                 private String freshContent;
                 private Object list_FreshEvaluation;
                 private int totalEvaluation;
+                private String merchantName;
+
+                public String getMerchantName() {
+                    return merchantName;
+                }
+
+                public void setMerchantName(String merchantName) {
+                    this.merchantName = merchantName;
+                }
 
                 public int getFreshID() {
                     return freshID;
