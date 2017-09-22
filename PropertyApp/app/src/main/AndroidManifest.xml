@@ -537,10 +537,23 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
-
+        <!--使用优惠券-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.UseCouponActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <!--优惠券列表-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.CouponListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <!--查看物流-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.shop.LogisticsActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

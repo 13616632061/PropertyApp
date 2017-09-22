@@ -24,6 +24,7 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.activity.shop.FirmOrderActivity;
+import com.glory.bianyitong.ui.activity.shop.LogisticsActivity;
 import com.glory.bianyitong.ui.activity.shop.OrderDetailsActivity;
 import com.glory.bianyitong.ui.adapter.MultiItemView;
 import com.glory.bianyitong.ui.adapter.shop.OrderListAdapter;
@@ -58,6 +59,8 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 
     private List<MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>> data=new ArrayList<>();
     private OrderListAdapter adapter;
+    private ResponseQueryOrderList entity;
+
     @Override
     protected void initView() {
         orderType=getArguments().getInt("type");
@@ -109,7 +112,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
             @Override
             public void onSuccess(String s) {
                 orderListFrRefresh.setRefreshing(false);
-                ResponseQueryOrderList entity=new Gson().fromJson(s,ResponseQueryOrderList.class);
+                entity = new Gson().fromJson(s,ResponseQueryOrderList.class);
                 if(entity.getStatusCode()==1){
                     for (ResponseQueryOrderList.ListOrderBean listBean: entity.getList_Order()) {
                         data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.TITLE,listBean.getMerchant_Name(),getStatusName(listBean.getOrderStatus())));
@@ -120,12 +123,14 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                             data.add(listOrderDetailBeanMultiItemView);
                         }
                         MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.FOOTER);
+                        listOrderDetailBeanMultiItemView.setCartNum(listBean.getCartNum());
+                        listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
                         listOrderDetailBeanMultiItemView.setFreight(listBean.getFreight());
                         data.add(listOrderDetailBeanMultiItemView);
                         setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID(),listBean.getOrderPrice(),listBean);//添加操作菜单
                     }
                     adapter.notifyDataSetChanged();
-                    if(currentPageNumber<entity.getPageRowNumber()){
+                    if(currentPageNumber< entity.getPageRowNumber()){
                         adapter.setEnableLoadMore(true);
                         adapter.loadMoreComplete();
                     }else {
@@ -142,7 +147,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 
 //                    ToastUtils.showToast(getActivity(),entity.getAlertMessage());
                 }else{
-                    ToastUtils.showToast(getActivity(),entity.getAlertMessage());
+                    ToastUtils.showToast(getActivity(), entity.getAlertMessage());
                 }
 
             }
@@ -309,7 +314,11 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 //                    if(showDialog("确认收货 "+data.get(position).getOrdeId()))
                     operationProduct(data.get(position).getOrdeId(),4);
                 }else {
-                    ToastUtils.showToast(getActivity(),"查看物流");
+//                    ToastUtils.showToast(getActivity(),"查看物流");
+                    Intent intent=new Intent(getActivity(), LogisticsActivity.class);
+                    intent.putExtra("orderID",entity.getList_Order().get(position).getOrderID());
+                    Log.i("sodoasoda",entity.getList_Order().get(position).getOrderID()+"");
+                    startActivity(intent);
                 }
                 break;
             case Constant.ORDER_STATUS.STATUS_PAY_GOODSRECEPIT://待评价

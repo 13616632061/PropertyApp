@@ -57,8 +57,11 @@ public class OrderListAdapter extends BaseMultiItemQuickAdapter<MultiItemView<Re
                     helper.setText(R.id.tv_yunfei,"(不含运费)");
                 }else {
                     helper.setText(R.id.tv_yunfei,"(含运费"+item.getFreight()+"元");
-
                 }
+                helper.setText(R.id.tv_in_total,"共"+item.getCartNum()+"件商品");
+                helper.setText(R.id.tv_money,item.getOrderPaidPrice()+"");
+
+
                 break;
             case MultiItemView.OPERATION://操作view
                 helper.setText(R.id.order_list_item_opera_btn1,item.getMsg1());

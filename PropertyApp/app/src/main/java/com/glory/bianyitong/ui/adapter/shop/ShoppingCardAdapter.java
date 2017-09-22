@@ -56,6 +56,8 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
         helper.setText(R.id.item_title_shoppingcart_name,item.header);
         helper.setVisible(R.id.tv_coupon,item.isMore());
 
+        helper.addOnClickListener(R.id.tv_coupon);
+
     }
 
     @Override
@@ -92,7 +94,7 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
             amountView.setVisibility(View.GONE);
             helper.setText(R.id.tv_list_item_goods_price,"商品未上架");
             helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.text_color));
-        }else if(item.getData().getFresh().getIsDelete()){//是否删除
+        }else if(item.getData().getFresh().isIsDelete()){//是否删除
             helper.setVisible(R.id.shixiao,true);
             amountView.setVisibility(View.GONE);
             helper.setVisible(R.id.iv_button,false);
@@ -107,7 +109,7 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
         }
 
         if(commitData.containsKey(position)){
-            if (item.getData().isvalid()){
+            if (item.getData().isIsvalid()){
                 if(commitData.get(position).getData().getCartID()==item.getData().getCartID()){
                     checkBox.setChecked(true);
                 }else {
@@ -125,7 +127,7 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
         checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!item.getData().isvalid()){
+                if (!item.getData().isIsvalid()){
                     checkBox.setChecked(false);
                     ToastUtils.showShort(context, "无法配送到当前生鲜柜");
                 }

@@ -77,7 +77,7 @@ public class OkGoRequest {
 //        OkGo.post(HttpURL.HTTP_URl+url)
                 .tag(this)
                 .params("request", request)
-//                .headers(new HttpHeaders("Content-Type","application/x-www-form-urlencoded"))
+                .headers(new HttpHeaders("Content-Type","application/x-www-form-urlencoded"))
                 .execute(new StringCallback() {
                     @Override
                     public void onSuccess(String s, Call call, Response response) {

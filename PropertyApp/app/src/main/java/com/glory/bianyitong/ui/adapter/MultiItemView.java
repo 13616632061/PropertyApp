@@ -20,6 +20,29 @@ public class MultiItemView <T> implements MultiItemEntity {
     private long ordeId;
     private float totalMoney;//订单总金额
     private float freight;//运费
+    private float orderPaidPrice;//订单实付金额
+    private int cartNum;//订单商品数量
+
+
+    public static int getTITLE() {
+        return TITLE;
+    }
+
+    public float getOrderPaidPrice() {
+        return orderPaidPrice;
+    }
+
+    public void setOrderPaidPrice(float orderPaidPrice) {
+        this.orderPaidPrice = orderPaidPrice;
+    }
+
+    public int getCartNum() {
+        return cartNum;
+    }
+
+    public void setCartNum(int cartNum) {
+        this.cartNum = cartNum;
+    }
 
     public float getFreight() {
         return freight;

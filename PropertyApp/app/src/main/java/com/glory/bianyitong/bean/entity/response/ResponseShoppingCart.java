@@ -24,16 +24,18 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
 
     public static class ListShoppingCartBean {
         /**
-         * merchantID : 29
-         * merchantName : 宝安44区生鲜店
-         * listShopping : [{"cartID":70,"freshID":11,"quantity":1,"price":11,"fresh":{"freshID":11,"freshTypeID":118,"freshTypeName":"核果类","freshTypeLeaf":"四季鲜果","freshName":"石榴","freshPrice":11,"freshPicture":"http://byt.bytsz.com.cn/images/Fresh/Pomegranate.jpg","originName":"","merchant_ID":29,"merchantName":"宝安44区生鲜店","enable":false,"isDelete":null,"godownNumber":0,"list_FreshEvaluation":null,"freshEvaluation":null,"freshContents":null}}]
-         * isHave : false
+         * merchantID : 22
+         * merchantName : 宜家生鲜店
+         * listShopping : [{"cartID":94,"freshID":10,"quantity":2,"price":22,"fresh":{"freshID":10,"freshTypeID":118,"freshTypeName":"核果类","freshTypeLeaf":"四季鲜果","freshName":"奇异果","freshPrice":22,"freshPicture":"https://byt.bytsz.com.cn/images/Fresh/奇异果/1.jpg","originName":"","merchant_ID":22,"merchantName":"宜家生鲜店","enable":true,"isDelete":false,"godownNumber":100,"list_FreshEvaluation":null,"freshEvaluation":null,"cartNum":0,"freshContents":null},"isvalid":true}]
+         * listCoupon : [{"couponID":12,"couponName":"商家1","merchantID":22,"merchantName":"宜家生鲜店","startFee":50,"minimumAmount":0,"beginDate":"2017-09-18T11:38:47","endDate":"2017-10-08T11:38:47","freeMoney":20,"useDateType":1,"receivestatu":false,"totalPageNumber":0,"nowPageNumber":0,"pageRowCount":0},{"couponID":15,"couponName":"商家1","merchantID":22,"merchantName":"宜家生鲜店","startFee":0,"minimumAmount":0,"beginDate":"2017-09-12T00:00:00","endDate":"2017-09-30T00:00:00","freeMoney":2,"useDateType":1,"receivestatu":false,"totalPageNumber":0,"nowPageNumber":0,"pageRowCount":0}]
+         * isHave : true
          */
 
         private int merchantID;
         private String merchantName;
         private boolean isHave;
         private List<ListShoppingBean> listShopping;
+        private List<ListCouponBean> listCoupon;
 
         public int getMerchantID() {
             return merchantID;
@@ -67,30 +69,30 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
             this.listShopping = listShopping;
         }
 
+        public List<ListCouponBean> getListCoupon() {
+            return listCoupon;
+        }
+
+        public void setListCoupon(List<ListCouponBean> listCoupon) {
+            this.listCoupon = listCoupon;
+        }
+
         public static class ListShoppingBean {
             /**
-             * cartID : 70
-             * freshID : 11
-             * quantity : 1
-             * price : 11.0
-             * fresh : {"freshID":11,"freshTypeID":118,"freshTypeName":"核果类","freshTypeLeaf":"四季鲜果","freshName":"石榴","freshPrice":11,"freshPicture":"http://byt.bytsz.com.cn/images/Fresh/Pomegranate.jpg","originName":"","merchant_ID":29,"merchantName":"宝安44区生鲜店","enable":false,"isDelete":null,"godownNumber":0,"list_FreshEvaluation":null,"freshEvaluation":null,"freshContents":null}
+             * cartID : 94
+             * freshID : 10
+             * quantity : 2
+             * price : 22.0
+             * fresh : {"freshID":10,"freshTypeID":118,"freshTypeName":"核果类","freshTypeLeaf":"四季鲜果","freshName":"奇异果","freshPrice":22,"freshPicture":"https://byt.bytsz.com.cn/images/Fresh/奇异果/1.jpg","originName":"","merchant_ID":22,"merchantName":"宜家生鲜店","enable":true,"isDelete":false,"godownNumber":100,"list_FreshEvaluation":null,"freshEvaluation":null,"cartNum":0,"freshContents":null}
+             * isvalid : true
              */
 
             private int cartID;
             private int freshID;
-            private int quantity=0;
-            private double price=0;
+            private int quantity;
+            private double price;
             private FreshBean fresh;
             private boolean isvalid;
-
-            public boolean isvalid() {
-
-                return isvalid;
-            }
-
-            public void setIsvalid(boolean isvalid) {
-                this.isvalid = isvalid;
-            }
 
             public int getCartID() {
                 return cartID;
@@ -132,23 +134,32 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
                 this.fresh = fresh;
             }
 
+            public boolean isIsvalid() {
+                return isvalid;
+            }
+
+            public void setIsvalid(boolean isvalid) {
+                this.isvalid = isvalid;
+            }
+
             public static class FreshBean {
                 /**
-                 * freshID : 11
+                 * freshID : 10
                  * freshTypeID : 118
                  * freshTypeName : 核果类
                  * freshTypeLeaf : 四季鲜果
-                 * freshName : 石榴
-                 * freshPrice : 11.0
-                 * freshPicture : http://byt.bytsz.com.cn/images/Fresh/Pomegranate.jpg
+                 * freshName : 奇异果
+                 * freshPrice : 22.0
+                 * freshPicture : https://byt.bytsz.com.cn/images/Fresh/奇异果/1.jpg
                  * originName :
-                 * merchant_ID : 29
-                 * merchantName : 宝安44区生鲜店
-                 * enable : false
-                 * isDelete : null
-                 * godownNumber : 0
+                 * merchant_ID : 22
+                 * merchantName : 宜家生鲜店
+                 * enable : true
+                 * isDelete : false
+                 * godownNumber : 100
                  * list_FreshEvaluation : null
                  * freshEvaluation : null
+                 * cartNum : 0
                  * freshContents : null
                  */
 
@@ -163,13 +174,12 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
                 private int merchant_ID;
                 private String merchantName;
                 private boolean enable;
-                private boolean isDelete=false;
+                private boolean isDelete;
                 private int godownNumber;
                 private Object list_FreshEvaluation;
                 private Object freshEvaluation;
+                private int cartNum;
                 private Object freshContents;
-
-
                 public FreshBean(String freshPicture,int merchant_ID) {
                     this.freshPicture = freshPicture;
                     this.merchant_ID=merchant_ID;
@@ -262,7 +272,7 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
                     this.enable = enable;
                 }
 
-                public boolean getIsDelete() {
+                public boolean isIsDelete() {
                     return isDelete;
                 }
 
@@ -294,6 +304,14 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
                     this.freshEvaluation = freshEvaluation;
                 }
 
+                public int getCartNum() {
+                    return cartNum;
+                }
+
+                public void setCartNum(int cartNum) {
+                    this.cartNum = cartNum;
+                }
+
                 public Object getFreshContents() {
                     return freshContents;
                 }
@@ -301,6 +319,152 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
                 public void setFreshContents(Object freshContents) {
                     this.freshContents = freshContents;
                 }
+            }
+        }
+
+        public static class ListCouponBean {
+            /**
+             * couponID : 12
+             * couponName : 商家1
+             * merchantID : 22
+             * merchantName : 宜家生鲜店
+             * startFee : 50
+             * minimumAmount : 0.0
+             * beginDate : 2017-09-18T11:38:47
+             * endDate : 2017-10-08T11:38:47
+             * freeMoney : 20.0
+             * useDateType : 1
+             * receivestatu : false
+             * totalPageNumber : 0
+             * nowPageNumber : 0
+             * pageRowCount : 0
+             */
+
+            private int couponID;
+            private String couponName;
+            private int merchantID;
+            private String merchantName;
+            private int startFee;
+            private double minimumAmount;
+            private String beginDate;
+            private String endDate;
+            private double freeMoney;
+            private int useDateType;
+            private boolean receivestatu;
+            private int totalPageNumber;
+            private int nowPageNumber;
+            private int pageRowCount;
+
+            public int getCouponID() {
+                return couponID;
+            }
+
+            public void setCouponID(int couponID) {
+                this.couponID = couponID;
+            }
+
+            public String getCouponName() {
+                return couponName;
+            }
+
+            public void setCouponName(String couponName) {
+                this.couponName = couponName;
+            }
+
+            public int getMerchantID() {
+                return merchantID;
+            }
+
+            public void setMerchantID(int merchantID) {
+                this.merchantID = merchantID;
+            }
+
+            public String getMerchantName() {
+                return merchantName;
+            }
+
+            public void setMerchantName(String merchantName) {
+                this.merchantName = merchantName;
+            }
+
+            public int getStartFee() {
+                return startFee;
+            }
+
+            public void setStartFee(int startFee) {
+                this.startFee = startFee;
+            }
+
+            public double getMinimumAmount() {
+                return minimumAmount;
+            }
+
+            public void setMinimumAmount(double minimumAmount) {
+                this.minimumAmount = minimumAmount;
+            }
+
+            public String getBeginDate() {
+                return beginDate;
+            }
+
+            public void setBeginDate(String beginDate) {
+                this.beginDate = beginDate;
+            }
+
+            public String getEndDate() {
+                return endDate;
+            }
+
+            public void setEndDate(String endDate) {
+                this.endDate = endDate;
+            }
+
+            public double getFreeMoney() {
+                return freeMoney;
+            }
+
+            public void setFreeMoney(double freeMoney) {
+                this.freeMoney = freeMoney;
+            }
+
+            public int getUseDateType() {
+                return useDateType;
+            }
+
+            public void setUseDateType(int useDateType) {
+                this.useDateType = useDateType;
+            }
+
+            public boolean isReceivestatu() {
+                return receivestatu;
+            }
+
+            public void setReceivestatu(boolean receivestatu) {
+                this.receivestatu = receivestatu;
+            }
+
+            public int getTotalPageNumber() {
+                return totalPageNumber;
+            }
+
+            public void setTotalPageNumber(int totalPageNumber) {
+                this.totalPageNumber = totalPageNumber;
+            }
+
+            public int getNowPageNumber() {
+                return nowPageNumber;
+            }
+
+            public void setNowPageNumber(int nowPageNumber) {
+                this.nowPageNumber = nowPageNumber;
+            }
+
+            public int getPageRowCount() {
+                return pageRowCount;
+            }
+
+            public void setPageRowCount(int pageRowCount) {
+                this.pageRowCount = pageRowCount;
             }
         }
     }

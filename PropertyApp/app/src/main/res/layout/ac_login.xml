@@ -39,6 +39,7 @@
             android:background="@null"
             android:drawableLeft="@drawable/log_phone_login"
             android:drawablePadding="15dp"
+            android:enabled="true"
             android:hint="@string/input_phone_no"
             android:inputType="phone"
             android:maxLength="11"

@@ -14,12 +14,10 @@ public class ResponseQueryCouponList extends BaseResponseBean implements Seriali
 
     /**
      * receiveID : 0
-     * couponReceive : {"notused":2,"used":1,"timeout":1}
-     * listCouponReceive : [{"receiveID":2,"couponID":4,"receiveDateTime":"2017-06-27T17:31:25","couponStatus":0,"coupon":{"couponID":4,"couponType":3,"quota":2,"minimumAmount":4,"beginDate":"2017-06-20T00:00:00","endDate":"2017-07-30T00:00:00","freeType":2,"freeMoney":2,"freeHighestPrice":10,"publishDateTime":"2017-06-10T00:00:00","couponNumber":10}},{"receiveID":3,"couponID":5,"receiveDateTime":"2017-06-27T17:30:46","couponStatus":0,"coupon":{"couponID":5,"couponType":1,"quota":2,"minimumAmount":4,"beginDate":"2017-06-20T00:00:00","endDate":"2017-07-30T00:00:00","freeType":2,"freeMoney":2,"freeHighestPrice":10,"publishDateTime":"2017-06-10T00:00:00","couponNumber":10}}]
+     * listCouponReceive : [{"receiveID":6,"couponID":8,"receiveDateTime":"2017-09-18T00:00:00","couponStatus":0,"isDelete":0,"beginDate":"2017-09-18T00:00:00","endDate":"2017-10-08T00:00:00","receiveNo":"0","coupon":{"couponID":8,"couponName":"平台1","merchantID":0,"startFee":0,"freeMoney":2,"commodityRange":1,"platFormType":1,"receivestatu":false,"totalPageNumber":0,"nowPageNumber":0,"pageRowCount":0},"dateNow":"2017-09-21T14:26:10"}]
      */
 
     private int receiveID;
-    private CouponReceiveBean couponReceive;
     private List<ListCouponReceiveBean> listCouponReceive;
 
     public int getReceiveID() {
@@ -30,14 +28,6 @@ public class ResponseQueryCouponList extends BaseResponseBean implements Seriali
         this.receiveID = receiveID;
     }
 
-    public CouponReceiveBean getCouponReceive() {
-        return couponReceive;
-    }
-
-    public void setCouponReceive(CouponReceiveBean couponReceive) {
-        this.couponReceive = couponReceive;
-    }
-
     public List<ListCouponReceiveBean> getListCouponReceive() {
         return listCouponReceive;
     }
@@ -46,56 +36,30 @@ public class ResponseQueryCouponList extends BaseResponseBean implements Seriali
         this.listCouponReceive = listCouponReceive;
     }
 
-    public static class CouponReceiveBean implements Serializable{
+    public static class ListCouponReceiveBean {
         /**
-         * notused : 2
-         * used : 1
-         * timeout : 1
-         */
-
-        private int notused;
-        private int used;
-        private int timeout;
-
-        public int getNotused() {
-            return notused;
-        }
-
-        public void setNotused(int notused) {
-            this.notused = notused;
-        }
-
-        public int getUsed() {
-            return used;
-        }
-
-        public void setUsed(int used) {
-            this.used = used;
-        }
-
-        public int getTimeout() {
-            return timeout;
-        }
-
-        public void setTimeout(int timeout) {
-            this.timeout = timeout;
-        }
-    }
-
-    public static class ListCouponReceiveBean implements Serializable{
-        /**
-         * receiveID : 2
-         * couponID : 4
-         * receiveDateTime : 2017-06-27T17:31:25
+         * receiveID : 6
+         * couponID : 8
+         * receiveDateTime : 2017-09-18T00:00:00
          * couponStatus : 0
-         * coupon : {"couponID":4,"couponType":3,"quota":2,"minimumAmount":4,"beginDate":"2017-06-20T00:00:00","endDate":"2017-07-30T00:00:00","freeType":2,"freeMoney":2,"freeHighestPrice":10,"publishDateTime":"2017-06-10T00:00:00","couponNumber":10}
+         * isDelete : 0
+         * beginDate : 2017-09-18T00:00:00
+         * endDate : 2017-10-08T00:00:00
+         * receiveNo : 0
+         * coupon : {"couponID":8,"couponName":"平台1","merchantID":0,"startFee":0,"freeMoney":2,"commodityRange":1,"platFormType":1,"receivestatu":false,"totalPageNumber":0,"nowPageNumber":0,"pageRowCount":0}
+         * dateNow : 2017-09-21T14:26:10
          */
 
         private int receiveID;
         private int couponID;
         private String receiveDateTime;
         private int couponStatus;
+        private int isDelete;
+        private String beginDate;
+        private String endDate;
+        private String receiveNo;
         private CouponBean coupon;
+        private String dateNow;
 
         public int getReceiveID() {
             return receiveID;
@@ -129,6 +93,38 @@ public class ResponseQueryCouponList extends BaseResponseBean implements Seriali
             this.couponStatus = couponStatus;
         }
 
+        public int getIsDelete() {
+            return isDelete;
+        }
+
+        public void setIsDelete(int isDelete) {
+            this.isDelete = isDelete;
+        }
+
+        public String getBeginDate() {
+            return beginDate;
+        }
+
+        public void setBeginDate(String beginDate) {
+            this.beginDate = beginDate;
+        }
+
+        public String getEndDate() {
+            return endDate;
+        }
+
+        public void setEndDate(String endDate) {
+            this.endDate = endDate;
+        }
+
+        public String getReceiveNo() {
+            return receiveNo;
+        }
+
+        public void setReceiveNo(String receiveNo) {
+            this.receiveNo = receiveNo;
+        }
+
         public CouponBean getCoupon() {
             return coupon;
         }
@@ -137,41 +133,47 @@ public class ResponseQueryCouponList extends BaseResponseBean implements Seriali
             this.coupon = coupon;
         }
 
+        public String getDateNow() {
+            return dateNow;
+        }
+
+        public void setDateNow(String dateNow) {
+            this.dateNow = dateNow;
+        }
+
         public static class CouponBean {
             /**
-             * couponID : 4
-             * couponType : 3
-             * quota : 2
-             * minimumAmount : 4.0
-             * beginDate : 2017-06-20T00:00:00
-             * endDate : 2017-07-30T00:00:00
-             * freeType : 2
-             * freeMoney : 2.0
-             * freeHighestPrice : 10.0
-             * publishDateTime : 2017-06-10T00:00:00
-             * couponNumber : 10
+             * couponID : 8
+             * couponName : 平台1
+             * merchantID : 0
+             * startFee : 0
+             * freeMoney : 2
+             * commodityRange : 1
+             * platFormType : 1
+             * receivestatu : false
+             * totalPageNumber : 0
+             * nowPageNumber : 0
+             * pageRowCount : 0
              */
 
             private int couponID;
-            private int couponType;
-            private int quota;
-            private double minimumAmount;
-            private String beginDate;
-            private String endDate;
-            private int freeType=-1;
-            private double freeMoney;
-            private double freeHighestPrice;
-            private String publishDateTime;
-            private int couponNumber;
-            private String couponName;//优惠券名称
-            private float freePercentage;//减免百分比
+            private String couponName;
+            private int merchantID;
+            private int startFee;
+            private int freeMoney;
+            private int commodityRange;
+            private int platFormType;
+            private boolean receivestatu;
+            private int totalPageNumber;
+            private int nowPageNumber;
+            private int pageRowCount;
 
-            public float getFreePercentage() {
-                return freePercentage;
+            public int getCouponID() {
+                return couponID;
             }
 
-            public void setFreePercentage(float freePercentage) {
-                this.freePercentage = freePercentage;
+            public void setCouponID(int couponID) {
+                this.couponID = couponID;
             }
 
             public String getCouponName() {
@@ -182,92 +184,76 @@ public class ResponseQueryCouponList extends BaseResponseBean implements Seriali
                 this.couponName = couponName;
             }
 
-            public int getCouponID() {
-                return couponID;
+            public int getMerchantID() {
+                return merchantID;
             }
 
-            public void setCouponID(int couponID) {
-                this.couponID = couponID;
+            public void setMerchantID(int merchantID) {
+                this.merchantID = merchantID;
             }
 
-            public int getCouponType() {
-                return couponType;
+            public int getStartFee() {
+                return startFee;
             }
 
-            public void setCouponType(int couponType) {
-                this.couponType = couponType;
+            public void setStartFee(int startFee) {
+                this.startFee = startFee;
             }
 
-            public int getQuota() {
-                return quota;
-            }
-
-            public void setQuota(int quota) {
-                this.quota = quota;
-            }
-
-            public double getMinimumAmount() {
-                return minimumAmount;
-            }
-
-            public void setMinimumAmount(double minimumAmount) {
-                this.minimumAmount = minimumAmount;
-            }
-
-            public String getBeginDate() {
-                return beginDate;
-            }
-
-            public void setBeginDate(String beginDate) {
-                this.beginDate = beginDate;
-            }
-
-            public String getEndDate() {
-                return endDate;
-            }
-
-            public void setEndDate(String endDate) {
-                this.endDate = endDate;
-            }
-
-            public int getFreeType() {
-                return freeType;
-            }
-
-            public void setFreeType(int freeType) {
-                this.freeType = freeType;
-            }
-
-            public double getFreeMoney() {
+            public int getFreeMoney() {
                 return freeMoney;
             }
 
-            public void setFreeMoney(double freeMoney) {
+            public void setFreeMoney(int freeMoney) {
                 this.freeMoney = freeMoney;
             }
 
-            public double getFreeHighestPrice() {
-                return freeHighestPrice;
+            public int getCommodityRange() {
+                return commodityRange;
             }
 
-            public void setFreeHighestPrice(double freeHighestPrice) {
-                this.freeHighestPrice = freeHighestPrice;
+            public void setCommodityRange(int commodityRange) {
+                this.commodityRange = commodityRange;
             }
 
-            public String getPublishDateTime() {
-                return publishDateTime;
+            public int getPlatFormType() {
+                return platFormType;
             }
 
-            public void setPublishDateTime(String publishDateTime) {
-                this.publishDateTime = publishDateTime;
+            public void setPlatFormType(int platFormType) {
+                this.platFormType = platFormType;
             }
 
-            public int getCouponNumber() {
-                return couponNumber;
+            public boolean isReceivestatu() {
+                return receivestatu;
             }
 
-            public void setCouponNumber(int couponNumber) {
-                this.couponNumber = couponNumber;
+            public void setReceivestatu(boolean receivestatu) {
+                this.receivestatu = receivestatu;
+            }
+
+            public int getTotalPageNumber() {
+                return totalPageNumber;
+            }
+
+            public void setTotalPageNumber(int totalPageNumber) {
+                this.totalPageNumber = totalPageNumber;
+            }
+
+            public int getNowPageNumber() {
+                return nowPageNumber;
+            }
+
+            public void setNowPageNumber(int nowPageNumber) {
+                this.nowPageNumber = nowPageNumber;
+            }
+
+            public int getPageRowCount() {
+                return pageRowCount;
+            }
+
+            public void setPageRowCount(int pageRowCount) {
+                this.pageRowCount = pageRowCount;
             }
         }
     }

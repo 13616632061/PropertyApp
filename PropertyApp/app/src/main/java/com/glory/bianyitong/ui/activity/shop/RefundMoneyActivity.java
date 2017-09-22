@@ -85,6 +85,10 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
                             listOrderDetailBeanMultiItemView.getData().setOrderID(listBean.getOrderID());
                             data.add(listOrderDetailBeanMultiItemView);
                         }
+                        MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.FOOTER);
+                        listOrderDetailBeanMultiItemView.setCartNum(listBean.getCartNum());
+                        listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
+                        listOrderDetailBeanMultiItemView.setFreight(listBean.getFreight());
                         data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.FOOTER));
                     }
                     adapter.notifyDataSetChanged();

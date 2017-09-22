@@ -58,7 +58,25 @@ public class ResponseQueryOrderList extends BaseResponseBean {
         private int totalPageNumber;
         private int nowPageNumber;
         private String merchant_Name;
+        private float orderPaidPrice;//订单实付金额
+        private int cartNum;//订单商品数量
         private List<ListOrderDetailBean> listOrderDetail;
+
+        public float getOrderPaidPrice() {
+            return orderPaidPrice;
+        }
+
+        public void setOrderPaidPrice(float orderPaidPrice) {
+            this.orderPaidPrice = orderPaidPrice;
+        }
+
+        public int getCartNum() {
+            return cartNum;
+        }
+
+        public void setCartNum(int cartNum) {
+            this.cartNum = cartNum;
+        }
 
         public String getMerchant_Name() {
             return merchant_Name;

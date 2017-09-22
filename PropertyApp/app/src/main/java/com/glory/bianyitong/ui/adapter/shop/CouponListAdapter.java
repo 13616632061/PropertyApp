@@ -29,12 +29,12 @@ public class CouponListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryCo
 
         helper.setText(R.id.item_fr_couponlist_img,"￥ "+item.getData().getCoupon().getFreeMoney());
 
-        String tip=item.getData().getCoupon().getMinimumAmount()>0?"满"+item.getData().getCoupon().getMinimumAmount()+"元可以使用":"不限额";
+        String tip=item.getData().getCoupon().getStartFee()>0?"满"+item.getData().getCoupon().getStartFee()+"元可以使用":"不限额";
         helper.setText(R.id.item_fr_couponlist_tip,tip);
         helper.setText(R.id.item_fr_couponlist_name,item.getData().getCoupon().getCouponName());
 
-        String startDate= DateUtil.format(DateUtil.parse(item.getData().getCoupon().getBeginDate()),DateUtil.DEFAULT_PATTERN_POINT);
-        String endDate= DateUtil.format(DateUtil.parse(item.getData().getCoupon().getEndDate()),DateUtil.DEFAULT_PATTERN_POINT);
+        String startDate= DateUtil.format(DateUtil.parse(item.getData().getBeginDate()),DateUtil.DEFAULT_PATTERN_POINT);
+        String endDate= DateUtil.format(DateUtil.parse(item.getData().getEndDate()),DateUtil.DEFAULT_PATTERN_POINT);
         helper.setText(R.id.item_fr_couponlist_date,startDate+"～"+endDate);
 
 

@@ -26,6 +26,7 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.OrderOhterOne;
 import com.glory.bianyitong.bean.ShopcartInfo;
 import com.glory.bianyitong.bean.entity.request.RequestCommitOrderByCart;
 import com.glory.bianyitong.bean.entity.request.RequestQueryConponListByYes;
@@ -38,6 +39,7 @@ import com.glory.bianyitong.bean.entity.response.ResponseSubmitOrder;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.activity.UseCouponActivity;
 import com.glory.bianyitong.ui.adapter.shop.FirmOrderAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.glory.bianyitong.widght.shop.AmountView;
@@ -130,6 +132,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     // TODO: 2017/7/18 查询优惠券数据
     private String couponJson="";
     private ResponseQueryCouponList.ListCouponReceiveBean couponBean=new ResponseQueryCouponList.ListCouponReceiveBean();//选择优惠券实体
+    private ResponseQueryCouponList queryCouponListbean;
+    private String json;
+
     @Override
     protected int getContentId() {
         return R.layout.activity_firm_order;
@@ -215,15 +220,22 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             case R.id.firm_order_lin_bill://发票
                 break;
             case R.id.firm_order_lin_coupon://优惠券
-                if(StringUtils.isEmpty(couponJson)){
+                if(queryCouponListbean.getListCouponReceive()!=null && queryCouponListbean.getListCouponReceive().size()>0){//可使用
+                    Intent intent=new Intent(this, UseCouponActivity.class);
+                    intent.putExtra("json",json);
+                    startActivity(intent);
+                }else {//无可使用
                     showShort("暂无优惠券可用");
-                    return;
                 }
-                Router.build(RouterMapping.ROUTER_ACTIVITY_COUPON_LIST)
-                        .with("source",2)
-                        .with("formValue",couponJson)
-                        .requestCode(REQUEST_CODE_COUPON)
-                        .go(this);
+//                if(StringUtils.isEmpty(couponJson)){
+//                    showShort("暂无优惠券可用");
+//                    return;
+//                }
+//                Router.build(RouterMapping.ROUTER_ACTIVITY_COUPON_LIST)
+//                        .with("source",2)
+//                        .with("formValue",couponJson)
+//                        .requestCode(REQUEST_CODE_COUPON)
+//                        .go(this);
                 break;
             case R.id.firm_order_commit://提交订单
                 if(addressBean==null){
@@ -232,12 +244,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 }
                 orderCommit();
                 break;
-            case R.id.firm_order_address_lin://选择地址
-//                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
-//                        .with("source",true)
-//                        .requestCode(REQUEST_CODE_ADDRESS)
-//                        .go(this);
-                break;
+
         }
     }
 
@@ -267,7 +274,6 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
         }
         String s = new Gson().toJson(list);
-        Log.i("listssss",s);
 //        orderByCart.setShoppingCarts(list);
         orderByCart.setListOrderDetail(orderDetails);
         return orderByCart;
@@ -298,7 +304,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         maps.put("SubmitType",type);//,1、生鲜详情页面立即购买 2、购物车结算）
 //        maps.put("shoppingCarts",shoppingCart());
         map.put("entityOrder",maps);
-        String json=new Gson().toJson(map);
+        json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -333,46 +339,58 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             public void onAfter() {
 
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_ORDER_COMMIT,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_ORDER_COMMIT, json);
     }
 
 
-    private RequestQueryConponListByYes dataFormatByYES(){
-        RequestQueryConponListByYes list=new RequestQueryConponListByYes(new RequestQueryConponListByYes.CouponReceive(0));
-        List<RequestQueryConponListByYes.OrderDetail> orderDetails=new ArrayList<>();
-        if(type==1){//直接下单
-
-            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean:data ) {
+//    private RequestQueryConponListByYes dataFormatByYES(){
+//        RequestQueryConponListByYes list=new RequestQueryConponListByYes(new RequestQueryConponListByYes.CouponReceive(0));
+//        List<RequestQueryConponListByYes.OrderDetail> orderDetails=new ArrayList<>();
+//        if(type==1){//直接下单
+//
+//            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean:data ) {
 //                orderDetails.add(new RequestQueryConponListByYes.OrderDetail(new RequestCommitOrderByCart.OrderDetail.Fresh(bean.getData().getFresh().getFreshTypeID(),bean.getData().getFresh().getMerchant_ID()),0,bean.getData().getFreshID(),bean.getData().getQuantity(),bean.getData().getPrice(),bean.getData().getPrice()*bean.getData().getQuantity()));
-            }
-            list.setListOrderDetail(orderDetails);
-        }else if(type==2){//购物车下单
-            List<Integer> lists=new ArrayList<>();
-            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean:data) {
-                if (!bean.isHeader)
-                    if(bean.getData().getCartID()!=0){
-                    lists.add(bean.getData().getCartID());
-                }
-            }
-            list.setShoppingCarts(lists);
-        }
-        list.setListOrderDetail(orderDetails);
-        return list;
-    }
+//            }
+//            list.setListOrderDetail(orderDetails);
+//        }else if(type==2){//购物车下单
+//            List<Integer> lists=new ArrayList<>();
+//            for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean:data) {
+//                if (!bean.isHeader)
+//                    if(bean.getData().getCartID()!=0){
+//                    lists.add(bean.getData().getCartID());
+//                }
+//            }
+//            list.setShoppingCarts(lists);
+//        }
+//        list.setListOrderDetail(orderDetails);
+//        return list;
+//    }
 
-    private void queryCouponForYES(){
+    private void queryCouponForYES(){//获取优惠券数量
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("entityCouponReceive",dataFormatByYES());
+        Map<String,Object> map2=new HashMap<>();
+        List<OrderOhterOne.ListDetailBean> listDetailBeen=new ArrayList<>();
+        for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> enty:data){
+            OrderOhterOne.ListDetailBean orderOhterOne=new OrderOhterOne.ListDetailBean();
+            orderOhterOne.setFreshID(enty.getData().getFreshID());
+            orderOhterOne.setFreshQuantity(enty.getData().getQuantity());
+            listDetailBeen.add(orderOhterOne);
+        }
+        map2.put("listDetail",listDetailBeen);
+        map.put("entityCouponReceive",map2);
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+
             @Override
             public void onSuccess(String s) {
                 couponJson=s;
-                ResponseQueryCouponList bean=new Gson().fromJson(s,ResponseQueryCouponList.class);
-                if(bean.getStatusCode()==1){
-                    if(bean.getCouponReceive()!=null && bean.getCouponReceive().getNotused()>0){//可使用
+                queryCouponListbean = new Gson().fromJson(s,ResponseQueryCouponList.class);
+                if(queryCouponListbean.getStatusCode()==1){
+
+                    if(queryCouponListbean.getListCouponReceive()!=null && queryCouponListbean.getListCouponReceive().size()>0){//可使用
                         firmOrderLinCoupon.setEnabled(true);
-                        firmOrderCoupon.setText("可用 *"+bean.getCouponReceive().getNotused());
+                        firmOrderCoupon.setText("可用优惠券"+ queryCouponListbean.getListCouponReceive().size()+"张");
+                        firmOrderCoupon.setTextColor(getResources().getColor(R.color.red1));
                     }else {//无可使用
                         firmOrderLinCoupon.setEnabled(false);
                         firmOrderCoupon.setText("无可用");
@@ -399,7 +417,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             public void onAfter() {
 
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_COUPON_QUERY_LIST,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_COUPON_QUERY_OTHERONE,json);
 
     }
     @Override
@@ -431,14 +449,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 if(!StringUtils.isEmpty(json)){
                     ResponseQueryCouponList.ListCouponReceiveBean bena = new Gson().fromJson(json,ResponseQueryCouponList.ListCouponReceiveBean.class);
                     couponBean=bena;
-                    if(couponBean!=null){
-                        if(couponBean.getCoupon().getFreeType()==1){
-                            allFreePrice=couponBean.getCoupon().getFreePercentage()/100*allPrice;
-                        }else if(couponBean.getCoupon().getFreeType()==2){
-                            allFreePrice=couponBean.getCoupon().getFreeMoney();
-                        }
-                        firmOrderCoupon.setText("￥ -"+allFreePrice);
-                    }
+
                 }
 
             }
@@ -459,10 +470,11 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         data.get(position).getData().setQuantity(amount);
         adapter.notifyDataSetChanged();
         updateShoppingCardPrice();
+        queryCouponForYES();
     }
 
     private void updateShoppingCardPrice() {
-        double allPrice = 0;
+        double allPrice =  0;
         for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean : data) {
             ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean entity = bean.getData();
             if (!bean.isHeader)

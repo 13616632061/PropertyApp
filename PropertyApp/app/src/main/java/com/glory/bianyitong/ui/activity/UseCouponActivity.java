@@ -1,0 +1,131 @@
+package com.glory.bianyitong.ui.activity;
+
+import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.chenenyu.router.Router;
+import com.glory.bianyitong.R;
+import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryCouponList;
+import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
+import com.glory.bianyitong.ui.adapter.shop.UseCouponListAdapter;
+import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+/**
+ * Created by lucy on 2017/9/22.
+ * 使用优惠券
+ */
+public class UseCouponActivity extends BaseActivity {
+
+    List<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>> data = new ArrayList<>();
+    @BindView(R.id.iv_title_back)
+    ImageView ivTitleBack;
+    @BindView(R.id.iv_title_text_left2)
+    TextView ivTitleTextLeft2;
+    @BindView(R.id.left_return_btn)
+    RelativeLayout leftReturnBtn;
+    @BindView(R.id.iv_title_text_left)
+    TextView ivTitleTextLeft;
+    @BindView(R.id.title_ac_text)
+    TextView titleAcText;
+    @BindView(R.id.iv_title_text_right)
+    TextView ivTitleTextRight;
+    @BindView(R.id.recycler_view)
+    RecyclerView recyclerView;
+    private UseCouponListAdapter adapter;
+
+    @Override
+    protected int getContentId() {
+        return R.layout.activity_usecoupon;
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+        Router.injectParams(this);
+        inintTitle("选择优惠券", false, "");
+        initView();
+
+    }
+
+    private void initView() {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        adapter = new UseCouponListAdapter(R.layout.item_usecoupon, data);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+        queryCouponForYES();
+    }
+
+
+    @OnClick({R.id.iv_title_back, R.id.iv_title_text_left2})
+    void onClickBtn(View view) {
+        switch (view.getId()) {
+            case R.id.iv_title_back:
+            case R.id.iv_title_text_left2:
+                finish();
+                break;
+
+        }
+    }
+    //获取优惠券
+    private void queryCouponForYES() {
+        String json = getIntent().getStringExtra("json");
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryCouponList queryCouponListbean = new Gson().fromJson(s, ResponseQueryCouponList.class);
+                if (queryCouponListbean.getStatusCode() == 1) {
+                    for (ResponseQueryCouponList.ListCouponReceiveBean bean : queryCouponListbean.getListCouponReceive()) {
+                        data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(bean));
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onError() {
+
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_COUPON_QUERY_OTHERONE, json);
+
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
+}

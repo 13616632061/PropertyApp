@@ -23,6 +23,7 @@ import com.glory.bianyitong.ui.fragment.RootFragment;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,9 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.glory.bianyitong.ui.activity.shop.CouponListActivity.belongCalendar;
+import static com.glory.bianyitong.ui.activity.shop.CouponListActivity.strToDateLong;
 
 /**
  * Created by Administrator on 2017/7/14.
@@ -89,19 +93,16 @@ public class CouponListFragment extends RootFragment implements BaseQuickAdapter
 
     private void requestCouponList(int status){
 
-        if(source==2 && type==0){
-            if(!StringUtils.isEmpty(couponJson)){
-                formatData(couponJson);
-            }else {
-                adapter.setEmptyView(R.layout.layout_empty);
-            }
-            return;
-        }
+//        if(source==2 && type==0){
+//            if(!StringUtils.isEmpty(couponJson)){
+//                formatData(couponJson);
+//            }else {
+//                adapter.setEmptyView(R.layout.layout_empty);
+//            }
+//            return;
+//        }
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        Map<String,Object> mapValues=new HashMap<>();
-        mapValues.put("couponReceive",new RequestQueryCouponList(status));
-        map.put("entityCouponReceive",mapValues);
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -135,9 +136,30 @@ public class CouponListFragment extends RootFragment implements BaseQuickAdapter
     private void formatData(String json){
         ResponseQueryCouponList bean=new Gson().fromJson(json,ResponseQueryCouponList.class);
         if(bean.getStatusCode()==1){
-            for (ResponseQueryCouponList.ListCouponReceiveBean entity:bean.getListCouponReceive()
-                    ) {
-                data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
+            for (ResponseQueryCouponList.ListCouponReceiveBean entity:bean.getListCouponReceive()) {
+                Date beginDate = strToDateLong(entity.getBeginDate().replace("T"," "));
+                Date endDate = strToDateLong(entity.getEndDate().replace("T"," "));
+                Date nowDate = strToDateLong(entity.getDateNow().replace("T"," "));
+                switch (type){//（0未使用1已使用-1已过期）
+                    case 0:
+                        if (entity.getCouponStatus()==0&&belongCalendar(nowDate,beginDate,endDate)){
+                            data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
+                        }
+                        break;
+
+                    case 1:
+                        if (entity.getCouponStatus()==1){// 0未使用 1已使用
+                            data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
+                        }
+
+                        break;
+
+                    case -1:
+                        if (entity.getCouponStatus()==0&&!belongCalendar(nowDate,beginDate,endDate)){
+                            data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
+                        }
+                        break;
+                }
             }
             adapter.notifyDataSetChanged();
         }
