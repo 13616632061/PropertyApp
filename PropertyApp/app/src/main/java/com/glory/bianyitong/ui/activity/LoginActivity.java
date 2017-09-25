@@ -24,6 +24,7 @@ import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.jpush.ExampleUtil;
 import com.glory.bianyitong.util.DataUtils;
+import com.glory.bianyitong.util.SharedUtil;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
@@ -124,6 +125,8 @@ public class LoginActivity extends BaseActivity {
         //15899647853
         login_phone.setText(mCache.getAsString("phone")); //上一个人的电话号码
     }
+
+
 
     @Override
     public void onClick(View view) {
@@ -255,6 +258,12 @@ public class LoginActivity extends BaseActivity {
 
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        OkGoRequest.openLogin=true;
+    }
+
     //登录
     private void Login(String code, final String phone) {//DeviceType 1 ios,3 android
         Database.USER_MAP = null;
@@ -299,6 +308,7 @@ public class LoginActivity extends BaseActivity {
 //                    SharePreToolsKits.putJsonDataString(LoginActivity.this, Constant.user, s); //缓存登录后信息
                     //登录成功
                     LoginActivity.this.finish();
+                    SharedUtil.putBoolean("login", true);
                 }
 
 
@@ -327,6 +337,8 @@ public class LoginActivity extends BaseActivity {
             }
         }).getEntityData(this,url, json);
     }
+
+
 
     private void my_community() { //我的社区
         String communityID_str = mCache.getAsString(Constant.communityID);

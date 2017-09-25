@@ -1,16 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ImageView
+    <TextView
         android:id="@+id/iv_open_the_cabinet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginLeft="11dp"
         android:layout_marginTop="18dp"
-        android:src="@drawable/pic_my_head"/>
+        android:background="@drawable/shape_yellow"
+        android:text="开柜"
+        android:textColor="@color/white"
+        android:gravity="center"
+        android:textSize="16dp"
+        />
 
     <RelativeLayout
         android:id="@+id/rl_express"
@@ -24,7 +29,7 @@
             android:id="@+id/iv_express_icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/icon_mynews"/>
+            android:src="@drawable/xiangzi"/>
         <TextView
             android:id="@+id/tv_express_name"
             android:layout_width="wrap_content"
@@ -56,5 +61,14 @@
         android:layout_height="1dp"
         android:layout_below="@+id/rl_express"
         android:background="@color/linegray"/>
+    <ImageView
+        android:id="@+id/iv_share"
+        android:paddingBottom="5dp"
+        android:paddingTop="5dp"
+        android:paddingLeft="6dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/item_express_line"
+        android:src="@drawable/fenxiangyaoshi"/>
 
 </RelativeLayout>

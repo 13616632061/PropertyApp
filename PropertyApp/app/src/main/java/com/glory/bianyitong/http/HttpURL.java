@@ -173,6 +173,10 @@ public class HttpURL {
     public static String HTTP_POST_SHOP_QUERY_GOOD_SHOP="/ApiFresh/QueryFreshChoice";//生鲜精品
     public static String HTTP_POST_SHOP_QUERY_TTPE_RIGHT="/ApiArea/Query";//生鲜首页左侧
     public static String HTTP_POST_SHOP_QUERY_GODOWNDETAIL="/ApiGodownDetail/Query";//库存信息查询
+    public static String HTTP_POST_SHOP_QUERY_PCIKUP="/ApiPickup/Query";//取件列表
+    public static String HTTP_POST_SHOP_QUERY_PCIKUPADD="/ApiPickup/Add";//分享临时钥匙
+
+
 
     /**
      * 购物车

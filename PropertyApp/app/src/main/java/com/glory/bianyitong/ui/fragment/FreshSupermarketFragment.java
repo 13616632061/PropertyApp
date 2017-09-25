@@ -48,6 +48,7 @@ import com.glory.bianyitong.ui.adapter.shop.FreshPopTypeTwoAdapter;
 import com.glory.bianyitong.ui.adapter.shop.FreshShopListAdapter;
 import com.glory.bianyitong.ui.adapter.shop.FreshSuperMarketTypeAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
+import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.TextUtil;
 import com.google.gson.Gson;
 import com.yanzhenjie.permission.AndPermission;
@@ -166,8 +167,12 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                         .go(getActivity());
                 break;
             case R.id.iv_title_right://购物车
-                Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
-                        .go(getActivity());
+                if (!SharedUtil.getBoolean("login")){
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(getActivity());
+                }else {
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
+                            .go(getActivity());
+                }
                 break;
             case R.id.iv_rec_line://切换列表样式
                 listModel = !listModel;
@@ -217,7 +222,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                         FreshTypeInfo.ListFreshTypeBean bean = typeData.get(position).getData();
                         freshTypeID = bean.getFreshTypeID();
                         if (bean.getFreshTypeID() != -1) {//生鲜精选
-                            twoTypeFreshLeafID = bean.getFreshTypeLeaf();
+                            twoTypeFreshLeafID = bean.getFreshTypeID();
                             twoTypeMerchantId = bean.getMerchant_ID();
                             queryFreshTypeTwo();
                         } else {
@@ -281,7 +286,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                     tvFreshAddress.setText(info.getFreshCabinet().getCommunityName() + info.getFreshCabinet().getCabinetName());
                     onAutoRefresh();
                 } else {
-                    showShort(info.getAlertMessage());
+//                    showShort(info.getAlertMessage());
                 }
 
 //                getShopList();
@@ -428,8 +433,8 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         Log.v("song", "1");
         if (AndPermission.hasPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION)) {
             Log.v("song", "2");
-
             client.start();
+            client.requestLocation();
         } else {
             AndPermission.with(this)
                     .requestCode(100)
@@ -706,7 +711,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             case BDLocation.TypeNetWorkLocation://网络
             case BDLocation.TypeOffLineLocation://离线
                 getMyLocal(bdLocation);
-
+                Log.v("song", "3");
                 typeGo(bdLocation.getLatitude(), bdLocation.getLongitude());
 
                 mCache.put("longitude", bdLocation.getLongitude());
@@ -830,7 +835,6 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
         //   进入当前Fragment
-        if (isOne) {
             if (enter && !isGetData) {
                 isGetData = true;
                 //   这里可以做网络请求或者需要的数据刷新操作
@@ -841,10 +845,6 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             } else {
                 isGetData = false;
             }
-        } else {
-            isOne = true;
-        }
-
         return super.onCreateAnimation(transit, enter, nextAnim);
     }
 

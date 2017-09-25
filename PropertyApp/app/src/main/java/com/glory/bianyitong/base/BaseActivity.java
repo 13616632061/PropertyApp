@@ -91,6 +91,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         }
     }
 
+
+
     //初始化标题栏   标题  右边是否隐藏  右边
     public void inintTitle(String title, boolean isGone, String rightText) {
 

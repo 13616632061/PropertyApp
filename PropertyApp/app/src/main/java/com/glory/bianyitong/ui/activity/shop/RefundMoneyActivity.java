@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.github.lazylibrary.util.ToastUtils;
@@ -25,6 +26,7 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by lucy on 2017/9/21.
@@ -62,6 +64,17 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
         orderListFrRecycle.setAdapter(adapter);
         orderListFrRefresh.setOnRefreshListener(this);
         requestOrderList();
+    }
+
+
+    @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2,R.id.order_pay_btn})
+    void onClickGroup(View view){
+        switch (view.getId()){
+            case R.id.iv_title_text_left2:
+            case R.id.iv_title_back:
+                finish();
+                break;
+        }
     }
 
     private void requestOrderList(){

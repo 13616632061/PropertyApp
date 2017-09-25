@@ -3,26 +3,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:id="@+id/lay_fg_my"
     android:orientation="vertical">
 
     <include layout="@layout/base_text_title" />
 
     <include layout="@layout/base_view_line" />
 
-    <com.glory.bianyitong.view.NewPullToRefreshView
-        android:id="@+id/base_pullToRefreshView"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/ac_ca_title_line"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/base_listView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@null"
-            android:layoutAnimation="@anim/navagation_gridview_anim"
-            android:listSelector="@android:color/transparent" />
-    </com.glory.bianyitong.view.NewPullToRefreshView>
+    </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>

@@ -29,6 +29,7 @@ import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.share.ShareUtil;
 import com.glory.bianyitong.ui.activity.shop.RefundMoneyActivity;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
+import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.CircleImageView;
@@ -180,14 +181,19 @@ public class MyFragment extends BaseFragment {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.cim_my_head_portrait: //个人信息
-                Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
-                        .go(this);
-                break;
-            case R.id.text_user_name://个人信息
-                Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
-                        .go(this);
+        if (!SharedUtil.getBoolean("login")){
+            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
+        }else {
+
+            switch (view.getId()) {
+                case R.id.cim_my_head_portrait: //个人信息
+
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
+                            .go(this);
+                    break;
+                case R.id.text_user_name://个人信息
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
+                            .go(this);
 //                if (Database.USER_MAP != null) {//登录
 //                    Intent intent3 = new Intent(context, PersonalDataActivity.class);
 //                    context.startActivity(intent3);
@@ -195,10 +201,10 @@ public class MyFragment extends BaseFragment {
 //                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
 //                    login();
 //                }
-                break;
-            case R.id.ll_describe://个人信息
-                Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
-                        .go(this);
+                    break;
+                case R.id.ll_describe://个人信息
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
+                            .go(this);
 //                if (Database.USER_MAP != null) {//登录
 //                    Intent intent4 = new Intent(context, PersonalDataActivity.class);
 //                    context.startActivity(intent4);
@@ -206,10 +212,10 @@ public class MyFragment extends BaseFragment {
 //                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
 //                    login();
 //                }
-                break;
-            case R.id.tv_auth_area: //认证小区
-                Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)
-                        .go(this);
+                    break;
+                case R.id.tv_auth_area: //认证小区
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)
+                            .go(this);
 //                if (Database.USER_MAP != null) {//登录
 //                    Intent intent7 = new Intent(context, AuthAreaActivity.class);
 //                    intent7.putExtra("from", "");
@@ -218,93 +224,94 @@ public class MyFragment extends BaseFragment {
 //                    ToastUtils.showToast(context, getResources().getString(R.string.please_login_first)); //请先登录
 //                    login();
 //                }
-                break;
-            case R.id.tv_award_manager: //授权管理
+                    break;
+                case R.id.tv_award_manager: //授权管理
 
-                if (Database.USER_MAP == null)
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
-                            .go(this);
+                    if (Database.USER_MAP == null)
+//                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+//                            .go(this);
 
-                if (Database.my_community == null) {
-                    ToastUtils.showToast(context, getString(R.string.you_have_no_district_please_first_certification_district));//您还没有小区,请先认证小区
-                } else {
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MANAGER)
+                        if (Database.my_community == null) {
+                            ToastUtils.showToast(context, getString(R.string.you_have_no_district_please_first_certification_district));//您还没有小区,请先认证小区
+                        } else {
+                            Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MANAGER)
+                                    .go(this);
+                        }
+                    break;
+                case R.id.fg_tv_my_news: //我的发布 /登录
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MY_RELEASE)
                             .go(this);
-                }
-                break;
-            case R.id.fg_tv_my_news: //我的发布 /登录
-                Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MY_RELEASE)
-                        .go(this);
-                break;
-            case R.id.tv_address_manager: //地址管理
-                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
-                        .go(this);
-                break;
-            case R.id.tv_share_app: //推荐给其他朋友
-                dialog = new ShareSdkDialog(context, mhandler);
-                // 显示窗口
-                dialog.showAtLocation(view_my.findViewById(R.id.lay_fg_my),
-                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
-                break;
-            case R.id.tv_feedback: //意见反馈 /登录
-                Router.build(RouterMapping.ROUTER_ACTIVITY_FEEDBACK)
-                        .go(this);
-                break;
-            case R.id.rl_setting: //设置
+                    break;
+                case R.id.tv_address_manager: //地址管理
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
+                            .go(this);
+                    break;
+                case R.id.tv_share_app: //推荐给其他朋友
+                    dialog = new ShareSdkDialog(context, mhandler);
+                    // 显示窗口
+                    dialog.showAtLocation(view_my.findViewById(R.id.lay_fg_my),
+                            Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
+                    break;
+                case R.id.tv_feedback: //意见反馈 /登录
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_FEEDBACK)
+                            .go(this);
+                    break;
+                case R.id.rl_setting: //设置
 //                Intent intent9 = new Intent(context, SettingActivity.class);
 //                context.startActivity(intent9);
-                Router.build(RouterMapping.ROUTER_ACTIVITY_SETTING)
-                        .go(this);
-                break;
-            case R.id.tv_my_account:
-                Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
-                        .go(this);
-                break;
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_SETTING)
+                            .go(this);
+                    break;
+                case R.id.tv_my_account:
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_PERSION)
+                            .go(this);
+                    break;
 
-            case R.id.my_fragment_allorder://我的订单
-                Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
-                        .with("type", 0)
-                        .go(this);
-                break;
-            case R.id.tv_pending_payment://待付款
-                Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
-                        .with("type", 1)
-                        .go(this);
-                break;
-            case R.id.tv_to_be_delivered://待发货
-                Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
-                        .with("type", 2)
-                        .go(this);
-                break;
-            case R.id.tv_to_be_received://待收货
-                Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
-                        .with("type", 3)
-                        .go(this);
-                break;
-            case R.id.tv_be_evaluated://待评价
-                Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
-                        .with("type", 4)
-                        .go(this);
-                break;
-            case R.id.tv_family_manager://家庭管理
-                Router.build(RouterMapping.ROUTER_ACTIVITY_FAMILYMANAGEMENT)
-                        .go(this);
-                break;
-            case R.id.tv_shopping_cart://购物车
-                Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
-                        .go(this);
-                break;
-            case R.id.tv_coupon://优惠券券
-                Router.build(RouterMapping.ROUTER_ACTIVITY_COUPON_LIST)
-                        .go(this);
-                break;
-            case R.id.tv_favorite_product://收藏
-                Router.build(RouterMapping.ROUTER_ACTIVITY_COLLECTION_LIST)
-                        .go(this);
-                break;
-            case R.id.tv_refund_sale://退款
-                startActivity(new Intent(getActivity(), RefundMoneyActivity.class));
-                break;
+                case R.id.my_fragment_allorder://我的订单
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
+                            .with("type", 0)
+                            .go(this);
+                    break;
+                case R.id.tv_pending_payment://待付款
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
+                            .with("type", 1)
+                            .go(this);
+                    break;
+                case R.id.tv_to_be_delivered://待发货
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
+                            .with("type", 2)
+                            .go(this);
+                    break;
+                case R.id.tv_to_be_received://待收货
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
+                            .with("type", 3)
+                            .go(this);
+                    break;
+                case R.id.tv_be_evaluated://待评价
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER)
+                            .with("type", 4)
+                            .go(this);
+                    break;
+                case R.id.tv_family_manager://家庭管理
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_FAMILYMANAGEMENT)
+                            .go(this);
+                    break;
+                case R.id.tv_shopping_cart://购物车
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
+                            .go(this);
+                    break;
+                case R.id.tv_coupon://优惠券券
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_COUPON_LIST)
+                            .go(this);
+                    break;
+                case R.id.tv_favorite_product://收藏
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_COLLECTION_LIST)
+                            .go(this);
+                    break;
+                case R.id.tv_refund_sale://退款
+                    startActivity(new Intent(getActivity(), RefundMoneyActivity.class));
+                    break;
+            }
         }
     }
 
@@ -410,7 +417,12 @@ public class MyFragment extends BaseFragment {
                     tvToBeReceivedNumber.setText(share.getOrder().getReceived() + "");
                     tvBeEvaluatedNumber.setText(share.getOrder().getEvaluation() + "");
                     tvRefundSaleNumber.setText(share.getOrder().getRefund() + "");
-
+                    tvCartNumber.setVisibility(View.VISIBLE);
+                    tvPendingPaymentNumber.setVisibility(View.VISIBLE);
+                    tvToBeDeliveredNumber.setVisibility(View.VISIBLE);
+                    tvToBeReceivedNumber.setVisibility(View.VISIBLE);
+                    tvBeEvaluatedNumber.setVisibility(View.VISIBLE);
+                    tvRefundSaleNumber.setVisibility(View.VISIBLE);
                     if (share.getOrder().getCartNum()==0){
                         tvCartNumber.setVisibility(View.GONE);
                     }

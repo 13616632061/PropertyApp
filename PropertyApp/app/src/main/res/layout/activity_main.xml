@@ -114,10 +114,10 @@
         android:layout_marginRight="17dp"
         android:src="@drawable/icon_open_the_door"
         android:layout_above="@+id/floatingActionButton"
+        android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginEnd="17dp"
-        android:visibility="gone"
         />
 
 </RelativeLayout>

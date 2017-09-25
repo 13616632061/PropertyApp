@@ -1,13 +1,16 @@
 package com.glory.bianyitong.ui.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
@@ -18,6 +21,7 @@ import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.glory.bianyitong.ui.adapter.shop.UseCouponListAdapter;
 import com.google.gson.Gson;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +36,7 @@ import butterknife.OnClick;
  * Created by lucy on 2017/9/22.
  * 使用优惠券
  */
-public class UseCouponActivity extends BaseActivity {
+public class UseCouponActivity extends BaseActivity implements BaseQuickAdapter.OnItemClickListener {
 
     List<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>> data = new ArrayList<>();
     @BindView(R.id.iv_title_back)
@@ -50,6 +54,8 @@ public class UseCouponActivity extends BaseActivity {
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     private UseCouponListAdapter adapter;
+    private final int REQUEST_CODE_COUPON=101;//选择地址,选择优惠券
+
 
     @Override
     protected int getContentId() {
@@ -67,18 +73,36 @@ public class UseCouponActivity extends BaseActivity {
 
     private void initView() {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        adapter = new UseCouponListAdapter(R.layout.item_usecoupon, data);
+        adapter = new UseCouponListAdapter(R.layout.item_usecoupon, data,this);
+        adapter.setOnItemClickListener(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         queryCouponForYES();
     }
 
 
-    @OnClick({R.id.iv_title_back, R.id.iv_title_text_left2})
+    @OnClick({R.id.iv_title_back, R.id.iv_title_text_left2,R.id.tv_coupon})
     void onClickBtn(View view) {
         switch (view.getId()) {
             case R.id.iv_title_back:
             case R.id.iv_title_text_left2:
+                finish();
+                break;
+
+            case R.id.tv_coupon://确定
+                int money=0;
+                ArrayList<Integer> list=new ArrayList<>();
+                for (int i=0;i<data.size();i++){
+                    if (data.get(i).getData().getClikcType()==2){
+                        list.add(data.get(i).getData().getReceiveID());
+                        money+=data.get(i).getData().getCoupon().getFreeMoney();
+                    }
+                }
+                Intent intent=new Intent();
+
+                intent.putIntegerArrayListExtra("data",list);
+                intent.putExtra("money",money);
+                setResult(RESULT_OK, intent);
                 finish();
                 break;
 
@@ -127,5 +151,28 @@ public class UseCouponActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        if ( data.get(position).getData().getCoupon().getPlatFormType()==1){//1是平台
+            for (int i=0;i<data.size();i++){
+                data.get(i).getData().setClikcType(1);
+            }
+            data.get(position).getData().setClikcType(2);
+        } else if (data.get(position).getData().getCoupon().getPlatFormType() == 2) {//2是商家
+            for (int i=0;i<data.size();i++){
+                if (data.get(position).getData().getCoupon().getMerchantID()==data.get(i).getData().getCoupon().getMerchantID()){
+                    data.get(i).getData().setClikcType(1);
+                }else if (data.get(i).getData().getCoupon().getMerchantID()==0){
+                    data.get(i).getData().setClikcType(1);
+                }else {
+                    data.get(position).getData().setClikcType(2);
+                }
+            }
+            data.get(position).getData().setClikcType(2);
+
+        }
+        adapter.notifyDataSetChanged();
     }
 }

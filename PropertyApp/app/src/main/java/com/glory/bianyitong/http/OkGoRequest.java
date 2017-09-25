@@ -7,11 +7,13 @@ import android.util.Log;
 
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.BuildConfig;
+import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.exception.MyApplication;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.activity.LoginActivity;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.LogUtils;
 import com.glory.bianyitong.util.TextUtil;
@@ -39,6 +41,7 @@ import okhttp3.Response;
  */
 public class OkGoRequest {
     private OnOkGoUtilListener onOkGoUtilListener;
+    public  static  boolean openLogin=true;
 
 
     public static OkGoRequest getRequest() {
@@ -55,23 +58,23 @@ public class OkGoRequest {
         LogUtils.d("OkGoGo","---------------------start----------------------");
         LogUtils.d("OkGoGo","URL:   "+HttpURL.HTTP_NEW_URL+url);
         LogUtils.d("OkGoGo","params:    "+request);
-
         final Gson gson=new Gson();
-        BaseRequestBean requestBean=gson.fromJson(request, BaseRequestBean.class);
-        if((!TextUtil.isEmpty(requestBean.accessToken)) && requestBean.accessToken.equals("0")){
-            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
-            if(onOkGoUtilListener!=null)
-                onOkGoUtilListener.onError();
-            return;
-        }
+//        BaseRequestBean requestBean=gson.fromJson(request, BaseRequestBean.class);
+//        if((!TextUtil.isEmpty(requestBean.accessToken)) && requestBean.accessToken.equals("0")){
+//            if (openLogin){
+//                Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
+//                if(onOkGoUtilListener!=null)
+//                    onOkGoUtilListener.onError();
+//                openLogin=false;
+//            }
+//
+//            return;
+//        }
 //        else  if(requestBean.accessToken.equals("-1")){
 //            Map<String,Object> map=new Gson().fromJson(request,new TypeToken<Map<String,Object>>(){}.getType());
 //            map.put("accessToken","0");
 //            request=new Gson().toJson(map);
 //        }
-
-
-
 
         OkGo.post(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
 //        OkGo.post(HttpURL.HTTP_URl+url)

@@ -132,6 +132,7 @@
                         android:textSize="13sp" />
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_cart_number"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
@@ -236,6 +237,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1">
                 <TextView
+
                     android:id="@+id/tv_pending_payment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -249,6 +251,7 @@
                     android:textSize="13sp" />
 
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_pending_payment_number"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
@@ -277,6 +280,7 @@
                     android:textColor="@color/tv_color_name"
                     android:textSize="13sp" />
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_to_be_delivered_number"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
@@ -304,6 +308,7 @@
                     android:textColor="@color/tv_color_name"
                     android:textSize="13sp" />
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_to_be_received_number"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
@@ -331,6 +336,7 @@
                     android:textColor="@color/tv_color_name"
                     android:textSize="13sp" />
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_be_evaluated_number"
                         android:layout_width="15dp"
                         android:layout_height="15dp"
@@ -358,6 +364,7 @@
                     android:textColor="@color/tv_color_name"
                     android:textSize="13sp" />
                     <TextView
+                        android:visibility="gone"
                         android:id="@+id/tv_refund_sale_number"
                         android:layout_width="15dp"
                         android:layout_height="15dp"

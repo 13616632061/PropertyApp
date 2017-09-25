@@ -12,6 +12,7 @@ import com.chenenyu.router.RouteTable;
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.activity.shop.OrderListActivity;
+import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.imgloader.AuthImageDownloader;
 import com.glory.bianyitong.util.imgloader.TilmImgLoaderUtil;
 import com.lzy.okgo.BuildConfig;
@@ -26,6 +27,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.Map;
 
@@ -51,9 +53,11 @@ public class MyApplication extends Application {
         super.onCreate();
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init(getApplicationContext(), this);
+        CrashReport.initCrashReport(getApplicationContext(),"350a43e596", false);//初始化bugly
         SDKInitializer.initialize(getApplicationContext());
         Router.initialize(this, BuildConfig.DEBUG);
         Instance = this;
+        SharedUtil.init(this);
         //极光推送
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);// 初始化 JPush

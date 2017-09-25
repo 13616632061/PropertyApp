@@ -60,6 +60,15 @@ public class ResponseQueryCouponList extends BaseResponseBean implements Seriali
         private String receiveNo;
         private CouponBean coupon;
         private String dateNow;
+        private int clikcType=0;//1是未选中2是已选中
+
+        public int getClikcType() {
+            return clikcType;
+        }
+
+        public void setClikcType(int clikcType) {
+            this.clikcType = clikcType;
+        }
 
         public int getReceiveID() {
             return receiveID;

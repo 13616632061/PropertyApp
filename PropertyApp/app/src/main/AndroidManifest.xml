@@ -70,6 +70,12 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+
     <application
         android:name="com.glory.bianyitong.exception.MyApplication"
         android:allowBackup="true"
@@ -96,7 +102,7 @@
         <activity
             android:name="com.glory.bianyitong.ui.activity.LoginActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <!--注册页面-->
@@ -541,7 +547,6 @@
         <activity
             android:name="com.glory.bianyitong.ui.activity.UseCouponActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
         <!--优惠券列表-->
@@ -718,7 +723,11 @@
                 <data android:scheme="wxd2ec5fc5fab63695"/> <!-- 需修改 -->
             </intent-filter>
         </activity>
-
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" >
+        </service>
         <receiver android:name="com.glory.bianyitong.util.AppRegister" >
             <intent-filter>
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />

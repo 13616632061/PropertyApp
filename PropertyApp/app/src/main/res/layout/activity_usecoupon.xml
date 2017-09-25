@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
     <include layout="@layout/base_text_title"></include>
     <include layout="@layout/base_view_line"></include>
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_weight="1">
 
     </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:id="@+id/tv_coupon"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginLeft="15dp"
+        android:background="@drawable/shape_order_list_item_red"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:textColor="@color/red1"
+        android:text="确定"
+        android:layout_width="match_parent"
+        android:layout_height="45dp" />
 </LinearLayout>

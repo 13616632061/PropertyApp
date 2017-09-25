@@ -1,11 +1,13 @@
 package com.glory.bianyitong.ui.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -13,6 +15,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -27,6 +30,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
+import com.baidu.location.Poi;
 import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
@@ -55,6 +63,7 @@ import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.LogUtils;
+import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.update.service.DownloadService;
@@ -121,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     //for receive customer msg from jpush server
     private MessageReceiver mMessageReceiver;
+    private RadioGroup rgs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -225,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragments.add(openTheDoorFragment);
         fragments.add(freshSupermarketFragment);
         fragments.add(myFragment);
-        final RadioGroup rgs = (RadioGroup) findViewById(R.id.tabs_rg);
+        rgs = (RadioGroup) findViewById(R.id.tabs_rg);
 
         tabAdapter = new FragmentTabAdapter(this, fragments, R.id.tab_content, rgs);
         tabAdapter.setCheckedChangedListener(new FragmentTabAdapter.CheckedChangedListener() {
@@ -264,7 +274,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setDrawable(rb_tab_my, R.drawable.icon_my);
 
         iv_open_the_door.setOnClickListener(this);
-        iv_pickup.setOnClickListener(this);
+        if (!SharedUtil.getBoolean("login")){
+            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
+        }else {
+            iv_pickup.setOnClickListener(this);
+        }
 
     }
 
@@ -612,6 +626,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+
 
 /*
  *   ┏┓　　　┏┓

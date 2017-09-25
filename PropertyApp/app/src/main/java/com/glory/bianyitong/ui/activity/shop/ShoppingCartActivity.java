@@ -222,7 +222,6 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                     }
                 } else {
                     showShort(detail.getAlertMessage());
-
                 }
 
             }

@@ -134,6 +134,8 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     private ResponseQueryCouponList.ListCouponReceiveBean couponBean=new ResponseQueryCouponList.ListCouponReceiveBean();//选择优惠券实体
     private ResponseQueryCouponList queryCouponListbean;
     private String json;
+    private ArrayList<Integer> requestList;
+    private double freeMoney=0;
 
     @Override
     protected int getContentId() {
@@ -153,6 +155,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     private void initView() {
         addressInitView = LayoutInflater.from(this).inflate(R.layout.item_firm_order_address_init, null);
         addressNormalView = LayoutInflater.from(this).inflate(R.layout.item_firm_order_address_normal, null);
+         addressInitView.findViewById(R.id.tv_jantou).setVisibility(View.GONE);
         firmOrderAddressLin.removeAllViews();
         firmOrderAddressLin.addView(addressNormalView);
 
@@ -223,7 +226,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 if(queryCouponListbean.getListCouponReceive()!=null && queryCouponListbean.getListCouponReceive().size()>0){//可使用
                     Intent intent=new Intent(this, UseCouponActivity.class);
                     intent.putExtra("json",json);
-                    startActivity(intent);
+                    startActivityForResult(intent,REQUEST_CODE_COUPON);
                 }else {//无可使用
                     showShort("暂无优惠券可用");
                 }
@@ -276,6 +279,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         String s = new Gson().toJson(list);
 //        orderByCart.setShoppingCarts(list);
         orderByCart.setListOrderDetail(orderDetails);
+        orderByCart.setOrderPrice(orderByCart.getOrderPrice()- freeMoney);
+        orderByCart.setFreePrice(freeMoney);
+
         return orderByCart;
     }
 
@@ -300,11 +306,13 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     private void orderCommit(){
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         Map<String,Object> maps=new HashMap<>();
+        RequestCommitOrderByCart requestCommitOrderByCart= dataFormat();
+//        requestCommitOrderByCart.setOrderPrice(requestCommitOrderByCart.getOrderPrice()-freeMoney);
         maps.put("order",dataFormat());
         maps.put("SubmitType",type);//,1、生鲜详情页面立即购买 2、购物车结算）
-//        maps.put("shoppingCarts",shoppingCart());
+        maps.put("receiveIDs",requestList);
         map.put("entityOrder",maps);
-        json = new Gson().toJson(map);
+        String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -378,7 +386,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         }
         map2.put("listDetail",listDetailBeen);
         map.put("entityCouponReceive",map2);
-        String json=new Gson().toJson(map);
+        json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
 
             @Override
@@ -423,6 +431,12 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
+//        Log.i("requestList",data.getStringExtra("data")+"");
+
+
+
+//        freeMoney = data.getDoubleExtra("money",0);
         if(resultCode==RESULT_OK){
             if(requestCode==REQUEST_CODE_ADDRESS){
                 ResponseQueryAddress.ListShippingAddressBean addressBean= (ResponseQueryAddress.ListShippingAddressBean) data.getSerializableExtra("data");
@@ -445,12 +459,11 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
                 }
             }else if(requestCode==REQUEST_CODE_COUPON){//优惠券列表
-                String json=data.getStringExtra("data");
-                if(!StringUtils.isEmpty(json)){
-                    ResponseQueryCouponList.ListCouponReceiveBean bena = new Gson().fromJson(json,ResponseQueryCouponList.ListCouponReceiveBean.class);
-                    couponBean=bena;
-
-                }
+                requestList = data.getIntegerArrayListExtra("data");
+                freeMoney=data.getIntExtra("money",0);
+                allPrice-=freeMoney;
+                firmOrderAllMoney.setText("￥" + allPrice);
+                firmOrderPrice.setText("￥" + allPrice);
 
             }
         }
@@ -474,16 +487,15 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     }
 
     private void updateShoppingCardPrice() {
-        double allPrice =  0;
+        double allPrice =   0;
         for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean : data) {
             ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean entity = bean.getData();
             if (!bean.isHeader)
                 allPrice += entity.getPrice() * entity.getQuantity();
         }
-
+        allPrice = allPrice-freeMoney;
         firmOrderAllMoney.setText("￥" + allPrice);
         firmOrderPrice.setText("￥" + allPrice);
         this.allPrice=allPrice;
-        queryCouponForYES();
     }
 }

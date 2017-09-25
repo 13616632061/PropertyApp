@@ -1,8 +1,11 @@
 package com.glory.bianyitong.ui.adapter.shop;
 
+import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -19,8 +22,12 @@ import java.util.List;
  */
 
 public class UseCouponListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>,BaseViewHolder> {
-    public UseCouponListAdapter(@LayoutRes int layoutResId, @Nullable List<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>> data) {
+    private Context context;
+    List<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>> data;
+    public UseCouponListAdapter(@LayoutRes int layoutResId, @Nullable List<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>> data, Context context) {
         super(layoutResId, data);
+        this.context=context;
+        this.data=data;
     }
 
     @Override
@@ -36,6 +43,15 @@ public class UseCouponListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQuer
         String endDate= DateUtil.format(DateUtil.parse(item.getData().getEndDate()),DateUtil.DEFAULT_PATTERN_POINT);
         helper.setText(R.id.item_fr_couponlist_date,startDate+"～"+endDate);
 
+        CheckBox checkBox=helper.getView(R.id.item_fr_couponlist_btn);
+
+        if (item.getData().getClikcType()==1){
+            checkBox.setChecked(false);
+            helper.setBackgroundColor(R.id.lay_list_item_goods,context.getResources().getColor(R.color.gray));
+        }else if (item.getData().getClikcType()==2){
+            checkBox.setChecked(true);
+            helper.setBackgroundColor(R.id.lay_list_item_goods,context.getResources().getColor(R.color.white));
+        }
 
     }
 }
