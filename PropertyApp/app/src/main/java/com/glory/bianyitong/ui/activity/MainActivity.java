@@ -274,11 +274,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setDrawable(rb_tab_my, R.drawable.icon_my);
 
         iv_open_the_door.setOnClickListener(this);
-        if (!SharedUtil.getBoolean("login")){
-            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
-        }else {
+
             iv_pickup.setOnClickListener(this);
-        }
+
 
     }
 
@@ -368,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
                 });
                 if (hashMap2 != null && hashMap2.get("settingvalue") != null) {  //listYellowPageGroup
-                    Constant.AppSecret = hashMap2.get("settingvalue").toString();
+//                    Constant.AppSecret = hashMap2.get("settingvalue").toString();
                 }
             }
 

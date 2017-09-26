@@ -227,9 +227,6 @@ public class MyFragment extends BaseFragment {
                     break;
                 case R.id.tv_award_manager: //授权管理
 
-                    if (Database.USER_MAP == null)
-//                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
-//                            .go(this);
 
                         if (Database.my_community == null) {
                             ToastUtils.showToast(context, getString(R.string.you_have_no_district_please_first_certification_district));//您还没有小区,请先认证小区

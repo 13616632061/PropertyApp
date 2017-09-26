@@ -20,6 +20,7 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.GetOrderCommitAddress;
 import com.glory.bianyitong.bean.UserLockInfo;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.exception.MyApplication;
@@ -107,6 +108,7 @@ public class AwardManagerActivity extends BaseActivity {
             Database.awardpeople = list_man.get(position);
             Router.build(RouterMapping.ROUTER_ACTIVITY_AddAWARD)
                     .with("from","edit")
+                    .with("aESUserID",list_man.get(position).getaESUserID())
                     .with("authorizationUserID", list_man.get(position).getAuthorizationUserID())
                     .go(AwardManagerActivity.this);
         }
@@ -128,7 +130,7 @@ public class AwardManagerActivity extends BaseActivity {
                     builder.setPositiveButton(getString(R.string.delete), new DialogInterface.OnClickListener() {//删除
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            delete(list_man.get(index).getAuthorizationUserID(), index);
+                            delete(index);
                             dialog.dismiss();
                         }
                     });
@@ -182,16 +184,20 @@ public class AwardManagerActivity extends BaseActivity {
         awardPeopleAdapter = new MenuViewTypeAdapter(list_man);
         awardPeopleAdapter.setOnItemClickListener(onItemClickListener);
         list_people.setAdapter(awardPeopleAdapter);
-        request();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         if (Database.isAddComment) {
-            request();
             Database.isAddComment = false;
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        request();
     }
 
     private void request() { //获取授权人
@@ -213,6 +219,7 @@ public class AwardManagerActivity extends BaseActivity {
                             .go(AwardManagerActivity.this);
                     return;
                 }else if(baseResponseBean.getStatusCode()==1){
+
                     list_man.clear();
                     list_man.addAll(baseResponseBean.getListUserLockMapping());
                     awardPeopleAdapter.notifyDataSetChanged();
@@ -220,7 +227,10 @@ public class AwardManagerActivity extends BaseActivity {
                     lay_award_list.setVisibility(View.VISIBLE);
                     lay_no_list.setVisibility(View.GONE);
                 }
-
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                    progressDialog = null;
+                }
 
             }
             @Override
@@ -244,22 +254,22 @@ public class AwardManagerActivity extends BaseActivity {
 
     /**
      * 删除授权
-     * @param authorizationUserID
      * @param position
      */
-    private void delete(int authorizationUserID, final int position) {//
-        String userID = RequestUtil.getuserid();
-        int communityID = RequestUtil.getcommunityid();
+    private void delete( final int position) {//
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        Map<String,Object> maps=new HashMap<>();
+        maps.put("aESUserID",list_man.get(position).getaESUserID());
+        map.put("userLockMapping",maps);
+        String json = new Gson().toJson(map);
 
-        String json = "{\"userLock\":{\"authorizationUserID\":" + authorizationUserID + ",\"communityID\":" + communityID + "},\"controllerName\":\"UserLockMapping\"," +
-                "\"actionName\":\"Delete\",\"userID\":\"" + userID + "\"}";
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
                 HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
                 });
-                if (hashMap2 != null && hashMap2.get("statuscode") != null &&
-                        Double.valueOf(hashMap2.get("statuscode").toString()).intValue() == 1) {
+                GetOrderCommitAddress bean=new Gson().fromJson(s,GetOrderCommitAddress.class);
+                if (bean.getStatusCode()==1) {
                     list_man.remove(position);
                     awardPeopleAdapter.notifyDataSetChanged();
                     ToastUtils.showToast(AwardManagerActivity.this, getString(R.string.successfully_deleted));//删除成功

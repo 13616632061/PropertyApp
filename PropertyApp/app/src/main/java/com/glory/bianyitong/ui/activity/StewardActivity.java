@@ -143,7 +143,7 @@ public class StewardActivity extends BaseActivity {
                         }
                     }
                 }else {
-                    showShort(querySteWard.getAlertMessage());
+//                    showShort(querySteWard.getAlertMessage());
                 }
 
             }

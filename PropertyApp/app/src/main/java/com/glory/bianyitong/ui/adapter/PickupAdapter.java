@@ -40,6 +40,7 @@ public class PickupAdapter extends BaseQuickAdapter<ItemMenu<PickupInfo.ListOrde
         helper.setText(R.id.tv_express_address,item.getData().getFreshCabinet().getAddress());
 
         helper.addOnClickListener(R.id.iv_share);
+        helper.addOnClickListener(R.id.iv_open_the_cabinet);
 
     }
 }

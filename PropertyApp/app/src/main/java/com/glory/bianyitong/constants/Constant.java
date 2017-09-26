@@ -21,9 +21,9 @@ public class Constant {
 
        public static final String VERSIONNAME = ActivityUtils.getVersionName();// 版本名称
 
-       public static final String AppID = "wxd5296e8e8d5d33e4"; //AppID
+       public static final String AppID = "wxfed32e31cb1a3d48"; //AppID
 
-       public static String AppSecret = ""; //那你们很棒哦
+       public static String AppSecret = "02f6d2f352edee333b4a1f3d2fd901a1"; //那你们很棒哦
 
 //       public static final String AppSecret = "b6488f57140494c9d10ad8c6ff3cf27e"; //AppSecret
 

@@ -19,6 +19,8 @@ public class EventEntry {
     public int ratingBar;
     public String comment;
     public int position;
+    public String anonymous="0";
+
 
     public EventEntry(List<PhotoEntry> photos, int id){
         this.photos = photos;

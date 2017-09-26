@@ -16,7 +16,7 @@ import java.util.Map;
 
 public class BaseRequestBean{
     private String timeStemp;
-    public String accessToken=TextUtils.isEmpty(Database.accessToken)?"0":Database.accessToken;
+    public String accessToken=TextUtils.isEmpty(Database.accessToken)?"":Database.accessToken;
     private String version;
     private int deviceType=3;
     private int currentPageNumber=1;
@@ -37,7 +37,7 @@ public class BaseRequestBean{
     }
 
     public String getAccessToken() {
-        accessToken=TextUtils.isEmpty(Database.accessToken)?"0":Database.accessToken;
+        accessToken=TextUtils.isEmpty(Database.accessToken)?"":Database.accessToken;
         return accessToken;
     }
 
@@ -113,7 +113,7 @@ public class BaseRequestBean{
     public Map<String,Object> getBaseRequest(){
         Map<String,Object> map=new HashMap<>();
         map.put("timeStemp",getTimeStemp());
-        map.put("accessToken",TextUtils.isEmpty(Database.accessToken)?"0":Database.accessToken);
+        map.put("accessToken",TextUtils.isEmpty(Database.accessToken)?"":Database.accessToken);
         map.put("version",getVersion());
         map.put("deviceType",getDeviceType());
         map.put("currentPageNumber",getCurrentPageNumber());

@@ -93,6 +93,8 @@ public class AddAwardActivity extends BaseActivity {
      String from ;
     @InjectParam(key = "authorizationUserID")
     int authorizationUserID = 0;
+    @InjectParam(key = "aESUserID")
+    String aESUserID;
 
     @Override
     protected int getContentId() {
@@ -302,7 +304,7 @@ public class AddAwardActivity extends BaseActivity {
             map.put("communityID","1");
         } else if (from.equals("edit")) {
             url =HttpURL.HTTP_POST_LOCKMAPPING_EDIT;//修改授权
-            map.put("userLockMapping",new UserLockMapping(authorizationUserID+"",userIdentity,timeLimit,startDate,endDate));
+            map.put("userLockMapping",new UserLockMapping(aESUserID,userIdentity,timeLimit,startDate,endDate));
         }
 
         json=new Gson().toJson(map);
@@ -313,8 +315,10 @@ public class AddAwardActivity extends BaseActivity {
                 if(bean.getStatusCode()==1){
                     if (from.equals("add")){
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.added_successfully));//添加成功
+                        finish();
                     }else {
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.successfully_modified));//修改成功
+                        finish();
                     }
                 }else if(bean.getStatusCode()==-126){
                     if (from.equals("add")){

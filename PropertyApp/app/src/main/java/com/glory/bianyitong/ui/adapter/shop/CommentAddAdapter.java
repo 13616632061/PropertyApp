@@ -7,6 +7,8 @@ import android.support.annotation.LayoutRes;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,6 +65,18 @@ public class CommentAddAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryOr
         if (layout.findViewById(R.id.comment_photo_select)==null){
             layout.addView(insertImage);
         }
+        CheckBox checkBox= helper.getView(R.id.item_comment_add_check);
+        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    imageList.get(helper.getLayoutPosition()).anonymous="1";
+                }else{
+                    imageList.get(helper.getLayoutPosition()).anonymous="0";
+                }
+            }
+        });
+
         imageList.get(helper.getLayoutPosition()).comment=editText.getText().toString().trim();
         imageList.get(helper.getLayoutPosition()).ratingBar=(int)rating;
         helper.addOnClickListener(R.id.comment_photo_select);

@@ -53,6 +53,15 @@ public class UserLockInfo extends BaseResponseBean {
         private String status;
         private int lockSort;
         private String authorizationUserName;
+        private String aESUserID;
+
+        public String getaESUserID() {
+            return aESUserID;
+        }
+
+        public void setaESUserID(String aESUserID) {
+            this.aESUserID = aESUserID;
+        }
 
         public String getStartDate() {
             return startDate;

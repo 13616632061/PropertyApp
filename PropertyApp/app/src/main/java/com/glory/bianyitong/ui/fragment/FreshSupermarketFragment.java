@@ -145,14 +145,19 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     void onClickView(View view) {
         switch (view.getId()) {
             case R.id.rl_address://切换地址
+                if (!SharedUtil.getBoolean("login")){
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(getActivity());
+                }else{
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
+                            .with("source", true)
+                            .requestCode(REQUEST_CODE_ADDRESS)
+                            .go(this);
+                }
 //                Router.build(RouterMapping.ROUTER_ACTIVITY_PRODUCT_SELECT_LOCAL)
 //                        .with("data",myLocal)
 //                        .requestCode(200)
 //                        .go(getActivity());
-                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
-                        .with("source", true)
-                        .requestCode(REQUEST_CODE_ADDRESS)
-                        .go(this);
+
 //                Intent intent = new Intent(getActivity(), SelectLocalActivity.class);
 //                intent.putExtra("data", myLocal);
 //                startActivityForResult(intent, 200);
@@ -267,13 +272,12 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         Log.v("json", json);
 
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-
-
             @Override
             public void onSuccess(String s) {
                 FreshTypeInfo info = new Gson().fromJson(s, FreshTypeInfo.class);
                 FreshTypeInfo.ListFreshTypeBean bean = new FreshTypeInfo.ListFreshTypeBean();
                 bean.setFreshTypeName("精品首选");
+                typeData.clear();
                 typeData.add(new ItemMenu<FreshTypeInfo.ListFreshTypeBean>(bean));
                 if (info.getStatusCode() == 1) {
                     for (FreshTypeInfo.ListFreshTypeBean beans : info.getListFreshType()) {
@@ -713,7 +717,8 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                 getMyLocal(bdLocation);
                 Log.v("song", "3");
                 typeGo(bdLocation.getLatitude(), bdLocation.getLongitude());
-
+                latitude=bdLocation.getLatitude();
+                longitude=bdLocation.getLongitude();
                 mCache.put("longitude", bdLocation.getLongitude());
                 mCache.put("latitude", bdLocation.getLatitude());
                 isLocal = true;

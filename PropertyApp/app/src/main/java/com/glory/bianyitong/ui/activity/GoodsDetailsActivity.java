@@ -53,6 +53,7 @@ import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.CommentPicAdapter;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.NetworkImageHolderView;
+import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.widght.CircleImageView;
 import com.glory.bianyitong.widght.convenientbanner.ConvenientBanner;
 import com.glory.bianyitong.widght.convenientbanner.holder.CBViewHolderCreator;
@@ -187,60 +188,65 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
     @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct, R.id.tv_look_all})
     void onClickBtn(View view) {
-        switch (view.getId()) {
-            case R.id.detail_kefu://客服
-                break;
-            case R.id.detail_shoucang://收藏
-                if (enable) {
-                    if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
-                        if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
-                            if (productDetail.isCollectionStatu()) {
-                                deleteCollection();
+        if (!SharedUtil.getBoolean("login")){
+            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
+        }else {
+
+            switch (view.getId()) {
+                case R.id.detail_kefu://客服
+                    break;
+                case R.id.detail_shoucang://收藏
+                    if (enable) {
+                        if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
+                            if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
+                                if (productDetail.isCollectionStatu()) {
+                                    deleteCollection();
+                                } else {
+                                    addCollection();
+                                }
                             } else {
-                                addCollection();
+                                showShort("数据异常,请返回重试");
                             }
                         } else {
-                            showShort("数据异常,请返回重试");
+                            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                                    .go(this, this);
                         }
+
                     } else {
-                        Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
-                                .go(this, this);
+                        showShort("该商品已下架");
                     }
 
-                } else {
-                    showShort("该商品已下架");
-                }
-
-                break;
-            case R.id.detail_addshopping_cart://加入购物车
-                if (godownNumber > 0) {//库存大于0时才可以购买，加入购物车
-                    if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
-                        if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
-                            addShoppingCart();
+                    break;
+                case R.id.detail_addshopping_cart://加入购物车
+                    if (godownNumber > 0) {//库存大于0时才可以购买，加入购物车
+                        if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
+                            if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
+                                addShoppingCart();
+                            } else {
+                                showShort("数据异常,请返回重试");
+                            }
                         } else {
-                            showShort("数据异常,请返回重试");
+                            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                                    .go(this, this);
                         }
                     } else {
-                        Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
-                                .go(this, this);
+                        showShort("当前商品无库存，不能加入购物车");
                     }
-                } else {
-                    showShort("当前商品无库存，不能加入购物车");
-                }
 
-                break;
-            case R.id.detail_addshopping_payproduct://立即购买
-                queryAddress();
-                break;
-            case R.id.tv_look_all://查看全部评论
-                if (product != null) {
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_ALLORDER_COMMENT)
-                            .with("freshEvaluation", freshEvaluation)
-                            .with("freshId", productDetail.getFreshID())
-                            .go(this);
-                }
+                    break;
+                case R.id.detail_addshopping_payproduct://立即购买
+                    queryAddress();
+                    break;
+                case R.id.tv_look_all://查看全部评论
+                    if (product != null) {
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_ALLORDER_COMMENT)
+                                .with("freshEvaluation", freshEvaluation)
+                                .with("freshId", productDetail.getFreshID())
+                                .go(this);
+                    }
 
-                break;
+                    break;
+            }
         }
     }
 

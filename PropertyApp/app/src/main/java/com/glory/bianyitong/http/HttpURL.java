@@ -9,7 +9,7 @@ public class HttpURL {
 //    public static String HTTP_LOGIN = "https://www.pgagolf.cn:4432/WebApi/Post";
 //    public static String HTTP_LOGIN_AREA = "https://www.pgagolf.cn:4432";
 
-    public static String HTTP_LOGIN = "https://byt.bytsz.com.cn/WebApi/Post";
+    public static String HTTP_LOGIN = "http://192.168.1.113:1757";
     public static String HTTP_LOGIN_AREA = "https://byt.bytsz.com.cn";
 
     public static String HTTP_URl = "http://dev.bytsz.com.cn";
@@ -175,6 +175,7 @@ public class HttpURL {
     public static String HTTP_POST_SHOP_QUERY_GODOWNDETAIL="/ApiGodownDetail/Query";//库存信息查询
     public static String HTTP_POST_SHOP_QUERY_PCIKUP="/ApiPickup/Query";//取件列表
     public static String HTTP_POST_SHOP_QUERY_PCIKUPADD="/ApiPickup/Add";//分享临时钥匙
+    public static String HTTP_POST_SHOP_QUERY_CABINET_OPEN="/ApiOpenCabinet/Open";//取件开柜
 
 
 
@@ -205,6 +206,7 @@ public class HttpURL {
     public static String HTTP_POST_ORDER_OTHERONE="/ApiOrder/OtherOne";//订单详细
     public static String HTTP_POST_ORDER_OTHERTWO="/ApiOrder/OtherTwo";//查看订单物流状态
 //    public static String HTTP_POST_ORDER_OTHERONE="/ApiOrder/Query";//订单详细
+    public static String HTTP_POST_ORDER_QUERYCABINET="/ApiShopAddress/QueryCabinet";//获取地址信息
 
     /**
      * 优惠券

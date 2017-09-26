@@ -239,6 +239,7 @@ public class CommentActivity extends BaseActivity implements BaseQuickAdapter.On
             }
             commentInfo.setEvaluationLevel(imageList.get(i).ratingBar+"");
             commentInfo.setEvaluationContext(imageList.get(i).comment);
+            commentInfo.setAnonymous(imageList.get(i).anonymous);
             commentInfo.setOrderID(bean.getListOrderDetail().get(i).getOrderID());
             commentInfo.setFreshID(bean.getListOrderDetail().get(i).getFresh().getFreshID());
             commentInfo.setMerchant_ID(bean.getListOrderDetail().get(i).getFresh().getMerchant_ID());

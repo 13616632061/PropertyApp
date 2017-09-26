@@ -138,14 +138,14 @@ public class WelcomeActivity extends BaseActivity {
     }
 
     private void gohome() {
-//        Intent i = new Intent(WelcomeActivity.this, MainActivity.class);
-//        i.putExtra("TypeID", TypeID);
-//        i.putExtra("PushID", PushID);
-//        startActivity(i);
-        Router.build(RouterMapping.ROUTER_ACTIVITY_MAIN)
-                .with("TypeID", TypeID)
-                .with("PushID", PushID)
-                .go(this);
+        Intent i = new Intent(WelcomeActivity.this, MainActivity.class);
+        i.putExtra("TypeID", TypeID);
+        i.putExtra("PushID", PushID);
+        startActivity(i);
+//        Router.build(RouterMapping.ROUTER_ACTIVITY_MAIN)
+//                .with("TypeID", TypeID)
+//                .with("PushID", PushID)
+//                .go(this);
         WelcomeActivity.this.finish();
 //        Intent intent2 = new Intent(WelcomeActivity.this, PayActivity.class);
 //        startActivity(intent2);

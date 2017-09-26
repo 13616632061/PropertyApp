@@ -11,7 +11,39 @@ import com.chenenyu.router.RouteRequest;
 import com.chenenyu.router.RouteTable;
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.activity.AddAwardActivity;
+import com.glory.bianyitong.ui.activity.AddCommentActivity;
+import com.glory.bianyitong.ui.activity.AddRoomActivity;
+import com.glory.bianyitong.ui.activity.AddressActivity;
+import com.glory.bianyitong.ui.activity.AllEvaluationActivity;
+import com.glory.bianyitong.ui.activity.AuthAreaActivity;
+import com.glory.bianyitong.ui.activity.AwardManagerActivity;
+import com.glory.bianyitong.ui.activity.CollectionActivity;
+import com.glory.bianyitong.ui.activity.DynamicDetailsActivity;
+import com.glory.bianyitong.ui.activity.FamilyManagementActivity;
+import com.glory.bianyitong.ui.activity.FeedbackActivity;
+import com.glory.bianyitong.ui.activity.GoodsDetailsActivity;
+import com.glory.bianyitong.ui.activity.ListCommunityBuildingActivity;
+import com.glory.bianyitong.ui.activity.LoginActivity;
+import com.glory.bianyitong.ui.activity.MainActivity;
+import com.glory.bianyitong.ui.activity.MyReleaseActivity;
+import com.glory.bianyitong.ui.activity.PersonalDataActivity;
+import com.glory.bianyitong.ui.activity.PersonalHomePageActivity;
+import com.glory.bianyitong.ui.activity.PickupActivity;
+import com.glory.bianyitong.ui.activity.SearchActivity;
+import com.glory.bianyitong.ui.activity.SettingActivity;
+import com.glory.bianyitong.ui.activity.UpdateDescribeActivity;
+import com.glory.bianyitong.ui.activity.UpdateNameActivity;
+import com.glory.bianyitong.ui.activity.shop.AddressAddAndEditActivity;
+import com.glory.bianyitong.ui.activity.shop.CommentActivity;
+import com.glory.bianyitong.ui.activity.shop.CouponListActivity;
+import com.glory.bianyitong.ui.activity.shop.ExpressBarAddActivity;
+import com.glory.bianyitong.ui.activity.shop.ExpressMapActivity;
+import com.glory.bianyitong.ui.activity.shop.FirmOrderActivity;
 import com.glory.bianyitong.ui.activity.shop.OrderListActivity;
+import com.glory.bianyitong.ui.activity.shop.PayActivity;
+import com.glory.bianyitong.ui.activity.shop.SelectLocalActivity;
+import com.glory.bianyitong.ui.activity.shop.ShoppingCartActivity;
 import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.imgloader.AuthImageDownloader;
 import com.glory.bianyitong.util.imgloader.TilmImgLoaderUtil;
@@ -55,9 +87,50 @@ public class MyApplication extends Application {
 //        crashHandler.init(getApplicationContext(), this);
         CrashReport.initCrashReport(getApplicationContext(),"350a43e596", false);//初始化bugly
         SDKInitializer.initialize(getApplicationContext());
-        Router.initialize(this, BuildConfig.DEBUG);
+        Router.initialize(this,true);
         Instance = this;
         SharedUtil.init(this);
+
+        // 动态添加路由表
+        Router.handleRouteTable(new RouteTable() {
+            @Override
+            public void handle(Map<String, Class<?>> map) {
+                map.put("ROUTER_ACTIVITY_LOGIN", LoginActivity.class);
+                map.put("ROUTER_ACTIVITY_MAIN", MainActivity.class);
+                map.put("ROUTER_ACTIVITY_PICKUP", PickupActivity.class);
+                map.put("ROUTER_ACTIVITY_AddAWARD", AddAwardActivity.class);
+                map.put("ROUTER_ACTIVITY_PERSION", PersonalDataActivity.class);
+                map.put("ROUTER_ACTIVITY_AUTHAREA", AuthAreaActivity.class);
+                map.put("ROUTER_ACTIVITY_AAWARD_MANAGER", AwardManagerActivity.class);
+                map.put("ROUTER_ACTIVITY_AAWARD_MY_RELEASE", MyReleaseActivity.class);
+                map.put("ROUTER_ACTIVITY_SETTING", SettingActivity.class);
+                map.put("ROUTER_ACTIVITY_FEEDBACK", FeedbackActivity.class);
+                map.put("ROUTER_ACTIVITY_FAMILYMANAGEMENT", FamilyManagementActivity.class);
+                map.put("ROUTER_ACTIVITY_MY_UPDATE_NAME", UpdateNameActivity.class);
+                map.put("ROUTER_ACTIVITY_MY_UPDATE_DESC", UpdateDescribeActivity.class);
+                map.put("ROUTER_ACTIVITY_MY_ADDRESS_MANAGER", AddressActivity.class);
+                map.put("ROUTER_ACTIVITY_MY_ADDRESS_EXPRESS_ADD", ExpressBarAddActivity.class);
+                map.put("ROUTER_ACTIVITY_MY_ADDRESS_EXPRESS_MAP", ExpressMapActivity.class);
+                map.put("ROUTER_ACTIVITY_MY_ADDRESS_ADD", AddressAddAndEditActivity.class);
+                map.put("ROUTER_ACTIVITY_AREA_ADD", AddRoomActivity.class);
+                map.put("ROUTER_ACTIVITY_AREA_LIST", ListCommunityBuildingActivity.class);
+                map.put("ROUTER_ACTIVITY_FRIEND_DETAIL", DynamicDetailsActivity.class);
+                map.put("ROUTER_ACTIVITY_FRIEND_COMMENT", AddCommentActivity.class);
+                map.put("ROUTER_ACTIVITY_FRIEND_USER_INFO", PersonalHomePageActivity.class);
+                map.put("ROUTER_ACTIVITY_ORDER", OrderListActivity.class);
+                map.put("ROUTER_ACTIVITY_ORDER_FIRM", FirmOrderActivity.class);
+                map.put("ROUTER_ACTIVITY_ORDER_PAY", PayActivity.class);
+                map.put("ROUTER_ACTIVITY_ORDER_COMMENT", CommentActivity.class);
+                map.put("ROUTER_ACTIVITY_ALLORDER_COMMENT", AllEvaluationActivity.class);
+                map.put("ROUTER_ACTIVITY_PRODUCT_DETAIL", GoodsDetailsActivity.class);
+                map.put("ROUTER_ACTIVITY_PRODUCT_SEARCH", SearchActivity.class);
+                map.put("ROUTER_ACTIVITY_PRODUCT_SELECT_LOCAL", SelectLocalActivity.class);
+                map.put("ROUTER_ACTIVITY_SHOPPINGCART", ShoppingCartActivity.class);
+                map.put("ROUTER_ACTIVITY_COUPON_LIST", CouponListActivity.class);
+                map.put("ROUTER_ACTIVITY_COLLECTION_LIST", CollectionActivity.class);
+            }
+        });
+
         //极光推送
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);// 初始化 JPush

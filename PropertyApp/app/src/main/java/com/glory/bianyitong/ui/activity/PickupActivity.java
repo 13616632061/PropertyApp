@@ -33,6 +33,7 @@ import com.glory.bianyitong.ui.adapter.PickupAdapter;
 import com.glory.bianyitong.ui.adapter.shop.FirmOrderAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
+import com.glory.bianyitong.util.SharedUtil;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
@@ -82,7 +83,7 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
 //                    Log.i("resultString", "subTittle---------" + subTittle);
 //                    Log.i("resultString", "share_url---------" + share_url);
                     Log.i("resultString", "Constant.logo_path---------" + Constant.logo_path);
-                    ShareUtil.showShare(PickupActivity.this, msg.obj.toString(), true, "标题", "内容", share_url, Constant.logo_path);
+                    ShareUtil.showShareOne(PickupActivity.this, msg.obj.toString(), true, "标题", "内容", share_url, Constant.logo_path);
                     break;
             }
         }
@@ -98,6 +99,11 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
     protected void init() {
         super.init();
         inintTitle(getString(R.string.pickup), true, ""); //取件
+
+        if (!SharedUtil.getBoolean("login")){
+            finish();
+            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
+        }
 
         pickList();
         initView();
@@ -129,7 +135,7 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
                     }
                     pickupAdapter.notifyDataSetChanged();
                 } else {
-                    showShort(detail.getAlertMessage());
+//                    showShort(detail.getAlertMessage());
                 }
             }
 
@@ -156,6 +162,47 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
         }).getEntityData(this, HttpURL.HTTP_POST_SHOP_QUERY_PCIKUP, json);
     }
 
+    /**
+     * 开柜
+     */
+    private void openCabinet(int orderID) {
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("orderID",orderID);
+        final String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                PickupInfo detail = new Gson().fromJson(s, PickupInfo.class);
+                if (detail.getStatusCode() == 1) {
+                    showShort(detail.getAlertMessage());
+                } else {
+                    showShort(detail.getAlertMessage());
+                }
+            }
+
+
+            @Override
+            public void onError() {
+                showShort("系统异常");
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_SHOP_QUERY_CABINET_OPEN, json);
+    }
+
 
     /**
      * 分享链接
@@ -170,7 +217,7 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
                 PickupInfo detail = new Gson().fromJson(s, PickupInfo.class);
                 if (detail.getStatusCode() == 1) {
                     share_url=detail.getShareURL();
-                    dialog = new ShareSdkDialog(PickupActivity.this, mhandler);
+                    dialog = new ShareSdkDialog(PickupActivity.this, mhandler,true);
                     // 显示窗口
                     dialog.showAtLocation(findViewById(R.id.lay_fg_my),
                             Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
@@ -224,6 +271,9 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
             case R.id.iv_share:
                 getShareURL(data.get(position).getData().getOrderID());
 
+                break;
+            case R.id.iv_open_the_cabinet:
+                openCabinet(data.get(position).getData().getOrderID());
                 break;
         }
     }

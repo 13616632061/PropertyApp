@@ -39,6 +39,7 @@
             android:paddingLeft="13dp"
             android:paddingTop="8dp"/>
     <TextView
+        android:visibility="gone"
         android:id="@+id/local_content_distance"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -26,6 +26,7 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.GetOrderCommitAddress;
 import com.glory.bianyitong.bean.OrderOhterOne;
 import com.glory.bianyitong.bean.ShopcartInfo;
 import com.glory.bianyitong.bean.entity.request.RequestCommitOrderByCart;
@@ -202,16 +203,66 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             firmOrderAddressLin.addView(addressInitView);
             isHaveAddress=true;
         }
-        TextView txtName=ButterKnife.findById(addressInitView,R.id.firm_order_item_name);
-        TextView txtNumber=ButterKnife.findById(addressInitView,R.id.firm_order_item_number);
-        TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
-        txtName.setText(this.addressBean.getFreshCabinet().getCommunityName()+this.addressBean.getFreshCabinet().getCabinetName());
-        txtAddress.setText(this.addressBean.getFreshCabinet().getCommunity().getProvinceName()+this.addressBean.getFreshCabinet().getCommunity().getCityName()+this.addressBean.getFreshCabinet().getCommunity().getDistrictName()+this.addressBean.getFreshCabinet().getCommunity().getStreet());
-
-        SpannableString spannable=new SpannableString(addressBean.getFreshCabinet().getUsed()+"/"+addressBean.getFreshCabinet().getNum());
-        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        txtNumber.setText(spannable);
+//        TextView txtName=ButterKnife.findById(addressInitView,R.id.firm_order_item_name);
+//        TextView txtNumber=ButterKnife.findById(addressInitView,R.id.firm_order_item_number);
+//        TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
+//        txtName.setText(this.addressBean.getFreshCabinet().getCommunityName()+this.addressBean.getFreshCabinet().getCabinetName());
+//        txtAddress.setText(this.addressBean.getFreshCabinet().getCommunity().getProvinceName()+this.addressBean.getFreshCabinet().getCommunity().getCityName()+this.addressBean.getFreshCabinet().getCommunity().getDistrictName()+this.addressBean.getFreshCabinet().getCommunity().getStreet());
+//
+//        SpannableString spannable=new SpannableString(addressBean.getFreshCabinet().getUsed()+"/"+addressBean.getFreshCabinet().getNum());
+//        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+//        txtNumber.setText(spannable);
+        getOrderCommit();
     }
+    /**
+     * 获取地址信息
+     */
+    private void getOrderCommit(){
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        Map<String,Object> maps=new HashMap<>();
+        maps.put("cabinetID",addressBean.getCabinetID());
+        map.put("shippingAddress",maps);
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                GetOrderCommitAddress bean=new Gson().fromJson(s,GetOrderCommitAddress.class);
+                if(bean.getStatusCode()==1){
+                    TextView txtName=ButterKnife.findById(addressInitView,R.id.firm_order_item_name);
+                    TextView txtNumber=ButterKnife.findById(addressInitView,R.id.firm_order_item_number);
+                    TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
+                    txtName.setText(bean.getShippingAddress().getFreshCabinet().getCommunityName()+bean.getShippingAddress().getFreshCabinet().getCabinetName());
+                    txtAddress.setText(bean.getShippingAddress().getFreshCabinet().getCommunity().getProvinceName()+bean.getShippingAddress().getFreshCabinet().getCommunity().getCityName()+bean.getShippingAddress().getFreshCabinet().getCommunity().getDistrictName()+bean.getShippingAddress().getFreshCabinet().getCommunity().getStreet());
+
+                    SpannableString spannable=new SpannableString(bean.getShippingAddress().getFreshCabinet().getUsed()+"/"+bean.getShippingAddress().getFreshCabinet().getNum());
+                    spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    txtNumber.setText(spannable);
+                }else {
+                    showShort(bean.getAlertMessage());
+                }
+            }
+
+            @Override
+            public void onError() {
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(this,HttpURL.HTTP_POST_ORDER_QUERYCABINET, json);
+    }
+
 
     @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2,R.id.firm_order_lin_bill,R.id.firm_order_lin_coupon,R.id.firm_order_commit,R.id.firm_order_address_lin})
     void onClickBtn(View view){

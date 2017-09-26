@@ -22,6 +22,7 @@ import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DataCleanManager;
+import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.ToastUtils;
 
 import butterknife.BindView;
@@ -185,7 +186,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void logout() {
-
+        SharedUtil.putBoolean("login", false);
         Database.USER_MAP = null;
         Database.my_community_List = null;
         Database.my_community = null;

@@ -51,7 +51,7 @@
     -->
     
     <ShareSDK 
-        AppKey = "1a11d52921447"/> <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
+        AppKey = "1a11d52921447" /> <!-- 修改成你在sharesdk后台注册的应用的appkey"-->
     
     <!-- ShareByAppClient标识是否使用微博客户端分享，默认是false -->
     <SinaWeibo
@@ -93,24 +93,24 @@
 		默认值为false。此外，微信收藏不支持此字段。
 	-->
    <Wechat
-        AppId="wxd5296e8e8d5d33e4"
-        AppSecret="b6488f57140494c9d10ad8c6ff3cf27e"
-        BypassApproval="true"
+        AppId="wxfed32e31cb1a3d48"
+        AppSecret="02f6d2f352edee333b4a1f3d2fd901a1"
+        BypassApproval="false"
         Enable="true"
         Id="4"
         SortId="4" />
     
     <WechatMoments
-        AppId="wxd5296e8e8d5d33e4"
-        AppSecret="b6488f57140494c9d10ad8c6ff3cf27e"
-        BypassApproval="true"
+        AppId="wxfed32e31cb1a3d48"
+        AppSecret="02f6d2f352edee333b4a1f3d2fd901a1"
+        BypassApproval="false"
         Enable="true"
         Id="5"
         SortId="5" />
         
 	<WechatFavorite
-        AppId="wx617c77c82218ea2c"
-        AppSecret="fb335de320d92f7cf09b149334d9c705"
+        AppId="wxfed32e31cb1a3d48"
+        AppSecret="02f6d2f352edee333b4a1f3d2fd901a1"
         Enable="false"
         Id="6"
         SortId="6" />

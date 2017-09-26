@@ -204,4 +204,81 @@ public class ShareUtil {
         // 启动分享
         oks.show(context);
     }
+
+    /**
+     * 演示调用ShareSDK执行分享
+     *
+     * @param context
+     * @param platformToShare  指定直接分享平台名称（一旦设置了平台名称，则九宫格将不会显示）
+     * @param showContentEdit  是否显示编辑页
+     */
+    public static void showShareOne(Context context, String platformToShare, boolean showContentEdit,
+                                 final String titile, final String mShareContent, final String url, final String logopath) {
+        // 获取缓存微信分享的秘钥key值
+        String wxAppId = Constant.AppID;
+        // 获取缓存微信分享的秘钥key值
+        String wxAppSecret = Constant.AppSecret;//动态获取
+//        ShareSDK.initSDK(context, "1a11d52921447");
+        if (wxAppId != null && !wxAppId.equals("") && wxAppId.length() != 0
+                && wxAppSecret != null && !wxAppSecret.equals("") && wxAppSecret.length() != 0) {
+            // 微信分享的配置注册信息.
+            HashMap<String, Object> wxMap = new HashMap<String, Object>();
+            wxMap.put("Id", "4");
+            wxMap.put("SortId", "4");
+            wxMap.put("AppId", wxAppId);
+            wxMap.put("AppSecret", wxAppSecret);
+            wxMap.put("BypassApproval", "false");
+            wxMap.put("Enable", "true");
+            ShareSDK.setPlatformDevInfo(Wechat.NAME, wxMap);
+            // 微信朋友圈分享的配置注册信息.
+            HashMap<String, Object> wxMomentsMap = new HashMap<String, Object>();
+            wxMomentsMap.put("Id", "5");
+            wxMomentsMap.put("SortId", "5");
+            wxMomentsMap.put("AppId", wxAppId);
+            wxMomentsMap.put("AppSecret", wxAppSecret);
+            wxMomentsMap.put("BypassApproval", "false");
+            wxMomentsMap.put("Enable", "false");
+            ShareSDK.setPlatformDevInfo(WechatMoments.NAME, wxMomentsMap);
+        }
+        OnekeyShare oks = new OnekeyShare();
+        oks.setSilent(!showContentEdit);
+        if (platformToShare != null) {
+            oks.setPlatform(platformToShare);
+        }
+//        //ShareSDK快捷分享提供两个界面第一个是九宫格 CLASSIC  第二个是SKYBLUE
+        oks.setTheme(OnekeyShareTheme.CLASSIC);
+//        // 令编辑页面显示为Dialog模式
+        oks.setDialogMode();
+        // 在自动授权时可以禁用SSO方式
+        oks.disableSSOWhenAuthorize();
+        // title标题，印象笔记、邮箱、信息、微信、人人网和QQ空间使用
+//		oks.setTitle(context.getString(R.string.app_name));
+        oks.setTitle(titile);
+        // titleUrl是标题的网络链接，仅在人人网和QQ空间使用
+        oks.setTitleUrl(url);
+        // text是分享文本，所有平台都需要这个字段
+        oks.setText(mShareContent);
+        // imagePath是图片的本地路径，Linked-In以外的平台都支持此参数
+        oks.setImagePath(logopath);// 确保SDcard下面存在此张图片
+        // imageUrl是图片的网络路径，新浪微博、人人网、QQ空间和Linked-In支持此字段
+//		oks.setImageUrl(Picurl);
+        // url仅在微信（包括好友和朋友圈）中使用
+        oks.setUrl(url);
+        // site是分享此内容的网站名称，仅在QQ空间使用
+        oks.setSite(context.getString(R.string.app_name));
+        // siteUrl是分享此内容的网站地址，仅在QQ空间使用
+        oks.setSiteUrl(url);
+        oks.setShareContentCustomizeCallback(new ShareContentCustomizeCallback() {
+            public void onShare(Platform platform, Platform.ShareParams paramsToShare) {
+                // 改写twitter分享内容中的text字段，否则会超长，
+                // 因为twitter会将图片地址当作文本的一部分去计算长度
+                if ("Twitter".equals(platform.getName())) {
+                    paramsToShare.setText(mShareContent);
+                }
+            }
+        });
+
+        // 启动分享
+        oks.show(context);
+    }
 }

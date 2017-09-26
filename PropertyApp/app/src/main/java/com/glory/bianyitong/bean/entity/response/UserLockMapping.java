@@ -6,8 +6,8 @@ package com.glory.bianyitong.bean.entity.response;
 
 public class UserLockMapping {
 
-    public UserLockMapping(String authorizationUserID, int userIdentity, int timeLimit, String startDate, String endDate) {
-        this.authorizationUserID = authorizationUserID;
+    public UserLockMapping(String aESUserID, int userIdentity, int timeLimit, String startDate, String endDate) {
+        this.aESUserID = aESUserID;
         this.userIdentity = userIdentity;
         this.timeLimit = timeLimit;
         this.startDate = startDate;
@@ -22,7 +22,7 @@ public class UserLockMapping {
      * startDate :
      * endDate :
      */
-
+    private String aESUserID;
     private String authorizationUserID;
     private int userIdentity;
     private int timeLimit;
