@@ -99,7 +99,6 @@ public class MessageDetailsActivity extends BaseActivity {
                 "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
                 "\"controllerName\": \"SystemMsg\",\"actionName\": \"StructureQuery\"}";
         Log.i("resultString", "json----------" + json);
-        String url = HttpURL.HTTP_LOGIN_AREA + "/SystemMsg/StructureQuery";
 //        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/SystemMsg/StructureQuery")
 //                .tag(this)//
 ////                .headers("", "")//
@@ -182,7 +181,8 @@ public class MessageDetailsActivity extends BaseActivity {
             public void onBefore() {}
             @Override
             public void onAfter() {}
-        }).getEntityData(this,url,json);
+        }).getEntityData(this,HttpURL.HTTP_POST_COUPON_SYSTEMMSG,json);
+
     }
 
 }

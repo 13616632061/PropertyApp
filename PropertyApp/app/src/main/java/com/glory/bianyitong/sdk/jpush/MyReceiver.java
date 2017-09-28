@@ -9,6 +9,7 @@ import android.util.Log;
 import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
 import com.glory.bianyitong.ui.activity.MainActivity;
 import com.glory.bianyitong.ui.activity.MessageDetailsActivity;
+import com.glory.bianyitong.ui.activity.PickupActivity;
 import com.glory.bianyitong.ui.activity.WelcomeActivity;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.JsonHelper;
@@ -96,45 +97,74 @@ public class MyReceiver extends BroadcastReceiver {
             String type2 = bundle.getString(JPushInterface.EXTRA_EXTRA);
             Log.i("resultString", "type2----====" + type2);
             //公告(typeid为1) 系统消息(typeid为2)
-            HashMap<String, Object> hashMap2 = JsonHelper.fromJson(type2, new TypeToken<HashMap<String, Object>>() {
+            HashMap<String, String > hashMap2 = JsonHelper.fromJson(type2, new TypeToken<HashMap<String, String>>() {
             });
-            boolean isrun = ActivityUtils.isRunningForeground();
-            if (hashMap2.get("TypeID") != null && hashMap2.get("PushID") != null) {
-                int TypeID = Double.valueOf(hashMap2.get("TypeID").toString()).intValue();
-                int PushID = Double.valueOf(hashMap2.get("PushID").toString()).intValue();
-                //打开自定义的Activity
-                if(isrun){
-                    if (TypeID == 1) {
-                        Intent i = new Intent(context, BulletinDetailsActivity.class);
-                        i.putExtra("PushID", PushID);
-                        i.putExtras(bundle);
-                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        context.startActivity(i);
-                    } else if (TypeID == 2) {
-                        Intent i2 = new Intent(context, MessageDetailsActivity.class);
-                        i2.putExtra("PushID", PushID);
-                        i2.putExtras(bundle);
-                        i2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        context.startActivity(i2);
-                    }
-                }else {
-                    if (TypeID == 1) {
-                        Intent i3 = new Intent(context, WelcomeActivity.class);
-                        i3.putExtra("TypeID", 1);
-                        i3.putExtra("PushID", PushID);
-                        i3.putExtras(bundle);
-                        i3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        context.startActivity(i3);
-                    } else if (TypeID == 2) {
-                        Intent i4 = new Intent(context, WelcomeActivity.class);
-                        i4.putExtra("TypeID", 2);
-                        i4.putExtra("PushID", PushID);
-                        i4.putExtras(bundle);
-                        i4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        context.startActivity(i4);
-                    }
-                }
+            Log.i("extmas",hashMap2.get("extMsg")+"--------"+hashMap2.get("extId"));
+            switch (hashMap2.get("extMsg")){
+                case "1":
+                    Intent intent1 = new Intent(context, BulletinDetailsActivity.class);
+                    intent1.putExtra("bulletinId",Integer.parseInt(hashMap2.get("extId")));
+                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    context.startActivity(intent1);
+                    break;
+                case "2":
+                    Intent intent2 = new Intent(context, MessageDetailsActivity.class);
+                    intent2.putExtra("PushID",Integer.parseInt(hashMap2.get("extId")));
+                    intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    context.startActivity(intent2);
+                    break;
+                case "3":
+
+                    break;
+                case "4":
+                    Intent intent4 = new Intent(context, PickupActivity.class);
+                    intent4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    context.startActivity(intent4);
+                    break;
+                case "5":
+
+                    break;
             }
+
+
+
+//            boolean isrun = ActivityUtils.isRunningForeground();
+//            if (hashMap2.get("TypeID") != null && hashMap2.get("PushID") != null) {
+//                int TypeID = Double.valueOf(hashMap2.get("TypeID").toString()).intValue();
+//                int PushID = Double.valueOf(hashMap2.get("PushID").toString()).intValue();
+//                //打开自定义的Activity
+//                if(isrun){
+//                    if (TypeID == 1) {
+//                        Intent i = new Intent(context, BulletinDetailsActivity.class);
+//                        i.putExtra("PushID", PushID);
+//                        i.putExtras(bundle);
+//                        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        context.startActivity(i);
+//                    } else if (TypeID == 2) {
+//                        Intent i2 = new Intent(context, MessageDetailsActivity.class);
+//                        i2.putExtra("PushID", PushID);
+//                        i2.putExtras(bundle);
+//                        i2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        context.startActivity(i2);
+//                    }
+//                }else {
+//                    if (TypeID == 1) {
+//                        Intent i3 = new Intent(context, WelcomeActivity.class);
+//                        i3.putExtra("TypeID", 1);
+//                        i3.putExtra("PushID", PushID);
+//                        i3.putExtras(bundle);
+//                        i3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        context.startActivity(i3);
+//                    } else if (TypeID == 2) {
+//                        Intent i4 = new Intent(context, WelcomeActivity.class);
+//                        i4.putExtra("TypeID", 2);
+//                        i4.putExtra("PushID", PushID);
+//                        i4.putExtras(bundle);
+//                        i4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        context.startActivity(i4);
+//                    }
+//                }
+//            }
 
         } else if (JPushInterface.ACTION_RICHPUSH_CALLBACK.equals(intent.getAction())) {
             Log.d(TAG, "[MyReceiver] 用户收到到RICH PUSH CALLBACK: " + bundle.getString(JPushInterface.EXTRA_EXTRA));

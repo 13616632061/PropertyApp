@@ -28,6 +28,7 @@ import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.share.ShareUtil;
 import com.glory.bianyitong.ui.activity.shop.RefundMoneyActivity;
+import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
 import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.TextUtil;
@@ -142,7 +143,6 @@ public class MyFragment extends BaseFragment {
         view_my = inflater.inflate(R.layout.fg_my2, container, false);
         context = getActivity();
         ButterKnife.bind(this, view_my);
-        getShowNumber();
         return view_my;
     }
 
@@ -177,6 +177,7 @@ public class MyFragment extends BaseFragment {
         tvRefundSale.setOnClickListener(this);
         getShareInfo();
     }
+
 
 
     @Override
@@ -470,6 +471,14 @@ public class MyFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        getShowNumber();
+        if (Database.USER_MAP != null && Database.USER_MAP.getCustomerPhoto() != null) {
+            String pic = Database.USER_MAP.getCustomerPhoto();
+            if (!customerPhoto.equals(pic)) {
+                ServiceDialog.setPicture(pic, cimMyHeadPortrait, null);
+                customerPhoto = pic;
+            }
+        }
     }
 
 }

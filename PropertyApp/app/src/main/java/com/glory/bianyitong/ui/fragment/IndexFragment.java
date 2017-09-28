@@ -30,6 +30,7 @@ import com.glory.bianyitong.ui.activity.AuthAreaActivity;
 import com.glory.bianyitong.ui.activity.LoginActivity;
 import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.DateUtil;
+import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.view.NewPullToRefreshView;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -182,6 +183,8 @@ public class IndexFragment extends BaseFragment {
                 tvVillageName.setText(getResources().getString(R.string.click_add_community));//点击添加小区
             }
         } else {
+            SharedUtil.putBoolean("login", false);
+            SharedUtil.putString("jgPushID","");
             tvVillageName.setText(getResources().getString(R.string.click_to_Login)); //点击登录
         }
 //        if (images != null && images.length > 0) {

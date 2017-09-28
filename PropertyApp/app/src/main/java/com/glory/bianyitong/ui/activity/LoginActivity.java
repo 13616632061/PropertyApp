@@ -298,6 +298,7 @@ public class LoginActivity extends BaseActivity {
                     Database.islogin = true;
                     Database.USER_MAP = loginInfo.getUser();
                     Database.accessToken=loginInfo.getAccessToken();
+//                    Database.jgPushID=loginInfo.getUser().getJgPushID();
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, Database.USER_MAP.getJgPushName()));
                     if (loginInfo.getUserCommnunity() != null) {
 //                            Database.my_community_List = userInfo.getUserCommnunity();
@@ -308,6 +309,7 @@ public class LoginActivity extends BaseActivity {
 //                    SharePreToolsKits.putJsonDataString(LoginActivity.this, Constant.user, s); //缓存登录后信息
                     //登录成功
                     LoginActivity.this.finish();
+                    SharedUtil.putString("jgPushID", loginInfo.getUser().getJgPushID());
                     SharedUtil.putBoolean("login", true);
                 }
 

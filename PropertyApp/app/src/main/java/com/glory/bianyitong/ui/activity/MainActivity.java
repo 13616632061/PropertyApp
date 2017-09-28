@@ -81,10 +81,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 import cn.sharesdk.framework.ShareSDK;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -140,6 +142,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Router.injectParams(this);
         ButterKnife.bind(this);
         Database.registrationId = JPushInterface.getRegistrationID(getApplicationContext());
+        JPushInterface.setDebugMode(true);//测试版为true
+        JPushInterface.init(this);
+        if (SharedUtil.getString("jgPushID")!=null){
+            Log.i("jgpushid",SharedUtil.getString("jgPushID"));
+            //设置别名Alia
+            JPushInterface.setAlias(this, SharedUtil.getString("jgPushID"), new TagAliasCallback() {
+                @Override
+                public void gotResult(int i, String s, Set<String> set) {
+                    Log.d("123123","set Alias result is"+i);
+                }
+            });
+        }
+
+
         //显示标题  内容的了
         ExampleUtil.customPushNotification(this, 1,
                 R.layout.customer_notitfication_layout_one,
@@ -207,6 +223,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onResume() {
         isForeground = true;
         super.onResume();
+        if (SharedUtil.getString("jgPushID")!=null){
+            Log.i("jgpushid",SharedUtil.getString("jgPushID"));
+            //设置别名Alia
+            JPushInterface.setAlias(this, SharedUtil.getString("jgPushID"), new TagAliasCallback() {
+                @Override
+                public void gotResult(int i, String s, Set<String> set) {
+                    Log.d("123123","set Alias result is"+i);
+                }
+            });
+        }
+
         if (getIntent().getIntExtra("tabId", -1) != -1) {
             showFragment(getIntent().getIntExtra("tabId", -1));
         }
@@ -342,7 +369,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(!TextUtil.isEmpty(Database.login_return)){
             LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, new TypeToken<LoginUserInfo>(){}.getType());
             Database.USER_MAP = userInfo.getUser();
-            Database.accessToken=userInfo.getAccessToken();
+//            Database.accessToken=userInfo.getAccessToken();
             if(!(userInfo==null || userInfo.getUserCommnunity()==null)){
                 DataUtils.getUesrCommunity(userInfo);//社区列表
                 DataUtils.my_community(MainActivity.this);

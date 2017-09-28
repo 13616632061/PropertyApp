@@ -219,4 +219,8 @@ public class HttpURL {
      * 支付
      */
     public static String HTTP_POST_COUPON_PAY="/ApiWXPay/WXPayAPP";//我的优惠券列表查询
+    /**+
+     * 消息
+     */
+    public static String HTTP_POST_COUPON_SYSTEMMSG="/ApiSystemMsg/Query";//我的优惠券列表查询
 }

@@ -34,6 +34,7 @@ import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.dialog.NewsDeletePopuWindow;
 import com.glory.bianyitong.ui.dialog.ReportPopuWindow;
+import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.view.MyGridView;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -230,6 +231,10 @@ public class DynamicDetailsActivity extends BaseActivity {
         super.onClick(view);
         switch (view.getId()) {
             case R.id.ll_addcomment_dy: //评论
+                if (!SharedUtil.getBoolean("login")){
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
+                }else {
+
 //                    Intent intent = new Intent(DynamicDetailsActivity.this, AddCommentActivity.class);
 //                    intent.putExtra("neighborhoodID", neighborhoodid);
 //                    intent.putExtra("CommentToID", 0);
@@ -237,29 +242,33 @@ public class DynamicDetailsActivity extends BaseActivity {
 //                    intent.putExtra("commentToUserName", "");
 //                startActivity(intent);
                     Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_COMMENT)
-                            .with("neighborhoodID",neighborhoodid)
-                            .with("CommentToID",0)
-                            .with("commentToUserID",neighborhood.getAesUserID())
-                            .with("commentToUserName",neighborhood.getUserName())
+                            .with("neighborhoodID", neighborhoodid)
+                            .with("CommentToID", 0)
+                            .with("commentToUserID", neighborhood.getAesUserID())
+                            .with("commentToUserName", neighborhood.getUserName())
                             .go(this);
 
-
+                }
 
                 break;
             case R.id.left_return_btn:
                 DynamicDetailsActivity.this.finish();
                 break;
             case R.id.lay_like_dy:
-                if (Database.USER_MAP != null) {
-                    if (islike) {// 点赞
-                        request_like(neighborhoodid, 0);
-                    } else {//取消点赞
-                        request_like_cancel(neighborhood.getLikeStatu());
+                if (!SharedUtil.getBoolean("login")){
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
+                }else {
+                    if (Database.USER_MAP != null) {
+                        if (islike) {// 点赞
+                            request_like(neighborhoodid, 0);
+                        } else {//取消点赞
+                            request_like_cancel(neighborhood.getLikeStatu());
+                        }
+                    } else {//登录
+                        Intent intent_login = new Intent();
+                        intent_login.setClass(DynamicDetailsActivity.this, LoginActivity.class);
+                        startActivity(intent_login);
                     }
-                } else {//登录
-                    Intent intent_login = new Intent();
-                    intent_login.setClass(DynamicDetailsActivity.this, LoginActivity.class);
-                    startActivity(intent_login);
                 }
                 break;
             case R.id.dynamic_right_more: //更多

@@ -9,11 +9,11 @@ public class OrderDetailsInfo {
 
     /**
      * orderID : 0
-     * list_Order : [{"orderID":226,"orderCode":"1709200853312472960","orderTime":null,"freight":0,"couponReceiveID":13,"addressID":13,"appId":null,"orderPaidPrice":30,"shippingAddress":{"addressID":13,"cabinetID":22,"cabinetName":null,"defaults":false,"harvesterName":"测试用户","harvestePhone":"13510012206","freshCabinet":{"cabinetID":22,"cabinetName":"生鲜柜三号","longitude":113.957114,"latitude":22.58243,"communityID":3,"createDate":"2017-08-17T00:00:00","createUserID":1,"lockAccount":"123","lockPassword":"123","num":48,"cabinetNo":500004,"address":"留仙大道1281号","used":0,"community":{"communityID":3,"communityName":"留仙小区","provinceID":440000,"cityID":440300,"districtID":440305,"longitude":113.957663,"latitude":22.582366,"provinceName":"广东省","cityName":"深圳市","districtName":"南山区","street":"留仙大道","addressNumber":"145号","postCode":123456}}},"couponReceive":{"receiveID":13,"couponID":13,"coupon":{"couponID":13,"couponName":"商家2","merchantID":29,"startFee":20,"freeMoney":10,"commodityRange":2,"platFormType":2,"receivestatu":false,"totalPageNumber":0,"nowPageNumber":0,"pageRowCount":0}},"listOrderDetail":[{"freshID":41,"freshQuantity":2,"fresh":{"freshID":41,"freshTypeID":106,"freshTypeName":"葱姜蒜椒","freshTypeLeaf":"蔬菜蛋类","freshName":"海蜇","freshPrice":20,"freshPicture":"http://byt.bytsz.com.cn/images/Fresh/Jellyfish.jpg","originName":"","merchant_ID":29,"merchantName":"宝安44区生鲜店","enable":true,"isDelete":false,"godownNumber":null,"list_FreshEvaluation":null,"freshEvaluation":null,"cartNum":0,"freshContents":null}}],"totalPageNumber":0,"nowPageNumber":0}]
+     * list_Order : [{"orderID":240,"orderCode":"1709220550579642260","orderTime":null,"orderPrice":58,"freight":0,"couponReceiveID":12,"appId":null,"orderPaidPrice":38,"address":"留仙大道1285号","realName":"里斯","mobileNumber":"14555554444","couponReceive":{"receiveID":12,"couponID":12,"coupon":{"couponID":12,"couponName":"商家1","merchantID":22,"startFee":50,"freeMoney":20,"commodityRange":2,"platFormType":2,"receivestatu":false,"totalPageNumber":0,"nowPageNumber":0,"pageRowCount":0}},"listOrderDetail":[{"detailID":320,"orderID":240,"freshID":3,"freshQuantity":1,"price":58,"totalPrice":58,"merchentID":22,"freshScanNum":0,"freshName":"澳洲牛肉","freshImgUrl":"http://byt.bytsz.com.cn/images/Fresh/shrimp2.jpg","freshTypeName":"牛肉","fresh":{"freshID":3,"freshTypeLeaf":"牛肉","freshName":"澳洲牛肉","freshPrice":58,"freshPicture":"http://byt.bytsz.com.cn/images/Fresh/shrimp2.jpg","isDelete":null,"godownNumber":null,"list_FreshEvaluation":null,"freshEvaluation":null,"cartNum":0,"freshContents":null}}],"totalPageNumber":0,"nowPageNumber":0,"cartNum":1}]
      * statusCode : 1
      * alertMessage : 消息处理成功
      * currentPageNumber : 0
-     * pageRowNumber : 20
+     * pageRowNumber : 0
      */
 
     private int orderID;
@@ -73,33 +73,39 @@ public class OrderDetailsInfo {
 
     public static class ListOrderBean {
         /**
-         * orderID : 226
-         * orderCode : 1709200853312472960
+         * orderID : 240
+         * orderCode : 1709220550579642260
          * orderTime : null
+         * orderPrice : 58
          * freight : 0
-         * couponReceiveID : 13
-         * addressID : 13
+         * couponReceiveID : 12
          * appId : null
-         * orderPaidPrice : 30
-         * shippingAddress : {"addressID":13,"cabinetID":22,"cabinetName":null,"defaults":false,"harvesterName":"测试用户","harvestePhone":"13510012206","freshCabinet":{"cabinetID":22,"cabinetName":"生鲜柜三号","longitude":113.957114,"latitude":22.58243,"communityID":3,"createDate":"2017-08-17T00:00:00","createUserID":1,"lockAccount":"123","lockPassword":"123","num":48,"cabinetNo":500004,"address":"留仙大道1281号","used":0,"community":{"communityID":3,"communityName":"留仙小区","provinceID":440000,"cityID":440300,"districtID":440305,"longitude":113.957663,"latitude":22.582366,"provinceName":"广东省","cityName":"深圳市","districtName":"南山区","street":"留仙大道","addressNumber":"145号","postCode":123456}}}
-         * couponReceive : {"receiveID":13,"couponID":13,"coupon":{"couponID":13,"couponName":"商家2","merchantID":29,"startFee":20,"freeMoney":10,"commodityRange":2,"platFormType":2,"receivestatu":false,"totalPageNumber":0,"nowPageNumber":0,"pageRowCount":0}}
-         * listOrderDetail : [{"freshID":41,"freshQuantity":2,"fresh":{"freshID":41,"freshTypeID":106,"freshTypeName":"葱姜蒜椒","freshTypeLeaf":"蔬菜蛋类","freshName":"海蜇","freshPrice":20,"freshPicture":"http://byt.bytsz.com.cn/images/Fresh/Jellyfish.jpg","originName":"","merchant_ID":29,"merchantName":"宝安44区生鲜店","enable":true,"isDelete":false,"godownNumber":null,"list_FreshEvaluation":null,"freshEvaluation":null,"cartNum":0,"freshContents":null}}]
+         * orderPaidPrice : 38
+         * address : 留仙大道1285号
+         * realName : 里斯
+         * mobileNumber : 14555554444
+         * couponReceive : {"receiveID":12,"couponID":12,"coupon":{"couponID":12,"couponName":"商家1","merchantID":22,"startFee":50,"freeMoney":20,"commodityRange":2,"platFormType":2,"receivestatu":false,"totalPageNumber":0,"nowPageNumber":0,"pageRowCount":0}}
+         * listOrderDetail : [{"detailID":320,"orderID":240,"freshID":3,"freshQuantity":1,"price":58,"totalPrice":58,"merchentID":22,"freshScanNum":0,"freshName":"澳洲牛肉","freshImgUrl":"http://byt.bytsz.com.cn/images/Fresh/shrimp2.jpg","freshTypeName":"牛肉","fresh":{"freshID":3,"freshTypeLeaf":"牛肉","freshName":"澳洲牛肉","freshPrice":58,"freshPicture":"http://byt.bytsz.com.cn/images/Fresh/shrimp2.jpg","isDelete":null,"godownNumber":null,"list_FreshEvaluation":null,"freshEvaluation":null,"cartNum":0,"freshContents":null}}]
          * totalPageNumber : 0
          * nowPageNumber : 0
+         * cartNum : 1
          */
 
         private int orderID;
         private String orderCode;
         private Object orderTime;
+        private int orderPrice;
         private int freight;
         private int couponReceiveID;
-        private int addressID;
-        private int appId=0;
+        private int appId;
         private int orderPaidPrice;
-        private ShippingAddressBean shippingAddress;
-        private CouponReceiveBean couponReceive=null;
+        private String address;
+        private String realName;
+        private String mobileNumber;
+        private CouponReceiveBean couponReceive;
         private int totalPageNumber;
         private int nowPageNumber;
+        private int cartNum;
         private List<ListOrderDetailBean> listOrderDetail;
 
         public int getOrderID() {
@@ -126,6 +132,14 @@ public class OrderDetailsInfo {
             this.orderTime = orderTime;
         }
 
+        public int getOrderPrice() {
+            return orderPrice;
+        }
+
+        public void setOrderPrice(int orderPrice) {
+            this.orderPrice = orderPrice;
+        }
+
         public int getFreight() {
             return freight;
         }
@@ -140,14 +154,6 @@ public class OrderDetailsInfo {
 
         public void setCouponReceiveID(int couponReceiveID) {
             this.couponReceiveID = couponReceiveID;
-        }
-
-        public int getAddressID() {
-            return addressID;
-        }
-
-        public void setAddressID(int addressID) {
-            this.addressID = addressID;
         }
 
         public int getAppId() {
@@ -166,12 +172,28 @@ public class OrderDetailsInfo {
             this.orderPaidPrice = orderPaidPrice;
         }
 
-        public ShippingAddressBean getShippingAddress() {
-            return shippingAddress;
+        public String getAddress() {
+            return address;
         }
 
-        public void setShippingAddress(ShippingAddressBean shippingAddress) {
-            this.shippingAddress = shippingAddress;
+        public void setAddress(String address) {
+            this.address = address;
+        }
+
+        public String getRealName() {
+            return realName;
+        }
+
+        public void setRealName(String realName) {
+            this.realName = realName;
+        }
+
+        public String getMobileNumber() {
+            return mobileNumber;
+        }
+
+        public void setMobileNumber(String mobileNumber) {
+            this.mobileNumber = mobileNumber;
         }
 
         public CouponReceiveBean getCouponReceive() {
@@ -198,6 +220,14 @@ public class OrderDetailsInfo {
             this.nowPageNumber = nowPageNumber;
         }
 
+        public int getCartNum() {
+            return cartNum;
+        }
+
+        public void setCartNum(int cartNum) {
+            this.cartNum = cartNum;
+        }
+
         public List<ListOrderDetailBean> getListOrderDetail() {
             return listOrderDetail;
         }
@@ -206,374 +236,16 @@ public class OrderDetailsInfo {
             this.listOrderDetail = listOrderDetail;
         }
 
-        public static class ShippingAddressBean {
-            /**
-             * addressID : 13
-             * cabinetID : 22
-             * cabinetName : null
-             * defaults : false
-             * harvesterName : 测试用户
-             * harvestePhone : 13510012206
-             * freshCabinet : {"cabinetID":22,"cabinetName":"生鲜柜三号","longitude":113.957114,"latitude":22.58243,"communityID":3,"createDate":"2017-08-17T00:00:00","createUserID":1,"lockAccount":"123","lockPassword":"123","num":48,"cabinetNo":500004,"address":"留仙大道1281号","used":0,"community":{"communityID":3,"communityName":"留仙小区","provinceID":440000,"cityID":440300,"districtID":440305,"longitude":113.957663,"latitude":22.582366,"provinceName":"广东省","cityName":"深圳市","districtName":"南山区","street":"留仙大道","addressNumber":"145号","postCode":123456}}
-             */
-
-            private int addressID;
-            private int cabinetID;
-            private Object cabinetName;
-            private boolean defaults;
-            private String harvesterName;
-            private String harvestePhone;
-            private FreshCabinetBean freshCabinet;
-
-            public int getAddressID() {
-                return addressID;
-            }
-
-            public void setAddressID(int addressID) {
-                this.addressID = addressID;
-            }
-
-            public int getCabinetID() {
-                return cabinetID;
-            }
-
-            public void setCabinetID(int cabinetID) {
-                this.cabinetID = cabinetID;
-            }
-
-            public Object getCabinetName() {
-                return cabinetName;
-            }
-
-            public void setCabinetName(Object cabinetName) {
-                this.cabinetName = cabinetName;
-            }
-
-            public boolean isDefaults() {
-                return defaults;
-            }
-
-            public void setDefaults(boolean defaults) {
-                this.defaults = defaults;
-            }
-
-            public String getHarvesterName() {
-                return harvesterName;
-            }
-
-            public void setHarvesterName(String harvesterName) {
-                this.harvesterName = harvesterName;
-            }
-
-            public String getHarvestePhone() {
-                return harvestePhone;
-            }
-
-            public void setHarvestePhone(String harvestePhone) {
-                this.harvestePhone = harvestePhone;
-            }
-
-            public FreshCabinetBean getFreshCabinet() {
-                return freshCabinet;
-            }
-
-            public void setFreshCabinet(FreshCabinetBean freshCabinet) {
-                this.freshCabinet = freshCabinet;
-            }
-
-            public static class FreshCabinetBean {
-                /**
-                 * cabinetID : 22
-                 * cabinetName : 生鲜柜三号
-                 * longitude : 113.957114
-                 * latitude : 22.58243
-                 * communityID : 3
-                 * createDate : 2017-08-17T00:00:00
-                 * createUserID : 1
-                 * lockAccount : 123
-                 * lockPassword : 123
-                 * num : 48
-                 * cabinetNo : 500004
-                 * address : 留仙大道1281号
-                 * used : 0
-                 * community : {"communityID":3,"communityName":"留仙小区","provinceID":440000,"cityID":440300,"districtID":440305,"longitude":113.957663,"latitude":22.582366,"provinceName":"广东省","cityName":"深圳市","districtName":"南山区","street":"留仙大道","addressNumber":"145号","postCode":123456}
-                 */
-
-                private int cabinetID;
-                private String cabinetName;
-                private double longitude;
-                private double latitude;
-                private int communityID;
-                private String createDate;
-                private int createUserID;
-                private String lockAccount;
-                private String lockPassword;
-                private int num;
-                private int cabinetNo;
-                private String address;
-                private int used;
-                private CommunityBean community;
-
-                public int getCabinetID() {
-                    return cabinetID;
-                }
-
-                public void setCabinetID(int cabinetID) {
-                    this.cabinetID = cabinetID;
-                }
-
-                public String getCabinetName() {
-                    return cabinetName;
-                }
-
-                public void setCabinetName(String cabinetName) {
-                    this.cabinetName = cabinetName;
-                }
-
-                public double getLongitude() {
-                    return longitude;
-                }
-
-                public void setLongitude(double longitude) {
-                    this.longitude = longitude;
-                }
-
-                public double getLatitude() {
-                    return latitude;
-                }
-
-                public void setLatitude(double latitude) {
-                    this.latitude = latitude;
-                }
-
-                public int getCommunityID() {
-                    return communityID;
-                }
-
-                public void setCommunityID(int communityID) {
-                    this.communityID = communityID;
-                }
-
-                public String getCreateDate() {
-                    return createDate;
-                }
-
-                public void setCreateDate(String createDate) {
-                    this.createDate = createDate;
-                }
-
-                public int getCreateUserID() {
-                    return createUserID;
-                }
-
-                public void setCreateUserID(int createUserID) {
-                    this.createUserID = createUserID;
-                }
-
-                public String getLockAccount() {
-                    return lockAccount;
-                }
-
-                public void setLockAccount(String lockAccount) {
-                    this.lockAccount = lockAccount;
-                }
-
-                public String getLockPassword() {
-                    return lockPassword;
-                }
-
-                public void setLockPassword(String lockPassword) {
-                    this.lockPassword = lockPassword;
-                }
-
-                public int getNum() {
-                    return num;
-                }
-
-                public void setNum(int num) {
-                    this.num = num;
-                }
-
-                public int getCabinetNo() {
-                    return cabinetNo;
-                }
-
-                public void setCabinetNo(int cabinetNo) {
-                    this.cabinetNo = cabinetNo;
-                }
-
-                public String getAddress() {
-                    return address;
-                }
-
-                public void setAddress(String address) {
-                    this.address = address;
-                }
-
-                public int getUsed() {
-                    return used;
-                }
-
-                public void setUsed(int used) {
-                    this.used = used;
-                }
-
-                public CommunityBean getCommunity() {
-                    return community;
-                }
-
-                public void setCommunity(CommunityBean community) {
-                    this.community = community;
-                }
-
-                public static class CommunityBean {
-                    /**
-                     * communityID : 3
-                     * communityName : 留仙小区
-                     * provinceID : 440000
-                     * cityID : 440300
-                     * districtID : 440305
-                     * longitude : 113.957663
-                     * latitude : 22.582366
-                     * provinceName : 广东省
-                     * cityName : 深圳市
-                     * districtName : 南山区
-                     * street : 留仙大道
-                     * addressNumber : 145号
-                     * postCode : 123456
-                     */
-
-                    private int communityID;
-                    private String communityName;
-                    private int provinceID;
-                    private int cityID;
-                    private int districtID;
-                    private double longitude;
-                    private double latitude;
-                    private String provinceName;
-                    private String cityName;
-                    private String districtName;
-                    private String street;
-                    private String addressNumber;
-                    private int postCode;
-
-                    public int getCommunityID() {
-                        return communityID;
-                    }
-
-                    public void setCommunityID(int communityID) {
-                        this.communityID = communityID;
-                    }
-
-                    public String getCommunityName() {
-                        return communityName;
-                    }
-
-                    public void setCommunityName(String communityName) {
-                        this.communityName = communityName;
-                    }
-
-                    public int getProvinceID() {
-                        return provinceID;
-                    }
-
-                    public void setProvinceID(int provinceID) {
-                        this.provinceID = provinceID;
-                    }
-
-                    public int getCityID() {
-                        return cityID;
-                    }
-
-                    public void setCityID(int cityID) {
-                        this.cityID = cityID;
-                    }
-
-                    public int getDistrictID() {
-                        return districtID;
-                    }
-
-                    public void setDistrictID(int districtID) {
-                        this.districtID = districtID;
-                    }
-
-                    public double getLongitude() {
-                        return longitude;
-                    }
-
-                    public void setLongitude(double longitude) {
-                        this.longitude = longitude;
-                    }
-
-                    public double getLatitude() {
-                        return latitude;
-                    }
-
-                    public void setLatitude(double latitude) {
-                        this.latitude = latitude;
-                    }
-
-                    public String getProvinceName() {
-                        return provinceName;
-                    }
-
-                    public void setProvinceName(String provinceName) {
-                        this.provinceName = provinceName;
-                    }
-
-                    public String getCityName() {
-                        return cityName;
-                    }
-
-                    public void setCityName(String cityName) {
-                        this.cityName = cityName;
-                    }
-
-                    public String getDistrictName() {
-                        return districtName;
-                    }
-
-                    public void setDistrictName(String districtName) {
-                        this.districtName = districtName;
-                    }
-
-                    public String getStreet() {
-                        return street;
-                    }
-
-                    public void setStreet(String street) {
-                        this.street = street;
-                    }
-
-                    public String getAddressNumber() {
-                        return addressNumber;
-                    }
-
-                    public void setAddressNumber(String addressNumber) {
-                        this.addressNumber = addressNumber;
-                    }
-
-                    public int getPostCode() {
-                        return postCode;
-                    }
-
-                    public void setPostCode(int postCode) {
-                        this.postCode = postCode;
-                    }
-                }
-            }
-        }
-
         public static class CouponReceiveBean {
             /**
-             * receiveID : 13
-             * couponID : 13
-             * coupon : {"couponID":13,"couponName":"商家2","merchantID":29,"startFee":20,"freeMoney":10,"commodityRange":2,"platFormType":2,"receivestatu":false,"totalPageNumber":0,"nowPageNumber":0,"pageRowCount":0}
+             * receiveID : 12
+             * couponID : 12
+             * coupon : {"couponID":12,"couponName":"商家1","merchantID":22,"startFee":50,"freeMoney":20,"commodityRange":2,"platFormType":2,"receivestatu":false,"totalPageNumber":0,"nowPageNumber":0,"pageRowCount":0}
              */
 
             private int receiveID;
             private int couponID;
-            private CouponBean coupon=null;
+            private CouponBean coupon;
 
             public int getReceiveID() {
                 return receiveID;
@@ -601,11 +273,11 @@ public class OrderDetailsInfo {
 
             public static class CouponBean {
                 /**
-                 * couponID : 13
-                 * couponName : 商家2
-                 * merchantID : 29
-                 * startFee : 20
-                 * freeMoney : 10
+                 * couponID : 12
+                 * couponName : 商家1
+                 * merchantID : 22
+                 * startFee : 50
+                 * freeMoney : 20
                  * commodityRange : 2
                  * platFormType : 2
                  * receivestatu : false
@@ -618,7 +290,7 @@ public class OrderDetailsInfo {
                 private String couponName;
                 private int merchantID;
                 private int startFee;
-                private int freeMoney=0;
+                private int freeMoney;
                 private int commodityRange;
                 private int platFormType;
                 private boolean receivestatu;
@@ -718,14 +390,48 @@ public class OrderDetailsInfo {
 
         public static class ListOrderDetailBean {
             /**
-             * freshID : 41
-             * freshQuantity : 2
-             * fresh : {"freshID":41,"freshTypeID":106,"freshTypeName":"葱姜蒜椒","freshTypeLeaf":"蔬菜蛋类","freshName":"海蜇","freshPrice":20,"freshPicture":"http://byt.bytsz.com.cn/images/Fresh/Jellyfish.jpg","originName":"","merchant_ID":29,"merchantName":"宝安44区生鲜店","enable":true,"isDelete":false,"godownNumber":null,"list_FreshEvaluation":null,"freshEvaluation":null,"cartNum":0,"freshContents":null}
+             * detailID : 320
+             * orderID : 240
+             * freshID : 3
+             * freshQuantity : 1
+             * price : 58
+             * totalPrice : 58
+             * merchentID : 22
+             * freshScanNum : 0
+             * freshName : 澳洲牛肉
+             * freshImgUrl : http://byt.bytsz.com.cn/images/Fresh/shrimp2.jpg
+             * freshTypeName : 牛肉
+             * fresh : {"freshID":3,"freshTypeLeaf":"牛肉","freshName":"澳洲牛肉","freshPrice":58,"freshPicture":"http://byt.bytsz.com.cn/images/Fresh/shrimp2.jpg","isDelete":null,"godownNumber":null,"list_FreshEvaluation":null,"freshEvaluation":null,"cartNum":0,"freshContents":null}
              */
 
+            private int detailID;
+            private int orderID;
             private int freshID;
             private int freshQuantity;
+            private int price;
+            private int totalPrice;
+            private int merchentID;
+            private int freshScanNum;
+            private String freshName;
+            private String freshImgUrl;
+            private String freshTypeName;
             private FreshBean fresh;
+
+            public int getDetailID() {
+                return detailID;
+            }
+
+            public void setDetailID(int detailID) {
+                this.detailID = detailID;
+            }
+
+            public int getOrderID() {
+                return orderID;
+            }
+
+            public void setOrderID(int orderID) {
+                this.orderID = orderID;
+            }
 
             public int getFreshID() {
                 return freshID;
@@ -743,6 +449,62 @@ public class OrderDetailsInfo {
                 this.freshQuantity = freshQuantity;
             }
 
+            public int getPrice() {
+                return price;
+            }
+
+            public void setPrice(int price) {
+                this.price = price;
+            }
+
+            public int getTotalPrice() {
+                return totalPrice;
+            }
+
+            public void setTotalPrice(int totalPrice) {
+                this.totalPrice = totalPrice;
+            }
+
+            public int getMerchentID() {
+                return merchentID;
+            }
+
+            public void setMerchentID(int merchentID) {
+                this.merchentID = merchentID;
+            }
+
+            public int getFreshScanNum() {
+                return freshScanNum;
+            }
+
+            public void setFreshScanNum(int freshScanNum) {
+                this.freshScanNum = freshScanNum;
+            }
+
+            public String getFreshName() {
+                return freshName;
+            }
+
+            public void setFreshName(String freshName) {
+                this.freshName = freshName;
+            }
+
+            public String getFreshImgUrl() {
+                return freshImgUrl;
+            }
+
+            public void setFreshImgUrl(String freshImgUrl) {
+                this.freshImgUrl = freshImgUrl;
+            }
+
+            public String getFreshTypeName() {
+                return freshTypeName;
+            }
+
+            public void setFreshTypeName(String freshTypeName) {
+                this.freshTypeName = freshTypeName;
+            }
+
             public FreshBean getFresh() {
                 return fresh;
             }
@@ -753,18 +515,12 @@ public class OrderDetailsInfo {
 
             public static class FreshBean {
                 /**
-                 * freshID : 41
-                 * freshTypeID : 106
-                 * freshTypeName : 葱姜蒜椒
-                 * freshTypeLeaf : 蔬菜蛋类
-                 * freshName : 海蜇
-                 * freshPrice : 20
-                 * freshPicture : http://byt.bytsz.com.cn/images/Fresh/Jellyfish.jpg
-                 * originName :
-                 * merchant_ID : 29
-                 * merchantName : 宝安44区生鲜店
-                 * enable : true
-                 * isDelete : false
+                 * freshID : 3
+                 * freshTypeLeaf : 牛肉
+                 * freshName : 澳洲牛肉
+                 * freshPrice : 58
+                 * freshPicture : http://byt.bytsz.com.cn/images/Fresh/shrimp2.jpg
+                 * isDelete : null
                  * godownNumber : null
                  * list_FreshEvaluation : null
                  * freshEvaluation : null
@@ -773,17 +529,11 @@ public class OrderDetailsInfo {
                  */
 
                 private int freshID;
-                private int freshTypeID;
-                private String freshTypeName;
                 private String freshTypeLeaf;
                 private String freshName;
                 private int freshPrice;
                 private String freshPicture;
-                private String originName;
-                private int merchant_ID;
-                private String merchantName;
-                private boolean enable;
-                private boolean isDelete;
+                private Object isDelete;
                 private Object godownNumber;
                 private Object list_FreshEvaluation;
                 private Object freshEvaluation;
@@ -796,22 +546,6 @@ public class OrderDetailsInfo {
 
                 public void setFreshID(int freshID) {
                     this.freshID = freshID;
-                }
-
-                public int getFreshTypeID() {
-                    return freshTypeID;
-                }
-
-                public void setFreshTypeID(int freshTypeID) {
-                    this.freshTypeID = freshTypeID;
-                }
-
-                public String getFreshTypeName() {
-                    return freshTypeName;
-                }
-
-                public void setFreshTypeName(String freshTypeName) {
-                    this.freshTypeName = freshTypeName;
                 }
 
                 public String getFreshTypeLeaf() {
@@ -846,43 +580,11 @@ public class OrderDetailsInfo {
                     this.freshPicture = freshPicture;
                 }
 
-                public String getOriginName() {
-                    return originName;
-                }
-
-                public void setOriginName(String originName) {
-                    this.originName = originName;
-                }
-
-                public int getMerchant_ID() {
-                    return merchant_ID;
-                }
-
-                public void setMerchant_ID(int merchant_ID) {
-                    this.merchant_ID = merchant_ID;
-                }
-
-                public String getMerchantName() {
-                    return merchantName;
-                }
-
-                public void setMerchantName(String merchantName) {
-                    this.merchantName = merchantName;
-                }
-
-                public boolean isEnable() {
-                    return enable;
-                }
-
-                public void setEnable(boolean enable) {
-                    this.enable = enable;
-                }
-
-                public boolean isIsDelete() {
+                public Object getIsDelete() {
                     return isDelete;
                 }
 
-                public void setIsDelete(boolean isDelete) {
+                public void setIsDelete(Object isDelete) {
                     this.isDelete = isDelete;
                 }
 

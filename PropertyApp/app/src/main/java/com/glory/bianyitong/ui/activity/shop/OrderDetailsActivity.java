@@ -139,13 +139,9 @@ public class OrderDetailsActivity extends BaseActivity {
                     }
                     adapter.notifyDataSetChanged();
                     OrderDetailsInfo.ListOrderBean listOrderBean = bean.getList_Order().get(0);
-                    firmOrderItemName.setText("收货人：" + listOrderBean.getShippingAddress().getHarvesterName());
-                    firmOrderItemNumber.setText(listOrderBean.getShippingAddress().getHarvestePhone());
-                    addressListAddress.setText("收货地址：" + listOrderBean.getShippingAddress().getFreshCabinet().getCommunity().getProvinceName()
-                            + listOrderBean.getShippingAddress().getFreshCabinet().getCommunity().getCityName()
-                            + listOrderBean.getShippingAddress().getFreshCabinet().getCommunity().getDistrictName()
-                            + listOrderBean.getShippingAddress().getFreshCabinet().getCommunity().getStreet()
-                            + listOrderBean.getShippingAddress().getFreshCabinet().getCommunity().getAddressNumber());
+                    firmOrderItemName.setText("收货人：" + listOrderBean.getRealName());
+                    firmOrderItemNumber.setText(listOrderBean.getMobileNumber());
+                    addressListAddress.setText("收货地址：" + listOrderBean.getAddress());
                     if (listOrderBean.getCouponReceive() != null&&listOrderBean.getCouponReceive().getCoupon()!=null) {
                         firmOrderCoupon.setText("-￥" + listOrderBean.getCouponReceive().getCoupon().getFreeMoney());
                         firmOrderCoupon.setTextColor(getResources().getColor(R.color.red1));

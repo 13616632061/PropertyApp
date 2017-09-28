@@ -135,7 +135,7 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
                     }
                     pickupAdapter.notifyDataSetChanged();
                 } else {
-//                    showShort(detail.getAlertMessage());
+                    showShort(detail.getAlertMessage());
                 }
             }
 

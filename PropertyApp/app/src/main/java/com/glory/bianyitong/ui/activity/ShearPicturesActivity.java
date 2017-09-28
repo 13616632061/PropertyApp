@@ -89,8 +89,15 @@ public class ShearPicturesActivity extends BaseActivity implements OnClickListen
                     ImageUtil.deleteFile(); //上传成功删除图片
                     if (picpath != null && !picpath.equals("") && picpath.length() != 0) {
 
+
                         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-                        map.put("user",new RequestUserBean(Database.USER_MAP.getLoginName(),Database.USER_MAP.getCustomerPhoto(),picpath));
+                        if (Database.USER_MAP != null && Database.USER_MAP.getSignature() != null) {
+                            map.put("user",new RequestUserBean(Database.USER_MAP.getLoginName(),picpath,Database.USER_MAP.getSignature().toString()));
+
+                        }else {
+                            map.put("user",new RequestUserBean(Database.USER_MAP.getLoginName(),picpath,""));
+
+                        }
                         String json=new Gson().toJson(map);
                         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                             @Override

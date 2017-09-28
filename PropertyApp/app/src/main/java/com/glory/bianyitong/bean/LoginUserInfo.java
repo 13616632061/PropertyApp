@@ -99,7 +99,7 @@ public class LoginUserInfo{
          * signature : 安卓
          */
 
-        private Object jgPushID;
+        private String jgPushID;
         private Object jgPushName;
         private int status;
         private String userID;
@@ -112,11 +112,11 @@ public class LoginUserInfo{
         private int chinaCity_ID;
         private String signature;
 
-        public Object getJgPushID() {
+        public String getJgPushID() {
             return jgPushID;
         }
 
-        public void setJgPushID(Object jgPushID) {
+        public void setJgPushID(String jgPushID) {
             this.jgPushID = jgPushID;
         }
 

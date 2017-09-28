@@ -9,11 +9,22 @@ public class RequestUserBean {
     private String loginName;//登录名
     private String customerPhoto;//用户头像
     private String signature;//描述
+    private String userName;
+    private String gender;
 
     public RequestUserBean(String loginName, String customerPhoto, String signature) {
         this.loginName = loginName;
         this.customerPhoto = customerPhoto;
         this.signature = signature;
+    }
+
+    public RequestUserBean(String userName) {
+        this.userName = userName;
+    }
+
+    public RequestUserBean(String loginName, String gender) {
+        this.loginName = loginName;
+        this.gender = gender;
     }
 
     public String getLoginName() {

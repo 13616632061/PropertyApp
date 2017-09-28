@@ -37,6 +37,33 @@ public class ResponseQueryUserById extends BaseResponseBean {
         private String loginName;
         private String customerPhoto;
         private String signature;
+        private String userName;
+        private String gender;// 性别：1男2女
+        private String phoneNumber;
+
+        public String getUserName() {
+            return userName;
+        }
+
+        public void setUserName(String userName) {
+            this.userName = userName;
+        }
+
+        public String getGender() {
+            return gender;
+        }
+
+        public void setGender(String gender) {
+            this.gender = gender;
+        }
+
+        public String getPhoneNumber() {
+            return phoneNumber;
+        }
+
+        public void setPhoneNumber(String phoneNumber) {
+            this.phoneNumber = phoneNumber;
+        }
 
         public Object getJgPushID() {
             return jgPushID;

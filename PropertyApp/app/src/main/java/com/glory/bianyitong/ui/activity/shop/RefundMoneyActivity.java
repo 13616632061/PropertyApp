@@ -67,7 +67,7 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
     }
 
 
-    @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2,R.id.order_pay_btn})
+    @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2})
     void onClickGroup(View view){
         switch (view.getId()){
             case R.id.iv_title_text_left2:

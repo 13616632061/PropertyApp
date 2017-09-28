@@ -29,7 +29,7 @@ import butterknife.BindView;
 
 /**
  * Created by lucy on 2016/11/21.
- * 个人描述
+ * 姓名
  */
 @Route(value = RouterMapping.ROUTER_ACTIVITY_MY_UPDATE_DESC,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class UpdateDescribeActivity extends BaseActivity {
@@ -57,7 +57,7 @@ public class UpdateDescribeActivity extends BaseActivity {
     protected void init() {
         super.init();
         Router.injectParams(this);
-        inintTitle(getString(R.string.personal_description), false, getString(R.string.determine));//个人描述  确定
+        inintTitle("姓名", false, getString(R.string.determine));//个人描述  确定
         left_return_btn.setVisibility(View.GONE);
 
         et_describe.setText(describe);
@@ -75,7 +75,7 @@ public class UpdateDescribeActivity extends BaseActivity {
             public void onClick(View v) {
                 String desc = et_describe.getText().toString();
                 if (desc.equals("")) {
-                    ToastUtils.showToast(UpdateDescribeActivity.this, getString(R.string.description_can_not_be_empty));//描述不能为空
+                    ToastUtils.showToast(UpdateDescribeActivity.this, "姓名不能为空");//描述不能为空
                 } else {
                     save(desc);
                 }
@@ -88,7 +88,7 @@ public class UpdateDescribeActivity extends BaseActivity {
     private void save(final String desc) {
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("user",new RequestUserBean(Database.USER_MAP.getLoginName(),Database.USER_MAP.getCustomerPhoto(),desc));
+        map.put("user",new RequestUserBean(desc));
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override

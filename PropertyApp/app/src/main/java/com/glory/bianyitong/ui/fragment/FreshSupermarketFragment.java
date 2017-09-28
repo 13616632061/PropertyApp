@@ -2,6 +2,8 @@ package com.glory.bianyitong.ui.fragment;
 
 import android.Manifest;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -324,6 +327,9 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             final View pView = inflater.inflate(R.layout.pop_fresh_left, null);
             popupWindowLeft = new PopupWindow(pView);
+            popupWindowLeft.setBackgroundDrawable(new BitmapDrawable());
+            popupWindowLeft.setFocusable(true);
+            popupWindowLeft.setOutsideTouchable(true);
             popupWindowLeft.setWidth(((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 153, getResources().getDisplayMetrics())));
             popupWindowLeft.setHeight(((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 239, getResources().getDisplayMetrics())));
             RecyclerView rec_pop = (RecyclerView) pView.findViewById(R.id.rec_pop);
@@ -353,6 +359,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             rec_pop.setAdapter(twoAdapter);
 //            PopFreshAdapter popFreshAdapter=new PopFreshAdapter(this,R.layout.item_pop_fresh,list);
 //            rec_pop.setAdapter(popFreshAdapter);
+
 
             //点击弹窗内容改变弹窗中文字颜色
 //            popFreshAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {

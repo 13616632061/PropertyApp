@@ -191,12 +191,12 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 break;
             case Constant.ORDER_STATUS.STATUS_PAY_FINSH://待发货
                 msg1="";
-                msg2="提醒发货";
+                msg2="";
                 break;
             case Constant.ORDER_STATUS.STATUS_PAY_LOCAL:
             case Constant.ORDER_STATUS.STATUS_PAY_SEND://待收货
                 msg1="查看物流";
-                msg2="确认收货";
+                msg2="";
                 break;
             case Constant.ORDER_STATUS.STATUS_PAY_GOODSRECEPIT://待评价
                 msg1="删除订单";
@@ -304,7 +304,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 break;
             case Constant.ORDER_STATUS.STATUS_PAY_FINSH://待发货
                 if (btnType==1){//
-                    ToastUtils.showToast(getActivity(),"提醒发货");
+//                    ToastUtils.showToast(getActivity(),"提醒发货");
                 }
                 break;
             case Constant.ORDER_STATUS.STATUS_PAY_LOCAL:
@@ -316,8 +316,8 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 }else {
 //                    ToastUtils.showToast(getActivity(),"查看物流");
                     Intent intent=new Intent(getActivity(), LogisticsActivity.class);
-                    intent.putExtra("orderID",entity.getList_Order().get(position).getOrderID());
-                    Log.i("sodoasoda",entity.getList_Order().get(position).getOrderID()+"");
+                    intent.putExtra("orderID",data.get(position).getOrdeId());
+                    Log.i("sodoasoda",data.get(position).getOrdeId()+"");
                     startActivity(intent);
                 }
                 break;

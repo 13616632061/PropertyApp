@@ -710,7 +710,7 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="PbdOErRdeUQOgFfoDiZWDs3cFiDeG171" />
+            android:value="icmZsCXRGA3Tb9X9AmtClFFhbSRRZ7QR" />
         <!-- 微信支付 -->
         <activity
             android:name="com.glory.bianyitong.wxapi.WXPayEntryActivity"

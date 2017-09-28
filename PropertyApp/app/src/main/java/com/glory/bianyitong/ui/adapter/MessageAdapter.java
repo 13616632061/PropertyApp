@@ -265,7 +265,7 @@ public class MessageAdapter extends BaseAdapter {
                 } else {
                     intent.putExtra("messageTime", "");
                 }
-                intent.putExtra("PushID", 0);
+                intent.putExtra("PushID", Integer.parseInt(qiList.get(position).getMessageID()));
                 context.startActivity(intent);
                 ACache cache=ACache.get(context);
                 cache.put(Constant.messageID, Database.readmessageid); //缓存已读消息

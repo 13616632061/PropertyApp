@@ -210,3 +210,7 @@
 -keep class com.baidu.** {*;}
 -keep class vi.com.** {*;}
 -dontwarn com.baidu.**
+
+# Router
+-keep class com.chenenyu.router.** {*;}
+-keep class * implements com.chenenyu.router.ParamInjector {*;}
