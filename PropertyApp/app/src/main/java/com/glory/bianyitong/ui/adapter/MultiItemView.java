@@ -17,7 +17,7 @@ public class MultiItemView <T> implements MultiItemEntity {
     private T data;
     private String msg1,msg2;//其他参数
     private int status;
-    private long ordeId;
+    private int ordeId;
     private float totalMoney;//订单总金额
     private float freight;//运费
     private float orderPaidPrice;//订单实付金额
@@ -95,7 +95,7 @@ public class MultiItemView <T> implements MultiItemEntity {
      * @param status
      * @param ordeId 订单ID
      */
-    public MultiItemView(int itemType, String msg1, String msg2, int status,long ordeId,float totalMoney,ResponseQueryOrderList.ListOrderBean  bean) {
+    public MultiItemView(int itemType, String msg1, String msg2, int status,int ordeId,float totalMoney,ResponseQueryOrderList.ListOrderBean  bean) {
         this.itemType = itemType;
         this.msg1 = msg1;
         this.msg2 = msg2;
@@ -117,7 +117,7 @@ public class MultiItemView <T> implements MultiItemEntity {
         return status;
     }
 
-    public long getOrdeId() {
+    public int getOrdeId() {
         return ordeId;
     }
 

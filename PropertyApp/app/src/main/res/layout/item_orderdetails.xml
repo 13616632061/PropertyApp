@@ -87,7 +87,19 @@
                         android:textColor="@color/small_text_color_gray"
                         android:textSize="12sp" />
                 </RelativeLayout>
-
+                <TextView
+                    android:id="@+id/order_list_item_opera_btn2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minWidth="88dp"
+                    android:layout_marginTop="10dp"
+                    android:text="查看质检报告"
+                    android:layout_marginLeft="16dp"
+                    android:background="@drawable/shape_order_list_item_red"
+                    android:textColor="@color/red"
+                    android:gravity="center"
+                    android:layout_gravity="end"
+                    android:padding="5dp"/>
             </LinearLayout>
 
 

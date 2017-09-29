@@ -111,19 +111,19 @@ public class LogisticsActivity extends BaseActivity {
                     //订单状态  0 已提交订单1 备货中 2 配送中3 已配送 9 分拣中
                     switch (bean.getOrder().getListStatusRecord().get(data.size()-1).getOrderStatus()){
                         case 0:
-                            tvListItemGoodsName.setText("物流状态:等待商家确认");
+                            tvListItemGoodsName.setText("订单状态:已提交订单");
                             break;
                         case 1:
-                            tvListItemGoodsName.setText("物流状态:备货中");
+                            tvListItemGoodsName.setText("订单状态:备货中");
                             break;
                         case 2:
-                            tvListItemGoodsName.setText("物流状态:正在派送");
+                            tvListItemGoodsName.setText("订单状态:配送中");
                             break;
                         case 3:
-                            tvListItemGoodsName.setText("物流状态:已送达");
+                            tvListItemGoodsName.setText("订单状态:已配送");
                             break;
                         case 9:
-                            tvListItemGoodsName.setText("物流状态:分拣中");
+                            tvListItemGoodsName.setText("订单状态:分拣中");
                             break;
                     }
                     adapter.notifyDataSetChanged();

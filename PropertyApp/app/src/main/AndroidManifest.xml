@@ -543,6 +543,13 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+        <!--质检报告-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.InspectionReportActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <!--使用优惠券-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.UseCouponActivity"

@@ -206,7 +206,9 @@ public class HttpURL {
     public static String HTTP_POST_ORDER_OTHERONE="/ApiOrder/OtherOne";//订单详细
     public static String HTTP_POST_ORDER_OTHERTWO="/ApiOrder/OtherTwo";//查看订单物流状态
 //    public static String HTTP_POST_ORDER_OTHERONE="/ApiOrder/Query";//订单详细
-    public static String HTTP_POST_ORDER_QUERYCABINET="/ApiShopAddress/QueryCabinet";//获取地址信息
+public static String HTTP_POST_ORDER_QUERYCABINET="/ApiShopAddress/QueryCabinet";//获取地址信息
+    public static String HTTP_POST_ORDER_QUALITY_QUERY="/ApiQuality/Query";//查看质检报告信息
+
 
     /**
      * 优惠券

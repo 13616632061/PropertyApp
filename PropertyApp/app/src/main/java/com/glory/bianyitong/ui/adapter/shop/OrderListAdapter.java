@@ -47,7 +47,7 @@ public class OrderListAdapter extends BaseMultiItemQuickAdapter<MultiItemView<Re
                 ImageView imageView=helper.getView(R.id.order_list_item_body_img);
 //                ServiceDialog.setPicture(item.getData().getFresh().getFreshPicture(),imageView,null);
                 Glide.with(context).load(item.getData().getFresh().getFreshPicture()).error(R.drawable.wait).placeholder(R.drawable.wait).into(imageView);
-                helper.setText(R.id.order_list_item_body_name,item.getData().getFresh().getFreshContent());
+                helper.setText(R.id.order_list_item_body_name,item.getData().getFresh().getFreshName());
                 helper.setText(R.id.order_list_item_body_type,item.getData().getFresh().getFreshTypeLeaf());
                 helper.setText(R.id.order_list_item_body_price,"¥ "+item.getData().getFresh().getFreshPrice());
                 helper.setText(R.id.order_list_item_body_number,"x "+item.getData().getFreshQuantity());

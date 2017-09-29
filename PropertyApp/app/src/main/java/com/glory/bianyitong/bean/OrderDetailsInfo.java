@@ -416,6 +416,15 @@ public class OrderDetailsInfo {
             private String freshImgUrl;
             private String freshTypeName;
             private FreshBean fresh;
+            private int qualityID;
+
+            public int getQualityID() {
+                return qualityID;
+            }
+
+            public void setQualityID(int qualityID) {
+                this.qualityID = qualityID;
+            }
 
             public int getDetailID() {
                 return detailID;

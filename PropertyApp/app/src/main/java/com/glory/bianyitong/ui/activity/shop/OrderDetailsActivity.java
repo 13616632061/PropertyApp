@@ -1,5 +1,6 @@
 package com.glory.bianyitong.ui.activity.shop;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
@@ -16,6 +18,7 @@ import com.glory.bianyitong.bean.OrderDetailsInfo;
 import com.glory.bianyitong.bean.OrderDetailsRequest;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.ui.activity.InspectionReportActivity;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.glory.bianyitong.ui.adapter.shop.OrderDetailsAdapter;
 import com.google.gson.Gson;
@@ -32,7 +35,7 @@ import butterknife.OnClick;
  * Created by lucy on 2017/9/21.
  * 订单详情
  */
-public class OrderDetailsActivity extends BaseActivity {
+public class OrderDetailsActivity extends BaseActivity implements BaseQuickAdapter.OnItemChildClickListener {
     @BindView(R.id.iv_title_back)
     ImageView ivTitleBack;
     @BindView(R.id.iv_title_text_left2)
@@ -104,6 +107,7 @@ public class OrderDetailsActivity extends BaseActivity {
         adapter = new OrderDetailsAdapter(R.layout.item_orderdetails, data, this);
         order_recycle.setLayoutManager(layoutManager);
         order_recycle.setAdapter(adapter);
+        adapter.setOnItemChildClickListener(this);
         getOrderDetails();
     }
 
@@ -190,5 +194,16 @@ public class OrderDetailsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        switch (view.getId()){
+            case R.id.order_list_item_opera_btn2:
+                Intent intent=new Intent(this, InspectionReportActivity.class);
+                intent.putExtra("qualityID",data.get(position).getData().getQualityID());
+                startActivity(intent);
+                break;
+        }
     }
 }

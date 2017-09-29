@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
 import com.glory.bianyitong.ui.activity.MainActivity;
+import com.glory.bianyitong.ui.activity.MessageActivity;
 import com.glory.bianyitong.ui.activity.MessageDetailsActivity;
 import com.glory.bianyitong.ui.activity.PickupActivity;
 import com.glory.bianyitong.ui.activity.WelcomeActivity;
@@ -99,31 +100,39 @@ public class MyReceiver extends BroadcastReceiver {
             //公告(typeid为1) 系统消息(typeid为2)
             HashMap<String, String > hashMap2 = JsonHelper.fromJson(type2, new TypeToken<HashMap<String, String>>() {
             });
-            Log.i("extmas",hashMap2.get("extMsg")+"--------"+hashMap2.get("extId"));
-            switch (hashMap2.get("extMsg")){
-                case "1":
-                    Intent intent1 = new Intent(context, BulletinDetailsActivity.class);
-                    intent1.putExtra("bulletinId",Integer.parseInt(hashMap2.get("extId")));
-                    intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    context.startActivity(intent1);
-                    break;
-                case "2":
-                    Intent intent2 = new Intent(context, MessageDetailsActivity.class);
-                    intent2.putExtra("PushID",Integer.parseInt(hashMap2.get("extId")));
-                    intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    context.startActivity(intent2);
-                    break;
-                case "3":
+            Log.i("extmas",hashMap2.get("extMsg")+"--------");
+            if (hashMap2.size()>0){
+                switch (hashMap2.get("extMsg")){
+                    case "1":
+                        Intent intent1 = new Intent(context, BulletinDetailsActivity.class);
+                        intent1.putExtra("bulletinId",Integer.parseInt(hashMap2.get("extId")));
+                        intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        context.startActivity(intent1);
+                        break;
+                    case "2":
+                        Intent intent2 = new Intent(context, MessageActivity.class);
+                        intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        context.startActivity(intent2);
+                        break;
+                    case "3":
+                        Intent intent3 = new Intent(context, MessageActivity.class);
+                        intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        context.startActivity(intent3);
+                        break;
+                    case "4":
+                        Intent intent4 = new Intent(context, PickupActivity.class);
+                        intent4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        context.startActivity(intent4);
+                        break;
+                    case "5":
 
-                    break;
-                case "4":
-                    Intent intent4 = new Intent(context, PickupActivity.class);
-                    intent4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    context.startActivity(intent4);
-                    break;
-                case "5":
+                        break;
+            }
 
-                    break;
+            }else {
+                Intent intent0= new Intent(context, WelcomeActivity.class);
+                intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                context.startActivity(intent0);
             }
 
 
