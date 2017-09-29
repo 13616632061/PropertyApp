@@ -63,12 +63,14 @@ public class PayActivity extends BaseActivity {
     @BindView(R.id.order_pay_group)
     RadioGroup orderPayGroup;
 
-
-    @InjectParam(key = "orderId")
-    long orderId;
+    @InjectParam(key = "OrderID")
+    int OrderID;
+    @InjectParam(key = "orderCode")
+    long orderCode;
 
     @InjectParam(key = "price")
-    float price;
+    double price;
+    public static String appId;
 
     @Override
     protected int getContentId() {
@@ -80,7 +82,7 @@ public class PayActivity extends BaseActivity {
         super.init();
         Router.injectParams(this);
         inintTitle("收银台",false,"");
-        if(orderId>0)
+        if(orderCode>0)
             initView();
 
     }
@@ -98,8 +100,14 @@ public class PayActivity extends BaseActivity {
         }
     }
     private void initView(){
-        orderPayNumber.setText(orderId+"");
+        orderPayNumber.setText(orderCode+"");
         orderPayMoney.setText("¥ "+price);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        orderCommit();
     }
 
     /**
@@ -107,13 +115,14 @@ public class PayActivity extends BaseActivity {
      */
     private void orderCommit(){
         Map<String,Object> map=new HashMap<>();
-        map.put("OrderID",22);
+        map.put("OrderID",OrderID);
         map.put("DeviceType",2);//,1、ios 2、android
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
                 WeiXinInfo bean=new Gson().fromJson(s,WeiXinInfo.class);
+                appId = bean.getAppId();
                 WeiXinPayRequest(bean);
             }
 

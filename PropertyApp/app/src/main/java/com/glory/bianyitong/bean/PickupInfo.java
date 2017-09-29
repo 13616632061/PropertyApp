@@ -20,7 +20,16 @@ public class PickupInfo {
     private int currentPageNumber;
     private int pageRowNumber;
     private String shareURL;
+    private String accessToken="";
     private List<ListOrderBean> listOrder;
+
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
 
     public String getShareURL() {
         return shareURL;

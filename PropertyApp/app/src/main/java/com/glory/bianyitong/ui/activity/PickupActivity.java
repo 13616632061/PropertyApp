@@ -25,6 +25,7 @@ import com.glory.bianyitong.bean.PickupInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
 import com.glory.bianyitong.constants.Constant;
+import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
@@ -175,8 +176,12 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
                 PickupInfo detail = new Gson().fromJson(s, PickupInfo.class);
                 if (detail.getStatusCode() == 1) {
                     showShort(detail.getAlertMessage());
+                    pickList();
                 } else {
                     showShort(detail.getAlertMessage());
+                }
+                if (detail.getAccessToken()!=""){
+                    Database.accessToken=detail.getAccessToken();
                 }
             }
 

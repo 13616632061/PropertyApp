@@ -1,9 +1,11 @@
 package com.glory.bianyitong.ui.activity.shop;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -32,7 +34,7 @@ import butterknife.OnClick;
  * Created by lucy on 2017/9/21.
  * 退款售后
  */
-public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnItemChildClickListener {
 
     @BindView(R.id.order_list_fr_recycle)
     RecyclerView orderListFrRecycle;
@@ -62,6 +64,7 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
         orderListFrRecycle.setLayoutManager(layoutManager);
         adapter.setOnLoadMoreListener(this,orderListFrRecycle);
         orderListFrRecycle.setAdapter(adapter);
+        adapter.setOnItemChildClickListener(this);
         orderListFrRefresh.setOnRefreshListener(this);
         requestOrderList();
     }
@@ -195,5 +198,19 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
 //        adapter.notifyItemRangeRemoved(0,adapter.getItemCount());
         adapter.notifyDataSetChanged();
         requestOrderList();
+    }
+
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        switch (view.getId()){
+            case R.id.item_order:
+                Intent intent=new Intent(this, OrderDetailsActivity.class);
+                Log.i("orderid",data.get(position).getData().getOrderID()+"-----------"+position);
+                intent.putExtra("orderID",data.get(position).getData().getOrderID());
+                startActivity(intent);
+                break;
+        }
+
+
     }
 }

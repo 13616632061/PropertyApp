@@ -55,6 +55,7 @@ public class UseCouponActivity extends BaseActivity implements BaseQuickAdapter.
     RecyclerView recyclerView;
     private UseCouponListAdapter adapter;
     private final int REQUEST_CODE_COUPON=101;//选择地址,选择优惠券
+    private ArrayList<Integer> requestList;
 
 
     @Override
@@ -77,6 +78,7 @@ public class UseCouponActivity extends BaseActivity implements BaseQuickAdapter.
         adapter.setOnItemClickListener(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+        requestList = getIntent().getIntegerArrayListExtra("requestList");
         queryCouponForYES();
     }
 
@@ -120,6 +122,15 @@ public class UseCouponActivity extends BaseActivity implements BaseQuickAdapter.
                         data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(bean));
                     }
                     adapter.notifyDataSetChanged();
+                    if (requestList.size()>0){
+                        for (int i=0;i<requestList.size();i++){
+                            for (int j=0;j<data.size();j++){
+                                if (requestList.get(i)==data.get(j).getData().getReceiveID()){
+                                    dataClick(j);
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
@@ -155,6 +166,28 @@ public class UseCouponActivity extends BaseActivity implements BaseQuickAdapter.
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        if ( data.get(position).getData().getCoupon().getPlatFormType()==1){//1是平台
+            for (int i=0;i<data.size();i++){
+                data.get(i).getData().setClikcType(1);
+            }
+            data.get(position).getData().setClikcType(2);
+        } else if (data.get(position).getData().getCoupon().getPlatFormType() == 2) {//2是商家
+            for (int i=0;i<data.size();i++){
+                if (data.get(position).getData().getCoupon().getMerchantID()==data.get(i).getData().getCoupon().getMerchantID()){
+                    data.get(i).getData().setClikcType(1);
+                }else if (data.get(i).getData().getCoupon().getMerchantID()==0){
+                    data.get(i).getData().setClikcType(1);
+                }else {
+                    data.get(position).getData().setClikcType(2);
+                }
+            }
+            data.get(position).getData().setClikcType(2);
+
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    private void dataClick(int position){
         if ( data.get(position).getData().getCoupon().getPlatFormType()==1){//1是平台
             for (int i=0;i<data.size();i++){
                 data.get(i).getData().setClikcType(1);

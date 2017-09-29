@@ -26,13 +26,13 @@
                 <LinearLayout
                     android:id="@+id/lay_list_item_goods"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="75dp"
                     android:background="@color/white"
                     android:paddingLeft="12dp"
                     android:paddingRight="12dp"
                     android:orientation="horizontal"
                     android:paddingTop="10dp"
-                    android:paddingBottom="10dp">
+                    android:layout_marginBottom="10dp">
                     <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -76,7 +76,6 @@
                             android:id="@+id/address_list_address"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:maxLines="2"
                             android:textColor="@color/text_color_title"
                             android:textSize="12sp"
                             android:layout_weight="1"/>

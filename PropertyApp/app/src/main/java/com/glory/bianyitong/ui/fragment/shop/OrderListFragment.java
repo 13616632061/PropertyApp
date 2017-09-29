@@ -120,12 +120,15 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                              ) {
                             MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.BODY, bean, listBean.getOrderStatus());
                             listOrderDetailBeanMultiItemView.getData().setOrderID(listBean.getOrderID());
+                            listOrderDetailBeanMultiItemView.getData().setOrderPaidPrice((double) listBean.getOrderPaidPrice());
+                            listOrderDetailBeanMultiItemView.getData().setOrderCode(Long.parseLong(listBean.getOrderCode()));
                             data.add(listOrderDetailBeanMultiItemView);
                         }
                         MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.FOOTER);
                         listOrderDetailBeanMultiItemView.setCartNum(listBean.getCartNum());
                         listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
                         listOrderDetailBeanMultiItemView.setFreight(listBean.getFreight());
+
                         data.add(listOrderDetailBeanMultiItemView);
                         setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID(),listBean.getOrderPrice(),listBean);//添加操作菜单
                     }
@@ -207,6 +210,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 msg2="";
                 break;
         }
+
         data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(viewType,msg1,msg2,status,orderId,price,bean));
     }
 
@@ -277,6 +281,13 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
             case R.id.order_list_item_opera_btn2://第二个按钮
                 checkOperation(1,position);
                 break;
+            case R.id.item_order:
+                Intent intent=new Intent(getActivity(), OrderDetailsActivity.class);
+                Log.i("orderid",data.get(position).getData().getOrderID()+"-----------"+position);
+                intent.putExtra("orderID",data.get(position).getData().getOrderID());
+                startActivity(intent);
+                break;
+
         }
 
     }
@@ -294,9 +305,11 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 if (btnType==1){//
 //                    if(showDialog("确认付款 "+data.get(position).getOrdeId()))
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_PAY)
-                            .with("orderId",data.get(position).getOrdeId())
-                            .with("price",data.get(position).getTotalMoney())
+                            .with("OrderID",data.get(position-2).getData().getOrderID())
+                            .with("orderCode",data.get(position-2).getData().getOrderCode())
+                            .with("price",data.get(position-2).getData().getOrderPaidPrice())
                             .go(getActivity());
+//                    Log.i("orderCode",entity.getList_Order().get(position).getOrderCode()+"---"+entity.getList_Order().get(position).getOrderPrice());
                 }else {
 //                    if(showDialog("确认取消订单 "+data.get(position).getOrdeId()))
                     operationProduct(data.get(position).getOrdeId(),-3);
@@ -439,9 +452,6 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        Intent intent=new Intent(getActivity(), OrderDetailsActivity.class);
-        Log.i("orderid",data.get(position).getData().getOrderID()+"-----------"+position);
-        intent.putExtra("orderID",data.get(position).getData().getOrderID());
-        startActivity(intent);
+
     }
 }

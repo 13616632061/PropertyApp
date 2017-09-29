@@ -18,11 +18,19 @@ public class MultiItemView <T> implements MultiItemEntity {
     private String msg1,msg2;//其他参数
     private int status;
     private int ordeId;
-    private float totalMoney;//订单总金额
+    private double totalMoney;//订单总金额
     private float freight;//运费
     private float orderPaidPrice;//订单实付金额
     private int cartNum;//订单商品数量
+    private long orderCode;
 
+    public long getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(long orderCode) {
+        this.orderCode = orderCode;
+    }
 
     public static int getTITLE() {
         return TITLE;
@@ -95,7 +103,7 @@ public class MultiItemView <T> implements MultiItemEntity {
      * @param status
      * @param ordeId 订单ID
      */
-    public MultiItemView(int itemType, String msg1, String msg2, int status,int ordeId,float totalMoney,ResponseQueryOrderList.ListOrderBean  bean) {
+    public MultiItemView(int itemType, String msg1, String msg2, int status,int ordeId,double totalMoney,ResponseQueryOrderList.ListOrderBean  bean) {
         this.itemType = itemType;
         this.msg1 = msg1;
         this.msg2 = msg2;
@@ -121,7 +129,7 @@ public class MultiItemView <T> implements MultiItemEntity {
         return ordeId;
     }
 
-    public float getTotalMoney() {
+    public double getTotalMoney() {
         return totalMoney;
     }
 

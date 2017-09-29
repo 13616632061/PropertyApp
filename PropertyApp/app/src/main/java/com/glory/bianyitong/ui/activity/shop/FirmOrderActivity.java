@@ -127,6 +127,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
     // TODO: 2017/7/13 订单准备数据
     private double allPrice;//订单总金额
+    private double backPrice;//优惠券后订单金额
     private double allFreePrice;//减免金额
 
 
@@ -135,7 +136,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     private ResponseQueryCouponList.ListCouponReceiveBean couponBean=new ResponseQueryCouponList.ListCouponReceiveBean();//选择优惠券实体
     private ResponseQueryCouponList queryCouponListbean;
     private String json;
-    private ArrayList<Integer> requestList;
+    private ArrayList<Integer> requestList=new ArrayList<>();
     private double freeMoney=0;
 
     @Override
@@ -277,6 +278,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 if(queryCouponListbean.getListCouponReceive()!=null && queryCouponListbean.getListCouponReceive().size()>0){//可使用
                     Intent intent=new Intent(this, UseCouponActivity.class);
                     intent.putExtra("json",json);
+                    intent.putIntegerArrayListExtra("requestList",requestList);
                     startActivityForResult(intent,REQUEST_CODE_COUPON);
                 }else {//无可使用
                     showShort("暂无优惠券可用");
@@ -313,7 +315,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
          * 订单组装数据
          * 运费，收货ID，收货柜ID，收货柜名称，优惠券ID，减免金额，总金额
          */
-        RequestCommitOrderByCart orderByCart=new RequestCommitOrderByCart(couponBean.getCouponID(),0f,addressBean.getAddressID(),addressBean.getCabinetID(),addressBean.getFreshCabinet().getCommunityName()+addressBean.getFreshCabinet().getCabinetName(),allFreePrice,allPrice);
+        RequestCommitOrderByCart orderByCart=new RequestCommitOrderByCart(couponBean.getCouponID(),0f,addressBean.getAddressID(),addressBean.getCabinetID(),addressBean.getFreshCabinet().getCommunityName()+addressBean.getFreshCabinet().getCabinetName(),allFreePrice,backPrice);
         List<RequestCommitOrderByCart.OrderDetail> orderDetails=new ArrayList<>();
         List<Integer> list=new ArrayList<>();
         if(type==1){//直接下单
@@ -330,7 +332,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         String s = new Gson().toJson(list);
 //        orderByCart.setShoppingCarts(list);
         orderByCart.setListOrderDetail(orderDetails);
-        orderByCart.setOrderPrice(orderByCart.getOrderPrice()- freeMoney);
+        orderByCart.setOrderPrice(backPrice);
         orderByCart.setFreePrice(freeMoney);
 
         return orderByCart;
@@ -371,8 +373,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 if(bean.getStatusCode()==1){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_PAY)
 //                            .with("data",bean)
-                            .with("orderId",bean.getOrderID())
-                            .with("price",bean.getOrderPrice())
+                            .with("OrderID",bean.getOrderID())
+                            .with("orderCode",bean.getOrderCode())
+                            .with("price",dataFormat().getOrderPrice())
                             .go(FirmOrderActivity.this);
                 }else {
                     showShort(bean.getAlertMessage());
@@ -512,9 +515,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             }else if(requestCode==REQUEST_CODE_COUPON){//优惠券列表
                 requestList = data.getIntegerArrayListExtra("data");
                 freeMoney=data.getIntExtra("money",0);
-                allPrice-=freeMoney;
-                firmOrderAllMoney.setText("￥" + allPrice);
-                firmOrderPrice.setText("￥" + allPrice);
+                backPrice=allPrice-freeMoney;
+                firmOrderAllMoney.setText("￥" + backPrice);
+                firmOrderPrice.setText("￥" + backPrice);
 
             }
         }
@@ -544,9 +547,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             if (!bean.isHeader)
                 allPrice += entity.getPrice() * entity.getQuantity();
         }
-        allPrice = allPrice-freeMoney;
-        firmOrderAllMoney.setText("￥" + allPrice);
-        firmOrderPrice.setText("￥" + allPrice);
+        backPrice = allPrice-freeMoney;
+        firmOrderAllMoney.setText("￥" + backPrice);
+        firmOrderPrice.setText("￥" + backPrice);
         this.allPrice=allPrice;
     }
 }

@@ -232,7 +232,24 @@ public class ResponseQueryOrderList extends BaseResponseBean {
             private int price;
             private float totalPrice;
             private FreshBean fresh;
+            private double orderPaidPrice;
+            private long orderCode;
 
+            public long getOrderCode() {
+                return orderCode;
+            }
+
+            public void setOrderCode(long orderCode) {
+                this.orderCode = orderCode;
+            }
+
+            public double getOrderPaidPrice() {
+                return orderPaidPrice;
+            }
+
+            public void setOrderPaidPrice(double orderPaidPrice) {
+                this.orderPaidPrice = orderPaidPrice;
+            }
 
             public int getDetailID() {
                 return detailID;

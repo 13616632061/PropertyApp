@@ -51,6 +51,7 @@ public class OrderListAdapter extends BaseMultiItemQuickAdapter<MultiItemView<Re
                 helper.setText(R.id.order_list_item_body_type,item.getData().getFresh().getFreshTypeLeaf());
                 helper.setText(R.id.order_list_item_body_price,"¥ "+item.getData().getFresh().getFreshPrice());
                 helper.setText(R.id.order_list_item_body_number,"x "+item.getData().getFreshQuantity());
+                helper.addOnClickListener(R.id.item_order);
                 break;
             case MultiItemView.FOOTER://脚步view
                 if (item.getFreight()==0){
@@ -66,11 +67,19 @@ public class OrderListAdapter extends BaseMultiItemQuickAdapter<MultiItemView<Re
             case MultiItemView.OPERATION://操作view
                 helper.setText(R.id.order_list_item_opera_btn1,item.getMsg1());
                 helper.setText(R.id.order_list_item_opera_btn2,item.getMsg2());
-                if(TextUtils.isEmpty(item.getMsg1()))
+                if(TextUtils.isEmpty(item.getMsg1())){
                     helper.setVisible(R.id.order_list_item_opera_btn1,false);
+                }else {
+                    helper.setVisible(R.id.order_list_item_opera_btn1,true);
+                }
 
-                if(TextUtils.isEmpty(item.getMsg2()))
+                if(TextUtils.isEmpty(item.getMsg2())){
                     helper.setVisible(R.id.order_list_item_opera_btn2,false);
+
+                }else {
+                    helper.setVisible(R.id.order_list_item_opera_btn2,true);
+
+                }
 
                 helper.addOnClickListener(R.id.order_list_item_opera_btn1);
                 helper.addOnClickListener(R.id.order_list_item_opera_btn2);

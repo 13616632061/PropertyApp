@@ -18,6 +18,15 @@ public class ResponseSubmitOrder extends BaseResponseBean implements Serializabl
 
     private int orderID;
     private float OrderPrice;
+    private long orderCode;
+
+    public long getOrderCode() {
+        return orderCode;
+    }
+
+    public void setOrderCode(long orderCode) {
+        this.orderCode = orderCode;
+    }
 
     public int getOrderID() {
         return orderID;
