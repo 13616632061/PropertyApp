@@ -55,6 +55,7 @@ public class CouponListFragment extends RootFragment implements BaseQuickAdapter
 
     private List<ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>> data=new ArrayList<>();
     private CouponListAdapter adapter;
+    private String jsonResponse=null;
     @Override
     protected void initView() {
         type=getArguments().getInt("type");
@@ -92,76 +93,72 @@ public class CouponListFragment extends RootFragment implements BaseQuickAdapter
     }
 
     private void requestCouponList(int status){
+        if (jsonResponse!=null){
+            formatData(jsonResponse);
+        }else {
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    jsonResponse = s;
+                    formatData(s);
+                }
 
-//        if(source==2 && type==0){
-//            if(!StringUtils.isEmpty(couponJson)){
-//                formatData(couponJson);
-//            }else {
-//                adapter.setEmptyView(R.layout.layout_empty);
-//            }
-//            return;
-//        }
+                @Override
+                public void onError() {
 
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        String json=new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                formatData(s);
-            }
+                }
 
-            @Override
-            public void onError() {
+                @Override
+                public void parseError() {
 
-            }
+                }
 
-            @Override
-            public void parseError() {
+                @Override
+                public void onBefore() {
 
-            }
+                }
 
-            @Override
-            public void onBefore() {
+                @Override
+                public void onAfter() {
 
-            }
-
-            @Override
-            public void onAfter() {
-
-            }
-        }).getEntityData(getActivity(),HttpURL.HTTP_POST_COUPON_QUERY_LIST,json);
-
+                }
+            }).getEntityData(getActivity(), HttpURL.HTTP_POST_COUPON_QUERY_LIST, json);
+        }
     }
 
     private void formatData(String json){
-        ResponseQueryCouponList bean=new Gson().fromJson(json,ResponseQueryCouponList.class);
-        if(bean.getStatusCode()==1){
-            for (ResponseQueryCouponList.ListCouponReceiveBean entity:bean.getListCouponReceive()) {
-                Date beginDate = strToDateLong(entity.getBeginDate().replace("T"," "));
-                Date endDate = strToDateLong(entity.getEndDate().replace("T"," "));
-                Date nowDate = strToDateLong(entity.getDateNow().replace("T"," "));
-                switch (type){//（0未使用1已使用-1已过期）
-                    case 0:
-                        if (entity.getCouponStatus()==0&&belongCalendar(nowDate,beginDate,endDate)){
-                            data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
-                        }
-                        break;
+        try {
+            ResponseQueryCouponList bean = new Gson().fromJson(json, ResponseQueryCouponList.class);
+            if (bean.getStatusCode() == 1) {
+                for (ResponseQueryCouponList.ListCouponReceiveBean entity : bean.getListCouponReceive()) {
 
-                    case 1:
-                        if (entity.getCouponStatus()==1){// 0未使用 1已使用
-                            data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
-                        }
+                    switch (type) {//（0未使用1已使用2已过期）
+                        case 0:
+                            if (entity.getCouponStatus() == 0 ) {
+                                data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
+                            }
+                            break;
 
-                        break;
+                        case 1:
+                            if (entity.getCouponStatus() == 1) {// 0未使用 1已使用
+                                data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
+                            }
 
-                    case -1:
-                        if (entity.getCouponStatus()==0&&!belongCalendar(nowDate,beginDate,endDate)){
-                            data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
-                        }
-                        break;
+                            break;
+
+                        case 2:
+                            if (entity.getCouponStatus() == 2 ) {
+                                data.add(new ItemMenu<ResponseQueryCouponList.ListCouponReceiveBean>(entity));
+                            }
+                            break;
+                    }
                 }
+                adapter.notifyDataSetChanged();
             }
-            adapter.notifyDataSetChanged();
+        }catch (Exception ex){
+
         }
     }
 

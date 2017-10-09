@@ -232,7 +232,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                         if (bean.getFreshTypeID() != -1) {//生鲜精选
                             twoTypeFreshLeafID = bean.getFreshTypeID();
                             twoTypeMerchantId = bean.getMerchant_ID();
-                            queryFreshTypeTwo();
+                            queryFreshTypeTwo(position);
                         } else {
                             twoTypeMerchantId = typeData.get(1).getData().getMerchant_ID();
                             shopData.clear();
@@ -540,7 +540,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     /**
      * 查询二级分类
      */
-    private void queryFreshTypeTwo() {
+    private void queryFreshTypeTwo(final int position) {
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
 
         map.put("freshType", new RequestFreshType(twoTypeFreshLeafID, twoTypeMerchantId));
@@ -551,6 +551,10 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                 ResponseQueryTwoType bean = new Gson().fromJson(s, ResponseQueryTwoType.class);
                 if (bean.getStatusCode() == 1) {
                     typeTwoData.clear();
+                    ResponseQueryTwoType.ListFreshTypeBean listFreshTypeBean=new ResponseQueryTwoType.ListFreshTypeBean();
+                    listFreshTypeBean.setFreshTypeName("全部");
+                    listFreshTypeBean.setFreshTypeID(typeData.get(position).getData().getFreshTypeID());
+                    typeTwoData.add(new ItemMenu<ResponseQueryTwoType.ListFreshTypeBean>(listFreshTypeBean));
                     for (ResponseQueryTwoType.ListFreshTypeBean typeBean :
                             bean.getListFreshType()) {
                         typeTwoData.add(new ItemMenu<ResponseQueryTwoType.ListFreshTypeBean>(typeBean));

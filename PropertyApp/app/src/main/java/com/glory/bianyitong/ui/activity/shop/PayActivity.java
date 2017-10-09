@@ -107,7 +107,43 @@ public class PayActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        orderCommit();
+        orderCommitTwo();
+    }
+
+    /**
+     * 支付后无论成功失败都调用接口
+     *
+     */
+    private void orderCommitTwo() {
+        Map<String,Object> map=new HashMap<>();
+        map.put("OrderID",OrderID);
+        map.put("DeviceType",2);//,1、ios 2、android
+        String json=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+
+            }
+
+            @Override
+            public void onError() {
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_COUPON_PAY,json);
     }
 
     /**

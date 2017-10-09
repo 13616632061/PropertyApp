@@ -96,11 +96,10 @@ public class CouponListActivity extends BaseActivity {
     }
 
     private void requestCouponList(){
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-
-
             @Override
             public void onSuccess(String s) {
                 int notuse=0,inuse=0,overdue=0;
@@ -111,10 +110,9 @@ public class CouponListActivity extends BaseActivity {
 
                             Date beginDate = strToDateLong(bean.getBeginDate().replace("T"," "));
                             Date endDate = strToDateLong(bean.getEndDate().replace("T"," "));
-                            Date nowDate = strToDateLong(bean.getDateNow().replace("T"," "));
                             if (bean.getCouponStatus()==1){// 0未使用 1已使用
                                 inuse++;
-                            }else if (bean.getCouponStatus()==0&&belongCalendar(nowDate,beginDate,endDate)){
+                            }else if (bean.getCouponStatus()==0){
                                 notuse++;
                             }else {
                                 overdue++;
@@ -174,7 +172,7 @@ public class CouponListActivity extends BaseActivity {
             bundle.putInt("num" ,1);
             bundle.putString("coupon",jsonValue);
             if(i==2)
-                bundle.putInt("type" ,-1);
+                bundle.putInt("type" ,2);
             listFragment.setArguments(bundle);
             listFragments.add(listFragment);
         }

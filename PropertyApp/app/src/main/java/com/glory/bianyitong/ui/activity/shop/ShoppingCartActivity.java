@@ -36,6 +36,7 @@ import com.glory.bianyitong.bean.entity.CouponEntry;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingUpDate;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
+import com.glory.bianyitong.bean.entity.response.ResponseSearchFresh;
 import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
@@ -62,7 +63,7 @@ import butterknife.OnClick;
  * 购物车
  */
 @Route(value = RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART, interceptors = RouterMapping.INTERCEPTOR_LOGIN)
-public class ShoppingCartActivity extends BaseActivity implements View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener, CompoundButton.OnCheckedChangeListener, AmountView.OnAmountChangeListener {
+public class ShoppingCartActivity extends BaseActivity implements View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener, CompoundButton.OnCheckedChangeListener, AmountView.OnAmountChangeListener, BaseQuickAdapter.OnItemClickListener {
 
 
     @BindView(R.id.iv_title_back)
@@ -127,6 +128,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
         recShoppingcart.setLayoutManager(linearLayout);
         adapter.setOnItemChildClickListener(this);
         adapter.bindToRecyclerView(recShoppingcart);
+        adapter.setOnItemClickListener(this);
         shoppingCartPay.setText("结算(" + commitData.size() + ")");
         initPopupWindowSort(0);
         queryAddress();
@@ -704,5 +706,14 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             isOne = true;
         }
 
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        ResponseSearchFresh.ListfreshBean product=new ResponseSearchFresh.ListfreshBean();
+        product.setFreshID(data.get(position).getData().getFreshID());
+        Router.build(RouterMapping.ROUTER_ACTIVITY_PRODUCT_DETAIL)
+                .with("data", product)
+                .go(this);
     }
 }

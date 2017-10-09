@@ -115,21 +115,31 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 entity = new Gson().fromJson(s,ResponseQueryOrderList.class);
                 if(entity.getStatusCode()==1){
                     for (ResponseQueryOrderList.ListOrderBean listBean: entity.getList_Order()) {
-                        data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.TITLE,listBean.getMerchant_Name(),getStatusName(listBean.getOrderStatus())));
+                        MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemViewTitle = new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.TITLE,listBean.getMerchant_Name(),getStatusName(listBean.getOrderStatus()));
+                        listOrderDetailBeanMultiItemViewTitle.setOrderId(listBean.getOrderID());
+                        listOrderDetailBeanMultiItemViewTitle.setOrderPaidPrice( listBean.getOrderPaidPrice());
+                        listOrderDetailBeanMultiItemViewTitle.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                        data.add(listOrderDetailBeanMultiItemViewTitle);
                         for (ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean bean:listBean.getListOrderDetail()
                              ) {
                             MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.BODY, bean, listBean.getOrderStatus());
                             listOrderDetailBeanMultiItemView.getData().setOrderID(listBean.getOrderID());
                             listOrderDetailBeanMultiItemView.getData().setOrderPaidPrice((double) listBean.getOrderPaidPrice());
                             listOrderDetailBeanMultiItemView.getData().setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                            listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
+                            listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
+                            listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
                             data.add(listOrderDetailBeanMultiItemView);
                         }
                         MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.FOOTER);
                         listOrderDetailBeanMultiItemView.setCartNum(listBean.getCartNum());
                         listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
                         listOrderDetailBeanMultiItemView.setFreight(listBean.getFreight());
-
+                        listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
+                        listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
+                        listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
                         data.add(listOrderDetailBeanMultiItemView);
+
                         setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID(),listBean.getOrderPrice(),listBean);//添加操作菜单
                     }
                     adapter.notifyDataSetChanged();
@@ -205,13 +215,23 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 msg1="删除订单";
                 msg2="评价";
                 break;
+            case Constant.ORDER_STATUS.STATUS_PAY_COMMENT://已评价
+            case Constant.ORDER_STATUS.STATUS_PAY_OUT://逾期未取
+            case Constant.ORDER_STATUS.STATUS_PAY_EXIT://取消成功
+            case Constant.ORDER_STATUS.STATUS_PAY_REFUNDED://退款成功
+                msg1="删除订单";
+                msg2="";
+                break;
             default:
                 msg1="";
                 msg2="";
                 break;
         }
-
-        data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(viewType,msg1,msg2,status,orderId,price,bean));
+        MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemViewFoot= new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(viewType,msg1,msg2,status,orderId,price,bean);
+        listOrderDetailBeanMultiItemViewFoot.setOrderId(bean.getOrderID());
+        listOrderDetailBeanMultiItemViewFoot.setOrderPaidPrice((float) bean.getOrderPaidPrice());
+        listOrderDetailBeanMultiItemViewFoot.setOrderCode(Long.parseLong(bean.getOrderCode()));
+        data.add(listOrderDetailBeanMultiItemViewFoot);
     }
 
     /**
@@ -230,6 +250,16 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 return "卖家已发货";
             case Constant.ORDER_STATUS.STATUS_PAY_GOODSRECEPIT://待评价
                 return "交易成功";
+            case Constant.ORDER_STATUS.STATUS_PAY_REFUNDING://退款中
+                return "退款中";
+            case Constant.ORDER_STATUS.STATUS_PAY_REFUNDED://退款成功
+                return "退款成功";
+            case Constant.ORDER_STATUS.STATUS_PAY_COMMENT://已评价
+                return "已评价";
+            case Constant.ORDER_STATUS.STATUS_PAY_OUT://逾期未取
+                return "逾期未取";
+            case Constant.ORDER_STATUS.STATUS_PAY_EXIT://取消成功
+                return "取消成功";
             default:
                 return "未知状态";
         }
@@ -281,12 +311,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
             case R.id.order_list_item_opera_btn2://第二个按钮
                 checkOperation(1,position);
                 break;
-            case R.id.item_order:
-                Intent intent=new Intent(getActivity(), OrderDetailsActivity.class);
-                Log.i("orderid",data.get(position).getData().getOrderID()+"-----------"+position);
-                intent.putExtra("orderID",data.get(position).getData().getOrderID());
-                startActivity(intent);
-                break;
+
 
         }
 
@@ -305,14 +330,14 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 if (btnType==1){//
 //                    if(showDialog("确认付款 "+data.get(position).getOrdeId()))
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_PAY)
-                            .with("OrderID",data.get(position-2).getData().getOrderID())
-                            .with("orderCode",data.get(position-2).getData().getOrderCode())
-                            .with("price",data.get(position-2).getData().getOrderPaidPrice())
+                            .with("OrderID",data.get(position).getOrderId())
+                            .with("orderCode",data.get(position).getOrderCode())
+                            .with("price",(double)data.get(position).getOrderPaidPrice())
                             .go(getActivity());
 //                    Log.i("orderCode",entity.getList_Order().get(position).getOrderCode()+"---"+entity.getList_Order().get(position).getOrderPrice());
                 }else {
 //                    if(showDialog("确认取消订单 "+data.get(position).getOrdeId()))
-                    operationProduct(data.get(position).getOrdeId(),-3);
+                    operationProduct(data.get(position).getOrderId(),-3);
                 }
                 break;
             case Constant.ORDER_STATUS.STATUS_PAY_FINSH://待发货
@@ -325,12 +350,12 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 if (btnType==1){//
                     ToastUtils.showToast(getActivity(),"确认收货");
 //                    if(showDialog("确认收货 "+data.get(position).getOrdeId()))
-                    operationProduct(data.get(position).getOrdeId(),4);
+                    operationProduct(data.get(position).getOrderId(),4);
                 }else {
 //                    ToastUtils.showToast(getActivity(),"查看物流");
                     Intent intent=new Intent(getActivity(), LogisticsActivity.class);
-                    intent.putExtra("orderID",data.get(position).getOrdeId());
-                    Log.i("sodoasoda",data.get(position).getOrdeId()+"");
+                    intent.putExtra("orderID",data.get(position).getOrderId());
+                    Log.i("sodoasoda",data.get(position).getOrderId()+"");
                     startActivity(intent);
                 }
                 break;
@@ -346,7 +371,25 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 }else {
                     ToastUtils.showToast(getActivity(),"删除订单");
 //                    if(showDialog("确认删除订单 "+data.get(position).getOrdeId()))
-                    deleteOrder(data.get(position).getOrdeId());
+                    deleteOrder(data.get(position).getOrderId());
+                }
+                break;
+            case Constant.ORDER_STATUS.STATUS_PAY_COMMENT://已评价
+            case Constant.ORDER_STATUS.STATUS_PAY_OUT://逾期未取
+            case Constant.ORDER_STATUS.STATUS_PAY_EXIT://取消成功
+            case Constant.ORDER_STATUS.STATUS_PAY_REFUNDED://退款成功
+                if (btnType==1){//
+                    ResponseQueryOrderList.ListOrderBean   bean=data.get(position).getBean();
+                    if(bean!=null){
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_COMMENT)
+                                .with("data",bean)
+                                .go(getActivity());
+                    }
+
+                }else {
+                    ToastUtils.showToast(getActivity(),"删除订单");
+//                    if(showDialog("确认删除订单 "+data.get(position).getOrdeId()))
+                    deleteOrder(data.get(position).getOrderId());
                 }
                 break;
         }
@@ -452,6 +495,9 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
+        Intent intent=new Intent(getActivity(), OrderDetailsActivity.class);
+        Log.i("orderid",data.get(position).getOrderId()+"-----------"+position);
+        intent.putExtra("orderID",data.get(position).getOrderId());
+        startActivity(intent);
     }
 }

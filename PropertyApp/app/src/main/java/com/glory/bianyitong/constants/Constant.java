@@ -34,7 +34,7 @@ public class Constant {
 
 
        public static class ORDER_STATUS{
-               //0 待支付 1已支付 2已发货 3已到货 4已收货 5已评价 -1退款中 -2已退款 -3已取消
+               //0 待支付 1已支付 2已发货 3已到货 4已收货 5已评价 -1退款中 -2已退款 -3已取消 10逾期未取
                public static final int STATUS_PAY_ALL=99;
               public static final int STATUS_PAY_WAIT=0;
               public static final int STATUS_PAY_FINSH=1;
@@ -42,6 +42,7 @@ public class Constant {
               public static final int STATUS_PAY_LOCAL=3;
               public static final int STATUS_PAY_GOODSRECEPIT=4;
               public static final int STATUS_PAY_COMMENT=5;
+              public static final int STATUS_PAY_OUT=10;
               public static final int STATUS_PAY_REFUNDING=-1;
               public static final int STATUS_PAY_REFUNDED=-2;
               public static final int STATUS_PAY_EXIT=-3;

@@ -149,6 +149,8 @@ public class OrderDetailsActivity extends BaseActivity implements BaseQuickAdapt
                     if (listOrderBean.getCouponReceive() != null&&listOrderBean.getCouponReceive().getCoupon()!=null) {
                         firmOrderCoupon.setText("-￥" + listOrderBean.getCouponReceive().getCoupon().getFreeMoney());
                         firmOrderCoupon.setTextColor(getResources().getColor(R.color.red1));
+                    }else {
+                        firmOrderCoupon.setVisibility(View.GONE);
                     }
                     firmOrderAllMoney.setText("￥" + listOrderBean.getOrderPaidPrice());
                     orderNum.setText("订单编号："+listOrderBean.getOrderCode());
@@ -158,9 +160,14 @@ public class OrderDetailsActivity extends BaseActivity implements BaseQuickAdapt
                         payNum.setVisibility(View.GONE);
                     }
                     if (listOrderBean.getOrderTime()!=null){
-                        payData.setText("付款时间:"+listOrderBean.getOrderTime());
+                        payData.setText("下单时间:"+listOrderBean.getOrderTime().replace("T"," "));
                     }else {
                         payData.setVisibility(View.GONE);
+                    }
+                    if (listOrderBean.getEndOrderTime()!=null){
+                        okData.setText("支付时间:"+listOrderBean.getEndOrderTime().replace("T"," "));
+                    }else {
+                        okData.setVisibility(View.GONE);
                     }
                 } else {
                     showShort(bean.getAlertMessage());

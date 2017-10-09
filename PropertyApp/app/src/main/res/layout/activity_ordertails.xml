@@ -279,16 +279,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="付款时间："
+                    android:text="下单时间："
                     android:textColor="@color/small_text_color_gray"
                     android:textSize="12sp" />
                 <TextView
-                    android:visibility="gone"
                     android:id="@+id/ok_data"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:text="成交时间："
+                    android:text="支付时间："
                     android:textColor="@color/small_text_color_gray"
                     android:textSize="12sp" />
             </LinearLayout>

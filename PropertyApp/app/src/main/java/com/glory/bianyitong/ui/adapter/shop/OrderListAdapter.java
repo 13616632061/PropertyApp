@@ -51,7 +51,6 @@ public class OrderListAdapter extends BaseMultiItemQuickAdapter<MultiItemView<Re
                 helper.setText(R.id.order_list_item_body_type,item.getData().getFresh().getFreshTypeLeaf());
                 helper.setText(R.id.order_list_item_body_price,"¥ "+item.getData().getFresh().getFreshPrice());
                 helper.setText(R.id.order_list_item_body_number,"x "+item.getData().getFreshQuantity());
-                helper.addOnClickListener(R.id.item_order);
                 break;
             case MultiItemView.FOOTER://脚步view
                 if (item.getFreight()==0){

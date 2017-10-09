@@ -9,18 +9,24 @@ import android.util.Log;
 import android.view.View;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chenenyu.router.Router;
 import com.github.lazylibrary.util.ToastUtils;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.entity.request.RequestOrderList;
+import com.glory.bianyitong.bean.entity.request.RequestOrderOperation;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryOrderList;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.MultiItemView;
 import com.glory.bianyitong.ui.adapter.shop.OrderListAdapter;
+import com.glory.bianyitong.util.FilterExclusionStrategy;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +40,7 @@ import butterknife.OnClick;
  * Created by lucy on 2017/9/21.
  * 退款售后
  */
-public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnItemChildClickListener {
+public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.OnItemClickListener {
 
     @BindView(R.id.order_list_fr_recycle)
     RecyclerView orderListFrRecycle;
@@ -65,6 +71,7 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
         adapter.setOnLoadMoreListener(this,orderListFrRecycle);
         orderListFrRecycle.setAdapter(adapter);
         adapter.setOnItemChildClickListener(this);
+        adapter.setOnItemClickListener(this);
         orderListFrRefresh.setOnRefreshListener(this);
         requestOrderList();
     }
@@ -94,21 +101,35 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
                 ResponseQueryOrderList entity=new Gson().fromJson(s,ResponseQueryOrderList.class);
                 if(entity.getStatusCode()==1){
                     for (ResponseQueryOrderList.ListOrderBean listBean: entity.getList_Order()) {
-                        data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.TITLE,listBean.getMerchant_Name(),getStatusName(listBean.getOrderStatus())));
+                        MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemViewTitle = new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.TITLE,listBean.getMerchant_Name(),getStatusName(listBean.getOrderStatus()));
+                        listOrderDetailBeanMultiItemViewTitle.setOrderId(listBean.getOrderID());
+                        listOrderDetailBeanMultiItemViewTitle.setOrderPaidPrice( listBean.getOrderPaidPrice());
+                        listOrderDetailBeanMultiItemViewTitle.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                        data.add(listOrderDetailBeanMultiItemViewTitle);
                         for (ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean bean:listBean.getListOrderDetail()
                                 ) {
                             MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.BODY, bean, listBean.getOrderStatus());
                             listOrderDetailBeanMultiItemView.getData().setOrderID(listBean.getOrderID());
+                            listOrderDetailBeanMultiItemView.getData().setOrderPaidPrice((double) listBean.getOrderPaidPrice());
+                            listOrderDetailBeanMultiItemView.getData().setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                            listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
+                            listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
+                            listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
                             data.add(listOrderDetailBeanMultiItemView);
                         }
                         MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.FOOTER);
                         listOrderDetailBeanMultiItemView.setCartNum(listBean.getCartNum());
                         listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
                         listOrderDetailBeanMultiItemView.setFreight(listBean.getFreight());
-                        data.add(new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.FOOTER));
+                        listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
+                        listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
+                        listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                        data.add(listOrderDetailBeanMultiItemView);
+
+                        setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID(),listBean.getOrderPrice(),listBean);//添加操作菜单
                     }
                     adapter.notifyDataSetChanged();
-                    if(currentPageNumber<entity.getPageRowNumber()){
+                    if(currentPageNumber< entity.getPageRowNumber()){
                         adapter.setEnableLoadMore(true);
                         adapter.loadMoreComplete();
                     }else {
@@ -152,7 +173,51 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
             }
         }).getEntityData(RefundMoneyActivity.this, HttpURL.HTTP_POST_ORDER_QUERY,json);
     }
-
+    /**
+     * 设置操作menu
+     * @param viewType
+     * @param status
+     * @param orderId
+     * @param price
+     */
+    private void setOperationMenu(int viewType,int status,int orderId,float price,ResponseQueryOrderList.ListOrderBean  bean){
+        String msg1,msg2;
+        switch (status){
+            case Constant.ORDER_STATUS.STATUS_PAY_WAIT://待付款
+                msg1="取消订单";
+                msg2="付款";
+                break;
+            case Constant.ORDER_STATUS.STATUS_PAY_FINSH://待发货
+                msg1="";
+                msg2="";
+                break;
+            case Constant.ORDER_STATUS.STATUS_PAY_LOCAL:
+            case Constant.ORDER_STATUS.STATUS_PAY_SEND://待收货
+                msg1="查看物流";
+                msg2="";
+                break;
+            case Constant.ORDER_STATUS.STATUS_PAY_GOODSRECEPIT://待评价
+                msg1="删除订单";
+                msg2="评价";
+                break;
+            case Constant.ORDER_STATUS.STATUS_PAY_COMMENT://已评价
+            case Constant.ORDER_STATUS.STATUS_PAY_OUT://逾期未取
+            case Constant.ORDER_STATUS.STATUS_PAY_EXIT://取消成功
+            case Constant.ORDER_STATUS.STATUS_PAY_REFUNDED://退款成功
+                msg1="删除订单";
+                msg2="";
+                break;
+            default:
+                msg1="";
+                msg2="";
+                break;
+        }
+        MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemViewFoot= new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(viewType,msg1,msg2,status,orderId,price,bean);
+        listOrderDetailBeanMultiItemViewFoot.setOrderId(bean.getOrderID());
+        listOrderDetailBeanMultiItemViewFoot.setOrderPaidPrice((float) bean.getOrderPaidPrice());
+        listOrderDetailBeanMultiItemViewFoot.setOrderCode(Long.parseLong(bean.getOrderCode()));
+        data.add(listOrderDetailBeanMultiItemViewFoot);
+    }
     /**
      * 获取状态描述
      * @param status
@@ -173,6 +238,12 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
                 return "退款中";
             case Constant.ORDER_STATUS.STATUS_PAY_REFUNDED://退款成功
                return "退款成功";
+            case Constant.ORDER_STATUS.STATUS_PAY_COMMENT://已评价
+                return "已评价";
+            case Constant.ORDER_STATUS.STATUS_PAY_OUT://逾期未取
+                return "逾期未取";
+            case Constant.ORDER_STATUS.STATUS_PAY_EXIT://取消成功
+                return "取消成功";
             default:
                 return "未知状态";
         }
@@ -202,15 +273,106 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
 
     @Override
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+
         switch (view.getId()){
-            case R.id.item_order:
-                Intent intent=new Intent(this, OrderDetailsActivity.class);
-                Log.i("orderid",data.get(position).getData().getOrderID()+"-----------"+position);
-                intent.putExtra("orderID",data.get(position).getData().getOrderID());
-                startActivity(intent);
+            case R.id.order_list_item_opera_btn1://第一个按钮
+                checkOperation(0,position);
                 break;
+            case R.id.order_list_item_opera_btn2://第二个按钮
+
+                checkOperation(1,position);
+                break;
+
+
         }
 
 
+    }
+
+    /**
+     * 订单操作
+     * @param btnType
+     * @param position
+     */
+    private void checkOperation(int btnType,int position){
+        ToastUtils.showToast(this,"删除订单");
+//                    if(showDialog("确认删除订单 "+data.get(position).getOrdeId()))
+        deleteOrder(data.get(position).getOrderId());
+        int status= data.get(position).getStatus();
+
+        switch (status){
+            case Constant.ORDER_STATUS.STATUS_PAY_COMMENT://已评价
+            case Constant.ORDER_STATUS.STATUS_PAY_OUT://逾期未取
+            case Constant.ORDER_STATUS.STATUS_PAY_EXIT://取消成功
+            case Constant.ORDER_STATUS.STATUS_PAY_REFUNDED://退款成功
+
+
+                break;
+        }
+    }
+
+    /**
+     * 删除订单
+     * @param orderId
+     */
+    private void deleteOrder(long orderId){
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("entityOrder",new RequestOrderOperation(new RequestOrderOperation.OrderStatus(0,orderId)));
+        String json=new GsonBuilder().addSerializationExclusionStrategy(new FilterExclusionStrategy("orderStatus")).create().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                BaseResponseBean entity=new Gson().fromJson(s,BaseResponseBean.class);
+                if(entity.getStatusCode()==1){
+                    onAutoRefresh();
+                }else {
+                    showShort(entity.getAlertMessage());
+                }
+            }
+
+            @Override
+            public void onError() {
+                showShort(getString(R.string.system_error));
+            }
+
+            @Override
+            public void parseError() {
+
+            }
+
+            @Override
+            public void onBefore() {
+
+            }
+
+            @Override
+            public void onAfter() {
+
+            }
+        }).getEntityData(this,HttpURL.HTTP_POST_ORDER_DELETE,json);
+    }
+    /**
+     * 自动刷新列表
+     */
+    public void onAutoRefresh(){
+        orderListFrRefresh.post(new Runnable() {
+            @Override
+            public void run() {
+                orderListFrRefresh.setRefreshing(true);
+                currentPageNumber=1;
+                data.clear();
+//                adapter.notifyItemRangeRemoved(0,adapter.getItemCount());
+                adapter.notifyDataSetChanged();
+                requestOrderList();
+            }
+        });
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        Intent intent=new Intent(this, OrderDetailsActivity.class);
+        Log.i("orderid",data.get(position).getOrderId()+"-----------"+position);
+        intent.putExtra("orderID",data.get(position).getOrderId());
+        startActivity(intent);
     }
 }

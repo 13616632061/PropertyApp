@@ -17,12 +17,50 @@ public class MultiItemView <T> implements MultiItemEntity {
     private T data;
     private String msg1,msg2;//其他参数
     private int status;
-    private int ordeId;
+    private int orderId;
     private double totalMoney;//订单总金额
     private float freight;//运费
     private float orderPaidPrice;//订单实付金额
     private int cartNum;//订单商品数量
     private long orderCode;
+
+    public int getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(int orderId) {
+        this.orderId = orderId;
+    }
+
+    public void setItemType(int itemType) {
+        this.itemType = itemType;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+
+    public void setMsg1(String msg1) {
+        this.msg1 = msg1;
+    }
+
+    public void setMsg2(String msg2) {
+        this.msg2 = msg2;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+
+
+    public void setTotalMoney(double totalMoney) {
+        this.totalMoney = totalMoney;
+    }
+
+    public void setBean(ResponseQueryOrderList.ListOrderBean bean) {
+        this.bean = bean;
+    }
 
     public long getOrderCode() {
         return orderCode;
@@ -101,14 +139,14 @@ public class MultiItemView <T> implements MultiItemEntity {
      * @param msg1
      * @param msg2
      * @param status
-     * @param ordeId 订单ID
+     * @param orderId 订单ID
      */
-    public MultiItemView(int itemType, String msg1, String msg2, int status,int ordeId,double totalMoney,ResponseQueryOrderList.ListOrderBean  bean) {
+    public MultiItemView(int itemType, String msg1, String msg2, int status,int orderId,double totalMoney,ResponseQueryOrderList.ListOrderBean  bean) {
         this.itemType = itemType;
         this.msg1 = msg1;
         this.msg2 = msg2;
         this.status = status;
-        this.ordeId=ordeId;
+        this.orderId=orderId;
         this.totalMoney=totalMoney;
         this.bean=bean;
     }
@@ -125,9 +163,6 @@ public class MultiItemView <T> implements MultiItemEntity {
         return status;
     }
 
-    public int getOrdeId() {
-        return ordeId;
-    }
 
     public double getTotalMoney() {
         return totalMoney;

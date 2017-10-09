@@ -37,6 +37,10 @@ public class OrderDetailsAdapter extends BaseQuickAdapter<ItemMenu<OrderDetailsI
         helper.setText(R.id.tv_list_item_goods_content,item.getData().getFresh().getFreshTypeLeaf());
         helper.setText(R.id.tv_details_num,"×"+item.getData().getFreshQuantity());
 
-        helper.addOnClickListener(R.id.order_list_item_opera_btn2);
+        if (item.getData().getQualityID()>0){
+            helper.addOnClickListener(R.id.order_list_item_opera_btn2);
+        }else {
+            helper.setVisible(R.id.order_list_item_opera_btn2,true);
+        }
     }
 }

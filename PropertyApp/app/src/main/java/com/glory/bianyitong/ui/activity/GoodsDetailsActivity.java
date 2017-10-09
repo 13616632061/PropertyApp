@@ -2,17 +2,12 @@ package com.glory.bianyitong.ui.activity;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.SslErrorHandler;
@@ -141,12 +136,14 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
             RecyclerView rec_pic;
     @BindView(R.id.pingjia)
     LinearLayout pingjia;
+    @BindView(R.id.fresh_content)
+    TextView freshContent;
 
     private String[] images;
     private List<String> imageList = new ArrayList<String>();
     private ResponseQueryProductDetail.ListfreshBean.FreshEvaluationBean freshEvaluation;//好评中评差评数量bean
     private int godownNumber;
-    private ResponseQueryAddress.ListShippingAddressBean addressBeabean=null;
+    private ResponseQueryAddress.ListShippingAddressBean addressBeabean = null;
 
 
     @InjectParam(key = "data")
@@ -179,18 +176,18 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
     }
 
     private void initview() {
-        tv_goods_name.setText(product.getFreshName()); //商品名称
-        tv_goods_price.setText("¥ " + product.getFreshPrice());//商品价格
-        tv_quick_deliver_goods.setText(product.getFreshTypeName());
-        tv_goods_weight.setText(product.getWeight() + "g");//净含量
+//        tv_goods_name.setText(product.getFreshName()); //商品名称
+//        tv_goods_price.setText("¥ " + product.getFreshPrice());//商品价格
+//        tv_quick_deliver_goods.setText(product.getFreshTypeName());
+//        tv_goods_weight.setText(product.getWeight() + "g");//净含量
         requestProductDetail(product.getFreshID());
     }
 
     @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct, R.id.tv_look_all})
     void onClickBtn(View view) {
-        if (!SharedUtil.getBoolean("login")){
+        if (!SharedUtil.getBoolean("login")) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
-        }else {
+        } else {
 
             switch (view.getId()) {
                 case R.id.detail_kefu://客服
@@ -218,21 +215,16 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
                     break;
                 case R.id.detail_addshopping_cart://加入购物车
-                    if (godownNumber > 0) {//库存大于0时才可以购买，加入购物车
-                        if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
-                            if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
-                                addShoppingCart();
-                            } else {
-                                showShort("数据异常,请返回重试");
-                            }
+                    if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
+                        if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
+                            addShoppingCart();
                         } else {
-                            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
-                                    .go(this, this);
+                            showShort("数据异常,请返回重试");
                         }
                     } else {
-                        showShort("当前商品无库存，不能加入购物车");
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                                .go(this, this);
                     }
-
                     break;
                 case R.id.detail_addshopping_payproduct://立即购买
                     queryAddress();
@@ -255,8 +247,8 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
      */
     private void godownFind() {//库存大于0时才可以购买
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        List<GodownDetailInfo.ListDetailBean> list=new ArrayList<>();
-        list.add(new GodownDetailInfo.ListDetailBean(productDetail.getFreshID(),1));
+        List<GodownDetailInfo.ListDetailBean> list = new ArrayList<>();
+        list.add(new GodownDetailInfo.ListDetailBean(productDetail.getFreshID(), 1));
         map.put("listDetail", list);
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
@@ -265,14 +257,14 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                 ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
                 if (detail.getStatusCode() == 1) {
                     if (product != null) {
-                        String  addressBean= new Gson().toJson(addressBeabean);
+                        String addressBean = new Gson().toJson(addressBeabean);
                         Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
                                 .with("shop", new Gson().toJson(productDetail))
-                                .with("addressBean",addressBean)
+                                .with("addressBean", addressBean)
                                 .with("type", 1)
                                 .go(GoodsDetailsActivity.this);
                     }
-                }else {
+                } else {
                     showShort(detail.getAlertMessage());
 
                 }
@@ -370,126 +362,138 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
      * @param freshId
      */
     private void requestProductDetail(int freshId) {
-        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        map.put("fresh", new RequestProductDetail(freshId));
-        String json = new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                ResponseQueryProductDetail detail =  new Gson().fromJson(s, ResponseQueryProductDetail.class);
-                if (detail.getStatusCode() == 1) {
-                    if (detail.getListfresh() == null || detail.getListfresh().size() <= 0) {
-                        showShort(detail.getAlertMessage());
-                    } else {
-                        productDetail = detail.getListfresh().get(0);
-                        goods_packaging.setText(detail.getListfresh().get(0).getPackingType());//包装方式
-                        tv_goods_brand.setText(detail.getListfresh().get(0).getMerchantName());//品牌
-                        tv_producing_area.setText(detail.getListfresh().get(0).getOriginName());//产地
-                        tv_vender_phone.setText(detail.getListfresh().get(0).getMerchantTel());//厂家联系方式
-                        tv_expiration_date.setText(detail.getListfresh().get(0).getShelfLife());//保质期
+        try {
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("fresh", new RequestProductDetail(freshId));
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
+                    if (detail.getStatusCode() == 1) {
+                        if (detail.getListfresh() == null || detail.getListfresh().size() <= 0) {
+                            showShort(detail.getAlertMessage());
+                        } else {
+                            productDetail = detail.getListfresh().get(0);
+                            goods_packaging.setText(detail.getListfresh().get(0).getPackingType());//包装方式
+                            tv_goods_brand.setText(detail.getListfresh().get(0).getMerchantName());//品牌
+                            tv_producing_area.setText(detail.getListfresh().get(0).getOriginName());//产地
+                            tv_vender_phone.setText(detail.getListfresh().get(0).getMerchantTel());//厂家联系方式
+                            tv_expiration_date.setText(detail.getListfresh().get(0).getShelfLife());//保质期
+                            freshContent.setText(detail.getListfresh().get(0).getFreshContent());
+                            tv_goods_name.setText(detail.getListfresh().get(0).getFreshName()); //商品名称
+                            tv_goods_price.setText("¥ " + detail.getListfresh().get(0).getFreshPrice());//商品价格
+                            tv_quick_deliver_goods.setText(detail.getListfresh().get(0).getFreshTypeName());
+                            tv_goods_weight.setText(detail.getListfresh().get(0).getWeight());//净含量
 
 //                        load(Database.goodsdetails.getFreshUrl());
-                        tv_nutritiveValue.setText(detail.getListfresh().get(0).getNutritiveValue() + ""); //营养价值
-                        collectionChange(productDetail.isCollectionStatu());
-                        //评论内容
-                        if (productDetail.getList_FreshEvaluation() != null) {
-                            if (productDetail.getList_FreshEvaluation().size() > 0) {
-                                tvPlnr.setText(productDetail.getList_FreshEvaluation().get(0).getEvaluationContext());
-                                ServiceDialog.setPicture(productDetail.getList_FreshEvaluation().get(0).getUser().getCustomerPhoto(), ivHeadPic, null);
-                                ratingba.setRating(productDetail.getList_FreshEvaluation().get(0).getEvaluationLevel());
-                                if (productDetail.getList_FreshEvaluation().get(0).getAnonymous() == null) {
-                                    ivName.setText(productDetail.getList_FreshEvaluation().get(0).getUser().getLoginName());
-                                } else {
-                                    ivName.setText(productDetail.getList_FreshEvaluation().get(0).getAnonymous());
+                            tv_nutritiveValue.setText(detail.getListfresh().get(0).getNutritiveValue() + ""); //营养价值
+                            collectionChange(productDetail.isCollectionStatu());
+                            //评论内容
+                            if (productDetail.getList_FreshEvaluation() != null) {
+                                if (productDetail.getList_FreshEvaluation().size() > 0) {
+                                    tvPlnr.setText(productDetail.getList_FreshEvaluation().get(0).getEvaluationContext());
+                                    ServiceDialog.setPicture(productDetail.getList_FreshEvaluation().get(0).getUser().getCustomerPhoto(), ivHeadPic, null);
+                                    ratingba.setRating(productDetail.getList_FreshEvaluation().get(0).getEvaluationLevel());
+                                    if (productDetail.getList_FreshEvaluation().get(0).getAnonymous() == null) {
+                                        ivName.setText(productDetail.getList_FreshEvaluation().get(0).getUser().getLoginName());
+                                    } else {
+                                        ivName.setText(productDetail.getList_FreshEvaluation().get(0).getAnonymous());
+                                    }
                                 }
                             }
-                        }
 
-                        if (productDetail.getFreshEvaluation().getTotalEvaluation() > 0) {
-                            totalEvaluation.setText("宝贝评价数量(" + productDetail.getFreshEvaluation().getTotalEvaluation() + ")");
-                            // 创建一个数值格式化对象
-                            NumberFormat numberFormat = NumberFormat.getInstance();
+                            if (productDetail.getFreshEvaluation().getTotalEvaluation() > 0) {
+                                totalEvaluation.setText("宝贝评价数量(" + productDetail.getFreshEvaluation().getTotalEvaluation() + ")");
+                                // 创建一个数值格式化对象
+                                NumberFormat numberFormat = NumberFormat.getInstance();
 
-                            // 设置精确到小数点后2位
-                            numberFormat.setMaximumFractionDigits(0);
+                                // 设置精确到小数点后2位
+                                numberFormat.setMaximumFractionDigits(0);
 
-                            String result = numberFormat.format((float) productDetail.getFreshEvaluation().getPraiseNum() / (float) productDetail.getFreshEvaluation().getTotalEvaluation() * 100);
-                            godownNumber = productDetail.getGodownNumber();
+                                String result = numberFormat.format((float) productDetail.getFreshEvaluation().getPraiseNum() / (float) productDetail.getFreshEvaluation().getTotalEvaluation() * 100);
+                                godownNumber = productDetail.getGodownNumber();
 
-                            enable = productDetail.isEnable();
+                                enable = productDetail.isEnable();
 
-                            tvPercentage.setText(result + "%");
-                            List<String> imageUrlList = new ArrayList<String>();
+                                tvPercentage.setText(result + "%");
+                                List<String> imageUrlList = new ArrayList<String>();
 
-                            //获取评论图片
-                            for (int i = 0; i < productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().size(); i++) {
-                                imageUrlList.add(productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().get(i).getPicturePath());
-                            }
-                            //好评中评差评数量bean
-                            freshEvaluation = productDetail.getFreshEvaluation();
-
-                            //评论图片
-                            CommentPicAdapter commentPicAdapter = new CommentPicAdapter(R.layout.item_commentpic, getApplicationContext());
-                            GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 4);
-                            rec_pic.setLayoutManager(gridLayoutManager);
-                            rec_pic.setAdapter(commentPicAdapter);
-                            commentPicAdapter.addData(imageUrlList);
-                            commentPicAdapter.notifyDataSetChanged();
-                        } else {
-                            pingjia.setVisibility(View.GONE);
-                        }
-
-
-                        List<ResponseQueryProductDetail.ListfreshBean.ListfreshPictureBean> picture_list = detail.getListfresh().get(0).getListfreshPicture();
-                        if (picture_list != null && picture_list.size() != 0) {
-                            String pic_str = "";
-                            for (int i = 0; i < picture_list.size(); i++) {
-                                if (picture_list.get(i) != null && picture_list.get(i).getPicturePath() != null) {
-                                    pic_str = pic_str + picture_list.get(i).getPicturePath() + ","; //生鲜图片  ,号隔开
+                                //获取评论图片
+                                for (int i = 0; i < productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().size(); i++) {
+                                    imageUrlList.add(productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().get(i).getPicturePath());
                                 }
-                            }
-                            if (pic_str.split(",") != null && pic_str.split(",").length > 0) {
-                                images = pic_str.split(",");
+                                //好评中评差评数量bean
+                                freshEvaluation = productDetail.getFreshEvaluation();
+
+                                //评论图片
+                                CommentPicAdapter commentPicAdapter = new CommentPicAdapter(R.layout.item_commentpic, getApplicationContext());
+                                GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 4);
+                                rec_pic.setLayoutManager(gridLayoutManager);
+                                rec_pic.setAdapter(commentPicAdapter);
+                                commentPicAdapter.addData(imageUrlList);
+                                commentPicAdapter.notifyDataSetChanged();
                             } else {
-                                images = new String[]{pic_str};
+                                pingjia.setVisibility(View.GONE);
                             }
-                            getBanner(); //开始广告轮播
+
+
+                            List<ResponseQueryProductDetail.ListfreshBean.ListfreshPictureBean> picture_list = detail.getListfresh().get(0).getListfreshPicture();
+                            if (picture_list != null && picture_list.size() != 0) {
+                                String pic_str = "";
+                                for (int i = 0; i < picture_list.size(); i++) {
+                                    if (picture_list.get(i) != null && picture_list.get(i).getPicturePath() != null) {
+                                        pic_str = pic_str + picture_list.get(i).getPicturePath() + ","; //生鲜图片  ,号隔开
+                                    }
+                                }
+                                if (pic_str.split(",") != null && pic_str.split(",").length > 0) {
+                                    images = pic_str.split(",");
+                                } else {
+                                    images = new String[]{pic_str};
+                                }
+                                getBanner(); //开始广告轮播
 //                    ScrollViewLayout(GoodsDetailsActivity.this, picture_list, lay_goodsImage_list);
+                            }
+
+                        }
+                        if (detail.getListfresh().get(0).getFreshContents() != null) {
+                            load(detail.getListfresh().get(0).getFreshContents().toString());
                         }
 
-                    }
-                    if (detail.getListfresh().get(0).getFreshContents() != null) {
-                        load(detail.getListfresh().get(0).getFreshContents().toString());
+                    } else {
+                        showShort(detail.getAlertMessage());
                     }
 
-                } else {
-                    showShort(detail.getAlertMessage());
                 }
 
-            }
 
+                @Override
+                public void onError() {
+                    showShort("系统异常");
+                }
 
-            @Override
-            public void onError() {
-                showShort("系统异常");
-            }
+                @Override
+                public void parseError() {
 
-            @Override
-            public void parseError() {
+                }
 
-            }
+                @Override
+                public void onBefore() {
 
-            @Override
-            public void onBefore() {
+                }
 
-            }
+                @Override
+                public void onAfter() {
 
-            @Override
-            public void onAfter() {
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_FRESH_QUERY_DETAIL, json);
 
-            }
-        }).getEntityData(this, HttpURL.HTTP_POST_FRESH_QUERY_DETAIL, json);
+        } catch (Exception e) {
+
+        }
+
     }
+
 
     /**
      * 添加购物车
@@ -583,21 +587,21 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
             @Override
             public void onSuccess(String s) {
-                ResponseQueryAddress queryAddress=new Gson().fromJson(s,ResponseQueryAddress.class);
-                if(queryAddress.getStatusCode()==1){
-                    if(queryAddress.getListShippingAddress()!=null && queryAddress.getListShippingAddress().size()>0){
-                        for (ResponseQueryAddress.ListShippingAddressBean bean:queryAddress.getListShippingAddress()) {
-                            if (bean.isDefaults()){
+                ResponseQueryAddress queryAddress = new Gson().fromJson(s, ResponseQueryAddress.class);
+                if (queryAddress.getStatusCode() == 1) {
+                    if (queryAddress.getListShippingAddress() != null && queryAddress.getListShippingAddress().size() > 0) {
+                        for (ResponseQueryAddress.ListShippingAddressBean bean : queryAddress.getListShippingAddress()) {
+                            if (bean.isDefaults()) {
                                 addressBeabean = bean;
                             }
                         }
-                        if (addressBeabean==null){
+                        if (addressBeabean == null) {
                             showShort("请添加默认收货地址");
-                        }else {
+                        } else {
                             godownFind();//
                         }
                     }
-                }else if (queryAddress.getStatusCode()==2){
+                } else if (queryAddress.getStatusCode() == 2) {
                     showShort("请添加默认收货地址");
                     finish();
                 }
@@ -622,7 +626,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
             public void onAfter() {
 
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+        }).getEntityData(this, HttpURL.HTTP_POST_QUERY_ADDRESS, json);
 
     }
 
@@ -671,8 +675,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
     private void load(String html) {
         //加载需要显示的网页
-//        webview_ervery.loadUrl(html);
-        webview_ervery.loadDataWithBaseURL("", html, "textml", "UTF-8", "");
+        webview_ervery.loadDataWithBaseURL("", html, "text/html", "UTF-8", "");
         //设置WebView属性，能够执行Javascript脚本
         webview_ervery.getSettings().setPluginState(WebSettings.PluginState.ON); //支持插件
         WebSettings webSettings = webview_ervery.getSettings();  //android 5.0以上

@@ -327,6 +327,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
                 Intent intent=new Intent();
                 intent.putExtra("data",bean);
                 String json = new Gson().toJson(bean);
+                setInitAddress(bean.getAddressID(),true);
                 Log.i("jsoss",json);
                 setResult(RESULT_OK,intent);
                 AddressActivity.this.finish();

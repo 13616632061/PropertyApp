@@ -61,7 +61,7 @@ public class CouponListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryCo
                 btn.setEnabled(false);
                 btn.setBackgroundResource(R.drawable.shape_item_couponlist_logo_normal);
                 break;
-            case -1://我的优惠券列表已过期
+            case 2://我的优惠券列表已过期
                 btn.setText("已过期");
                 btn.setEnabled(false);
                 btn.setBackgroundResource(R.drawable.shape_item_couponlist_logo_normal);

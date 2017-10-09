@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chenenyu.router.Router;
@@ -34,6 +35,7 @@ import com.glory.bianyitong.ui.adapter.PickupAdapter;
 import com.glory.bianyitong.ui.adapter.shop.FirmOrderAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
+import com.glory.bianyitong.util.DialogUtils;
 import com.glory.bianyitong.util.SharedUtil;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -106,7 +108,6 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
         }
 
-        pickList();
         initView();
     }
 
@@ -115,7 +116,9 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
         pickupAdapter = new PickupAdapter(R.layout.view_item_pickup, data);
         recyclerView.setLayoutManager(layoutManager);
         pickupAdapter.setOnItemChildClickListener(this);
+        pickupAdapter.bindToRecyclerView(recyclerView);
         recyclerView.setAdapter(pickupAdapter);
+        pickList();
 
     }
 
@@ -124,6 +127,7 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
      */
     private void pickList() {
         data.clear();
+        pickupAdapter.notifyDataSetChanged();
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         final String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
@@ -135,9 +139,12 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
                         data.add(new ItemMenu<PickupInfo.ListOrderBean>(bean));
                     }
                     pickupAdapter.notifyDataSetChanged();
+
                 } else {
-                    showShort(detail.getAlertMessage());
+                    if(data.size()<=0)
+                        pickupAdapter.setEmptyView(R.layout.layout_empty_orderlist);
                 }
+
             }
 
 
@@ -169,19 +176,19 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
     private void openCabinet(int orderID) {
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("orderID",orderID);
-        final String json = new Gson().toJson(map);
+        String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
                 PickupInfo detail = new Gson().fromJson(s, PickupInfo.class);
                 if (detail.getStatusCode() == 1) {
                     showShort(detail.getAlertMessage());
-                    pickList();
                 } else {
                     showShort(detail.getAlertMessage());
                 }
                 if (detail.getAccessToken()!=""){
                     Database.accessToken=detail.getAccessToken();
+                    pickList();
                 }
             }
 
@@ -271,14 +278,24 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
     }
 
     @Override
-    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, final int position) {
         switch (view.getId()){
             case R.id.iv_share:
                 getShareURL(data.get(position).getData().getOrderID());
-
                 break;
             case R.id.iv_open_the_cabinet:
-                openCabinet(data.get(position).getData().getOrderID());
+                DialogUtils.getInstance().showDialog(this, "是否确认要开锁？", true, new DialogUtils.DialogCallBackTwo() {
+                    @Override
+                    public void exectEvent() {
+                        openCabinet(data.get(position).getData().getOrderID());
+
+                    }
+
+                    @Override
+                    public void exectCancel() {
+
+                    }
+                });
                 break;
         }
     }

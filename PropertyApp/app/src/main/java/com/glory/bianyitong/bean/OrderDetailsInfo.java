@@ -93,7 +93,7 @@ public class OrderDetailsInfo {
 
         private int orderID;
         private String orderCode;
-        private Object orderTime;
+        private String orderTime;
         private int orderPrice;
         private int freight;
         private int couponReceiveID;
@@ -106,7 +106,16 @@ public class OrderDetailsInfo {
         private int totalPageNumber;
         private int nowPageNumber;
         private int cartNum;
+        private String endOrderTime;
         private List<ListOrderDetailBean> listOrderDetail;
+
+        public String getEndOrderTime() {
+            return endOrderTime;
+        }
+
+        public void setEndOrderTime(String endOrderTime) {
+            this.endOrderTime = endOrderTime;
+        }
 
         public int getOrderID() {
             return orderID;
@@ -124,11 +133,11 @@ public class OrderDetailsInfo {
             this.orderCode = orderCode;
         }
 
-        public Object getOrderTime() {
+        public String  getOrderTime() {
             return orderTime;
         }
 
-        public void setOrderTime(Object orderTime) {
+        public void setOrderTime(String orderTime) {
             this.orderTime = orderTime;
         }
 

@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.Route;
 import com.github.lazylibrary.util.ToastUtils;
 import com.glory.bianyitong.R;
@@ -18,6 +19,7 @@ import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.RefundInfo;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingCartAdd;
+import com.glory.bianyitong.bean.entity.response.ResponseSearchFresh;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
@@ -38,7 +40,7 @@ import butterknife.OnClick;
  * Created by lucy on 2017/6/29.
  */
 @Route(value = RouterMapping.ROUTER_ACTIVITY_COLLECTION_LIST, interceptors = RouterMapping.INTERCEPTOR_LOGIN)
-public class CollectionActivity extends BaseActivity implements View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener {
+public class CollectionActivity extends BaseActivity implements View.OnClickListener, BaseQuickAdapter.OnItemChildClickListener, BaseQuickAdapter.RequestLoadMoreListener, SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter.OnItemClickListener {
 
     @BindView(R.id.iv_title_text_right)
     TextView ivTitleTextRight;
@@ -80,6 +82,7 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
         recyclerView.setLayoutManager(linearLayoutManager);
         collectionAdapter = new CollectionAdapter(this, R.layout.item_collection, list);
         collectionAdapter.setOnItemChildClickListener(this);
+        collectionAdapter.setOnItemClickListener(this);
         recyclerView.setAdapter(collectionAdapter);
         collectionAdapter.setOnLoadMoreListener(this,recyclerView);
         freshListFrRefresh.setOnRefreshListener(this);
@@ -88,7 +91,6 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
     }
 
     private void onRefrush() {
-//        list.clear();
 //        collectionAdapter.notifyDataSetChanged();
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("currentPageNumber",currentPageNumber);
@@ -155,7 +157,7 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.tv_cancel://取消收藏
-                deleteCollection();
+                onRefresh();
                 break;
             case R.id.iv_title_text_right://编辑按钮
                 if (EDIT) {
@@ -318,5 +320,14 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
 //        adapter.notifyItemRangeRemoved(0,adapter.getItemCount());
         collectionAdapter.notifyDataSetChanged();
         onRefrush();
+    }
+
+    @Override
+    public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+        ResponseSearchFresh.ListfreshBean product=new ResponseSearchFresh.ListfreshBean();
+        product.setFreshID(list.get(position).getData().getFreshID());
+        Router.build(RouterMapping.ROUTER_ACTIVITY_PRODUCT_DETAIL)
+                .with("data", product)
+                .go(this);
     }
 }
