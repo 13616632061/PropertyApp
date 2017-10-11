@@ -34,7 +34,10 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_gravity="center"
-                    android:layout_marginRight="11dp"
+                    android:gravity="center"
+                    android:paddingBottom="31dp"
+                    android:paddingTop="31dp"
+                    android:paddingRight="11dp"
                     android:button="@drawable/selector_shoppingcart_select" />
                 <TextView
                     android:id="@+id/shixiao"
@@ -45,7 +48,6 @@
                     android:layout_gravity="center"
                     android:textColor="@color/white"
                     android:padding="3dp"
-                    android:layout_marginRight="5dp"
                     android:textSize="9sp"
                     android:text="失效"
                     android:background="@drawable/shape_gray" />
@@ -58,6 +60,7 @@
                     android:scaleType="fitXY" />
 
                 <LinearLayout
+                    android:id="@+id/all_money_and_other"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
@@ -87,10 +90,10 @@
                         android:id="@+id/tv_list_item_goods_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="26dp"
+                        android:layout_marginTop="24dp"
                         android:text="￥12"
                         android:textColor="@color/color_red_del"
-                        android:textSize="15sp" />
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <com.glory.bianyitong.widght.shop.AmountView

@@ -177,6 +177,9 @@ public class SelectLocalActivity extends BaseActivity implements BaseSectionQuic
      * @param bdLocation
      */
     private void getMyLocal(BDLocation bdLocation){
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("longitude",bdLocation.getLongitude());
         map.put("latitude",bdLocation.getLatitude());
@@ -218,10 +221,15 @@ public class SelectLocalActivity extends BaseActivity implements BaseSectionQuic
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_MY_LOCAL,json);
+        }catch (Exception e){
 
+        }
     }
 
     private void queryLocal(String keyWord){
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("area",new RequestQueryFreshLocal(keyWord));
         String json=new Gson().toJson(map);
@@ -260,6 +268,9 @@ public class SelectLocalActivity extends BaseActivity implements BaseSectionQuic
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_SHOP_QUERY_LOCAL,json);
+        }catch (Exception e){
+
+        }
     }
 
     void initLocalData(){

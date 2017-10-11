@@ -152,6 +152,9 @@ public class AddRoomActivity extends BaseActivity {
      * @param communityID
      */
     private void request_building(int communityID) { //获取楼栋
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("communityBuilding",new Object());
         String json=new Gson().toJson(map);
@@ -186,6 +189,9 @@ public class AddRoomActivity extends BaseActivity {
             @Override
             public void onAfter() {}
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_BUILD,json);
+        }catch (Exception e){
+
+        }
     }
 
     /**
@@ -193,6 +199,9 @@ public class AddRoomActivity extends BaseActivity {
      * @param buildingID
      */
     private void request_cell(int buildingID) { //获取单元
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("communityUnit",new RequestCommunityUnit(buildingID));
         String json=new Gson().toJson(map);
@@ -223,6 +232,9 @@ public class AddRoomActivity extends BaseActivity {
             @Override
             public void onAfter() {}
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_UNIT,json);
+        }catch (Exception e){
+
+        }
     }
 
     /**
@@ -230,6 +242,8 @@ public class AddRoomActivity extends BaseActivity {
      * @param unitID
      */
     private void request_room(int unitID) { //获取房号
+        try {
+
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("communityRoom",new RequestCommunityRoom(unitID));
@@ -262,6 +276,9 @@ public class AddRoomActivity extends BaseActivity {
             @Override
             public void onAfter() {}
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_ROOM,json);
+        }catch (Exception e){
+
+        }
     }
 
 

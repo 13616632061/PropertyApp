@@ -61,6 +61,24 @@ public class ResponseQueryOrderList extends BaseResponseBean {
         private float orderPaidPrice;//订单实付金额
         private int cartNum;//订单商品数量
         private List<ListOrderDetailBean> listOrderDetail;
+        private String orderStatusExplain;
+        private int parentOrderID;
+
+        public int getParentOrderID() {
+            return parentOrderID;
+        }
+
+        public void setParentOrderID(int parentOrderID) {
+            this.parentOrderID = parentOrderID;
+        }
+
+        public String getOrderStatusExplain() {
+            return orderStatusExplain;
+        }
+
+        public void setOrderStatusExplain(String orderStatusExplain) {
+            this.orderStatusExplain = orderStatusExplain;
+        }
 
         public float getOrderPaidPrice() {
             return orderPaidPrice;
@@ -229,7 +247,7 @@ public class ResponseQueryOrderList extends BaseResponseBean {
             private int orderID;
             private int freshID;
             private int freshQuantity;
-            private int price;
+            private float price;
             private float totalPrice;
             private FreshBean fresh;
             private double orderPaidPrice;
@@ -283,11 +301,11 @@ public class ResponseQueryOrderList extends BaseResponseBean {
                 this.freshQuantity = freshQuantity;
             }
 
-            public int getPrice() {
+            public float getPrice() {
                 return price;
             }
 
-            public void setPrice(int price) {
+            public void setPrice(float price) {
                 this.price = price;
             }
 

@@ -32,7 +32,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="15dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:layout_toRightOf="@+id/iv_list_item_goods_pic"
                     android:layout_weight="1"
                     android:orientation="vertical">
@@ -61,12 +61,21 @@
                             android:textSize="14sp" />
 
                     </LinearLayout>
+                    <TextView
+                        android:id="@+id/name_and_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:maxLines="2"
+                        android:textColor="@color/small_text_color_gray"
+                        android:textSize="12sp" />
                     <!--300g-->
                     <TextView
                         android:id="@+id/address_list_address"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
                         android:text="四季鲜果"
                         android:maxLines="2"
                         android:textColor="@color/small_text_color_gray"
@@ -105,6 +114,7 @@
             </LinearLayout>
 
             <TextView
+                android:visibility="gone"
                 android:id="@+id/tv_shop_edit"
                 android:layout_width="60dp"
                 android:layout_height="match_parent"

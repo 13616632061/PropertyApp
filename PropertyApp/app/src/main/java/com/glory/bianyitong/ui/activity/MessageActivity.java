@@ -241,92 +241,96 @@ public class MessageActivity extends BaseActivity {
     }
 
     private void request() { //请求社区公告
+        try {
 
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("systemMsg",new Object());
-        String json=new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                MessageInfo minfo = new Gson().fromJson(s, MessageInfo.class);
+
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("systemMsg", new Object());
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    MessageInfo minfo = new Gson().fromJson(s, MessageInfo.class);
 //                            Log.i("resultString", "adinfo.getListHousekeeper()-------" + hinfo.getListHousekeeper());
-                if (minfo != null && minfo.getListSystemMsg() != null) {
-                    message_List = minfo.getListSystemMsg();
-                    if (message_List.size() > 0) {
-                        if (adapter == null) {
-                            have_GoodsList = true;
-                            adapter = new MessageAdapter(MessageActivity.this, message_List, checkList, isDoMore);
-                            listView_mes.setAdapter(adapter);
-                        } else {
-                            have_GoodsList = true;
-                            adapter.notifyDataSetChanged();
-                        }
+                    if (minfo != null && minfo.getListSystemMsg() != null) {
+                        message_List = minfo.getListSystemMsg();
+                        if (message_List.size() > 0) {
+                            if (adapter == null) {
+                                have_GoodsList = true;
+                                adapter = new MessageAdapter(MessageActivity.this, message_List, checkList, isDoMore);
+                                listView_mes.setAdapter(adapter);
+                            } else {
+                                have_GoodsList = true;
+                                adapter.notifyDataSetChanged();
+                            }
 
-                        //清空过期的已读缓存
-                        //if (Database.readmessageid != null) {
-                        String[] array = Database.readmessageid.split(",");
-                        if (array != null && message_List != null) {
-                            Database.readmessageid = "";
-                            for (int i = 0; i < array.length; i++) {
-                                for (int j = 0; j < message_List.size(); j++) {
+                            //清空过期的已读缓存
+                            //if (Database.readmessageid != null) {
+                            String[] array = Database.readmessageid.split(",");
+                            if (array != null && message_List != null) {
+                                Database.readmessageid = "";
+                                for (int i = 0; i < array.length; i++) {
+                                    for (int j = 0; j < message_List.size(); j++) {
 //                                                if (message_List.get(j) != null && message_List.get(j).get("messageID") != null) {
 //                                                    if (array[i].equals(message_List.get(j).get("messageID").toString())) {
 //                                                        Database.readmessageid = Database.readmessageid + message_List.get(j).get("messageID").toString() + ",";
 //                                                    }
 //                                                }
-                                    if (message_List.get(j) != null && message_List.get(j).getMessageID() != null) {
-                                        if (array[i].equals(message_List.get(j).getMessageID())) {
-                                            Database.readmessageid = Database.readmessageid + message_List.get(j).getMessageID() + ",";
+                                        if (message_List.get(j) != null && message_List.get(j).getMessageID() != null) {
+                                            if (array[i].equals(message_List.get(j).getMessageID())) {
+                                                Database.readmessageid = Database.readmessageid + message_List.get(j).getMessageID() + ",";
+                                            }
                                         }
                                     }
                                 }
                             }
-                        }
 //        }
-                    } else {//没有数据
+                        } else {//没有数据
 //                                noGoods.setVisibility(View.VISIBLE);
+                            listView_mes.setAdapter(null);
+                            have_GoodsList = false;
+                            listView_mes.setVisibility(View.GONE);
+                            lay_no_message.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+//                            noGoods.setVisibility(View.VISIBLE);
                         listView_mes.setAdapter(null);
                         have_GoodsList = false;
                         listView_mes.setVisibility(View.GONE);
                         lay_no_message.setVisibility(View.VISIBLE);
                     }
-                } else {
-//                            noGoods.setVisibility(View.VISIBLE);
-                    listView_mes.setAdapter(null);
-                    have_GoodsList = false;
+                }
+
+                @Override
+                public void onError() {
+                    getGoodsListStart = false;
+                    loading_lay.setVisibility(View.GONE);
                     listView_mes.setVisibility(View.GONE);
                     lay_no_message.setVisibility(View.VISIBLE);
                 }
-            }
 
-            @Override
-            public void onError() {
-                getGoodsListStart = false;
-                loading_lay.setVisibility(View.GONE);
-                listView_mes.setVisibility(View.GONE);
-                lay_no_message.setVisibility(View.VISIBLE);
-            }
+                @Override
+                public void parseError() {
 
-            @Override
-            public void parseError() {
-
-            }
-
-            @Override
-            public void onBefore() {
-                progressDialog = ProgressDialog.show(MessageActivity.this, "", getString(R.string.load), true);//加载
-                progressDialog.setCanceledOnTouchOutside(true);
-            }
-
-            @Override
-            public void onAfter() {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
-                    progressDialog = null;
                 }
-            }
-        }).getEntityData(this,HttpURL.HTTP_POST_GET_MESSAGE,json);
 
+                @Override
+                public void onBefore() {
+                    progressDialog = ProgressDialog.show(MessageActivity.this, "", getString(R.string.load), true);//加载
+                    progressDialog.setCanceledOnTouchOutside(true);
+                }
+
+                @Override
+                public void onAfter() {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                        progressDialog = null;
+                    }
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_GET_MESSAGE, json);
+        }catch (Exception e){
+
+        }
     }
 
     @Override

@@ -97,6 +97,9 @@ public class BulletinDetailsActivity extends BaseActivity {
     }
 
     private void request(int bulletinID) {
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("communityBulletin",new RequestCommunityBulletin(bulletinID));
         String json=new Gson().toJson(map);
@@ -142,6 +145,9 @@ public class BulletinDetailsActivity extends BaseActivity {
             @Override
             public void onAfter() {}
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE,json);
+        }catch (Exception e){
+
+        }
     }
 
     private void initview() {

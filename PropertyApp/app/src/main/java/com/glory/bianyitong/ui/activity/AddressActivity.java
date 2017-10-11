@@ -120,6 +120,9 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
         }
     }
     private void queryAddress() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("shippingAddress", new Object());
         String json = new Gson().toJson(map);
@@ -158,11 +161,16 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+        }catch (Exception e){
 
+        }
     }
 
 
     private void addAddress(int cabinetID){
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("shippingAddress",new RequestAddRess(cabinetID, Database.USER_MAP.getLoginName(),Database.USER_MAP.getPhoneNumber()));
         String json=new Gson().toJson(map);
@@ -197,10 +205,16 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_ADD_ADDRESS,json);
+        }catch (Exception e){
+
+        }
     }
 
 
     private void deleteAddress(int addressId){
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("shippingAddress",new RequestDeleteAddress(addressId));
         String json=new Gson().toJson(map);
@@ -234,9 +248,15 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_DELETE_ADDRESS,json);
+        }catch (Exception e){
+
+        }
     }
 
     private void setInitAddress(int addressId,boolean isChecked){
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("shippingAddress",new RequestInitAddress(addressId,isChecked));
         String json=new Gson().toJson(map);
@@ -270,6 +290,9 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_INIT_ADDRESS,json);
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -314,6 +337,12 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
                 showShort(bean.getFreshCabinet().getCommunityName()+bean.getFreshCabinet().getCabinetName()+"设置默认地址");
                 setInitAddress(bean.getAddressID(),true);
                 break;
+            case R.id.lay_list_item_goods:
+                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_ADD)
+                        .with("data",bean)
+                        .go(AddressActivity.this);
+                break;
+
         }
 
 
@@ -332,6 +361,16 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
                 setResult(RESULT_OK,intent);
                 AddressActivity.this.finish();
             }
+        }
+    };
+
+    BaseQuickAdapter.OnItemClickListener onItemClickListener2=new BaseQuickAdapter.OnItemClickListener() {
+        @Override
+        public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+            ResponseQueryAddress.ListShippingAddressBean bean=data.get(position).getData();
+            Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_ADD)
+                    .with("data",bean)
+                    .go(AddressActivity.this);
         }
     };
 

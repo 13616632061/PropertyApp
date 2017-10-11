@@ -9,9 +9,9 @@ public class RequestShoppingCartAdd {
     private int freshID	;//int	生鲜ID
     private int freshTypeID	;//int	生鲜类型ID
     private int quantity	;//int	数量
-    private double price	;//money	单价
+    private float price	;//money	单价
 
-    public RequestShoppingCartAdd(int freshID, int freshTypeID, int quantity, double price) {
+    public RequestShoppingCartAdd(int freshID, int freshTypeID, int quantity, float price) {
         this.freshID = freshID;
         this.freshTypeID = freshTypeID;
         this.quantity = quantity;
@@ -42,11 +42,11 @@ public class RequestShoppingCartAdd {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public float getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(float price) {
         this.price = price;
     }
 }

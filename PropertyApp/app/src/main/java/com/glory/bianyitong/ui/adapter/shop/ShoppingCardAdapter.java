@@ -86,7 +86,11 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
         final CheckBox checkBox=helper.getView(R.id.iv_button);
 
         checkBox.setTag(R.id.shopCard_check,position);
+
+
         helper.addOnClickListener(R.id.tv_shop_delete);
+        helper.addOnClickListener(R.id.iv_list_item_goods_pic);
+        helper.addOnClickListener(R.id.all_money_and_other);
 
         if (!item.getData().getFresh().isEnable()){//是否上架
             helper.setVisible(R.id.shixiao,true);
@@ -107,7 +111,18 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
             helper.setText(R.id.tv_list_item_goods_price,"商品没有库存");
             helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.text_color));
         }
-
+        if (!item.getData().isIsvalid()){
+            helper.setVisible(R.id.shixiao,true);
+            helper.setVisible(R.id.iv_button,false);
+            amountView.setVisibility(View.GONE);
+            helper.setText(R.id.tv_list_item_goods_price,"当前生鲜柜无法配送");
+            helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.text_color));
+        }else {
+            helper.setVisible(R.id.shixiao,false);
+            helper.setVisible(R.id.iv_button,true);
+            amountView.setVisibility(View.VISIBLE);
+            helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.color_red_del));
+        }
         if(commitData.containsKey(position)){
             if (item.getData().isIsvalid()){
                 if(commitData.get(position).getData().getCartID()==item.getData().getCartID()){

@@ -40,7 +40,8 @@ public class AddressListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryA
         helper.setText(R.id.address_list_name,item.getData().getFreshCabinet().getCommunityName()+item.getData().getFreshCabinet().getCabinetName());
         helper.setText(R.id.address_list_address,item.getData().getFreshCabinet().getCommunity().getProvinceName()+" "+item.getData().getFreshCabinet().getCommunity().getCityName()+" "+item.getData().getFreshCabinet().getCommunity().getDistrictName()+" "+item.getData().getFreshCabinet().getCommunity().getStreet()+" "+item.getData().getFreshCabinet().getCommunity().getAddressNumber());
             helper.setText(R.id.address_been_used,item.getData().getFreshCabinet().getUsed()+"");
-            helper.setText(R.id.address_total,"/"+item.getData().getFreshCabinet().getNum());
+        helper.setText(R.id.address_total,"/"+item.getData().getFreshCabinet().getNum());
+        helper.setText(R.id.name_and_phone,item.getData().getHarvesterName()+"  "+item.getData().getHarvestePhone());
 
 
         if(isFirmOrder){//来源:提交订单  不做任何监听
@@ -54,7 +55,7 @@ public class AddressListAdapter extends BaseQuickAdapter<ItemMenu<ResponseQueryA
             linearLayout.setLayoutParams(layoutParams);
             helper.addOnClickListener(R.id.tv_shop_edit);
             helper.addOnClickListener(R.id.address_list_delete);
-
+            helper.addOnClickListener(R.id.lay_list_item_goods);
             helper.addOnClickListener(R.id.iv_button);
             if(item.getData().isDefaults())
                 position=helper.getAdapterPosition();

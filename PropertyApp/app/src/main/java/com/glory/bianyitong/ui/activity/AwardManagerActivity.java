@@ -201,6 +201,8 @@ public class AwardManagerActivity extends BaseActivity {
     }
 
     private void request() { //获取授权人
+        try {
+
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("userLockMapping",new Object());
@@ -250,6 +252,9 @@ public class AwardManagerActivity extends BaseActivity {
                 }
             }
         }).getEntityData(this,HttpURL.HTTP_POST_LOCKMAPPING_QUERY,jsons);
+        }catch (Exception e){
+
+        }
     }
 
     /**
@@ -257,6 +262,9 @@ public class AwardManagerActivity extends BaseActivity {
      * @param position
      */
     private void delete( final int position) {//
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         Map<String,Object> maps=new HashMap<>();
         maps.put("aESUserID",list_man.get(position).getaESUserID());
@@ -295,6 +303,9 @@ public class AwardManagerActivity extends BaseActivity {
                 }
             }
         }).getEntityData(this,HttpURL.HTTP_POST_LOCKMAPPING_DELETE,json);
+        }catch (Exception e){
+
+        }
     }
 
 }

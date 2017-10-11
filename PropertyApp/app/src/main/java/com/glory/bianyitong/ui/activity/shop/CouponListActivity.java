@@ -96,6 +96,8 @@ public class CouponListActivity extends BaseActivity {
     }
 
     private void requestCouponList(){
+        try {
+
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         String json=new Gson().toJson(map);
@@ -147,7 +149,9 @@ public class CouponListActivity extends BaseActivity {
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_COUPON_QUERY_LIST,json);
+        }catch (Exception e){
 
+        }
     }
 
 

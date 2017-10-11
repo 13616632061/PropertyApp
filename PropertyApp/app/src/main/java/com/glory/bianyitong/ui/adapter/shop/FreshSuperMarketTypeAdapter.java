@@ -27,7 +27,7 @@ public class FreshSuperMarketTypeAdapter extends BaseQuickAdapter<ItemMenu<Fresh
         super(layoutResId, data);
         this.context = context;
     }
-    private int position=0;
+    private int position=-1;
 
     @Override
     protected void convert(BaseViewHolder helper, ItemMenu<FreshTypeInfo.ListFreshTypeBean> item) {

@@ -17,7 +17,7 @@ public class RequestCommitOrderByCart implements Serializable{
     private List<OrderDetail> listOrderDetail;
     private int couponReceiveID;//优惠券ID
     private double freePrice;//减免金额
-    private double orderPrice;//订单总额
+    private float orderPrice;//订单总额
 
 //    private List<Integer> shoppingCarts;//购物车ID集合
 
@@ -35,7 +35,7 @@ public class RequestCommitOrderByCart implements Serializable{
         this.listOrderDetail = listOrderDetail;
     }
 
-    public RequestCommitOrderByCart(int couponReceiveID,double freight, int addressID, int cabinetID, String cabinetName, double freePrice, double orderPrice) {
+    public RequestCommitOrderByCart(int couponReceiveID,double freight, int addressID, int cabinetID, String cabinetName, double freePrice, float orderPrice) {
         this.freight = freight;
         this.addressID = addressID;
         this.cabinetID = cabinetID;
@@ -70,11 +70,11 @@ public class RequestCommitOrderByCart implements Serializable{
         this.freePrice = freePrice;
     }
 
-    public double getOrderPrice() {
+    public float getOrderPrice() {
         return orderPrice;
     }
 
-    public void setOrderPrice(double orderPrice) {
+    public void setOrderPrice(float orderPrice) {
         this.orderPrice = orderPrice;
     }
 

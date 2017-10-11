@@ -184,6 +184,8 @@ public class FamilyManagementActivity  extends BaseActivity {
     }
 
     private void request() { //获取授权人
+        try {
+
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("family",new Object());
@@ -229,6 +231,9 @@ public class FamilyManagementActivity  extends BaseActivity {
                 }
             }
         }).getEntityData(this, HttpURL.HTTP_POST_APIFAMILY_QUERY,jsons);
+        }catch (Exception e){
+
+        }
     }
 
     /**
@@ -237,6 +242,9 @@ public class FamilyManagementActivity  extends BaseActivity {
      * @param position
      */
     private void delete(int authorizationUserID, final int position) {//
+        try {
+
+
         String userID = RequestUtil.getuserid();
         int communityID = RequestUtil.getcommunityid();
 
@@ -274,6 +282,9 @@ public class FamilyManagementActivity  extends BaseActivity {
                 }
             }
         }).getEntityData(this,HttpURL.HTTP_POST_LOCKMAPPING_DELETE,json);
+        }catch (Exception e){
+
+        }
     }
 
 }

@@ -74,7 +74,7 @@ public class ResponseQueryProductDetail extends BaseResponseBean implements Seri
         private String freshTypeName;
         private String freshTypeLeaf;
         private String freshName;
-        private int freshPrice;
+        private float freshPrice;
         private String freshPicture;
         private String weight;
         private String packingType;
@@ -137,11 +137,11 @@ public class ResponseQueryProductDetail extends BaseResponseBean implements Seri
             this.freshName = freshName;
         }
 
-        public int getFreshPrice() {
+        public float getFreshPrice() {
             return freshPrice;
         }
 
-        public void setFreshPrice(int freshPrice) {
+        public void setFreshPrice(float freshPrice) {
             this.freshPrice = freshPrice;
         }
 

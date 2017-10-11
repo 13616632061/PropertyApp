@@ -91,6 +91,9 @@ public class LogisticsActivity extends BaseActivity {
     }
 
     private void getLogistics() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         Map<String, Object> maps = new HashMap<>();
         Map<String, Object> map2 = new HashMap<>();
@@ -151,6 +154,9 @@ public class LogisticsActivity extends BaseActivity {
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_ORDER_OTHERTWO, json);
+        }catch (Exception e){
+
+        }
     }
 
     @Override

@@ -144,6 +144,9 @@ public class AuthAreaActivity extends BaseActivity {
     }
 
     private void request() { //获取社区
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("userCommnunityMapping",new Object());
         String jsons=new Gson().toJson(map);
@@ -183,6 +186,9 @@ public class AuthAreaActivity extends BaseActivity {
                 }
             }
         }).getEntityData(this,"/ApiUserCommnunity/Query", jsons);
+        }catch (Exception e){
+
+        }
     }
 
 }

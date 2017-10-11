@@ -126,9 +126,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     private List<ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean>> data=new ArrayList<>();
 
     // TODO: 2017/7/13 订单准备数据
-    private double allPrice;//订单总金额
-    private double backPrice;//优惠券后订单金额
-    private double allFreePrice;//减免金额
+    private float allPrice;//订单总金额
+    private float backPrice;//优惠券后订单金额
+    private float allFreePrice;//减免金额
 
 
     // TODO: 2017/7/18 查询优惠券数据
@@ -137,7 +137,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     private ResponseQueryCouponList queryCouponListbean;
     private String json;
     private ArrayList<Integer> requestList=new ArrayList<>();
-    private double freeMoney=0;
+    private float freeMoney=0;
 
     @Override
     protected int getContentId() {
@@ -157,7 +157,6 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     private void initView() {
         addressInitView = LayoutInflater.from(this).inflate(R.layout.item_firm_order_address_init, null);
         addressNormalView = LayoutInflater.from(this).inflate(R.layout.item_firm_order_address_normal, null);
-         addressInitView.findViewById(R.id.tv_jantou).setVisibility(View.GONE);
         firmOrderAddressLin.removeAllViews();
         firmOrderAddressLin.addView(addressNormalView);
 
@@ -168,6 +167,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
     }
     private void initData(){
+        try {
+
+
         addressBean= new Gson().fromJson(addressBeabean,ResponseQueryAddress.ListShippingAddressBean.class);
         if(type==2){//购物车下单
             if(!TextUtils.isEmpty(shoppingCartData)){
@@ -182,6 +184,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             if(!TextUtils.isEmpty(listfreshBean)){
                 ResponseQueryProductDetail.ListfreshBean freshBean=new Gson().fromJson(listfreshBean,new TypeToken<ResponseQueryProductDetail.ListfreshBean>(){}.getType());
                 ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean bean=new ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean();
+                Log.v("123",freshBean.getFreshPrice()+"---");
                 bean.setQuantity(1);
                 bean.setFresh(new ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean.FreshBean(freshBean.getFreshPicture(),freshBean.getMerchant_ID()));
                 bean.setPrice(freshBean.getFreshPrice());
@@ -196,6 +199,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         initAddress();
         updateShoppingCardPrice();
         queryCouponForYES();
+        }catch (Exception e){
+
+        }
     }
 
     private void initAddress() {
@@ -219,6 +225,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
      * 获取地址信息
      */
     private void getOrderCommit(){
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         Map<String,Object> maps=new HashMap<>();
         maps.put("cabinetID",addressBean.getCabinetID());
@@ -232,9 +241,10 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                     TextView txtName=ButterKnife.findById(addressInitView,R.id.firm_order_item_name);
                     TextView txtNumber=ButterKnife.findById(addressInitView,R.id.firm_order_item_number);
                     TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
+                    TextView name_and_phone = ButterKnife.findById(addressInitView, R.id.name_and_phone);
+                    name_and_phone.setText(addressBean.getHarvesterName()+"  "+addressBean.getHarvestePhone());
                     txtName.setText(bean.getShippingAddress().getFreshCabinet().getCommunityName()+bean.getShippingAddress().getFreshCabinet().getCabinetName());
                     txtAddress.setText(bean.getShippingAddress().getFreshCabinet().getCommunity().getProvinceName()+bean.getShippingAddress().getFreshCabinet().getCommunity().getCityName()+bean.getShippingAddress().getFreshCabinet().getCommunity().getDistrictName()+bean.getShippingAddress().getFreshCabinet().getCommunity().getStreet());
-
                     SpannableString spannable=new SpannableString(bean.getShippingAddress().getFreshCabinet().getUsed()+"/"+bean.getShippingAddress().getFreshCabinet().getNum());
                     spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     txtNumber.setText(spannable);
@@ -262,6 +272,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_ORDER_QUERYCABINET, json);
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -299,6 +312,12 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                     return;
                 }
                 orderCommit();
+                break;
+            case R.id.firm_order_address_lin://选择地址
+                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
+                        .with("source", true)
+                        .requestCode(REQUEST_CODE_ADDRESS)
+                        .go(this);
                 break;
 
         }
@@ -357,6 +376,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
      * 提交订单
      */
     private void orderCommit(){
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         Map<String,Object> maps=new HashMap<>();
         RequestCommitOrderByCart requestCommitOrderByCart= dataFormat();
@@ -373,7 +395,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 if(bean.getStatusCode()==1){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_PAY)
 //                            .with("data",bean)
-                            .with("OrderID",bean.getOrderID())
+                            .with("OrderID",bean.getParentOrderID())
                             .with("orderCode",bean.getOrderCode())
                             .with("price",dataFormat().getOrderPrice())
                             .go(FirmOrderActivity.this);
@@ -402,6 +424,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_ORDER_COMMIT, json);
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -429,6 +454,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 //    }
 
     private void queryCouponForYES(){//获取优惠券数量
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         Map<String,Object> map2=new HashMap<>();
         List<OrderOhterOne.ListDetailBean> listDetailBeen=new ArrayList<>();
@@ -480,7 +508,9 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_COUPON_QUERY_OTHERONE,json);
+        }catch (Exception e){
 
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -504,18 +534,28 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                     TextView txtName=ButterKnife.findById(addressInitView,R.id.firm_order_item_name);
                     TextView txtNumber=ButterKnife.findById(addressInitView,R.id.firm_order_item_number);
                     TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
+                    TextView name_and_phone = ButterKnife.findById(addressInitView, R.id.name_and_phone);
+                    name_and_phone.setText(addressBean.getHarvesterName()+"  "+addressBean.getHarvestePhone());
                     txtName.setText(this.addressBean.getFreshCabinet().getCommunityName()+this.addressBean.getFreshCabinet().getCabinetName());
                     txtAddress.setText(this.addressBean.getFreshCabinet().getCommunity().getProvinceName()+this.addressBean.getFreshCabinet().getCommunity().getCityName()+this.addressBean.getFreshCabinet().getCommunity().getDistrictName()+this.addressBean.getFreshCabinet().getCommunity().getStreet());
 
-                    SpannableString spannable=new SpannableString("11/16");
-                    spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    SpannableString spannable = new SpannableString(addressBean.getFreshCabinet().getUsed() + "/" + addressBean.getFreshCabinet().getNum());
+                    spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     txtNumber.setText(spannable);
 
                 }
             }else if(requestCode==REQUEST_CODE_COUPON){//优惠券列表
                 requestList = data.getIntegerArrayListExtra("data");
                 freeMoney=data.getIntExtra("money",0);
-                backPrice=allPrice-freeMoney;
+                backPrice = allPrice-freeMoney;
+
+//                if (freeMoney>0.0001){
+//
+//                }else {
+//                    backPrice = allPrice;
+//
+//                }
+//                backPrice=allPrice-freeMoney;
                 firmOrderAllMoney.setText("￥" + backPrice);
                 firmOrderPrice.setText("￥" + backPrice);
 
@@ -541,13 +581,23 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     }
 
     private void updateShoppingCardPrice() {
-        double allPrice =   0;
+        float allPrice =   0;
         for (ItemMenu<ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean> bean : data) {
             ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean entity = bean.getData();
             if (!bean.isHeader)
+
                 allPrice += entity.getPrice() * entity.getQuantity();
         }
         backPrice = allPrice-freeMoney;
+
+//        if (freeMoney>0.0001){
+//
+//        }else {
+//            backPrice = allPrice;
+//
+//        }
+        Log.v("asdasd",allPrice+"-----"+freeMoney+"----"+backPrice);
+
         firmOrderAllMoney.setText("￥" + backPrice);
         firmOrderPrice.setText("￥" + backPrice);
         this.allPrice=allPrice;

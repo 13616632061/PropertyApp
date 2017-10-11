@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
 
     <include layout="@layout/base_view_line"></include>
@@ -16,7 +16,7 @@
             <LinearLayout
                 android:id="@+id/lay_list_item_goods"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="75dp"
                 android:background="@color/white"
                 android:paddingLeft="12dp"
                 android:paddingRight="12dp"
@@ -40,7 +40,7 @@
 
                     <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:gravity="center_vertical"
                         android:layout_weight="1">
 
@@ -60,12 +60,20 @@
                             android:layout_alignParentRight="true"
                             android:layout_marginLeft="5dp" />
                     </RelativeLayout>
-
+                    <TextView
+                        android:id="@+id/name_and_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="2dp"
+                        android:maxLines="2"
+                        android:textColor="@color/text_color_title"
+                        android:textSize="12sp" />
                     <!--300g-->
                     <TextView
                         android:id="@+id/address_list_address"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:maxLines="2"
                         android:textColor="@color/text_color_title"
                         android:textSize="12sp"

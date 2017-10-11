@@ -357,6 +357,9 @@ public class MyFragment extends BaseFragment {
     }
 
     private void getShareInfo() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
@@ -394,10 +397,16 @@ public class MyFragment extends BaseFragment {
             public void onAfter() {
             }
         }).getEntityData(getActivity(), HttpURL.HTTP_POST_MY_GETSHARE, json);
+        }catch (Exception e){
+
+        }
     }
 
     //获取订单数量 购物车数量
     private void getShowNumber() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
@@ -465,6 +474,9 @@ public class MyFragment extends BaseFragment {
             public void onAfter() {
             }
         }).getEntityData(getActivity(), HttpURL.HTTP_POST_ORDER_OTHERONE, json);
+        }catch (Exception e){
+
+        }
     }
 
 

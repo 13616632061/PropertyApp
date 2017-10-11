@@ -27,7 +27,10 @@
         <CheckBox
             android:visibility="gone"
             android:id="@+id/iv_button"
-            android:layout_marginRight="11dp"
+            android:paddingRight="11dp"
+            android:gravity="center"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
             android:layout_gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

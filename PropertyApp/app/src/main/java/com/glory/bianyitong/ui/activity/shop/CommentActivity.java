@@ -223,6 +223,9 @@ public class CommentActivity extends BaseActivity implements BaseQuickAdapter.On
     }
 
     private void postComment(){
+        try {
+
+
         commlist = new ArrayList<>();
 //                        listEvaluationPicBeanlist = new ArrayList<>();
         for (int i=0;i<bean.getListOrderDetail().size();i++){
@@ -282,7 +285,9 @@ public class CommentActivity extends BaseActivity implements BaseQuickAdapter.On
 
             }
         }).getEntityData(getApplicationContext(),HttpURL.HTTP_POST_APIFRESHEVALUATION_ADD,json);
+        }catch (Exception e){
 
+        }
     }
 
 
@@ -480,6 +485,7 @@ public class CommentActivity extends BaseActivity implements BaseQuickAdapter.On
 
     // 获取阿里云OSS相关秘钥数据
     public void getOssData() {
+        try{
         String json=new Gson().toJson(new BaseRequestBean().getBaseRequest());
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -526,7 +532,9 @@ public class CommentActivity extends BaseActivity implements BaseQuickAdapter.On
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_GET_ALIYUN,json);
+        }catch (Exception e){
 
+        }
     }
 
     @Override

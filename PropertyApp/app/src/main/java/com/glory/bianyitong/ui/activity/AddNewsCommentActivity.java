@@ -102,6 +102,9 @@ public class AddNewsCommentActivity extends BaseActivity {
     }
 
     private void request(String txt) { //评论
+        try {
+
+
         String customerPhoto = "";
         if (Database.USER_MAP != null && Database.USER_MAP.getCustomerPhoto() != null) {
             customerPhoto = Database.USER_MAP.getCustomerPhoto();
@@ -156,6 +159,9 @@ public class AddNewsCommentActivity extends BaseActivity {
                 }
             }
         }).getEntityData(this,url,json);
+        }catch (Exception e){
+
+        }
     }
 
 }

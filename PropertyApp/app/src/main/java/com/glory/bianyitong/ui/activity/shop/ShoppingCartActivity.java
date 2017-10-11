@@ -33,6 +33,7 @@ import com.glory.bianyitong.bean.GetCouponInfo;
 import com.glory.bianyitong.bean.GodownDetailInfo;
 import com.glory.bianyitong.bean.ShopcartInfo;
 import com.glory.bianyitong.bean.entity.CouponEntry;
+import com.glory.bianyitong.bean.entity.request.RequestCollectionAdd;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingUpDate;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
@@ -41,7 +42,6 @@ import com.glory.bianyitong.bean.entity.response.ResponseShoppingCart;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
-import com.glory.bianyitong.ui.adapter.shop.CouponListAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.glory.bianyitong.ui.adapter.shop.ShopCouponListAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ShoppingCardAdapter;
@@ -164,14 +164,14 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                 if (isEditStatus) {//完成状态
 
                     ivTitleTextRight.setText("完成");
-                    shoppingCartCollection.setVisibility(View.GONE);
-                    shoppingCartTxtYunfei.setVisibility(View.VISIBLE);
+                    shoppingCartCollection.setVisibility(View.VISIBLE);
+                    shoppingCartTxtYunfei.setVisibility(View.GONE);
 
                 } else {//编辑状态
 
                     ivTitleTextRight.setText("编辑");
-                    shoppingCartCollection.setVisibility(View.VISIBLE);
-                    shoppingCartTxtYunfei.setVisibility(View.GONE);
+                    shoppingCartCollection.setVisibility(View.GONE);
+                    shoppingCartTxtYunfei.setVisibility(View.VISIBLE);
 
                 }
 
@@ -180,6 +180,9 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                 break;
 
             case R.id.shopping_cart_collection://收藏
+                if (!isEditStatus) {//删除
+                    addCollection();
+                }
                 break;
 
             case R.id.firm_order_address_lin://选择地址
@@ -195,6 +198,9 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
      * 立即购买时查询商品剩余
      */
     private void godownFind() {//库存大于0时才可以购买
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         final String shops = new Gson().toJson(commitData.values());
         List<GodownDetailInfo.ListDetailBean> list = new ArrayList<>();
@@ -212,7 +218,6 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             public void onSuccess(String s) {
                 ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
                 if (detail.getStatusCode() == 1) {
-                    showShort("结算");
                     if (commitData.size() > 0) {
                         String addressBean = new Gson().toJson(addressBeabean);
 
@@ -249,14 +254,19 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_SHOP_QUERY_GODOWNDETAIL, json);
+        }catch (Exception e){
+
+        }
     }
 
     private void queryAddress() {//默认收货地址
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("shippingAddress", new Object());
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-
             @Override
             public void onSuccess(String s) {
                 ResponseQueryAddress queryAddress = new Gson().fromJson(s, ResponseQueryAddress.class);
@@ -278,6 +288,8 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                             TextView txtName = ButterKnife.findById(addressInitView, R.id.firm_order_item_name);
                             TextView txtNumber = ButterKnife.findById(addressInitView, R.id.firm_order_item_number);
                             TextView txtAddress = ButterKnife.findById(addressInitView, R.id.address_list_address);
+                            TextView name_and_phone = ButterKnife.findById(addressInitView, R.id.name_and_phone);
+                            name_and_phone.setText(addressBeabean.getHarvesterName()+"  "+addressBeabean.getHarvestePhone());
                             txtName.setText(addressBeabean.getFreshCabinet().getCommunityName() + addressBeabean.getFreshCabinet().getCabinetName());
                             txtAddress.setText(addressBeabean.getFreshCabinet().getCommunity().getProvinceName() + addressBeabean.getFreshCabinet().getCommunity().getCityName() + addressBeabean.getFreshCabinet().getCommunity().getDistrictName() + addressBeabean.getFreshCabinet().getCommunity().getStreet());
                             SpannableString spannable = new SpannableString(addressBeabean.getFreshCabinet().getUsed() + "/" + addressBeabean.getFreshCabinet().getNum());
@@ -313,7 +325,9 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+        }catch (Exception e){
 
+        }
     }
 
     @Override
@@ -329,6 +343,8 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                     TextView txtName = ButterKnife.findById(addressInitView, R.id.firm_order_item_name);
                     TextView txtNumber = ButterKnife.findById(addressInitView, R.id.firm_order_item_number);
                     TextView txtAddress = ButterKnife.findById(addressInitView, R.id.address_list_address);
+                    TextView name_and_phone = ButterKnife.findById(addressInitView, R.id.name_and_phone);
+                    name_and_phone.setText(addressBeabean.getHarvesterName()+"  "+addressBeabean.getHarvestePhone());
                     txtName.setText(this.addressBeabean.getFreshCabinet().getCommunityName() + this.addressBeabean.getFreshCabinet().getCabinetName());
                     txtAddress.setText(this.addressBeabean.getFreshCabinet().getCommunity().getProvinceName() + this.addressBeabean.getFreshCabinet().getCommunity().getCityName() + this.addressBeabean.getFreshCabinet().getCommunity().getDistrictName() + this.addressBeabean.getFreshCabinet().getCommunity().getStreet());
 
@@ -363,6 +379,9 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
      * 查询购物车
      */
     private void queryShoppingCart() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("cabinetID", addressBeabean.getCabinetID());
         String json = new Gson().toJson(map);
@@ -414,6 +433,9 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_QUERY, json);
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -429,6 +451,14 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
                 break;
             case R.id.item_fr_couponlist_btn:
                 getCoupon(position);
+                break;
+            case R.id.iv_list_item_goods_pic:
+            case R.id.all_money_and_other:
+                ResponseSearchFresh.ListfreshBean product=new ResponseSearchFresh.ListfreshBean();
+                product.setFreshID(data.get(position).getData().getFreshID());
+                Router.build(RouterMapping.ROUTER_ACTIVITY_PRODUCT_DETAIL)
+                        .with("data", product)
+                        .go(this);
                 break;
         }
 
@@ -572,6 +602,9 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
      * @param num
      */
     private void upDateShoppingCart(final int position, final int num) {
+        try {
+
+
         int cartId = data.get(position).getData().getCartID();
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("shoppingCart", new RequestShoppingUpDate(cartId, num));
@@ -610,14 +643,67 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_EDIT, json);
-    }
+        }catch (Exception e){
 
+        }
+    }
+    /**
+     * 添加收藏
+     */
+    private void addCollection() {
+        try{
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            List<RequestCollectionAdd> list = new ArrayList<>();
+            for (Integer i : commitData.keySet()) {
+                if (!commitData.get(i).isHeader){
+                    list.add(new RequestCollectionAdd(commitData.get(i).getData().getFreshID(), commitData.get(i).getData().getFresh().getFreshTypeID()));
+                }
+            }
+            map.put("listCollection", list);
+            String json = new Gson().toJson(map);
+                OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                    @Override
+                    public void onSuccess(String s) {
+                        BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
+                        if (bean.getStatusCode() == 1) {
+
+//                            onRefresh();
+                        }
+                        showShort(bean.getAlertMessage());
+                    }
+
+                    @Override
+                    public void onError() {
+
+                    }
+
+                    @Override
+                    public void parseError() {
+
+                    }
+
+                    @Override
+                    public void onBefore() {
+
+                    }
+
+                    @Override
+                    public void onAfter() {
+
+                    }
+                }).getEntityData(this, HttpURL.HTTP_POST_COLLECTION_ADD, json);
+        }catch (Exception e){
+
+        }
+    }
     /**
      * 删除购物车
      *
      * @param position
      */
     private void removeShoppingCard(final int position) {
+        try {
+
 
         List<Integer> listCartID = new ArrayList<>();
 
@@ -675,6 +761,9 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_DELETE, json);
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -710,10 +799,6 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-        ResponseSearchFresh.ListfreshBean product=new ResponseSearchFresh.ListfreshBean();
-        product.setFreshID(data.get(position).getData().getFreshID());
-        Router.build(RouterMapping.ROUTER_ACTIVITY_PRODUCT_DETAIL)
-                .with("data", product)
-                .go(this);
+
     }
 }

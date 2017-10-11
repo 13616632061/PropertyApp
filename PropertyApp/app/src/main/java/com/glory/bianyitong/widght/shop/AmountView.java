@@ -87,8 +87,10 @@ public class AmountView extends LinearLayout implements View.OnClickListener, Te
                 amount--;
                 etAmount.setText(amount + "");
                 if (amount==0){
-                    etAmount.setVisibility(GONE);
-                    btnDecrease.setVisibility(GONE);
+                    amount=1;
+
+//                    etAmount.setVisibility(GONE);
+//                    btnDecrease.setVisibility(GONE);
                 }
             }
         } else if (i == R.id.btnIncrease) {

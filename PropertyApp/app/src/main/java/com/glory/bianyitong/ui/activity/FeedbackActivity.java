@@ -83,6 +83,9 @@ public class FeedbackActivity extends BaseActivity {
 
     //保存
     private void save(final String feed) {
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("feeback",new FeedBack(feed));
         String json=new Gson().toJson(map);
@@ -119,6 +122,9 @@ public class FeedbackActivity extends BaseActivity {
                 }
             }
         }).getEntityData(this,HttpURL.HTTP_POST_FEEDBACK_ADD,json);
+        }catch (Exception e){
+
+        }
     }
 
 }

@@ -93,6 +93,9 @@ public class AllEvaluationActivity extends BaseActivity implements RadioGroup.On
     }
 
     private void onRefrush() {
+        try {
+
+
         data.clear();
         adapter.notifyDataSetChanged();
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
@@ -138,6 +141,9 @@ public class AllEvaluationActivity extends BaseActivity implements RadioGroup.On
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_EVALUATION_QUERY, json);
+        }catch (Exception e){
+
+        }
     }
 
     @Override

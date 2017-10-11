@@ -23,6 +23,7 @@ import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.util.ToastUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -46,6 +47,8 @@ public class UpdateDescribeActivity extends BaseActivity {
 
     @InjectParam(key = "desc")
     String describe;
+    @InjectParam(key = "loginname")
+    String loginname;
     private ProgressDialog progressDialog = null;
 
     @Override
@@ -86,9 +89,12 @@ public class UpdateDescribeActivity extends BaseActivity {
 
     //保存
     private void save(final String desc) {
-
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("user",new RequestUserBean(desc));
+        Map<String,Object> map2=new HashMap<>();
+        map2.put("userName",desc);
+        map2.put("loginName",loginname);
+        map.put("user",map2);
+//        map.put("user",new RequestUserBean(desc));
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override

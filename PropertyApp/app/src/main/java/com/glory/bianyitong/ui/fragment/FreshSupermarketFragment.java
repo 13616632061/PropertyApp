@@ -133,7 +133,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     private final int REQUEST_CODE_ADDRESS = 100;//选择地址
     private double latitude;
     private double longitude;
-    private boolean isOne = false;
+    private boolean isOne = true;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -221,6 +221,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                 typeAdapter.setPosition(position);
                 if (typeData.size() > 1) {
                     if (position == 0) {
+                        isOne=false;
                         isAll = true;
                         typeFreshLeafID = 99;
                         shopData.clear();
@@ -265,6 +266,9 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     }
 
     private void typeGo(double latitude, double longitude) {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         Map<String, Object> freshMap = new HashMap<>();
         freshMap.put("cabinetID", cabinetID);//默认为0
@@ -319,6 +323,9 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
             }
         }).getEntityData(getActivity(), HttpURL.HTTP_POST_SHOP_QUERY_TTPE_RIGHT, json);
+        }catch (Exception e){
+
+        }
     }
 
     //左侧列表弹出窗口
@@ -341,6 +348,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                     if (bean != null)
                         freshTypeID = bean.getData().getFreshTypeID();
                     shopData.clear();
+                    isOne=false;
                     if (position == 0) {
                         typeFreshLeafID = twoTypeFreshLeafID;
                         isAll = true;
@@ -541,6 +549,9 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
      * 查询二级分类
      */
     private void queryFreshTypeTwo(final int position) {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
 
         map.put("freshType", new RequestFreshType(twoTypeFreshLeafID, twoTypeMerchantId));
@@ -587,6 +598,9 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
             }
         }).getEntityData(getActivity(), HttpURL.HTTP_POST_FRESH_TYPE, json);
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -594,19 +608,28 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
      * 查询商品列表
      */
     private void getShopList() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         String url;
         url = HttpURL.HTTP_POST_FRESH_QUERY_DETAIL;
         map.put("currentPageNumber", currentPageNumber);
         map.put("cabinetID", cabinetID);
-        if (isAll) {
+        if (isOne){//第一次进入显示全部
             Map<String, Object> map2 = new HashMap<>();
-            map2.put("orderBy", "");
-            map2.put("freshLeafID", typeFreshLeafID);
             map.put("fresh", map2);
-        } else {
-            map.put("fresh", new RequestProductList(freshTypeID, orderBy, twoTypeMerchantId));
+        }else {
+            if (isAll) {
+                Map<String, Object> map2 = new HashMap<>();
+                map2.put("orderBy", "");
+                map2.put("freshLeafID", typeFreshLeafID);
+                map.put("fresh", map2);
+            } else {
+                map.put("fresh", new RequestProductList(freshTypeID, orderBy, twoTypeMerchantId));
+            }
         }
+
 
 
         String json = new Gson().toJson(map);
@@ -669,6 +692,9 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
             }
         }).getEntityData(getActivity(), url, json);
+        }catch (Exception e){
+
+        }
     }
 
 
@@ -678,6 +704,9 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
      * @param bdLocation
      */
     private void getMyLocal(BDLocation bdLocation) {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("longitude", bdLocation.getLongitude());
         map.put("latitude", bdLocation.getLatitude());
@@ -715,7 +744,9 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
             }
         }).getEntityData(getActivity(), HttpURL.HTTP_POST_MY_LOCAL, json);
+        }catch (Exception e){
 
+        }
     }
 
 
@@ -766,11 +797,13 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                 ResponseQueryAddress.ListShippingAddressBean addressBean = (ResponseQueryAddress.ListShippingAddressBean) data.getSerializableExtra("data");
                 if (addressBean != null) {
                     typeData.clear();
+                    isOne=true;
+                    typeAdapter.setPosition(-1);
                     cabinetID = addressBean.getCabinetID();
                     latitude = addressBean.getFreshCabinet().getCommunity().getLatitude();
                     longitude = addressBean.getFreshCabinet().getCommunity().getLongitude();
                     typeGo(addressBean.getFreshCabinet().getCommunity().getLatitude(), addressBean.getFreshCabinet().getCommunity().getLongitude());
-                    onRefresh();
+//                    onRefresh();
 
                 }
             }

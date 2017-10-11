@@ -90,7 +90,7 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
             private int cartID;
             private int freshID;
             private int quantity;
-            private double price;
+            private float price;
             private FreshBean fresh;
             private boolean isvalid;
 
@@ -118,11 +118,11 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
                 this.quantity = quantity;
             }
 
-            public double getPrice() {
+            public float getPrice() {
                 return price;
             }
 
-            public void setPrice(double price) {
+            public void setPrice(float price) {
                 this.price = price;
             }
 

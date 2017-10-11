@@ -132,7 +132,7 @@ public class RefundInfo {
             private String freshTypeName;
             private String freshTypeLeaf;
             private String freshName;
-            private int freshPrice;
+            private float freshPrice;
             private String freshPicture;
             private String originName;
             private int merchant_ID;
@@ -184,11 +184,11 @@ public class RefundInfo {
                 this.freshName = freshName;
             }
 
-            public int getFreshPrice() {
+            public float getFreshPrice() {
                 return freshPrice;
             }
 
-            public void setFreshPrice(int freshPrice) {
+            public void setFreshPrice(float freshPrice) {
                 this.freshPrice = freshPrice;
             }
 

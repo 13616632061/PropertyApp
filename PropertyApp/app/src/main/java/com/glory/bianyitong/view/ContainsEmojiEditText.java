@@ -89,25 +89,25 @@ public class ContainsEmojiEditText extends EditText {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!resetText) {
-                    if (count >= 2) {//表情符号的字符长度最小为2
-                        CharSequence input = s.subSequence(cursorPos, cursorPos + count);
-                        if (containsEmoji(input.toString())) {
-                            resetText = true;
-//                            Toast.makeText(mContext, "不支持输入Emoji表情符号", Toast.LENGTH_SHORT).show();
-                            ToastUtils.showToast(mContext,mContext.getString(R.string.does_not_support_entering_emoji_emoticons));
-                            //是表情符号就将文本还原为输入表情符号之前的内容
-                            setText(inputAfterText);
-                            CharSequence text = getText();
-                            if (text instanceof Spannable) {
-                                Spannable spanText = (Spannable) text;
-                                Selection.setSelection(spanText, text.length());
-                            }
-                        }
-                    }
-                } else {
-                    resetText = false;
-                }
+//                if (!resetText) {
+//                    if (count >= 2) {//表情符号的字符长度最小为2
+//                        CharSequence input = s.subSequence(0, cursorPos + count);
+//                        if (containsEmoji(input.toString())) {
+//                            resetText = true;
+////                            Toast.makeText(mContext, "不支持输入Emoji表情符号", Toast.LENGTH_SHORT).show();
+//                            ToastUtils.showToast(mContext,mContext.getString(R.string.does_not_support_entering_emoji_emoticons));
+//                            //是表情符号就将文本还原为输入表情符号之前的内容
+//                            setText(inputAfterText);
+//                            CharSequence text = getText();
+//                            if (text instanceof Spannable) {
+//                                Spannable spanText = (Spannable) text;
+//                                Selection.setSelection(spanText, text.length());
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    resetText = false;
+//                }
             }
 
             @Override

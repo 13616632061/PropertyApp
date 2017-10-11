@@ -14,13 +14,13 @@
         android:layout_height="wrap_content"
         android:background="@color/white">
 
-        <com.glory.bianyitong.view.ContainsEmojiEditText
+        <EditText
             android:id="@+id/et_describe"
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:background="@null"
             android:gravity="top"
-            android:hint="@string/input_describe"
+            android:hint="姓名"
             android:maxLength="25"
             android:padding="12dp"
             android:textSize="15sp" />

@@ -388,6 +388,8 @@ public class DynamicDetailsActivity extends BaseActivity {
      * @param isrefresh
      */
     private void request(final boolean isrefresh) { //获取近邻详情
+        try {
+
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("neighborhood",new RequestNeighborhood(neighborhoodid));
@@ -427,6 +429,9 @@ public class DynamicDetailsActivity extends BaseActivity {
                 }
             }
         }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_DETAIL,json);
+        }catch (Exception e){
+
+        }
     }
 
     /**
@@ -435,6 +440,9 @@ public class DynamicDetailsActivity extends BaseActivity {
      * @param commentToID
      */
     private void request_like(int neighborhoodID, int commentToID) { //点赞
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("neighborhoodLike",new RequestNeighborhoodComment(neighborhoodID,Database.USER_MAP.getCustomerPhoto(),commentToID));
         String json=new Gson().toJson(map);
@@ -463,10 +471,14 @@ public class DynamicDetailsActivity extends BaseActivity {
                 lay_like_dy.setClickable(true);
             }
         }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_LIKE,json);
+        }catch (Exception e){
 
+        }
     }
 
     private void request_like_cancel(int neighborhoodLikeID) { //取消点赞
+        try {
+
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("neighborhoodLike",new RequestNeighborhoodLike(neighborhoodLikeID));
@@ -499,9 +511,15 @@ public class DynamicDetailsActivity extends BaseActivity {
                 lay_like_dy.setClickable(true);
             }
         }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_LIKE_CANCEL,json);
+        }catch (Exception e){
+
+        }
     }
 
     private void reports(int reportType, int reportID, String reportUserID, String reportUserName, String publisherID) {
+        try {
+
+
         //reportType 举报类型：1近邻2近邻评论3新闻评论
         //reportID 举报ID(近邻id或评论id)
         //reportUserID 举报人ID（默认0）
@@ -527,6 +545,9 @@ public class DynamicDetailsActivity extends BaseActivity {
             @Override
             public void onAfter() { }
         }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_COMMENT_REPORT, json);
+        }catch (Exception e){
+
+        }
     }
 
 }

@@ -10,7 +10,7 @@
 
     <include layout="@layout/base_view_line"></include>
 
-    <com.glory.bianyitong.view.ContainsEmojiEditText
+    <EditText
         android:id="@+id/et_nickname"
         android:layout_width="match_parent"
         android:layout_height="100dp"

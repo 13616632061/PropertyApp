@@ -94,11 +94,11 @@ public class OrderDetailsInfo {
         private int orderID;
         private String orderCode;
         private String orderTime;
-        private int orderPrice;
+        private float orderPrice;
         private int freight;
         private int couponReceiveID;
         private int appId;
-        private int orderPaidPrice;
+        private float orderPaidPrice;
         private String address;
         private String realName;
         private String mobileNumber;
@@ -108,6 +108,15 @@ public class OrderDetailsInfo {
         private int cartNum;
         private String endOrderTime;
         private List<ListOrderDetailBean> listOrderDetail;
+        private String orderStatusExplain;
+
+        public String getOrderStatusExplain() {
+            return orderStatusExplain;
+        }
+
+        public void setOrderStatusExplain(String orderStatusExplain) {
+            this.orderStatusExplain = orderStatusExplain;
+        }
 
         public String getEndOrderTime() {
             return endOrderTime;
@@ -141,11 +150,11 @@ public class OrderDetailsInfo {
             this.orderTime = orderTime;
         }
 
-        public int getOrderPrice() {
+        public float getOrderPrice() {
             return orderPrice;
         }
 
-        public void setOrderPrice(int orderPrice) {
+        public void setOrderPrice(float orderPrice) {
             this.orderPrice = orderPrice;
         }
 
@@ -173,11 +182,11 @@ public class OrderDetailsInfo {
             this.appId = appId;
         }
 
-        public int getOrderPaidPrice() {
+        public float getOrderPaidPrice() {
             return orderPaidPrice;
         }
 
-        public void setOrderPaidPrice(int orderPaidPrice) {
+        public void setOrderPaidPrice(float orderPaidPrice) {
             this.orderPaidPrice = orderPaidPrice;
         }
 
@@ -417,8 +426,8 @@ public class OrderDetailsInfo {
             private int orderID;
             private int freshID;
             private int freshQuantity;
-            private int price;
-            private int totalPrice;
+            private float price;
+            private float totalPrice;
             private int merchentID;
             private int freshScanNum;
             private String freshName;
@@ -426,6 +435,15 @@ public class OrderDetailsInfo {
             private String freshTypeName;
             private FreshBean fresh;
             private int qualityID;
+            private String orderStatusExplain;
+
+            public String getOrderStatusExplain() {
+                return orderStatusExplain;
+            }
+
+            public void setOrderStatusExplain(String orderStatusExplain) {
+                this.orderStatusExplain = orderStatusExplain;
+            }
 
             public int getQualityID() {
                 return qualityID;
@@ -467,19 +485,19 @@ public class OrderDetailsInfo {
                 this.freshQuantity = freshQuantity;
             }
 
-            public int getPrice() {
+            public float getPrice() {
                 return price;
             }
 
-            public void setPrice(int price) {
+            public void setPrice(float price) {
                 this.price = price;
             }
 
-            public int getTotalPrice() {
+            public float getTotalPrice() {
                 return totalPrice;
             }
 
-            public void setTotalPrice(int totalPrice) {
+            public void setTotalPrice(float totalPrice) {
                 this.totalPrice = totalPrice;
             }
 
@@ -549,7 +567,7 @@ public class OrderDetailsInfo {
                 private int freshID;
                 private String freshTypeLeaf;
                 private String freshName;
-                private int freshPrice;
+                private float freshPrice;
                 private String freshPicture;
                 private Object isDelete;
                 private Object godownNumber;
@@ -582,11 +600,11 @@ public class OrderDetailsInfo {
                     this.freshName = freshName;
                 }
 
-                public int getFreshPrice() {
+                public float getFreshPrice() {
                     return freshPrice;
                 }
 
-                public void setFreshPrice(int freshPrice) {
+                public void setFreshPrice(float freshPrice) {
                     this.freshPrice = freshPrice;
                 }
 

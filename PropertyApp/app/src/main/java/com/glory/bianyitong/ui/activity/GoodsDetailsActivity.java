@@ -35,6 +35,7 @@ import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.GodownDetailInfo;
+import com.glory.bianyitong.bean.OrderNumberInfo;
 import com.glory.bianyitong.bean.entity.request.RequestCollectionAdd;
 import com.glory.bianyitong.bean.entity.request.RequestProductDetail;
 import com.glory.bianyitong.bean.entity.request.RequestShoppingCartAdd;
@@ -49,6 +50,7 @@ import com.glory.bianyitong.ui.adapter.CommentPicAdapter;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.NetworkImageHolderView;
 import com.glory.bianyitong.util.SharedUtil;
+import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.widght.CircleImageView;
 import com.glory.bianyitong.widght.convenientbanner.ConvenientBanner;
 import com.glory.bianyitong.widght.convenientbanner.holder.CBViewHolderCreator;
@@ -114,10 +116,6 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
     Button detailAddshoppingPayproduct;
     @BindView(R.id.iv_title_text_left)
     TextView ivTitleTextLeft;
-    @BindView(R.id.title_ac_text)
-    TextView titleAcText;
-    @BindView(R.id.iv_title_text_right)
-    TextView ivTitleTextRight;
     @BindView(R.id.total_evaluation)
     TextView totalEvaluation;
     @BindView(R.id.tv_percentage)
@@ -138,6 +136,16 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
     LinearLayout pingjia;
     @BindView(R.id.fresh_content)
     TextView freshContent;
+    @BindView(R.id.iv_title_back)
+    ImageView ivTitleBack;
+    @BindView(R.id.iv_title_text_left2)
+    TextView ivTitleTextLeft2;
+    @BindView(R.id.iv_title_right)
+    ImageView ivTitleRight;
+    @BindView(R.id.tv_cart_number)
+    TextView tvCartNumber;
+    @BindView(R.id.title_ac_text)
+    TextView titleAcText;
 
     private String[] images;
     private List<String> imageList = new ArrayList<String>();
@@ -161,7 +169,8 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
     protected void init() {
         super.init();
         Router.injectParams(this);
-        inintTitle(getString(R.string.product_details), true, "");//商品详情
+//        inintTitle(getString(R.string.product_details), true, "");//商品详情
+        titleAcText.setText(getString(R.string.product_details));
         left_return_btn.setOnClickListener(new View.OnClickListener() { //返回
             @Override
             public void onClick(View view) {
@@ -180,44 +189,44 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 //        tv_goods_price.setText("¥ " + product.getFreshPrice());//商品价格
 //        tv_quick_deliver_goods.setText(product.getFreshTypeName());
 //        tv_goods_weight.setText(product.getWeight() + "g");//净含量
+        getShowNumber();
         requestProductDetail(product.getFreshID());
     }
 
-    @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct, R.id.tv_look_all})
+    @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct, R.id.tv_look_all, R.id.iv_title_right})
     void onClickBtn(View view) {
         if (!SharedUtil.getBoolean("login")) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
         } else {
 
             switch (view.getId()) {
+                case R.id.iv_title_right:
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
+                            .go(this);
+                    break;
                 case R.id.detail_kefu://客服
                     break;
                 case R.id.detail_shoucang://收藏
-                    if (enable) {
-                        if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
-                            if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
-                                if (productDetail.isCollectionStatu()) {
-                                    deleteCollection();
-                                } else {
-                                    addCollection();
-                                }
+                    if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
+                        if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
+                            if (productDetail.isCollectionStatu()) {
+                                deleteCollection();
                             } else {
-                                showShort("数据异常,请返回重试");
+                                addCollection();
                             }
                         } else {
-                            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
-                                    .go(this, this);
+                            showShort("数据异常,请返回重试");
                         }
-
                     } else {
-                        showShort("该商品已下架");
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                                .go(this, this);
                     }
-
                     break;
                 case R.id.detail_addshopping_cart://加入购物车
                     if (!(Database.USER_MAP == null || Database.USER_MAP.getUserID() == null)) {
                         if (!(productDetail == null || productDetail.getFreshID() <= 0)) {
                             addShoppingCart();
+                            getShowNumber();
                         } else {
                             showShort("数据异常,请返回重试");
                         }
@@ -246,6 +255,9 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
      * 立即购买时查询商品剩余
      */
     private void godownFind() {//库存大于0时才可以购买
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         List<GodownDetailInfo.ListDetailBean> list = new ArrayList<>();
         list.add(new GodownDetailInfo.ListDetailBean(productDetail.getFreshID(), 1));
@@ -292,6 +304,9 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_SHOP_QUERY_GODOWNDETAIL, json);
+        }catch (Exception e){
+
+        }
     }
 
     /**
@@ -353,6 +368,52 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
             detailShoucangImage.setImageResource(R.mipmap.shoucang);
         } else {
             detailShoucangImage.setImageResource(R.mipmap.icon_collection_normal);
+        }
+    }
+
+    //获取订单数量 购物车数量
+    private void getShowNumber() {
+        try {
+
+
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                if (TextUtil.isEmpty(s)) {
+                    showShort("系统异常");
+                    return;
+                }
+                OrderNumberInfo share = new Gson().fromJson(s, OrderNumberInfo.class);
+                if (share.getStatusCode() == 1) {
+                    tvCartNumber.setText(share.getOrder().getCartNum() + "");
+                    if (share.getOrder().getCartNum() == 0) {
+                        tvCartNumber.setVisibility(View.GONE);
+                    }
+                } else {
+                    tvCartNumber.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void onError() {
+            }
+
+            @Override
+            public void parseError() {
+            }
+
+            @Override
+            public void onBefore() {
+            }
+
+            @Override
+            public void onAfter() {
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_ORDER_OTHERONE, json);
+        }catch (Exception e){
+
         }
     }
 
@@ -499,6 +560,9 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
      * 添加购物车
      */
     private void addShoppingCart() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("shoppingCart", new RequestShoppingCartAdd(productDetail.getFreshID(), productDetail.getFreshTypeID(), 1, productDetail.getFreshPrice()));
         String json = new Gson().toJson(map);
@@ -531,12 +595,18 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_ADD, json);
+        }catch (Exception e){
+
+        }
     }
 
     /**
      * 添加收藏
      */
     private void addCollection() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         List<RequestCollectionAdd> list = new ArrayList<>();
         list.add(new RequestCollectionAdd(productDetail.getFreshID(), productDetail.getFreshTypeID()));
@@ -573,12 +643,18 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_COLLECTION_ADD, json);
+        }catch (Exception e){
+
+        }
     }
 
     /**
      * //默认收货地址
      */
     private void queryAddress() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("shippingAddress", new Object());
         String json = new Gson().toJson(map);
@@ -627,13 +703,18 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+        }catch (Exception e){
 
+        }
     }
 
     /**
      * 取消收藏
      */
     private void deleteCollection() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         List<Integer> freshId = new ArrayList<>();
         freshId.add(productDetail.getFreshID());
@@ -671,6 +752,9 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_COLLECTION_DELETE, json);
+        }catch (Exception e){
+
+        }
     }
 
     private void load(String html) {

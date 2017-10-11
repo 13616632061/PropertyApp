@@ -264,6 +264,7 @@ public class PersonalDataActivity extends BaseActivity {
             case R.id.rl_name://真实姓名
                 Router.build(RouterMapping.ROUTER_ACTIVITY_MY_UPDATE_DESC)
                         .with("desc", tvPersonalName.getText())
+                        .with("loginname",text_nickname.getText())
                         .go(this);
 //                Intent intent2 = new Intent(PersonalDataActivity.this, UpdateDescribeActivity.class);
 //                intent2.putExtra("desc", tv_personal_desc.getText());

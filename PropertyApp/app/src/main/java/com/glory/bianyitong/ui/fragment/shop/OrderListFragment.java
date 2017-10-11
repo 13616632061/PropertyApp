@@ -95,6 +95,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 
 
     private void requestOrderList(int orderStatus){
+
         String json;
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("currentPageNumber",currentPageNumber);
@@ -105,87 +106,92 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
             json=new Gson().toJson(map);
 //        }
 
-
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-
-
-            @Override
-            public void onSuccess(String s) {
-                orderListFrRefresh.setRefreshing(false);
-                entity = new Gson().fromJson(s,ResponseQueryOrderList.class);
-                if(entity.getStatusCode()==1){
-                    for (ResponseQueryOrderList.ListOrderBean listBean: entity.getList_Order()) {
-                        MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemViewTitle = new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.TITLE,listBean.getMerchant_Name(),getStatusName(listBean.getOrderStatus()));
-                        listOrderDetailBeanMultiItemViewTitle.setOrderId(listBean.getOrderID());
-                        listOrderDetailBeanMultiItemViewTitle.setOrderPaidPrice( listBean.getOrderPaidPrice());
-                        listOrderDetailBeanMultiItemViewTitle.setOrderCode(Long.parseLong(listBean.getOrderCode()));
-                        data.add(listOrderDetailBeanMultiItemViewTitle);
-                        for (ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean bean:listBean.getListOrderDetail()
-                             ) {
-                            MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.BODY, bean, listBean.getOrderStatus());
-                            listOrderDetailBeanMultiItemView.getData().setOrderID(listBean.getOrderID());
-                            listOrderDetailBeanMultiItemView.getData().setOrderPaidPrice((double) listBean.getOrderPaidPrice());
-                            listOrderDetailBeanMultiItemView.getData().setOrderCode(Long.parseLong(listBean.getOrderCode()));
+        try {
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    orderListFrRefresh.setRefreshing(false);
+                    entity = new Gson().fromJson(s,ResponseQueryOrderList.class);
+                    if(entity.getStatusCode()==1){
+                        for (ResponseQueryOrderList.ListOrderBean listBean: entity.getList_Order()) {
+                            MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemViewTitle = new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.TITLE,listBean.getMerchant_Name(),listBean.getOrderStatusExplain());
+                            listOrderDetailBeanMultiItemViewTitle.setOrderId(listBean.getOrderID());
+                            listOrderDetailBeanMultiItemViewTitle.setParentOrderID(listBean.getParentOrderID());
+                            listOrderDetailBeanMultiItemViewTitle.setOrderPaidPrice( listBean.getOrderPaidPrice());
+                            listOrderDetailBeanMultiItemViewTitle.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                            data.add(listOrderDetailBeanMultiItemViewTitle);
+                            for (ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean bean:listBean.getListOrderDetail()
+                                    ) {
+                                MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.BODY, bean, listBean.getOrderStatus());
+                                listOrderDetailBeanMultiItemView.getData().setOrderID(listBean.getOrderID());
+                                listOrderDetailBeanMultiItemView.getData().setOrderPaidPrice((double) listBean.getOrderPaidPrice());
+                                listOrderDetailBeanMultiItemView.getData().setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                                listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
+                                listOrderDetailBeanMultiItemView.setParentOrderID(listBean.getParentOrderID());
+                                listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
+                                listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                                data.add(listOrderDetailBeanMultiItemView);
+                            }
+                            MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.FOOTER);
+                            listOrderDetailBeanMultiItemView.setCartNum(listBean.getCartNum());
+                            listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
+                            listOrderDetailBeanMultiItemView.setFreight(listBean.getFreight());
                             listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
+                            listOrderDetailBeanMultiItemView.setParentOrderID(listBean.getParentOrderID());
                             listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
                             listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
                             data.add(listOrderDetailBeanMultiItemView);
+
+                            setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID(),listBean.getOrderPrice(),listBean);//添加操作菜单
                         }
-                        MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.FOOTER);
-                        listOrderDetailBeanMultiItemView.setCartNum(listBean.getCartNum());
-                        listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
-                        listOrderDetailBeanMultiItemView.setFreight(listBean.getFreight());
-                        listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
-                        listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
-                        listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
-                        data.add(listOrderDetailBeanMultiItemView);
+                        adapter.notifyDataSetChanged();
+                        if(currentPageNumber< entity.getPageRowNumber()){
+                            adapter.setEnableLoadMore(true);
+                            adapter.loadMoreComplete();
+                        }else {
+                            adapter.setEnableLoadMore(false);
+                            adapter.loadMoreEnd();
+                        }
 
-                        setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID(),listBean.getOrderPrice(),listBean);//添加操作菜单
-                    }
-                    adapter.notifyDataSetChanged();
-                    if(currentPageNumber< entity.getPageRowNumber()){
-                        adapter.setEnableLoadMore(true);
-                        adapter.loadMoreComplete();
-                    }else {
-                        adapter.setEnableLoadMore(false);
-                        adapter.loadMoreEnd();
-                    }
-
-                }else if(entity.getStatusCode()==2){
-                    if(data.size()<=0)
-                        adapter.setEmptyView(R.layout.layout_empty_orderlist);
-                    else {
-                        adapter.loadMoreEnd();
-                    }
+                    }else if(entity.getStatusCode()==2){
+                        if(data.size()<=0)
+                            adapter.setEmptyView(R.layout.layout_empty_orderlist);
+                        else {
+                            adapter.loadMoreEnd();
+                        }
 
 //                    ToastUtils.showToast(getActivity(),entity.getAlertMessage());
-                }else{
-                    ToastUtils.showToast(getActivity(), entity.getAlertMessage());
+                    }else{
+                        ToastUtils.showToast(getActivity(), entity.getAlertMessage());
+                    }
+
                 }
 
-            }
+                @Override
+                public void onError() {
+                    orderListFrRefresh.setRefreshing(false);
+                    ToastUtils.showToast(getActivity(),getString(R.string.system_error));
+                }
 
-            @Override
-            public void onError() {
-                orderListFrRefresh.setRefreshing(false);
-                ToastUtils.showToast(getActivity(),getString(R.string.system_error));
-            }
+                @Override
+                public void parseError() {
 
-            @Override
-            public void parseError() {
+                }
 
-            }
+                @Override
+                public void onBefore() {
 
-            @Override
-            public void onBefore() {
+                }
 
-            }
+                @Override
+                public void onAfter() {
 
-            @Override
-            public void onAfter() {
+                }
+            }).getEntityData(getActivity(),HttpURL.HTTP_POST_ORDER_QUERY,json);
+        }catch (Exception e){
 
-            }
-        }).getEntityData(getActivity(),HttpURL.HTTP_POST_ORDER_QUERY,json);
+        }
+
     }
 
     /**
@@ -229,6 +235,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
         }
         MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemViewFoot= new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(viewType,msg1,msg2,status,orderId,price,bean);
         listOrderDetailBeanMultiItemViewFoot.setOrderId(bean.getOrderID());
+        listOrderDetailBeanMultiItemViewFoot.setParentOrderID(bean.getParentOrderID());
         listOrderDetailBeanMultiItemViewFoot.setOrderPaidPrice((float) bean.getOrderPaidPrice());
         listOrderDetailBeanMultiItemViewFoot.setOrderCode(Long.parseLong(bean.getOrderCode()));
         data.add(listOrderDetailBeanMultiItemViewFoot);
@@ -330,9 +337,9 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                 if (btnType==1){//
 //                    if(showDialog("确认付款 "+data.get(position).getOrdeId()))
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_PAY)
-                            .with("OrderID",data.get(position).getOrderId())
+                            .with("OrderID",data.get(position).getParentOrderID())
                             .with("orderCode",data.get(position).getOrderCode())
-                            .with("price",(double)data.get(position).getOrderPaidPrice())
+                            .with("price",(float)data.get(position).getOrderPaidPrice())
                             .go(getActivity());
 //                    Log.i("orderCode",entity.getList_Order().get(position).getOrderCode()+"---"+entity.getList_Order().get(position).getOrderPrice());
                 }else {
@@ -401,6 +408,9 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
      * @param status
      */
     private void operationProduct(long orderId,int status){
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("entityOrder",new RequestOrderOperation(new RequestOrderOperation.OrderStatus(status,orderId)));
         String json=new Gson().toJson(map);
@@ -436,6 +446,9 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 
             }
         }).getEntityData(getActivity(),HttpURL.HTTP_POST_ORDER_EDIT,json);
+        }catch (Exception e){
+
+        }
     }
 
     /**
@@ -443,6 +456,9 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
      * @param orderId
      */
     private void deleteOrder(long orderId){
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("entityOrder",new RequestOrderOperation(new RequestOrderOperation.OrderStatus(orderType,orderId)));
         String json=new GsonBuilder().addSerializationExclusionStrategy(new FilterExclusionStrategy("orderStatus")).create().toJson(map);
@@ -477,6 +493,9 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 
             }
         }).getEntityData(getActivity(),HttpURL.HTTP_POST_ORDER_DELETE,json);
+        }catch (Exception e){
+
+        }
     }
 
     private void showDialog(String msg,long orderId,int status){

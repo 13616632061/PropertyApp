@@ -23,6 +23,15 @@ public class MultiItemView <T> implements MultiItemEntity {
     private float orderPaidPrice;//订单实付金额
     private int cartNum;//订单商品数量
     private long orderCode;
+    private int parentOrderID;
+
+    public int getParentOrderID() {
+        return parentOrderID;
+    }
+
+    public void setParentOrderID(int parentOrderID) {
+        this.parentOrderID = parentOrderID;
+    }
 
     public int getOrderId() {
         return orderId;

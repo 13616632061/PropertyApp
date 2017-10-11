@@ -40,7 +40,7 @@ public class OrderDetailsAdapter extends BaseQuickAdapter<ItemMenu<OrderDetailsI
         if (item.getData().getQualityID()>0){
             helper.addOnClickListener(R.id.order_list_item_opera_btn2);
         }else {
-            helper.setVisible(R.id.order_list_item_opera_btn2,true);
+            helper.setVisible(R.id.order_list_item_opera_btn2,false);
         }
     }
 }

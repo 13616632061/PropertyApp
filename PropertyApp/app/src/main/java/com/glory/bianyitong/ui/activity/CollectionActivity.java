@@ -92,6 +92,7 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
 
     private void onRefrush() {
 //        collectionAdapter.notifyDataSetChanged();
+        try {
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("currentPageNumber",currentPageNumber);
         String json = new Gson().toJson(map);
@@ -147,6 +148,9 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_COLLECTION_QUERY, json);
+        }catch (Exception e){
+
+        }
     }
 
     @OnClick({R.id.iv_title_back, R.id.iv_title_text_left2, R.id.iv_title_text_right, R.id.all_button, R.id.tv_cancel})
@@ -157,7 +161,7 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
                 finish();
                 break;
             case R.id.tv_cancel://取消收藏
-                onRefresh();
+                deleteCollection();
                 break;
             case R.id.iv_title_text_right://编辑按钮
                 if (EDIT) {
@@ -200,6 +204,7 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
      * 取消收藏
      */
     private void deleteCollection() {
+        try{
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         List<Integer> freshId = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
@@ -216,7 +221,7 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
                     BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
                     if (bean.getStatusCode() == 1) {
 
-                        onRefrush();
+                        onRefresh();
                     }
                     showShort(bean.getAlertMessage());
                 }
@@ -242,7 +247,9 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
                 }
             }).getEntityData(this, HttpURL.HTTP_POST_COLLECTION_DELETE, json);
         }
+        }catch (Exception e){
 
+        }
     }
 
 
@@ -268,6 +275,9 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
     }
 
     private void addShopCart(int position) {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("shoppingCart", new RequestShoppingCartAdd(list.get(position).getData().getFreshID(), list.get(position).getData().getFresh().getFreshTypeID(), 1, list.get(position).getData().getFresh().getFreshPrice()));
         String json = new Gson().toJson(map);
@@ -304,6 +314,9 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_ADD, json);
+        }catch (Exception e){
+
+        }
     }
 
     @Override

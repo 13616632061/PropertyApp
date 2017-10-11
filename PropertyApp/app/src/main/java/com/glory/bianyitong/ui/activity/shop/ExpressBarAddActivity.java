@@ -124,6 +124,9 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
 
 
     private void queryExpressBarByLocal() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         RequestQueryExpressBarByLocal.Local local = new RequestQueryExpressBarByLocal.Local((Double) mCache.getAsObject("longitude"),
         (Double) mCache.getAsObject("latitude"));
@@ -167,10 +170,15 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_LOCAL, json);
+        }catch (Exception e){
 
+        }
     }
 
     private void queryExpressBarByKeyWord(String keyWords) {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
 //        RequestQueryExpressBarByKeyWord.KeyWord keyWord = new RequestQueryExpressBarByKeyWord.KeyWord(keyWords);
         Map<String, Object> map2 = new BaseRequestBean().getBaseRequest();
@@ -215,7 +223,9 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_QUERY_ADDRESS_EXPRESS_BAR_SEARCH, json);
+        }catch (Exception e){
 
+        }
     }
 
 

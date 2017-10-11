@@ -69,7 +69,7 @@ public class PayActivity extends BaseActivity {
     long orderCode;
 
     @InjectParam(key = "price")
-    double price;
+    float price;
     public static String appId;
 
     @Override
@@ -115,6 +115,9 @@ public class PayActivity extends BaseActivity {
      *
      */
     private void orderCommitTwo() {
+        try {
+
+
         Map<String,Object> map=new HashMap<>();
         map.put("OrderID",OrderID);
         map.put("DeviceType",2);//,1、ios 2、android
@@ -144,12 +147,18 @@ public class PayActivity extends BaseActivity {
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_COUPON_PAY,json);
+        }catch (Exception e){
+
+        }
     }
 
     /**
      * 支付回调
      */
     private void orderCommit(){
+        try {
+
+
         Map<String,Object> map=new HashMap<>();
         map.put("OrderID",OrderID);
         map.put("DeviceType",2);//,1、ios 2、android
@@ -181,6 +190,9 @@ public class PayActivity extends BaseActivity {
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_COUPON_PAY,json);
+        }catch (Exception e){
+
+        }
     }
 
     private void weChatPay(WeiXinInfo bean) {
@@ -281,6 +293,9 @@ public class PayActivity extends BaseActivity {
                 api.registerApp(bean.getAppId());
                boolean b= api.sendReq(req);
                 Log.i("sign", b+"");
+                if (!b){
+                    showShort("订单出现问题，请重新下单");
+                }
                 //修改微信支付成功后退出支付中心界面
 //               finish();
             }

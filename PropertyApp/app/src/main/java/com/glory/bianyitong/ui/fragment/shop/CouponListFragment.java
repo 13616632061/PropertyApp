@@ -93,6 +93,9 @@ public class CouponListFragment extends RootFragment implements BaseQuickAdapter
     }
 
     private void requestCouponList(int status){
+        try {
+
+
         if (jsonResponse!=null){
             formatData(jsonResponse);
         }else {
@@ -125,6 +128,9 @@ public class CouponListFragment extends RootFragment implements BaseQuickAdapter
 
                 }
             }).getEntityData(getActivity(), HttpURL.HTTP_POST_COUPON_QUERY_LIST, json);
+        }
+        }catch (Exception e){
+
         }
     }
 

@@ -103,6 +103,9 @@ public class AddCommentActivity extends BaseActivity {
     }
 
     private void request(String txt) { //评论
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("neighborhoodComment",new RequestNeighborhoodComment(neighborhoodid,Database.USER_MAP.getCustomerPhoto(),txt,CommentToID,commentToUserName));
         String json=new Gson().toJson(map);
@@ -137,6 +140,9 @@ public class AddCommentActivity extends BaseActivity {
                 }
             }
         }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_COMMENT_ADD, json);
+        }catch (Exception e){
+
+        }
     }
 
 }

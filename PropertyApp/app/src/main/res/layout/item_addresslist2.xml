@@ -58,7 +58,14 @@
                             android:textSize="14sp" />
 
                     </LinearLayout>
-
+                    <TextView
+                        android:id="@+id/name_and_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:maxLines="2"
+                        android:textColor="@color/small_text_color_gray"
+                        android:textSize="12sp" />
                     <!--300g-->
                     <TextView
                         android:id="@+id/address_list_address"

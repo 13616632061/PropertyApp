@@ -331,6 +331,9 @@ public class EveryDayDetailsActivity extends BaseActivity {
     }
 
     private void request(final boolean isrefresh) { //获取新闻评论列表
+        try {
+
+
         String json = "{\"news\":{newsID:" + newsid + "},\"controllerName\":\"News\",\"actionName\":\"StructureQuery\"," +
                 "\"userID\":\"" + userID + "\"}";
 //        String json = "{\"news\":{newsID:6},\"controllerName\":\"News\",\"actionName\":\"StructureQuery\"," +
@@ -426,9 +429,15 @@ public class EveryDayDetailsActivity extends BaseActivity {
             @Override
             public void onAfter() { }
         }).getEntityData(this,url,json);
+        }catch (Exception e){
+
+        }
     }
 
     private void request_like(int newsID, int commentToID) { //点赞
+        try {
+
+
         String loginName = "";
         if (Database.USER_MAP != null && Database.USER_MAP.getLoginName() != null) {
             loginName = Database.USER_MAP.getLoginName();
@@ -496,9 +505,15 @@ public class EveryDayDetailsActivity extends BaseActivity {
 //                        }
                     }
                 });
+        }catch (Exception e){
+
+        }
     }
 
     private void request_like_cancel(int newsLikeID) { //取消点赞
+        try {
+
+
         String json = "{\"newsLike\": {\"newsLikeID\": " + newsLikeID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\",\"accesstoken\": \"\"," +
                 "\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
                 "\"controllerName\": \"NewsLike\",\"actionName\": \"Delete\"}";
@@ -557,6 +572,9 @@ public class EveryDayDetailsActivity extends BaseActivity {
 //                        }
                     }
                 });
+        }catch (Exception e){
+
+        }
     }
 
     private void load(String html) {

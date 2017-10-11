@@ -73,6 +73,9 @@ public class InspectionReportActivity extends BaseActivity {
     }
 
     private void getInspection() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("qualityID", getIntent().getIntExtra("qualityID",0));
         String json = new Gson().toJson(map);
@@ -110,6 +113,9 @@ public class InspectionReportActivity extends BaseActivity {
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_ORDER_QUALITY_QUERY, json);
+        }catch (Exception e){
+
+        }
     }
 
     @OnClick({R.id.iv_title_back, R.id.iv_title_text_left2})

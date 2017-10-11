@@ -213,6 +213,9 @@ public class CommunityBulletinActivity extends BaseActivity {
     }
 
     private void request() { //请求社区公告
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("communityBulletin",new Object());
         String json=new Gson().toJson(map);
@@ -290,6 +293,9 @@ public class CommunityBulletinActivity extends BaseActivity {
                 }
             }
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE,json);
+        }catch (Exception e){
+
+        }
     }
 
     @Override

@@ -55,6 +55,9 @@ public class OkGoRequest {
 
 
     public void getEntityData(Context context,String url, String request) {
+        try {
+
+
         LogUtils.d("OkGoGo","---------------------start----------------------");
         LogUtils.d("OkGoGo","URL:   "+HttpURL.HTTP_NEW_URL+url);
         LogUtils.d("OkGoGo","params:    "+request);
@@ -138,6 +141,9 @@ public class OkGoRequest {
                         }
                     }
                 });
+        }catch (Exception e){
+
+        }
     }
 
     public void getEntityData(String url, Map<String,String> map) {

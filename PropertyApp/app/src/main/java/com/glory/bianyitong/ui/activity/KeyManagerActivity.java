@@ -182,6 +182,9 @@ public class KeyManagerActivity extends BaseActivity {
     }
 
     private void request() { //钥匙查询
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("userLockMapping",new Object());
         String json=new Gson().toJson(map);
@@ -233,9 +236,15 @@ public class KeyManagerActivity extends BaseActivity {
                 }
             }
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_KEY_MANAGER, json);
+        }catch (Exception e){
+
+        }
     }
 
     private void save() { //保存 钥匙排序
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("listUserLock",list_sort);
         String json=new Gson().toJson(map);
@@ -261,6 +270,9 @@ public class KeyManagerActivity extends BaseActivity {
             @Override
             public void onAfter() {}
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_KEY_SORT, json);
+        }catch (Exception e){
+
+        }
     }
 
     private void sort() { //排序

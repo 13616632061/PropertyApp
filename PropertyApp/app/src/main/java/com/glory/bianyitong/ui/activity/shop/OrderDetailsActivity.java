@@ -82,6 +82,8 @@ public class OrderDetailsActivity extends BaseActivity implements BaseQuickAdapt
     TextView payData;
     @BindView(R.id.ok_data)
     TextView okData;
+    @BindView(R.id.order_statusExplain)
+    TextView orderStatusExplain;
     private List<ItemMenu<OrderDetailsInfo.ListOrderBean.ListOrderDetailBean>> data = new ArrayList<>();
 
     private int orderID;
@@ -126,6 +128,9 @@ public class OrderDetailsActivity extends BaseActivity implements BaseQuickAdapt
      * 提交订单
      */
     private void getOrderDetails() {
+        try {
+
+
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         OrderDetailsRequest orderDetailsRequest = new OrderDetailsRequest();
         orderDetailsRequest.getOrder().setOrderID(orderID);
@@ -146,27 +151,28 @@ public class OrderDetailsActivity extends BaseActivity implements BaseQuickAdapt
                     firmOrderItemName.setText("收货人：" + listOrderBean.getRealName());
                     firmOrderItemNumber.setText(listOrderBean.getMobileNumber());
                     addressListAddress.setText("收货地址：" + listOrderBean.getAddress());
-                    if (listOrderBean.getCouponReceive() != null&&listOrderBean.getCouponReceive().getCoupon()!=null) {
+                    orderStatusExplain.setText("订单状态：" + listOrderBean.getOrderStatusExplain());
+                    if (listOrderBean.getCouponReceive() != null && listOrderBean.getCouponReceive().getCoupon() != null) {
                         firmOrderCoupon.setText("-￥" + listOrderBean.getCouponReceive().getCoupon().getFreeMoney());
                         firmOrderCoupon.setTextColor(getResources().getColor(R.color.red1));
-                    }else {
-                        firmOrderCoupon.setVisibility(View.GONE);
+                    } else {
+                        firmOrderLinCoupon.setVisibility(View.GONE);
                     }
                     firmOrderAllMoney.setText("￥" + listOrderBean.getOrderPaidPrice());
-                    orderNum.setText("订单编号："+listOrderBean.getOrderCode());
-                    if (listOrderBean.getAppId()!=0){
-                        payNum.setText("支付交易号："+listOrderBean.getAppId());
-                    }else {
+                    orderNum.setText("订单编号：" + listOrderBean.getOrderCode());
+                    if (listOrderBean.getAppId() != 0) {
+                        payNum.setText("支付交易号：" + listOrderBean.getAppId());
+                    } else {
                         payNum.setVisibility(View.GONE);
                     }
-                    if (listOrderBean.getOrderTime()!=null){
-                        payData.setText("下单时间:"+listOrderBean.getOrderTime().replace("T"," "));
-                    }else {
+                    if (listOrderBean.getOrderTime() != null) {
+                        payData.setText("下单时间:" + listOrderBean.getOrderTime().replace("T", " "));
+                    } else {
                         payData.setVisibility(View.GONE);
                     }
-                    if (listOrderBean.getEndOrderTime()!=null){
-                        okData.setText("支付时间:"+listOrderBean.getEndOrderTime().replace("T"," "));
-                    }else {
+                    if (listOrderBean.getEndOrderTime() != null) {
+                        okData.setText("支付时间:" + listOrderBean.getEndOrderTime().replace("T", " "));
+                    } else {
                         okData.setVisibility(View.GONE);
                     }
                 } else {
@@ -194,6 +200,9 @@ public class OrderDetailsActivity extends BaseActivity implements BaseQuickAdapt
 
             }
         }).getEntityData(this, HttpURL.HTTP_POST_ORDER_QUERY, json);
+        }catch (Exception e){
+
+        }
     }
 
     @Override
@@ -205,10 +214,10 @@ public class OrderDetailsActivity extends BaseActivity implements BaseQuickAdapt
 
     @Override
     public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.order_list_item_opera_btn2:
-                Intent intent=new Intent(this, InspectionReportActivity.class);
-                intent.putExtra("qualityID",data.get(position).getData().getQualityID());
+                Intent intent = new Intent(this, InspectionReportActivity.class);
+                intent.putExtra("qualityID", data.get(position).getData().getQualityID());
                 startActivity(intent);
                 break;
         }

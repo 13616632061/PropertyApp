@@ -221,6 +221,9 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
      * @param name
      */
     private void request_community2(String name) {
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("community",new RequestQueryAreaList(name));
         String json=new Gson().toJson(map);
@@ -263,9 +266,15 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
                 }
             }
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY, json);
+        }catch (Exception e){
+
+        }
     }
     //获取附近小区
     private void request_community(double latitude, double longitude) {
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("community",new RequestLocalAreaBean(longitude,latitude));
         String json=new Gson().toJson(map);
@@ -302,6 +311,9 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
             public void onAfter() {
             }
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA, json);
+        }catch (Exception e){
+
+        }
     }
 
     @Override

@@ -93,7 +93,6 @@
                         android:gravity="center_vertical|left"
                         android:hint="@string/input_phone_number"
                         android:inputType="phone"
-                        android:maxLength="11"
                         android:paddingRight="15dp"
                         android:textColor="@color/text_color_somber"
                         android:textSize="15sp"

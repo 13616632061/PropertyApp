@@ -88,6 +88,9 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
     }
 
     private void requestOrderList(){
+        try {
+
+
         String json;
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("currentPageNumber",currentPageNumber);
@@ -172,6 +175,9 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
 
             }
         }).getEntityData(RefundMoneyActivity.this, HttpURL.HTTP_POST_ORDER_QUERY,json);
+        }catch (Exception e){
+
+        }
     }
     /**
      * 设置操作menu
@@ -316,6 +322,10 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
      * @param orderId
      */
     private void deleteOrder(long orderId){
+
+        try {
+
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("entityOrder",new RequestOrderOperation(new RequestOrderOperation.OrderStatus(0,orderId)));
         String json=new GsonBuilder().addSerializationExclusionStrategy(new FilterExclusionStrategy("orderStatus")).create().toJson(map);
@@ -350,6 +360,9 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_ORDER_DELETE,json);
+        }catch (Exception e){
+
+        }
     }
     /**
      * 自动刷新列表
