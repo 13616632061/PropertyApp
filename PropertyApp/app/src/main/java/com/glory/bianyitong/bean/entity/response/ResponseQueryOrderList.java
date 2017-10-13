@@ -251,13 +251,13 @@ public class ResponseQueryOrderList extends BaseResponseBean {
             private float totalPrice;
             private FreshBean fresh;
             private double orderPaidPrice;
-            private long orderCode;
+            private String orderCode;
 
-            public long getOrderCode() {
+            public String getOrderCode() {
                 return orderCode;
             }
 
-            public void setOrderCode(long orderCode) {
+            public void setOrderCode(String  orderCode) {
                 this.orderCode = orderCode;
             }
 

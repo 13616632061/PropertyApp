@@ -27,6 +27,7 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.share.ShareUtil;
+import com.glory.bianyitong.ui.activity.MyBillActivity;
 import com.glory.bianyitong.ui.activity.shop.RefundMoneyActivity;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
@@ -110,6 +111,8 @@ public class MyFragment extends BaseFragment {
     TextView tvBeEvaluatedNumber;
     @BindView(R.id.tv_refund_sale_number)
     TextView tvRefundSaleNumber;
+    @BindView(R.id.residential_quarters)
+    TextView residentialQuarters;
     private View view_my;
     private CircleImageView headPortraitCiv; //个人信息
     private String customerPhoto = "";
@@ -173,18 +176,18 @@ public class MyFragment extends BaseFragment {
         tvShoppingCart.setOnClickListener(this);
         tvCoupon.setOnClickListener(this);
         tvFavoriteProduct.setOnClickListener(this);
+        residentialQuarters.setOnClickListener(this);
 
         tvRefundSale.setOnClickListener(this);
         getShareInfo();
     }
 
 
-
     @Override
     public void onClick(View view) {
-        if (!SharedUtil.getBoolean("login")){
+        if (!SharedUtil.getBoolean("login") || Database.accessToken == null) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
-        }else {
+        } else {
 
             switch (view.getId()) {
                 case R.id.cim_my_head_portrait: //个人信息
@@ -229,12 +232,12 @@ public class MyFragment extends BaseFragment {
                 case R.id.tv_award_manager: //授权管理
 
 
-                        if (Database.my_community == null) {
-                            ToastUtils.showToast(context, getString(R.string.you_have_no_district_please_first_certification_district));//您还没有小区,请先认证小区
-                        } else {
-                            Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MANAGER)
-                                    .go(this);
-                        }
+                    if (Database.my_community == null) {
+                        ToastUtils.showToast(context, getString(R.string.you_have_no_district_please_first_certification_district));//您还没有小区,请先认证小区
+                    } else {
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MANAGER)
+                                .go(this);
+                    }
                     break;
                 case R.id.fg_tv_my_news: //我的发布 /登录
                     Router.build(RouterMapping.ROUTER_ACTIVITY_AAWARD_MY_RELEASE)
@@ -309,6 +312,9 @@ public class MyFragment extends BaseFragment {
                 case R.id.tv_refund_sale://退款
                     startActivity(new Intent(getActivity(), RefundMoneyActivity.class));
                     break;
+                case R.id.residential_quarters://我的账单
+                    startActivity(new Intent(getActivity(), MyBillActivity.class));
+                    break;
             }
         }
     }
@@ -360,44 +366,44 @@ public class MyFragment extends BaseFragment {
         try {
 
 
-        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        String json = new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                if (TextUtil.isEmpty(s)) {
-                    showShort("系统异常");
-                    return;
-                }
-                ResponseShare share = new Gson().fromJson(s, ResponseShare.class);
-                if (share.getStatusCode() == 1) {
-                    if (share.getListSetting() != null && share.getListSetting().size() > 0) {
-                        share_url = share.getListSetting().get(0).getSettingValue();
-                        tittle = share.getListSetting().get(1).getSettingValue();
-                        subTittle = share.getListSetting().get(2).getSettingRemark();
-                    } else {
-                        showShort(share.getAlertMessage());
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    if (TextUtil.isEmpty(s)) {
+                        showShort("系统异常");
+                        return;
+                    }
+                    ResponseShare share = new Gson().fromJson(s, ResponseShare.class);
+                    if (share.getStatusCode() == 1) {
+                        if (share.getListSetting() != null && share.getListSetting().size() > 0) {
+                            share_url = share.getListSetting().get(0).getSettingValue();
+                            tittle = share.getListSetting().get(1).getSettingValue();
+                            subTittle = share.getListSetting().get(2).getSettingRemark();
+                        } else {
+                            showShort(share.getAlertMessage());
+                        }
                     }
                 }
-            }
 
-            @Override
-            public void onError() {
-            }
+                @Override
+                public void onError() {
+                }
 
-            @Override
-            public void parseError() {
-            }
+                @Override
+                public void parseError() {
+                }
 
-            @Override
-            public void onBefore() {
-            }
+                @Override
+                public void onBefore() {
+                }
 
-            @Override
-            public void onAfter() {
-            }
-        }).getEntityData(getActivity(), HttpURL.HTTP_POST_MY_GETSHARE, json);
-        }catch (Exception e){
+                @Override
+                public void onAfter() {
+                }
+            }).getEntityData(getActivity(), HttpURL.HTTP_POST_MY_GETSHARE, json);
+        } catch (Exception e) {
 
         }
     }
@@ -407,74 +413,74 @@ public class MyFragment extends BaseFragment {
         try {
 
 
-        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        String json = new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                if (TextUtil.isEmpty(s)) {
-                    showShort("系统异常");
-                    return;
-                }
-                OrderNumberInfo share = new Gson().fromJson(s, OrderNumberInfo.class);
-                if (share.getStatusCode() == 1) {
-                    tvCartNumber.setText(share.getOrder().getCartNum() + "");
-                    tvPendingPaymentNumber.setText(share.getOrder().getPaid() + "");
-                    tvToBeDeliveredNumber.setText(share.getOrder().getShipped() + "");
-                    tvToBeReceivedNumber.setText(share.getOrder().getReceived() + "");
-                    tvBeEvaluatedNumber.setText(share.getOrder().getEvaluation() + "");
-                    tvRefundSaleNumber.setText(share.getOrder().getRefund() + "");
-                    tvCartNumber.setVisibility(View.VISIBLE);
-                    tvPendingPaymentNumber.setVisibility(View.VISIBLE);
-                    tvToBeDeliveredNumber.setVisibility(View.VISIBLE);
-                    tvToBeReceivedNumber.setVisibility(View.VISIBLE);
-                    tvBeEvaluatedNumber.setVisibility(View.VISIBLE);
-                    tvRefundSaleNumber.setVisibility(View.VISIBLE);
-                    if (share.getOrder().getCartNum()==0){
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    if (TextUtil.isEmpty(s)) {
+                        showShort("系统异常");
+                        return;
+                    }
+                    OrderNumberInfo share = new Gson().fromJson(s, OrderNumberInfo.class);
+                    if (share.getStatusCode() == 1) {
+                        tvCartNumber.setText(share.getOrder().getCartNum() + "");
+                        tvPendingPaymentNumber.setText(share.getOrder().getPaid() + "");
+                        tvToBeDeliveredNumber.setText(share.getOrder().getShipped() + "");
+                        tvToBeReceivedNumber.setText(share.getOrder().getReceived() + "");
+                        tvBeEvaluatedNumber.setText(share.getOrder().getEvaluation() + "");
+                        tvRefundSaleNumber.setText(share.getOrder().getRefund() + "");
+                        tvCartNumber.setVisibility(View.VISIBLE);
+                        tvPendingPaymentNumber.setVisibility(View.VISIBLE);
+                        tvToBeDeliveredNumber.setVisibility(View.VISIBLE);
+                        tvToBeReceivedNumber.setVisibility(View.VISIBLE);
+                        tvBeEvaluatedNumber.setVisibility(View.VISIBLE);
+                        tvRefundSaleNumber.setVisibility(View.VISIBLE);
+                        if (share.getOrder().getCartNum() == 0) {
+                            tvCartNumber.setVisibility(View.GONE);
+                        }
+                        if (share.getOrder().getPaid() == 0) {
+                            tvPendingPaymentNumber.setVisibility(View.GONE);
+                        }
+                        if (share.getOrder().getShipped() == 0) {
+                            tvToBeDeliveredNumber.setVisibility(View.GONE);
+                        }
+                        if (share.getOrder().getReceived() == 0) {
+                            tvToBeReceivedNumber.setVisibility(View.GONE);
+                        }
+                        if (share.getOrder().getEvaluation() == 0) {
+                            tvBeEvaluatedNumber.setVisibility(View.GONE);
+                        }
+                        if (share.getOrder().getRefund() == 0) {
+                            tvRefundSaleNumber.setVisibility(View.GONE);
+                        }
+                    } else {
                         tvCartNumber.setVisibility(View.GONE);
-                    }
-                    if (share.getOrder().getPaid()==0){
                         tvPendingPaymentNumber.setVisibility(View.GONE);
-                    }
-                    if (share.getOrder().getShipped()==0){
                         tvToBeDeliveredNumber.setVisibility(View.GONE);
-                    }
-                    if (share.getOrder().getReceived()==0){
                         tvToBeReceivedNumber.setVisibility(View.GONE);
-                    }
-                    if (share.getOrder().getEvaluation()==0){
                         tvBeEvaluatedNumber.setVisibility(View.GONE);
-                    }
-                    if (share.getOrder().getRefund()==0){
                         tvRefundSaleNumber.setVisibility(View.GONE);
                     }
-                }else {
-                        tvCartNumber.setVisibility(View.GONE);
-                        tvPendingPaymentNumber.setVisibility(View.GONE);
-                        tvToBeDeliveredNumber.setVisibility(View.GONE);
-                        tvToBeReceivedNumber.setVisibility(View.GONE);
-                        tvBeEvaluatedNumber.setVisibility(View.GONE);
-                        tvRefundSaleNumber.setVisibility(View.GONE);
                 }
-            }
 
-            @Override
-            public void onError() {
-            }
+                @Override
+                public void onError() {
+                }
 
-            @Override
-            public void parseError() {
-            }
+                @Override
+                public void parseError() {
+                }
 
-            @Override
-            public void onBefore() {
-            }
+                @Override
+                public void onBefore() {
+                }
 
-            @Override
-            public void onAfter() {
-            }
-        }).getEntityData(getActivity(), HttpURL.HTTP_POST_ORDER_OTHERONE, json);
-        }catch (Exception e){
+                @Override
+                public void onAfter() {
+                }
+            }).getEntityData(getActivity(), HttpURL.HTTP_POST_ORDER_OTHERONE, json);
+        } catch (Exception e) {
 
         }
     }

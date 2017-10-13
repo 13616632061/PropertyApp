@@ -118,18 +118,18 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                             listOrderDetailBeanMultiItemViewTitle.setOrderId(listBean.getOrderID());
                             listOrderDetailBeanMultiItemViewTitle.setParentOrderID(listBean.getParentOrderID());
                             listOrderDetailBeanMultiItemViewTitle.setOrderPaidPrice( listBean.getOrderPaidPrice());
-                            listOrderDetailBeanMultiItemViewTitle.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                            listOrderDetailBeanMultiItemViewTitle.setOrderCode(listBean.getOrderCode());
                             data.add(listOrderDetailBeanMultiItemViewTitle);
                             for (ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean bean:listBean.getListOrderDetail()
                                     ) {
                                 MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.BODY, bean, listBean.getOrderStatus());
                                 listOrderDetailBeanMultiItemView.getData().setOrderID(listBean.getOrderID());
                                 listOrderDetailBeanMultiItemView.getData().setOrderPaidPrice((double) listBean.getOrderPaidPrice());
-                                listOrderDetailBeanMultiItemView.getData().setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                                listOrderDetailBeanMultiItemView.getData().setOrderCode(listBean.getOrderCode());
                                 listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
                                 listOrderDetailBeanMultiItemView.setParentOrderID(listBean.getParentOrderID());
                                 listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
-                                listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                                listOrderDetailBeanMultiItemView.setOrderCode(listBean.getOrderCode());
                                 data.add(listOrderDetailBeanMultiItemView);
                             }
                             MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.FOOTER);
@@ -139,7 +139,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                             listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
                             listOrderDetailBeanMultiItemView.setParentOrderID(listBean.getParentOrderID());
                             listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
-                            listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                            listOrderDetailBeanMultiItemView.setOrderCode(listBean.getOrderCode());
                             data.add(listOrderDetailBeanMultiItemView);
 
                             setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID(),listBean.getOrderPrice(),listBean);//添加操作菜单
@@ -237,7 +237,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
         listOrderDetailBeanMultiItemViewFoot.setOrderId(bean.getOrderID());
         listOrderDetailBeanMultiItemViewFoot.setParentOrderID(bean.getParentOrderID());
         listOrderDetailBeanMultiItemViewFoot.setOrderPaidPrice((float) bean.getOrderPaidPrice());
-        listOrderDetailBeanMultiItemViewFoot.setOrderCode(Long.parseLong(bean.getOrderCode()));
+        listOrderDetailBeanMultiItemViewFoot.setOrderCode(bean.getOrderCode());
         data.add(listOrderDetailBeanMultiItemViewFoot);
     }
 
@@ -338,7 +338,7 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
 //                    if(showDialog("确认付款 "+data.get(position).getOrdeId()))
                     Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_PAY)
                             .with("OrderID",data.get(position).getParentOrderID())
-                            .with("orderCode",data.get(position).getOrderCode())
+                            .with("orderCode",data.get(position).getOrderCode()+"")
                             .with("price",(float)data.get(position).getOrderPaidPrice())
                             .go(getActivity());
 //                    Log.i("orderCode",entity.getList_Order().get(position).getOrderCode()+"---"+entity.getList_Order().get(position).getOrderPrice());
@@ -376,7 +376,6 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
                     }
 
                 }else {
-                    ToastUtils.showToast(getActivity(),"删除订单");
 //                    if(showDialog("确认删除订单 "+data.get(position).getOrdeId()))
                     deleteOrder(data.get(position).getOrderId());
                 }

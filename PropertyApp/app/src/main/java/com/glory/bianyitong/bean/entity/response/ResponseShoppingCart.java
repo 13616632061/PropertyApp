@@ -93,6 +93,15 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
             private float price;
             private FreshBean fresh;
             private boolean isvalid;
+            private boolean isOK=true;
+
+            public boolean isOK() {
+                return isOK;
+            }
+
+            public void setOK(boolean OK) {
+                isOK = OK;
+            }
 
             public int getCartID() {
                 return cartID;
@@ -180,7 +189,9 @@ public class ResponseShoppingCart extends BaseResponseBean implements Serializab
                 private Object freshEvaluation;
                 private int cartNum;
                 private Object freshContents;
-                public FreshBean(String freshPicture,int merchant_ID) {
+
+
+                public FreshBean(String freshPicture, int merchant_ID) {
                     this.freshPicture = freshPicture;
                     this.merchant_ID=merchant_ID;
                 }

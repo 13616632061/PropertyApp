@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -25,8 +26,11 @@ import com.glory.bianyitong.util.DataCleanManager;
 import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.ToastUtils;
 
+import java.util.Set;
+
 import butterknife.BindView;
 import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 
 /**
  * Created by lucy on 2016/11/14.
@@ -191,10 +195,17 @@ public class SettingActivity extends BaseActivity {
         Database.my_community_List = null;
         Database.my_community = null;
         Database.accessToken=null;
+        SharedUtil.putString("jgPushID","");
         mCache.remove(Constant.user);
         Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
         startActivity(intent);
         SettingActivity.this.finish();
+        JPushInterface.setAlias(this,"", new TagAliasCallback() {
+            @Override
+            public void gotResult(int i, String s, Set<String> set) {
+                Log.d("123123","set Alias result is"+i);
+            }
+        });
     }
 
     //清除别名

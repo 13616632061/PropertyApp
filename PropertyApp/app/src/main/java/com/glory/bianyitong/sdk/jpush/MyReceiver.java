@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.glory.bianyitong.ui.activity.BillDetailsActivity;
 import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
 import com.glory.bianyitong.ui.activity.MainActivity;
 import com.glory.bianyitong.ui.activity.MessageActivity;
@@ -105,9 +106,16 @@ public class MyReceiver extends BroadcastReceiver {
                 switch (hashMap2.get("extMsg")){
                     case "1":
                         Intent intent1 = new Intent(context, BulletinDetailsActivity.class);
-                        intent1.putExtra("bulletinId",Integer.parseInt(hashMap2.get("extId")));
-                        intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        context.startActivity(intent1);
+                        try {
+                            intent1.putExtra("bulletinId",Integer.parseInt(hashMap2.get("extId")));
+                            intent1.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(intent1);
+                        }catch (Exception e){
+                            Intent intent0= new Intent(context, WelcomeActivity.class);
+                            intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(intent0);
+                        }
+
                         break;
                     case "2":
                         Intent intent2 = new Intent(context, MessageActivity.class);
@@ -124,9 +132,19 @@ public class MyReceiver extends BroadcastReceiver {
                         intent4.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         context.startActivity(intent4);
                         break;
-                    case "5":
-
+                    case "6":
+                        Intent intent6 = new Intent(context, BillDetailsActivity.class);
+                        try {
+                        intent6.putExtra("userBillID",Integer.parseInt(hashMap2.get("extId")));
+                        intent6.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        context.startActivity(intent6);
+                        }catch (Exception e){
+                            Intent intent0= new Intent(context, WelcomeActivity.class);
+                            intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(intent0);
+                        }
                         break;
+
             }
 
             }else {

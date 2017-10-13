@@ -48,6 +48,7 @@ import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.CommentPicAdapter;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
+import com.glory.bianyitong.util.ActivityManager;
 import com.glory.bianyitong.util.NetworkImageHolderView;
 import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.TextUtil;
@@ -170,6 +171,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         super.init();
         Router.injectParams(this);
 //        inintTitle(getString(R.string.product_details), true, "");//商品详情
+        ActivityManager.addActivity(this,"goodsdetailsactivity");
         titleAcText.setText(getString(R.string.product_details));
         left_return_btn.setOnClickListener(new View.OnClickListener() { //返回
             @Override
@@ -195,7 +197,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
     @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct, R.id.tv_look_all, R.id.iv_title_right})
     void onClickBtn(View view) {
-        if (!SharedUtil.getBoolean("login")) {
+        if (!SharedUtil.getBoolean("login")||Database.accessToken==null) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
         } else {
 
@@ -390,6 +392,8 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                     tvCartNumber.setText(share.getOrder().getCartNum() + "");
                     if (share.getOrder().getCartNum() == 0) {
                         tvCartNumber.setVisibility(View.GONE);
+                    }else {
+                        tvCartNumber.setVisibility(View.VISIBLE);
                     }
                 } else {
                     tvCartNumber.setVisibility(View.GONE);

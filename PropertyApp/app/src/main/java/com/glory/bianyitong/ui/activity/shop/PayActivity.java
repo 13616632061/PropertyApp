@@ -20,6 +20,7 @@ import com.glory.bianyitong.bean.entity.response.ResponseSubmitOrder;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.util.ActivityManager;
 import com.google.gson.Gson;
 import com.tencent.mm.sdk.modelpay.PayReq;
 import com.tencent.mm.sdk.openapi.IWXAPI;
@@ -66,7 +67,7 @@ public class PayActivity extends BaseActivity {
     @InjectParam(key = "OrderID")
     int OrderID;
     @InjectParam(key = "orderCode")
-    long orderCode;
+    String  orderCode;
 
     @InjectParam(key = "price")
     float price;
@@ -81,17 +82,20 @@ public class PayActivity extends BaseActivity {
     protected void init() {
         super.init();
         Router.injectParams(this);
+        ActivityManager.addActivity(this,"payactivity");
         inintTitle("收银台",false,"");
-        if(orderCode>0)
+        if(orderCode!="")
             initView();
 
     }
 
     @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2,R.id.order_pay_btn})
     void onClickGroup(View view){
+
         switch (view.getId()){
             case R.id.iv_title_text_left2:
             case R.id.iv_title_back:
+                ActivityManager.removeActivity("firmorderactivty");
                 finish();
                 break;
             case R.id.order_pay_btn:

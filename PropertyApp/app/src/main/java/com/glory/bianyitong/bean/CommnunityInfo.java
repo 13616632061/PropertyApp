@@ -44,6 +44,15 @@ public class CommnunityInfo {
     private int unitID;
     private String unitName;
     private String approvalDate;
+    private String approvalStatusName;
+
+    public String getApprovalStatusName() {
+        return approvalStatusName;
+    }
+
+    public void setApprovalStatusName(String approvalStatusName) {
+        this.approvalStatusName = approvalStatusName;
+    }
 
     public int getUserCommunityID() {
         return userCommunityID;

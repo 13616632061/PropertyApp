@@ -17,6 +17,7 @@ import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.fragment.shop.OrderListFragment;
+import com.glory.bianyitong.util.ActivityManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +59,7 @@ public class OrderListActivity extends BaseActivity {
         wait_send=orderListTab.newTab().setText("待发货");
         wait_get=orderListTab.newTab().setText("待收货");
         wait_comment=orderListTab.newTab().setText("待评价");
-
+        ActivityManager.addActivity(this,"orderlisetactivity");
 
 
         orderAllFragment=new OrderListFragment();

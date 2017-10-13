@@ -19,17 +19,40 @@
             android:text=""
             android:textColor="@color/text_color_somber"
             android:textSize="15sp" />
-
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:orientation="horizontal">
+        <ImageView
+            android:id="@+id/auth_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:src="@drawable/log_auth_already" />
+        <!--已认证-->
+        <TextView
+            android:id="@+id/auth_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="6dp"
+            android:text=""
+            android:textColor="@color/tv_color_name"
+            android:textSize="14sp" />
         <ImageView
             android:id="@+id/item_area_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="19dp"
+            android:layout_marginRight="10dp"
             android:src="@drawable/log_select_radio"
             android:visibility="gone" />
-
+        </LinearLayout>
         <TextView
             android:id="@+id/item_area_line"
             android:layout_width="match_parent"

@@ -231,7 +231,7 @@ public class DynamicDetailsActivity extends BaseActivity {
         super.onClick(view);
         switch (view.getId()) {
             case R.id.ll_addcomment_dy: //评论
-                if (!SharedUtil.getBoolean("login")){
+                if (!SharedUtil.getBoolean("login")||Database.accessToken==null){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
                 }else {
 
@@ -255,7 +255,7 @@ public class DynamicDetailsActivity extends BaseActivity {
                 DynamicDetailsActivity.this.finish();
                 break;
             case R.id.lay_like_dy:
-                if (!SharedUtil.getBoolean("login")){
+                if (!SharedUtil.getBoolean("login")||Database.accessToken==null){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
                 }else {
                     if (Database.USER_MAP != null) {

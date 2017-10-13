@@ -318,6 +318,8 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                 if(bean.getStatusCode()==1) {
                     Database.accessToken = bean.getAccessToken();
                 }
+                if (bean.getAccessToken()!=null&&!bean.getAccessToken().equals(""))
+                Database.accessToken = bean.getAccessToken();
                 if(bean!=null)
                 ToastUtils.showToast(context, bean.getAlertMessage());
                 progressDialog.dismiss();

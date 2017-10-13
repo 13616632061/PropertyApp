@@ -113,7 +113,11 @@ public class DataUtils {
 //                else {
 //                    commnunityInfo.setUserName("");
 //                }
-
+                if (userCommnunityBean.getApprovalStatusName() != null) {
+                    commnunityInfo.setApprovalStatusName(userCommnunityBean.getApprovalStatusName());
+                }else {
+                    commnunityInfo.setApprovalStatusName("");
+                }
 
                 if (userCommnunityBean.getCommunityID() != 0) {
                     commnunityInfo.setCommunityID(userCommnunityBean.getCommunityID());
@@ -210,6 +214,11 @@ public class DataUtils {
                     commnunityInfo.setUserCommunityID(userCommnunityBean.getUserCommunityID());
                 }else {
                     commnunityInfo.setUserCommunityID(0);
+                }
+                if (userCommnunityBean.getApprovalStatusName() != null) {
+                    commnunityInfo.setApprovalStatusName(userCommnunityBean.getApprovalStatusName());
+                }else {
+                    commnunityInfo.setApprovalStatusName("");
                 }
                 if (userCommnunityBean.getUserID() != 0) {
                     commnunityInfo.setUserID(userCommnunityBean.getUserID());

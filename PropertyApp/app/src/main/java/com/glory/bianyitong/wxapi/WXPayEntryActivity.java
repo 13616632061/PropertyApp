@@ -17,7 +17,9 @@ import com.glory.bianyitong.bean.WeiXinInfo;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.ui.activity.shop.PayActivity;
+import com.glory.bianyitong.ui.activity.shop.ShoppingCartActivity;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
+import com.glory.bianyitong.util.ActivityManager;
 import com.google.gson.Gson;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -47,6 +49,7 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
     @BindView(R.id.tv_pay)
     TextView tvPay;
     private IWXAPI api;
+    private BaseResp resp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,7 +72,12 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
         switch (view.getId()){
             case R.id.iv_title_back:
             case R.id.iv_title_text_left2:
-                finish();
+                if (resp.errCode ==0){//支付成功
+                    startActivity(ShoppingCartActivity.class);
+                    finish();
+                }else{
+                    finish();
+                }
                 break;
         }
     }
@@ -93,10 +101,12 @@ public class WXPayEntryActivity extends BaseActivity implements IWXAPIEventHandl
     public void onResp(BaseResp resp) {
 //        Log.d(TAG, "onPayFinish, errCode = " + resp.errCode);
         Log.v("onPayFinish", resp.errCode + " + resp.errCode");
+        this.resp = resp;
 //        Toast.makeText(WXPayEntryActivity.this, resp.errCode, Toast.LENGTH_SHORT).show();
         if (resp.errCode ==0){
             ivPay.setImageResource(R.drawable.dagou);
             tvPay.setText("支付成功");
+            ActivityManager.removeAllActivity();
 //            wxPayByApp(resp.errCode);
         }else {
             ivPay.setImageResource(R.drawable.dacha);

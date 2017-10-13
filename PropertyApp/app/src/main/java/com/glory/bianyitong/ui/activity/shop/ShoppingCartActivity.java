@@ -49,6 +49,7 @@ import com.glory.bianyitong.widght.shop.AmountView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -132,6 +133,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
         shoppingCartPay.setText("结算(" + commitData.size() + ")");
         initPopupWindowSort(0);
         queryAddress();
+
     }
 
 
@@ -199,8 +201,6 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
      */
     private void godownFind() {//库存大于0时才可以购买
         try {
-
-
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         final String shops = new Gson().toJson(commitData.values());
         List<GodownDetailInfo.ListDetailBean> list = new ArrayList<>();
@@ -210,8 +210,11 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             if (!datas.get(i).isHeader)
                 list.add(new GodownDetailInfo.ListDetailBean(datas.get(i).getData().getFreshID(), datas.get(i).getData().getQuantity()));
         }
-
         map.put("listDetail", list);
+            if (list.size()<=0){
+                showShort("请选择商品");
+                return;
+            }
         final String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -359,11 +362,15 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
     @OnCheckedChanged(R.id.iv_buttons)
     void onChangesBtn(CompoundButton view, boolean isCheck) {
-
         if (isCheck) {
             commitData.clear();
             for (int i = 0; i < data.size(); i++) {
-                commitData.put(i, data.get(i));
+                if (!data.get(i).isHeader){
+                    if (data.get(i).getData().isOK()){
+                        commitData.put(i, data.get(i));
+                    }
+                }
+
             }
         } else {
             if (commitData.size() == data.size()) {
@@ -373,15 +380,39 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
         }
         adapter.notifyDataSetChanged();
     }
-
+//
+//    @Override
+//    public void onWindowFocusChanged(boolean hasFocus) {
+//        super.onWindowFocusChanged(hasFocus);
+//        ivButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    commitData.clear();
+//                    for (int i = 0; i < data.size(); i++) {
+//                        if (!data.get(i).isHeader){
+//                            if (data.get(i).getData().isOK()){
+//                                commitData.put(i, data.get(i));
+//                            }
+//                        }
+//
+//                    }
+//                } else {
+//                    if (commitData.size() == data.size()) {
+//                        commitData.clear();
+//                    }
+//
+//                }
+//                adapter.notifyDataSetChanged();
+//            }
+//        });
+//    }
 
     /**
      * 查询购物车
      */
     private void queryShoppingCart() {
         try {
-
-
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("cabinetID", addressBeabean.getCabinetID());
         String json = new Gson().toJson(map);
@@ -577,7 +608,7 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
     }
 
     private void updateShoppingCardPrice() {
-        double allPrice = 0;
+        float allPrice = 0;
         for (Integer data : commitData.keySet()) {
             ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean bean = commitData.get(data).getData();
             if (!commitData.get(data).isHeader && bean.getFresh().isEnable() && !bean.getFresh().isIsDelete() && bean.getFresh().getGodownNumber() > 0) {
@@ -586,7 +617,8 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
             }
 
         }
-
+        BigDecimal b   =   new   BigDecimal(allPrice);
+        allPrice  =   b.setScale(2,   BigDecimal.ROUND_HALF_UP).floatValue();
         allMoney.setText("￥" + allPrice);
         if (isEditStatus) {
             shoppingCartPay.setText("结算(" + commitData.size() + ")");
@@ -789,7 +821,8 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
     protected void onResume() {
         super.onResume();
         if (isOne) {
-            data.clear();
+//            data.clear();
+            ivButton.setChecked(false);
             queryShoppingCart();
         } else {
             isOne = true;

@@ -43,10 +43,12 @@ import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.activity.UseCouponActivity;
 import com.glory.bianyitong.ui.adapter.shop.FirmOrderAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
+import com.glory.bianyitong.util.ActivityManager;
 import com.glory.bianyitong.widght.shop.AmountView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -103,7 +105,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     private boolean isHaveAddress=false;//标识是否选择地址
     private final int REQUEST_CODE_ADDRESS=100,REQUEST_CODE_COUPON=101;//选择地址,选择优惠券
     private ResponseQueryAddress.ListShippingAddressBean addressBean;
-
+    private boolean isPay=true;
 
     // TODO: 2017/7/13 购物车商品数据
     @InjectParam(key = "shops")
@@ -149,6 +151,7 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
         super.init();
         Router.injectParams(this);
         inintTitle("提交订单", false, "");
+        ActivityManager.addActivity(this,"firmorderactivty");
         initView();
         initData();
 
@@ -226,8 +229,6 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
      */
     private void getOrderCommit(){
         try {
-
-
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         Map<String,Object> maps=new HashMap<>();
         maps.put("cabinetID",addressBean.getCabinetID());
@@ -307,17 +308,25 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 //                        .go(this);
                 break;
             case R.id.firm_order_commit://提交订单
+
                 if(addressBean==null){
                     showShort("请选择收货地址");
+                    return;
+                }
+                if (!isPay){
+                    showShort("该地址无法配送");
                     return;
                 }
                 orderCommit();
                 break;
             case R.id.firm_order_address_lin://选择地址
-                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
-                        .with("source", true)
-                        .requestCode(REQUEST_CODE_ADDRESS)
-                        .go(this);
+
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
+                            .with("source", true)
+                            .requestCode(REQUEST_CODE_ADDRESS)
+                            .go(this);
+
+
                 break;
 
         }
@@ -515,12 +524,6 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-//        Log.i("requestList",data.getStringExtra("data")+"");
-
-
-
-//        freeMoney = data.getDoubleExtra("money",0);
         if(resultCode==RESULT_OK){
             if(requestCode==REQUEST_CODE_ADDRESS){
                 ResponseQueryAddress.ListShippingAddressBean addressBean= (ResponseQueryAddress.ListShippingAddressBean) data.getSerializableExtra("data");
@@ -543,12 +546,15 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                     spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")), 0, 2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
                     txtNumber.setText(spannable);
 
+                    queryShoppingCart();
+
                 }
             }else if(requestCode==REQUEST_CODE_COUPON){//优惠券列表
                 requestList = data.getIntegerArrayListExtra("data");
                 freeMoney=data.getIntExtra("money",0);
                 backPrice = allPrice-freeMoney;
-
+                BigDecimal b   =   new   BigDecimal(backPrice);
+                backPrice  =   b.setScale(2,   BigDecimal.ROUND_HALF_UP).floatValue();
 //                if (freeMoney>0.0001){
 //
 //                }else {
@@ -562,7 +568,64 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
             }
         }
     }
+    /**
+     * 查询购物车
+     */
+    private void queryShoppingCart() {
+        try {
+            isPay=true;
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            List<Integer> list=new ArrayList<>();
+            for (int i=0;i<data.size();i++){
+                list.add(data.get(i).getData().getFreshID());
+            }
+            map.put("freshIDS",list);
+            map.put("cabinetID", addressBean.getCabinetID());
+            map.put("commitType", type);
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    ResponseShoppingCart shoppingCartbean =     new Gson().fromJson(s, ResponseShoppingCart.class);
+                    if (shoppingCartbean.getStatusCode() == 1) {
+                        List<ResponseShoppingCart.ListShoppingCartBean> list = shoppingCartbean.getListShoppingCart();
+                        if (!(list == null || list.size() <= 0)) {
+                            for (int i = 0; i < list.size(); i++) {
+                                for (int j = 0; j < list.get(i).getListShopping().size(); j++) {
+                                    Log.v("isvalidaa",list.get(i).getListShopping().get(j).isIsvalid()+"");
+                                   if (!list.get(i).getListShopping().get(j).isIsvalid()){
+                                       isPay=false;
+                                   }
+                                }
+                            }
+                        }
+                    } else {
+                    }
+                }
+                @Override
+                public void onError() {
+                    adapter.setEmptyView(R.layout.layout_empty);
+                }
 
+                @Override
+                public void parseError() {
+
+                }
+
+                @Override
+                public void onBefore() {
+
+                }
+
+                @Override
+                public void onAfter() {
+
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_QUERY, json);
+        }catch (Exception e){
+
+        }
+    }
     @Override
     public void onAmountChange(View view, int amount, int position) {
         if(amount>0){
@@ -589,7 +652,8 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 allPrice += entity.getPrice() * entity.getQuantity();
         }
         backPrice = allPrice-freeMoney;
-
+        BigDecimal b2   =   new   BigDecimal(backPrice);
+        backPrice  =   b2.setScale(2,   BigDecimal.ROUND_HALF_UP).floatValue();
 //        if (freeMoney>0.0001){
 //
 //        }else {
@@ -600,6 +664,8 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 
         firmOrderAllMoney.setText("￥" + backPrice);
         firmOrderPrice.setText("￥" + backPrice);
+        BigDecimal b   =   new   BigDecimal(allPrice);
+        allPrice  =   b.setScale(2,   BigDecimal.ROUND_HALF_UP).floatValue();
         this.allPrice=allPrice;
     }
 }

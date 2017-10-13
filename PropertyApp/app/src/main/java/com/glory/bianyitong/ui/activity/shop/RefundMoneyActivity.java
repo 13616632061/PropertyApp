@@ -107,17 +107,17 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
                         MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemViewTitle = new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(MultiItemView.TITLE,listBean.getMerchant_Name(),getStatusName(listBean.getOrderStatus()));
                         listOrderDetailBeanMultiItemViewTitle.setOrderId(listBean.getOrderID());
                         listOrderDetailBeanMultiItemViewTitle.setOrderPaidPrice( listBean.getOrderPaidPrice());
-                        listOrderDetailBeanMultiItemViewTitle.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                        listOrderDetailBeanMultiItemViewTitle.setOrderCode(listBean.getOrderCode());
                         data.add(listOrderDetailBeanMultiItemViewTitle);
                         for (ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean bean:listBean.getListOrderDetail()
                                 ) {
                             MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.BODY, bean, listBean.getOrderStatus());
                             listOrderDetailBeanMultiItemView.getData().setOrderID(listBean.getOrderID());
                             listOrderDetailBeanMultiItemView.getData().setOrderPaidPrice((double) listBean.getOrderPaidPrice());
-                            listOrderDetailBeanMultiItemView.getData().setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                            listOrderDetailBeanMultiItemView.getData().setOrderCode(listBean.getOrderCode());
                             listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
                             listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
-                            listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                            listOrderDetailBeanMultiItemView.setOrderCode(listBean.getOrderCode());
                             data.add(listOrderDetailBeanMultiItemView);
                         }
                         MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemView = new MultiItemView<>(MultiItemView.FOOTER);
@@ -126,7 +126,7 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
                         listOrderDetailBeanMultiItemView.setFreight(listBean.getFreight());
                         listOrderDetailBeanMultiItemView.setOrderId(listBean.getOrderID());
                         listOrderDetailBeanMultiItemView.setOrderPaidPrice(listBean.getOrderPaidPrice());
-                        listOrderDetailBeanMultiItemView.setOrderCode(Long.parseLong(listBean.getOrderCode()));
+                        listOrderDetailBeanMultiItemView.setOrderCode(listBean.getOrderCode());
                         data.add(listOrderDetailBeanMultiItemView);
 
                         setOperationMenu(MultiItemView.OPERATION,listBean.getOrderStatus(),listBean.getOrderID(),listBean.getOrderPrice(),listBean);//添加操作菜单
@@ -221,7 +221,7 @@ public class RefundMoneyActivity extends BaseActivity implements BaseQuickAdapte
         MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean> listOrderDetailBeanMultiItemViewFoot= new MultiItemView<ResponseQueryOrderList.ListOrderBean.ListOrderDetailBean>(viewType,msg1,msg2,status,orderId,price,bean);
         listOrderDetailBeanMultiItemViewFoot.setOrderId(bean.getOrderID());
         listOrderDetailBeanMultiItemViewFoot.setOrderPaidPrice((float) bean.getOrderPaidPrice());
-        listOrderDetailBeanMultiItemViewFoot.setOrderCode(Long.parseLong(bean.getOrderCode()));
+        listOrderDetailBeanMultiItemViewFoot.setOrderCode(bean.getOrderCode());
         data.add(listOrderDetailBeanMultiItemViewFoot);
     }
     /**

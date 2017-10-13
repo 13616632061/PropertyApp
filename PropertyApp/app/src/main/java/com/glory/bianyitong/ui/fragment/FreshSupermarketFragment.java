@@ -44,6 +44,7 @@ import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryMyLocal;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryTwoType;
 import com.glory.bianyitong.bean.entity.response.ResponseSearchFresh;
+import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
@@ -148,7 +149,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     void onClickView(View view) {
         switch (view.getId()) {
             case R.id.rl_address://切换地址
-                if (!SharedUtil.getBoolean("login")){
+                if (!SharedUtil.getBoolean("login")|| Database.accessToken==null){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(getActivity());
                 }else{
                     Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
@@ -175,7 +176,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                         .go(getActivity());
                 break;
             case R.id.iv_title_right://购物车
-                if (!SharedUtil.getBoolean("login")){
+                if (!SharedUtil.getBoolean("login")||Database.accessToken==null){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(getActivity());
                 }else {
                     Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
@@ -913,6 +914,8 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                     tvCartNumber.setText(share.getOrder().getCartNum() + "");
                     if (share.getOrder().getCartNum() == 0) {
                         tvCartNumber.setVisibility(View.GONE);
+                    }else {
+                        tvCartNumber.setVisibility(View.VISIBLE);
                     }
                 } else {
                     tvCartNumber.setVisibility(View.GONE);

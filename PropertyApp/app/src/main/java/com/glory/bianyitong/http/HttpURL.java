@@ -225,4 +225,9 @@ public static String HTTP_POST_ORDER_QUERYCABINET="/ApiShopAddress/QueryCabinet"
      * 消息
      */
     public static String HTTP_POST_COUPON_SYSTEMMSG="/ApiSystemMsg/Query";//我的优惠券列表查询
+    /**+
+     * 我的账单
+     */
+    public static String HTTP_POST_COUPON_APIUSERBILL="/ApiUserBill/Query";//我的账单列表
+    public static String HTTP_POST_COUPON_APIUSERBILL_QUERY="/ApiUserBill/Query";//查看账单明细
 }

@@ -22,7 +22,7 @@ public class MultiItemView <T> implements MultiItemEntity {
     private float freight;//运费
     private float orderPaidPrice;//订单实付金额
     private int cartNum;//订单商品数量
-    private long orderCode;
+    private String orderCode;
     private int parentOrderID;
 
     public int getParentOrderID() {
@@ -71,11 +71,11 @@ public class MultiItemView <T> implements MultiItemEntity {
         this.bean = bean;
     }
 
-    public long getOrderCode() {
+    public String getOrderCode() {
         return orderCode;
     }
 
-    public void setOrderCode(long orderCode) {
+    public void setOrderCode(String  orderCode) {
         this.orderCode = orderCode;
     }
 

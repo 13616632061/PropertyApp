@@ -19,7 +19,7 @@ public class ResponseSubmitOrder extends BaseResponseBean implements Serializabl
     private int orderID;
     private int parentOrderID;
     private float OrderPrice;
-    private long orderCode;
+    private String orderCode;
 
     public int getParentOrderID() {
         return parentOrderID;
@@ -29,11 +29,11 @@ public class ResponseSubmitOrder extends BaseResponseBean implements Serializabl
         this.parentOrderID = parentOrderID;
     }
 
-    public long getOrderCode() {
+    public String getOrderCode() {
         return orderCode;
     }
 
-    public void setOrderCode(long orderCode) {
+    public void setOrderCode(String orderCode) {
         this.orderCode = orderCode;
     }
 

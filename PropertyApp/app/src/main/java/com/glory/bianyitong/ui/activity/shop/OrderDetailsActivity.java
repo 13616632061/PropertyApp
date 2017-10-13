@@ -166,12 +166,12 @@ public class OrderDetailsActivity extends BaseActivity implements BaseQuickAdapt
                         payNum.setVisibility(View.GONE);
                     }
                     if (listOrderBean.getOrderTime() != null) {
-                        payData.setText("下单时间:" + listOrderBean.getOrderTime().replace("T", " "));
+                        payData.setText("下单时间：" + listOrderBean.getOrderTime().replace("T", " "));
                     } else {
                         payData.setVisibility(View.GONE);
                     }
                     if (listOrderBean.getEndOrderTime() != null) {
-                        okData.setText("支付时间:" + listOrderBean.getEndOrderTime().replace("T", " "));
+                        okData.setText("支付时间：" + listOrderBean.getEndOrderTime().replace("T", " "));
                     } else {
                         okData.setVisibility(View.GONE);
                     }

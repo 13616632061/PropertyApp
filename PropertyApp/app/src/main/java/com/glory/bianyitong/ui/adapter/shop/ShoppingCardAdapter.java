@@ -87,24 +87,26 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
 
         checkBox.setTag(R.id.shopCard_check,position);
 
-
         helper.addOnClickListener(R.id.tv_shop_delete);
         helper.addOnClickListener(R.id.iv_list_item_goods_pic);
         helper.addOnClickListener(R.id.all_money_and_other);
 
         if (!item.getData().getFresh().isEnable()){//是否上架
+            item.getData().setOK(false);
             helper.setVisible(R.id.shixiao,true);
             helper.setVisible(R.id.iv_button,false);
             amountView.setVisibility(View.GONE);
             helper.setText(R.id.tv_list_item_goods_price,"商品未上架");
             helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.text_color));
         }else if(item.getData().getFresh().isIsDelete()){//是否删除
+            item.getData().setOK(false);
             helper.setVisible(R.id.shixiao,true);
             amountView.setVisibility(View.GONE);
             helper.setVisible(R.id.iv_button,false);
             helper.setText(R.id.tv_list_item_goods_price,"商品已删除");
             helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.text_color));
         }else if (item.getData().getFresh().getGodownNumber()<=0){//是否有库存
+            item.getData().setOK(false);
             helper.setVisible(R.id.shixiao,true);
             helper.setVisible(R.id.iv_button,false);
             amountView.setVisibility(View.GONE);
@@ -112,12 +114,14 @@ public class ShoppingCardAdapter extends BaseSectionQuickAdapter<ShopcartInfo<Re
             helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.text_color));
         }
         if (!item.getData().isIsvalid()){
+            item.getData().setOK(false);
             helper.setVisible(R.id.shixiao,true);
             helper.setVisible(R.id.iv_button,false);
             amountView.setVisibility(View.GONE);
             helper.setText(R.id.tv_list_item_goods_price,"当前生鲜柜无法配送");
             helper.setTextColor(R.id.tv_list_item_goods_price,context.getResources().getColor(R.color.text_color));
         }else {
+            item.getData().setOK(true);
             helper.setVisible(R.id.shixiao,false);
             helper.setVisible(R.id.iv_button,true);
             amountView.setVisibility(View.VISIBLE);

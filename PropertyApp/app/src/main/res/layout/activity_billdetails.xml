@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+    <include layout="@layout/base_text_title"></include>
+    <include layout="@layout/base_view_line"></include>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingBottom="20dp"
+            android:paddingLeft="23dp"
+            android:paddingRight="12dp"
+            android:paddingTop="20dp"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color_title"
+                android:text="社区"
+                android:textSize="15sp"/>
+            <TextView
+                android:id="@+id/shequ"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_color_title"
+                android:textSize="15sp"/>
+        </LinearLayout>
+    <include layout="@layout/base_view_line"></include>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="20dp"
+        android:paddingLeft="23dp"
+        android:paddingRight="12dp"
+        android:paddingTop="20dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_title"
+            android:text="房间"
+            android:textSize="15sp"/>
+        <TextView
+            android:id="@+id/fangjian"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_title"
+            android:textSize="15sp"/>
+    </LinearLayout>
+    <include layout="@layout/base_view_line"></include>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="20dp"
+        android:paddingLeft="23dp"
+        android:paddingRight="12dp"
+        android:paddingTop="20dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_title"
+            android:text="账单类型"
+            android:textSize="15sp"/>
+        <TextView
+            android:id="@+id/leixing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_title"
+            android:textSize="15sp"/>
+    </LinearLayout>
+    <include layout="@layout/base_view_line"></include>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="20dp"
+        android:paddingLeft="23dp"
+        android:paddingRight="12dp"
+        android:paddingTop="20dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_title"
+            android:text="费用"
+            android:textSize="15sp"/>
+        <TextView
+            android:id="@+id/feiyong"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_title"
+            android:textSize="15sp"/>
+    </LinearLayout>
+    <include layout="@layout/base_view_line"></include>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="20dp"
+        android:paddingLeft="23dp"
+        android:paddingRight="12dp"
+        android:paddingTop="20dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_title"
+            android:text="推送时间"
+            android:textSize="15sp"/>
+        <TextView
+            android:id="@+id/time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_title"
+            android:textSize="15sp"/>
+    </LinearLayout>
+    <include layout="@layout/base_view_line"></include>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingBottom="20dp"
+        android:paddingLeft="23dp"
+        android:paddingRight="12dp"
+        android:paddingTop="20dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_title"
+            android:text="备注"
+            android:textSize="15sp"/>
+        <TextView
+            android:id="@+id/beizhu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_color_title"
+            android:textSize="15sp"/>
+    </LinearLayout>
+    <include layout="@layout/base_view_line"></include>
+
+
+</LinearLayout>

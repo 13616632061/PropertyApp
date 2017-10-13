@@ -420,6 +420,13 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+        <!--我的账单-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.MyBillActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <!--<activity-->
             <!--android:name="com.glory.bianyitong.ui.activity.FavoriteProductActivity"-->
             <!--android:configChanges="orientation|keyboardHidden"-->
@@ -558,6 +565,13 @@
         <!--优惠券列表-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.shop.CouponListActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <!--账单详情-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.BillDetailsActivity"
             android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

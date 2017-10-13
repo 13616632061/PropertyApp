@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -46,7 +47,7 @@ import okhttp3.Response;
 @Route(value = RouterMapping.ROUTER_ACTIVITY_MY_UPDATE_NAME,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class UpdateNameActivity extends BaseActivity {
     @BindView(R.id.et_nickname)
-    ContainsEmojiEditText et_nickname;
+    EditText et_nickname;
 
     @BindView(R.id.iv_title_text_right)
     TextView iv_title_text_right;
@@ -105,7 +106,6 @@ public class UpdateNameActivity extends BaseActivity {
                 BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
                 if(bean.getStatusCode()==1){
                     Database.USER_MAP.setLoginName(name);
-                    showShort( getString(R.string.successfully_modified));
                     DataUtils.saveSharePreToolsKits(UpdateNameActivity.this);
                     UpdateNameActivity.this.finish();
                 }else {

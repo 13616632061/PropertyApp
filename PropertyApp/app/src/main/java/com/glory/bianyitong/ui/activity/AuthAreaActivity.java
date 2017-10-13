@@ -111,7 +111,7 @@ public class AuthAreaActivity extends BaseActivity {
 //                    auth_area_name.setText(list.get(i).get("communityName").toString()); //小区名称
 //                }
                 if (list != null && list.get(i).getCommunityName() != null && list.get(i).getCommunityName().length() != 0 && !list.get(i).getCommunityName().toString().equals("")) {
-                    auth_area_name.setText(list.get(i).getCommunityName()); //小区名称
+                    auth_area_name.setText(list.get(i).getCommunityName()+list.get(i).getBuildingName()+list.get(i).getUnitName()+list.get(i).getRoomName()); //小区名称
                 }
                 if (list != null && list.get(i) != null) {
 //                    int sta = Double.valueOf(list.get(i).get("approvalStatus").toString()).intValue();

@@ -106,7 +106,6 @@ public class UpdateDescribeActivity extends BaseActivity {
                 BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
                 if(bean.getStatusCode()==1){
                     Database.USER_MAP.setSignature(desc);
-                    showShort( getString(R.string.successfully_modified));
                     DataUtils.saveSharePreToolsKits(UpdateDescribeActivity.this);
                     UpdateDescribeActivity.this.finish();
                 }else {

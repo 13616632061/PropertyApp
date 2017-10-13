@@ -3,6 +3,7 @@ package com.glory.bianyitong.ui.activity;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,6 +27,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +81,7 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -119,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.iv_open_the_door)
     ImageView iv_open_the_door;
     @BindView(R.id.iv_pickup)
-    ImageView iv_pickup;
+    RelativeLayout iv_pickup;
 
     private int lastIndex = default_index;
     private int currentIndex = default_index;
@@ -154,7 +157,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
-
 
         //显示标题  内容的了
         ExampleUtil.customPushNotification(this, 1,
@@ -233,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
+        request();
 
         if (getIntent().getIntExtra("tabId", -1) != -1) {
             showFragment(getIntent().getIntExtra("tabId", -1));
@@ -243,6 +246,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.now_no_network), Toast.LENGTH_LONG).show();
         }
+    }
+    private void request() { //注册极光推送标签
+        final Set<String> set=new HashSet<>();
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("userCommnunityMapping",new Object());
+        String jsons=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                try {
+                    JSONObject jo = new JSONObject(s);
+                    AuthAreaInfo areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
+                    if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
+                        Log.v("asdasdas0300","--------------------------");
+                        for (int i=0;i<areaInfo.getListUserCommnunityMapping().size();i++){
+                            Log.v("asdasdas0300","CommunityID"+areaInfo.getListUserCommnunityMapping().get(i).getCommunityID());
+                            set.add("CommunityID"+areaInfo.getListUserCommnunityMapping().get(i).getCommunityID());
+
+                        }
+                        JPushInterface.setTags(MainActivity.this, set, new TagAliasCallback() {
+                            @Override
+                            public void gotResult(int i, String s, Set<String> set) {
+
+                            }
+                        });
+                    } else {
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError() {}
+            @Override
+            public void parseError() {}
+            @Override
+            public void onBefore() {
+            }
+            @Override
+            public void onAfter() {
+            }
+        }).getEntityData(this,"/ApiUserCommnunity/Query", jsons);
+
     }
 
     @Override
@@ -309,6 +358,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
+        if (!SharedUtil.getBoolean("login")|| Database.accessToken==null){
+            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
+        }else {
         switch (view.getId()) {
             case R.id.iv_open_the_door: //开门
                 if (Database.USER_MAP != null) {
@@ -354,6 +406,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                Intent intent = new Intent(this, PickupActivity.class);
 //                startActivity(intent);
                 break;
+        }
         }
     }
 
@@ -654,7 +707,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
 /*
- *   ┏┓　　　┏┓
+ *  ┏┓　 ┏┓
  * ┏┛┻━━━┛┻┓
  * ┃　　　　　　　┃
  * ┃　　　━　　　┃

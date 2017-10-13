@@ -178,7 +178,7 @@ public class IndexFragment extends BaseFragment {
 //                tvVillageName.setText("点击添加小区");
 //            }
             if (Database.my_community != null && Database.my_community.getCommunityName() != null) {
-                tvVillageName.setText(Database.my_community.getCommunityName());
+                tvVillageName.setText(Database.my_community.getCommunityName()+"("+Database.my_community.getApprovalStatusName()+")");
             } else {
                 tvVillageName.setText(getResources().getString(R.string.click_add_community));//点击添加小区
             }
@@ -294,14 +294,16 @@ public class IndexFragment extends BaseFragment {
         switch (v.getId()) {
             case R.id.village_name:
                 if (Database.USER_MAP != null) {
-                    if (Database.my_community != null && Database.my_community_List != null) {
-                        intent = new Intent(context, SwitchAreaActivity.class); //切换小区
-                        startActivity(intent);
-                    } else {//没有小区
-                        intent = new Intent(context, AddAreaCityActivity.class); //
-                        intent.putExtra("from", "");//index
-                        startActivity(intent);
-                    }
+                    intent = new Intent(context, SwitchAreaActivity.class); //切换小区
+                    startActivity(intent);
+//                    if (Database.my_community != null && Database.my_community_List != null) {
+//                        intent = new Intent(context, SwitchAreaActivity.class); //切换小区
+//                        startActivity(intent);
+//                    } else {//没有小区
+//                        intent = new Intent(context, AddAreaCityActivity.class); //
+//                        intent.putExtra("from", "");//index
+//                        startActivity(intent);
+//                    }
                 } else {
                     login();
                 }
@@ -317,7 +319,11 @@ public class IndexFragment extends BaseFragment {
 
                             intent = new Intent(context, CommunityBulletinActivity.class); //社区公告
                             startActivity(intent);
-                        } else {
+                        } else if (Database.my_community.getApprovalStatus() == 2){
+                            showShort("请等待社区审核");
+                        }else if (Database.my_community.getApprovalStatus() == 0){
+                            showShort("社区审核未通过");
+                        } {
                             requestlist("community");
                         }
                     } else {//没有小区
@@ -336,7 +342,11 @@ public class IndexFragment extends BaseFragment {
                         if (Database.my_community.getApprovalStatus() == 1) {
                             intent = new Intent(context, YellowPageActivity.class);
                             startActivity(intent);
-                        } else {
+                        } else if (Database.my_community.getApprovalStatus() == 2){
+                            showShort("请等待社区审核");
+                        }else if (Database.my_community.getApprovalStatus() == 0){
+                            showShort("社区审核未通过");
+                        }else {
                             requestlist("phone");
                         }
                     } else {//没有小区
@@ -355,7 +365,11 @@ public class IndexFragment extends BaseFragment {
                         if (Database.my_community.getApprovalStatus() == 1) {
                             intent = new Intent(context, SuggestActivity.class);
                             startActivity(intent);
-                        } else {
+                        } else if (Database.my_community.getApprovalStatus() == 2){
+                            showShort("请等待社区审核");
+                        }else if (Database.my_community.getApprovalStatus() == 0){
+                            showShort("社区审核未通过");
+                        }{
                             requestlist("suggest");
                         }
                     } else {//没有小区
@@ -374,7 +388,11 @@ public class IndexFragment extends BaseFragment {
                         if (Database.my_community.getApprovalStatus() == 1) {
                             intent = new Intent(context, StewardActivity.class);
                             startActivity(intent);
-                        } else {
+                        } else if (Database.my_community.getApprovalStatus() == 2){
+                            showShort("请等待社区审核");
+                        }else if (Database.my_community.getApprovalStatus() == 0){
+                            showShort("社区审核未通过");
+                        }{
                             requestlist("steward");
                         }
                     } else {//没有小区

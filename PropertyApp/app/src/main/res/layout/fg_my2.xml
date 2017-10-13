@@ -412,7 +412,19 @@
                     android:text="@string/certified_area" />
 
                 <include layout="@layout/base_view_line"></include>
+                <TextView
+                    android:id="@+id/residential_quarters"
+                    style="@style/my_base_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="15dp"
+                    android:drawableLeft="@drawable/zhangdan"
+                    android:drawablePadding="25dp"
+                    android:drawableRight="@drawable/ic_gray_next"
+                    android:gravity="center_vertical"
+                    android:text="@string/residential_quarters" />
 
+                <include layout="@layout/base_view_line"></include>
                 <TextView
                     android:id="@+id/tv_award_manager"
                     style="@style/my_base_text_style"

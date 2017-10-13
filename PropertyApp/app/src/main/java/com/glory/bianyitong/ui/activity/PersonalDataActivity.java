@@ -338,7 +338,6 @@ public class PersonalDataActivity extends BaseActivity {
                 }
                 BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
                 if(bean.getStatusCode()==1){
-                    ToastUtils.showToast(PersonalDataActivity.this,bean.getAlertMessage());//修改成功
                     popupWindowGender.dismiss();
                     user_request();
                 }else {

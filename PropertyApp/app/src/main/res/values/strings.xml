@@ -120,8 +120,9 @@
     <string name="all_read">全部已读</string>
     <string name="choose_district_and_county">选择区县</string>
     <string name="certified_area">认证小区</string>
+    <string name="residential_quarters">我的账单</string>
     <string name="audited">已审核</string>
-    <string name="pending_review">待审核</string>
+    <string name="pending_review">审核中</string>
     <string name="audit_failure">审核失败</string>
     <string name="get_community_failure">获取社区失败</string>
     <string name="obtain">获取</string>
