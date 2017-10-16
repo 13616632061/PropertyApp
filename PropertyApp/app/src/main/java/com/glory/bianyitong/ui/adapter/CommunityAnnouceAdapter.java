@@ -2,7 +2,6 @@ package com.glory.bianyitong.ui.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,9 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
 import com.glory.bianyitong.util.ACache;
+import com.glory.bianyitong.util.SharedUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class CommunityAnnouceAdapter extends BaseAdapter {
     private List<listCommunityBulletinInfo.ListCommunityBulletinBean> qiList;
     //    public static HashMap<Integer, Boolean> checkimglist;//这是显示那个读不读的 我用一个button表示
     private boolean isDoMore; //是否进行编辑默认为false
+    private List<String> communityRead;
 
     public CommunityAnnouceAdapter(Context context, List<listCommunityBulletinInfo.ListCommunityBulletinBean> qiList, HashMap<Integer, Boolean> checkList,
                                    boolean isDoMore) { //ArrayList<LinkedTreeMap<String, Object>>
@@ -190,20 +192,20 @@ public class CommunityAnnouceAdapter extends BaseAdapter {
             holder.item_ca_msg_tv_title.setText("");
             holder.item_ca_msg_tv_date.setText("");
         }
-        boolean has = false;
-        String[] array = Database.readbulletinid.split(",");
-        if (array != null && array.length > 0) {
-            for (int i = 0; i < array.length; i++) {
-                if (array[i].equals(bulletinID)) {
-                    has = true;
-                }
-            }
-        }
-        if (has) { //Database.readbulletinid 里面的都是已读的,
-            holder.item_ca_msg_read.setVisibility(View.INVISIBLE);
-        } else {
-            holder.item_ca_msg_read.setVisibility(View.VISIBLE);
-        }
+//        boolean has = false;
+//        String[] array = Database.readbulletinid.split(",");
+//        if (array != null && array.length > 0) {
+//            for (int i = 0; i < array.length; i++) {
+//                if (array[i].equals(bulletinID)) {
+//                    has = true;
+//                }
+//            }
+//        }
+//        if (has) { //Database.readbulletinid 里面的都是已读的,
+//            holder.item_ca_msg_read.setVisibility(View.INVISIBLE);
+//        } else {
+//            holder.item_ca_msg_read.setVisibility(View.VISIBLE);
+//        }
 
         //上面是队点击进行处理，这里是对显示进行处理
         if (getIsCheck().get(position)) {
@@ -212,10 +214,30 @@ public class CommunityAnnouceAdapter extends BaseAdapter {
             holder.item_ca_msg_checkbox.setChecked(false);
         }
 
+        if (SharedUtil.getDataList("communityRead")!=null){
+            communityRead = SharedUtil.getDataList("communityRead");
+            for (String i: communityRead){
+                if (i.equals(qiList.get(position).getBulletinID()+"")){
+                    holder.item_ca_msg_read.setVisibility(View.INVISIBLE);
+                    break;
+                }else {
+                    holder.item_ca_msg_read.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
         holder.item_communitybulletin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (qiList != null && qiList.size() != 0 && qiList.get(position) != null) {
+                    if (SharedUtil.getDataList("communityRead")!=null){
+                        communityRead = SharedUtil.getDataList("communityRead");
+                        communityRead.add(qiList.get(position).getBulletinID()+"");
+                    }else {
+                        communityRead =new ArrayList<String>();
+                        communityRead.add(qiList.get(position).getBulletinID()+"");
+                    }
+                    SharedUtil.setDataList("communityRead", communityRead);
 //                    if (qiList.get(position).get("bulletinID") != null) {
 //                        String bulletinId = qiList.get(position).get("bulletinID").toString();
 //                        Log.i("resultString", "bulletinId--------" + bulletinId);
@@ -235,25 +257,25 @@ public class CommunityAnnouceAdapter extends BaseAdapter {
 //                            Database.notreadbulletinSize --;
 //                        }
 //                    }
-                    if (qiList.get(position).getBulletinID() != 0) {//qiList.get(position).getBulletinID() != null
-                        String bulletinId = qiList.get(position).getBulletinID()+"";
-                        Log.i("resultString", "bulletinId--------" + bulletinId);
-                        boolean isread = false; //默认未读
-                        String[] array = Database.readbulletinid.split(",");
-                        if (array != null && array.length > 0) {
-                            for (int i = 0; i < array.length; i++) {
-                                if (array[i].equals(bulletinId)) {
-                                    isread = true;
-                                } else {
-                                    isread = false;
-                                }
-                            }
-                        }
-                        if (!isread) {
-                            Database.readbulletinid = Database.readbulletinid + bulletinId + ","; //id 拼接字符串 ,分隔 "id,id2,id3"
-                            Database.notreadbulletinSize --;
-                        }
-                    }
+//                    if (qiList.get(position).getBulletinID() != 0) {//qiList.get(position).getBulletinID() != null
+//                        String bulletinId = qiList.get(position).getBulletinID()+"";
+//                        Log.i("resultString", "bulletinId--------" + bulletinId);
+//                        boolean isread = false; //默认未读
+//                        String[] array = Database.readbulletinid.split(",");
+//                        if (array != null && array.length > 0) {
+//                            for (int i = 0; i < array.length; i++) {
+//                                if (array[i].equals(bulletinId)) {
+//                                    isread = true;
+//                                } else {
+//                                    isread = false;
+//                                }
+//                            }
+//                        }
+//                        if (!isread) {
+//                            Database.readbulletinid = Database.readbulletinid + bulletinId + ","; //id 拼接字符串 ,分隔 "id,id2,id3"
+//                            Database.notreadbulletinSize --;
+//                        }
+//                    }
                     Intent intent = new Intent(context, BulletinDetailsActivity.class);
                     intent.putExtra("bulletinId",qiList.get(position).getBulletinID());
                     if (qiList.get(position).getBulletinContent() != null) {

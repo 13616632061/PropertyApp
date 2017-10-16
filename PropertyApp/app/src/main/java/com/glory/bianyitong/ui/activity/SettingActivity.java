@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.LoginUserInfo;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.router.RouterMapping;
@@ -191,6 +192,7 @@ public class SettingActivity extends BaseActivity {
 
     private void logout() {
         SharedUtil.putBoolean("login", false);
+        SharedUtil.putBean(new LoginUserInfo.UserBean());
         Database.USER_MAP = null;
         Database.my_community_List = null;
         Database.my_community = null;

@@ -147,7 +147,6 @@ public class KeyManagerActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (isChange) {
-                    save();
                 } else {
                     KeyManagerActivity.this.finish();
                 }
@@ -157,7 +156,6 @@ public class KeyManagerActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (isChange) {
-                    save();
                 } else {
                     KeyManagerActivity.this.finish();
                 }
@@ -179,6 +177,12 @@ public class KeyManagerActivity extends BaseActivity {
         key_recycler_view.setOnItemMoveListener(onItemMoveListener);// 监听拖拽，更新UI。
         key_recycler_view.setOnItemStateChangedListener(mOnItemStateChangedListener);
         request();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        save();
     }
 
     private void request() { //钥匙查询
@@ -252,7 +256,6 @@ public class KeyManagerActivity extends BaseActivity {
             @Override
             public void onSuccess(String s) {
                 BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
-                showShort(bean.getAlertMessage());
                 if(bean.getStatusCode()==1){
                     EventBus.getDefault().post(true);
                     finish();

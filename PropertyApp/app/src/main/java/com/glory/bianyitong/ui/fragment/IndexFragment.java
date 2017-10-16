@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -27,7 +28,9 @@ import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.activity.AddAreaCityActivity;
 import com.glory.bianyitong.ui.activity.AuthAreaActivity;
+import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
 import com.glory.bianyitong.ui.activity.LoginActivity;
+import com.glory.bianyitong.ui.adapter.CommunityAnnouceAdapter;
 import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.util.SharedUtil;
@@ -91,8 +94,8 @@ public class IndexFragment extends BaseFragment {
     @BindView(R.id.tv_msg_number)
     TextView tv_msg_number;
     TextView tv_notice_number;
-    @BindView(R.id.news_list_refresh)
-    NewPullToRefreshView news_list_refresh;
+//    @BindView(R.id.news_list_refresh)
+//    NewPullToRefreshView news_list_refresh;
     @BindView(R.id.listView)
     ListView listView;
     private EveryDayRecommendAdapter everyDayRecommendAdapter;
@@ -107,6 +110,7 @@ public class IndexFragment extends BaseFragment {
     private int index_page = 0;
     private ProgressDialog progressDialog = null;
     private String userID;
+    private List<listCommunityBulletinInfo.ListCommunityBulletinBean> list=new ArrayList<>();
 
     @Nullable
     @Override
@@ -115,6 +119,25 @@ public class IndexFragment extends BaseFragment {
         View view = inflater.inflate(R.layout.fg_index, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        request();
+        if (Database.notreadbulletinSize > 0) {
+            tv_notice_number.setVisibility(View.VISIBLE);
+            tv_notice_number.setText(Database.notreadbulletinSize + "");
+        } else {
+            tv_notice_number.setVisibility(View.GONE);
+        }
+        if (Database.notreadmessageidSize > 0) {
+            tv_msg_number.setVisibility(View.VISIBLE);
+            tv_msg_number.setText(Database.notreadmessageidSize + "");
+        } else {
+            tv_msg_number.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -141,7 +164,7 @@ public class IndexFragment extends BaseFragment {
         listView.addHeaderView(headview);
         listView.addHeaderView(headviewtwo);
 
-        initList();
+//        initList();
         progressDialog = ProgressDialog.show(context, "", getResources().getString(R.string.load), true);
         progressDialog.setCanceledOnTouchOutside(true);
         ad_request();
@@ -193,14 +216,15 @@ public class IndexFragment extends BaseFragment {
 //
 //        }
 
-        if (Database.list_news == null && have_GoodsList && !getGoodsListStart || Database.isAddComment) {
+        if (list == null && have_GoodsList && !getGoodsListStart || Database.isAddComment) {
             getGoodsListStart = true;
             index_page = 0;
             index_page++;
             Database.isAddComment = false;
-            getNews(index_page, true);
+//            getNews(index_page, true);
+            request();
         } else {
-            everyDayRecommendAdapter = new EveryDayRecommendAdapter(context, Database.list_news);
+            everyDayRecommendAdapter = new EveryDayRecommendAdapter(context, list);
             listView.setAdapter(everyDayRecommendAdapter);
         }
 
@@ -209,17 +233,46 @@ public class IndexFragment extends BaseFragment {
         } else {
             requestnotice();
         }
-        if (Database.notreadbulletinSize > 0) {
-            tv_notice_number.setVisibility(View.VISIBLE);
-            tv_notice_number.setText(Database.notreadbulletinSize + "");
-        } else {
-            tv_notice_number.setVisibility(View.GONE);
-        }
-        if (Database.notreadmessageidSize > 0) {
-            tv_msg_number.setVisibility(View.VISIBLE);
-            tv_msg_number.setText(Database.notreadmessageidSize + "");
-        } else {
-            tv_msg_number.setVisibility(View.GONE);
+
+    }
+
+    private void request() { //请求社区公告
+        try {
+            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+            map.put("communityBulletin",new Object());
+            String json=new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+//                pullToRefreshView.onHeaderRefreshComplete();
+                    listCommunityBulletinInfo cbinfo = new Gson().fromJson(s, listCommunityBulletinInfo.class);
+//                            Log.i("resultString", "adinfo.getListHousekeeper()-------" + hinfo.getListHousekeeper());
+                    if (cbinfo != null && cbinfo.getListCommunityBulletin() != null) {
+                        list = cbinfo.getListCommunityBulletin();
+
+                    }
+                    everyDayRecommendAdapter = new EveryDayRecommendAdapter(context, list);
+                    listView.setAdapter(everyDayRecommendAdapter);
+
+                }
+
+                @Override
+                public void onError() {
+                    getGoodsListStart = false;
+                }
+                @Override
+                public void parseError() {}
+                @Override
+                public void onBefore() {
+
+                }
+                @Override
+                public void onAfter() {
+
+                }
+            }).getEntityData(getActivity(),HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE,json);
+        }catch (Exception e){
+
         }
     }
 
@@ -251,18 +304,19 @@ public class IndexFragment extends BaseFragment {
     }
 
     public void initList() {
-        news_list_refresh.setOnHeaderRefreshListener(new NewPullToRefreshView.OnHeaderRefreshListener() {
-            @Override
-            public void onHeaderRefresh(NewPullToRefreshView view) {
-                if (Database.list_news != null && !getGoodsListStart) {
-                    getGoodsListStart = true;
-                    index_page = 0;//重置index_page
-                    index_page++;
-                    ad_request();
-                    getNews(index_page, true);//刷新
-                }
-            }
-        });
+//        news_list_refresh.setOnHeaderRefreshListener(new NewPullToRefreshView.OnHeaderRefreshListener() {
+//            @Override
+//            public void onHeaderRefresh(NewPullToRefreshView view) {
+//                if (list != null && !getGoodsListStart) {
+//                    getGoodsListStart = true;
+//                    index_page = 0;//重置index_page
+//                    index_page++;
+//                    ad_request();
+////                    getNews(index_page, true);//刷新
+//                    request();
+//                }
+//            }
+//        });
 
         listView.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
@@ -272,11 +326,12 @@ public class IndexFragment extends BaseFragment {
                     // 判断是否滚动到底部
                     if (view.getLastVisiblePosition() == view.getCount() - 1) {
                         //加载更多功能的代码
-                        if (Database.list_news != null && have_GoodsList && !getGoodsListStart) {
+                        if (list != null && have_GoodsList && !getGoodsListStart) {
                             getGoodsListStart = true;
                             loading_lay.setVisibility(View.VISIBLE);
                             index_page++;
-                            getNews(index_page, false);
+//                            getNews(index_page, false);
+                            request();
                         }
                     }
                 }
@@ -473,114 +528,114 @@ public class IndexFragment extends BaseFragment {
     }
 
 
-    private void getNews(int page, final boolean isrefresh) {
-        int communityID = RequestUtil.getcommunityid();
-
-        String nowdate = DateUtil.formatDefaultDate(DateUtil.getCurrentDate());//获取当前时间
-        String json = "{\"news\":{\"communityID\":" + communityID + ",\"newsReviewed\":\"True\"},\"userid\":\"" + userID + "\",\"groupid\":\"\"," +
-                "\"datetime\":\"" + nowdate + "\",\"controllerName\":\"News\",\"DeviceType\":\"\",\"version\":\"\",\"accesstoken\":\"\"," +
-                "\"messagetoken\":\"\",\"actionName\":\"StructureQuery\",\"nowpagenum\":" + page + ",\"pagerownum\":\"10\"}";
-//        String json = "{\"news\":{\"newsReviewed\":\"True\"},\"userid\":\"" + userID + "\",\"groupid\":\"\"," +
+//    private void getNews(int page, final boolean isrefresh) {
+//        int communityID = RequestUtil.getcommunityid();
+//
+//        String nowdate = DateUtil.formatDefaultDate(DateUtil.getCurrentDate());//获取当前时间
+//        String json = "{\"news\":{\"communityID\":" + communityID + ",\"newsReviewed\":\"True\"},\"userid\":\"" + userID + "\",\"groupid\":\"\"," +
 //                "\"datetime\":\"" + nowdate + "\",\"controllerName\":\"News\",\"DeviceType\":\"\",\"version\":\"\",\"accesstoken\":\"\"," +
 //                "\"messagetoken\":\"\",\"actionName\":\"StructureQuery\",\"nowpagenum\":" + page + ",\"pagerownum\":\"10\"}";
-        Log.i("resultString", "json-------" + json);
-        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/NewsQuery/StructureQuery")
-                .tag(this)//
-//                .headers("", "")//
-                .params("request", json)
-                .execute(new StringCallback() {
-                    @Override
-                    public void onSuccess(String s, Call call, Response response) {
-                        news_list_refresh.onHeaderRefreshComplete();
-                        getGoodsListStart = false;
-                        loading_lay.setVisibility(View.GONE);
-                        Log.i("resultString", "------------");
-                        Log.i("resultString", s);
-                        Log.i("resultString", "------------");
-                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-                        });
-                        if (hashMap2 != null && hashMap2.get("listNews") != null) {
-                            ArrayList<LinkedTreeMap<String, Object>> listnews = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listNews");
-                            //分页加载数据----------------------------------------------------
-                            if (Database.list_news == null) {
-                                Database.list_news = listnews;
-                            } else {
-                                if (isrefresh) {
-                                    if (Database.list_news != null) {
-                                        Database.list_news = null;
-                                        Database.list_news = listnews;
-                                    }
-                                }
-                                if (Database.list_news.size() != 0
-                                        && listnews.get(listnews.size() - 1).get("newsID")
-                                        .equals(Database.list_news.get(Database.list_news.size() - 1).get("newsID"))) {
-                                    have_GoodsList = false;
-                                } else {
-                                    for (int i = 0; i < listnews.size(); i++) {
-                                        Database.list_news.add(listnews.get(i));
-                                    }
-                                    have_GoodsList = true;
-                                }
-                            }
-                            //---------------------------------------------------------------
-                            if (Database.list_news != null && Database.list_news.size() != 0) {
-                                if (everyDayRecommendAdapter == null || isrefresh) {
-                                    everyDayRecommendAdapter = new EveryDayRecommendAdapter(context, Database.list_news);
-                                    listView.setAdapter(everyDayRecommendAdapter);
-                                    have_GoodsList = true;
-                                    noGoods.setVisibility(View.GONE);
-                                } else if (have_GoodsList) {
-                                    listView.requestLayout();
-                                    everyDayRecommendAdapter.notifyDataSetChanged();
-                                    noGoods.setVisibility(View.GONE);
-                                } else {
-                                    noGoods.setVisibility(View.VISIBLE);
-                                }
-                            } else {
-                                noGoods.setVisibility(View.VISIBLE);
-                                listView.setAdapter(null);
-                                have_GoodsList = false;
-                            }
-                        } else {
-                            if (Database.list_news != null && Database.list_news.size() > 0) { //分页加载无数据
-                                have_GoodsList = false;
-                                noGoods.setVisibility(View.VISIBLE);
-                            } else { //加载无数据
-                                listView.setAdapter(null);
-                                have_GoodsList = false;
-                                noGoods.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onError(Call call, Response response, Exception e) {
-                        super.onError(call, response, e);
-                        Log.i("resultString", "请求错误------");
-                        news_list_refresh.onHeaderRefreshComplete();
-                        showShort(getString(R.string.failed_to_connect_to_server));
-                        listView.setAdapter(null);
-                        getGoodsListStart = false;
-                        loading_lay.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void parseError(Call call, Exception e) {
-                        super.parseError(call, e);
-                        Log.i("resultString", "网络解析错误------");
-                    }
-
-                    @Override
-                    public void onBefore(BaseRequest request) {
-                        super.onBefore(request);
-                    }
-
-                    @Override
-                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-                        super.onAfter(s, e);
-                    }
-                });
-    }
+////        String json = "{\"news\":{\"newsReviewed\":\"True\"},\"userid\":\"" + userID + "\",\"groupid\":\"\"," +
+////                "\"datetime\":\"" + nowdate + "\",\"controllerName\":\"News\",\"DeviceType\":\"\",\"version\":\"\",\"accesstoken\":\"\"," +
+////                "\"messagetoken\":\"\",\"actionName\":\"StructureQuery\",\"nowpagenum\":" + page + ",\"pagerownum\":\"10\"}";
+//        Log.i("resultString", "json-------" + json);
+//        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/NewsQuery/StructureQuery")
+//                .tag(this)//
+////                .headers("", "")//
+//                .params("request", json)
+//                .execute(new StringCallback() {
+//                    @Override
+//                    public void onSuccess(String s, Call call, Response response) {
+//                        news_list_refresh.onHeaderRefreshComplete();
+//                        getGoodsListStart = false;
+//                        loading_lay.setVisibility(View.GONE);
+//                        Log.i("resultString", "------------");
+//                        Log.i("resultString", s);
+//                        Log.i("resultString", "------------");
+//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
+//                        });
+//                        if (hashMap2 != null && hashMap2.get("listNews") != null) {
+//                            ArrayList<LinkedTreeMap<String, Object>> listnews = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listNews");
+//                            //分页加载数据----------------------------------------------------
+//                            if (list == null) {
+//                                list = listnews;
+//                            } else {
+//                                if (isrefresh) {
+//                                    if (list != null) {
+//                                        list = null;
+//                                        list = listnews;
+//                                    }
+//                                }
+//                                if (list.size() != 0
+//                                        && listnews.get(listnews.size() - 1).get("newsID")
+//                                        .equals(list.get(list.size() - 1).get("newsID"))) {
+//                                    have_GoodsList = false;
+//                                } else {
+//                                    for (int i = 0; i < listnews.size(); i++) {
+//                                        Database.list_news.add(listnews.get(i));
+//                                    }
+//                                    have_GoodsList = true;
+//                                }
+//                            }
+//                            //---------------------------------------------------------------
+//                            if (Database.list_news != null && Database.list_news.size() != 0) {
+//                                if (everyDayRecommendAdapter == null || isrefresh) {
+//                                    everyDayRecommendAdapter = new EveryDayRecommendAdapter(context, Database.list_news);
+//                                    listView.setAdapter(everyDayRecommendAdapter);
+//                                    have_GoodsList = true;
+//                                    noGoods.setVisibility(View.GONE);
+//                                } else if (have_GoodsList) {
+//                                    listView.requestLayout();
+//                                    everyDayRecommendAdapter.notifyDataSetChanged();
+//                                    noGoods.setVisibility(View.GONE);
+//                                } else {
+//                                    noGoods.setVisibility(View.VISIBLE);
+//                                }
+//                            } else {
+//                                noGoods.setVisibility(View.VISIBLE);
+//                                listView.setAdapter(null);
+//                                have_GoodsList = false;
+//                            }
+//                        } else {
+//                            if (Database.list_news != null && Database.list_news.size() > 0) { //分页加载无数据
+//                                have_GoodsList = false;
+//                                noGoods.setVisibility(View.VISIBLE);
+//                            } else { //加载无数据
+//                                listView.setAdapter(null);
+//                                have_GoodsList = false;
+//                                noGoods.setVisibility(View.VISIBLE);
+//                            }
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onError(Call call, Response response, Exception e) {
+//                        super.onError(call, response, e);
+//                        Log.i("resultString", "请求错误------");
+//                        news_list_refresh.onHeaderRefreshComplete();
+//                        showShort(getString(R.string.failed_to_connect_to_server));
+//                        listView.setAdapter(null);
+//                        getGoodsListStart = false;
+//                        loading_lay.setVisibility(View.GONE);
+//                    }
+//
+//                    @Override
+//                    public void parseError(Call call, Exception e) {
+//                        super.parseError(call, e);
+//                        Log.i("resultString", "网络解析错误------");
+//                    }
+//
+//                    @Override
+//                    public void onBefore(BaseRequest request) {
+//                        super.onBefore(request);
+//                    }
+//
+//                    @Override
+//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
+//                        super.onAfter(s, e);
+//                    }
+//                });
+//    }
 
     private void requestlist(final String from) { //获取社区
 
@@ -888,11 +943,11 @@ public class IndexFragment extends BaseFragment {
                                                 }
                                             }
                                         }
-                                        Database.notreadmessageidSize = message_List.size() - size;
-                                        if (Database.notreadmessageidSize > 0) {
-                                            tv_msg_number.setVisibility(View.VISIBLE);
-                                            tv_msg_number.setText(Database.notreadmessageidSize + "");
-                                        }
+//                                        Database.notreadmessageidSize = message_List.size() - size;
+//                                        if (Database.notreadmessageidSize > 0) {
+//                                            tv_msg_number.setVisibility(View.VISIBLE);
+//                                            tv_msg_number.setText(Database.notreadmessageidSize + "");
+//                                        }
                                     }
                                 } else {//没有数据
                                 }

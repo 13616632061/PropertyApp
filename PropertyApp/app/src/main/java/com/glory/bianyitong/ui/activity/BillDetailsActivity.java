@@ -77,7 +77,7 @@ public class BillDetailsActivity extends BaseActivity {
                         fangjian.setText(bean.getUserBill().getRoomName());
                         leixing.setText(bean.getUserBill().getDisplayName());
                         feiyong.setText(bean.getUserBill().getAmount()+"");
-                        time.setText(bean.getUserBill().getCreateDate());
+                        time.setText(bean.getUserBill().getCreateDate().replace("T"," "));
                         beizhu.setText(bean.getUserBill().getRemark());
                     }else {
                         showShort(bean.getAlertMessage());

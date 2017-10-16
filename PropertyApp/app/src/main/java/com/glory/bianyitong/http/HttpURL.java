@@ -9,7 +9,7 @@ public class HttpURL {
 //    public static String HTTP_LOGIN = "https://www.pgagolf.cn:4432/WebApi/Post";
 //    public static String HTTP_LOGIN_AREA = "https://www.pgagolf.cn:4432";
 
-    public static String HTTP_LOGIN = "http://192.168.1.113:1757";
+    public static String HTTP_LOGIN = "http://dev.bytsz.com.cn";
     public static String HTTP_LOGIN_AREA = "https://byt.bytsz.com.cn";
 
     public static String HTTP_URl = "http://dev.bytsz.com.cn";
@@ -26,7 +26,7 @@ public class HttpURL {
 //
 //    public static String HTTP_LOGIN3 = "http://ad.51maimai.com.cn/";
 
-    public static String HTTP_NEW_URL = "http://192.168.1.113:1757";
+    public static String HTTP_NEW_URL = "http://dev.bytsz.com.cn";
 
 
     /**
@@ -220,7 +220,8 @@ public static String HTTP_POST_ORDER_QUERYCABINET="/ApiShopAddress/QueryCabinet"
     /**+
      * 支付
      */
-    public static String HTTP_POST_COUPON_PAY="/ApiWXPay/WXPayAPP";//我的优惠券列表查询
+    public static String HTTP_POST_COUPON_PAY="/ApiWXPay/WXPayAPP";//支付
+    public static String HTTP_POST_COUPON_PAY_BAYAPP="/ApiWXPay/QueryWXPayByAPP";//支付后回调
     /**+
      * 消息
      */

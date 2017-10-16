@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.glory.bianyitong"
+    android:persistent="true"
     android:versionCode="31"
     android:versionName="1.1.2">
 
@@ -753,6 +754,13 @@
                 <action android:name="com.tencent.mm.plugin.openapi.Intent.ACTION_REFRESH_WXAPP" />
             </intent-filter>
         </receiver>
+        <service
+            android:name="com.glory.bianyitong.util.MyService"
+            android:enabled="true" >
+            <intent-filter android:priority="1000" >
+                <action android:name="com.glory.bianyitong.util.MyService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

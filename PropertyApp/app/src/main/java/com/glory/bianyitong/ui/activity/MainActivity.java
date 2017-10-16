@@ -53,6 +53,7 @@ import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.jpush.ExampleUtil;
+import com.glory.bianyitong.sdk.jpush.MyReceiver;
 import com.glory.bianyitong.ui.adapter.FragmentTabAdapter;
 import com.glory.bianyitong.ui.dialog.OpenDoorPopuWindow;
 import com.glory.bianyitong.ui.fragment.FreshSupermarketFragment;
@@ -144,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Router.injectParams(this);
         ButterKnife.bind(this);
+
         Database.registrationId = JPushInterface.getRegistrationID(getApplicationContext());
         JPushInterface.setDebugMode(true);//测试版为true
         JPushInterface.init(this);
@@ -157,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
+        Intent intent=new Intent(this,MyReceiver.class);
+        startService(intent);
 
         //显示标题  内容的了
         ExampleUtil.customPushNotification(this, 1,
@@ -223,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onResume() {
+
         isForeground = true;
         super.onResume();
         if (SharedUtil.getString("jgPushID")!=null){
@@ -587,6 +592,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onDestroy() {
         super.onDestroy();
+
     }
 
     public void registerMessageReceiver() {

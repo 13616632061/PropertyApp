@@ -109,8 +109,8 @@ public class PayActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onDestroy() {
+        super.onDestroy();
         orderCommitTwo();
     }
 
@@ -150,7 +150,7 @@ public class PayActivity extends BaseActivity {
             public void onAfter() {
 
             }
-        }).getEntityData(this, HttpURL.HTTP_POST_COUPON_PAY,json);
+        }).getEntityData(this, HttpURL.HTTP_POST_COUPON_PAY_BAYAPP,json);
         }catch (Exception e){
 
         }
@@ -161,8 +161,6 @@ public class PayActivity extends BaseActivity {
      */
     private void orderCommit(){
         try {
-
-
         Map<String,Object> map=new HashMap<>();
         map.put("OrderID",OrderID);
         map.put("DeviceType",2);//,1、ios 2、android

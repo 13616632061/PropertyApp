@@ -13,6 +13,7 @@ import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.listCommunityBulletinInfo;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
+import com.glory.bianyitong.util.SharedUtil;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
@@ -24,6 +25,7 @@ import com.glory.bianyitong.ui.adapter.CommunityAnnouceAdapter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -108,13 +110,13 @@ public class CommunityBulletinActivity extends BaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if (Database.list_communityBulletin != null && Database.list_communityBulletin.size() > 0) {
-            adapter = new CommunityAnnouceAdapter(CommunityBulletinActivity.this, Database.list_communityBulletin,
-                    checkList, isDoMore);
-            gg_Listview.setAdapter(adapter);
-        } else {
+//        if (Database.list_communityBulletin != null && Database.list_communityBulletin.size() > 0) {
+//            adapter = new CommunityAnnouceAdapter(CommunityBulletinActivity.this, Database.list_communityBulletin,
+//                    checkList, isDoMore);
+//            gg_Listview.setAdapter(adapter);
+//        } else {
             request();
-        }
+//        }
     }
 
     private void initview() {
@@ -164,37 +166,48 @@ public class CommunityBulletinActivity extends BaseActivity {
                 break;
             case R.id.iv_title_text_right: //编辑 取消/ 全部已读
                 ServiceDialog.ButtonClickZoomInAnimation(iv_title_text_right, 0.95f);
-                if (Database.list_communityBulletin != null && Database.list_communityBulletin.size() > 0) {
-//                    if (isDoMore) {//编辑
-//                        adapter.setIsDoMore(false);
-//                        adapter.notifyDataSetChanged();
-//                        iv_title_text_right.setText("编辑");
-//                        rl_bottom_ca.setVisibility(View.GONE);
-//                        isDoMore = false;
-//                    } else {
-//                        adapter.setIsDoMore(true);
-//                        adapter.notifyDataSetChanged();
-//                        isDoMore = true;
-//                        iv_title_text_right.setText("取消");
-//                        rl_bottom_ca.setVisibility(View.VISIBLE);
-//                    }
-                    Database.readbulletinid = "";
-                    for (int i = 0; i < Database.list_communityBulletin.size(); i++) {
-//                        if (Database.list_communityBulletin.get(i) != null && Database.list_communityBulletin.get(i).get("bulletinID") != null) {
-//                            Database.readbulletinid = Database.readbulletinid + Database.list_communityBulletin.get(i).get("bulletinID").toString() + ",";
-//                        }
-
-//                        if (Database.list_communityBulletin.get(i) != null && Database.list_communityBulletin.get(i).getBulletinID() != null) {
+                List<String > communityRead;
+                if (SharedUtil.getDataList("communityRead")!=null){
+                    communityRead = SharedUtil.getDataList("communityRead");
+                }else {
+                    communityRead=new ArrayList<>();
+                }
+                for (int i=0;i<Database.list_communityBulletin.size();i++){
+                    communityRead.add(Database.list_communityBulletin.get(i).getBulletinID()+"");
+                }
+                SharedUtil.setDataList("communityRead",communityRead);
+                adapter.notifyDataSetChanged();
+//                if (Database.list_communityBulletin != null && Database.list_communityBulletin.size() > 0) {
+////                    if (isDoMore) {//编辑
+////                        adapter.setIsDoMore(false);
+////                        adapter.notifyDataSetChanged();
+////                        iv_title_text_right.setText("编辑");
+////                        rl_bottom_ca.setVisibility(View.GONE);
+////                        isDoMore = false;
+////                    } else {
+////                        adapter.setIsDoMore(true);
+////                        adapter.notifyDataSetChanged();
+////                        isDoMore = true;
+////                        iv_title_text_right.setText("取消");
+////                        rl_bottom_ca.setVisibility(View.VISIBLE);
+////                    }
+//                    Database.readbulletinid = "";
+//                    for (int i = 0; i < Database.list_communityBulletin.size(); i++) {
+////                        if (Database.list_communityBulletin.get(i) != null && Database.list_communityBulletin.get(i).get("bulletinID") != null) {
+////                            Database.readbulletinid = Database.readbulletinid + Database.list_communityBulletin.get(i).get("bulletinID").toString() + ",";
+////                        }
+//
+////                        if (Database.list_communityBulletin.get(i) != null && Database.list_communityBulletin.get(i).getBulletinID() != null) {
+////                            Database.readbulletinid = Database.readbulletinid + Database.list_communityBulletin.get(i).getBulletinID() + ",";
+////                        }
+//                        if (Database.list_communityBulletin.get(i) != null && Database.list_communityBulletin.get(i).getBulletinID() != 0) {
 //                            Database.readbulletinid = Database.readbulletinid + Database.list_communityBulletin.get(i).getBulletinID() + ",";
 //                        }
-                        if (Database.list_communityBulletin.get(i) != null && Database.list_communityBulletin.get(i).getBulletinID() != 0) {
-                            Database.readbulletinid = Database.readbulletinid + Database.list_communityBulletin.get(i).getBulletinID() + ",";
-                        }
-                    }
-                    adapter.notifyDataSetChanged();
-                    Database.notreadbulletinSize = 0;
-                    mCache.put(Constant.bulletinID, Database.readbulletinid);//缓存已读消息
-                }
+//                    }
+//                    adapter.notifyDataSetChanged();
+//                    Database.notreadbulletinSize = 0;
+//                    mCache.put(Constant.bulletinID, Database.readbulletinid);//缓存已读消息
+
                 break;
         }
     }
@@ -214,8 +227,6 @@ public class CommunityBulletinActivity extends BaseActivity {
 
     private void request() { //请求社区公告
         try {
-
-
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("communityBulletin",new Object());
         String json=new Gson().toJson(map);

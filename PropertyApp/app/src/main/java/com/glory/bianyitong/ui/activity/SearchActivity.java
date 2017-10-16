@@ -113,7 +113,7 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener, 
         cabinetID = getIntent().getIntExtra("cabinetID", 0);
         Log.v("cabinetID", cabinetID + "");
         searchListFrRefresh.setOnRefreshListener(this);
-        adapter = new FreshSearchAdapter(R.layout.view_item_commodity, datas);
+        adapter = new FreshSearchAdapter(R.layout.view_item_commodity, datas,this);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         search_listView.setLayoutManager(layoutManager);
         search_listView.setAdapter(adapter);

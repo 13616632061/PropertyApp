@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.MessageInfo;
 import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.util.SharedUtil;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
@@ -138,6 +139,20 @@ public class MessageActivity extends BaseActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (message_List.size()>0){
+            if (message_List.size()>SharedUtil.getDataList("messageRead").size()){
+                Database.notreadmessageidSize=message_List.size()-SharedUtil.getDataList("messageRead").size();
+            }else {
+                Database.notreadmessageidSize=0;
+            }
+        }else {
+            Database.notreadmessageidSize=0;
+        }
+    }
+
+    @Override
     public void onClick(View view) {
         super.onClick(view);
         switch (view.getId()) {
@@ -145,6 +160,17 @@ public class MessageActivity extends BaseActivity {
                 MessageActivity.this.finish();
                 break;
             case R.id.iv_title_text_right: //编辑 取消
+                List<String > messageRead;
+                if (SharedUtil.getDataList("messageRead")!=null){
+                    messageRead = SharedUtil.getDataList("messageRead");
+                }else {
+                    messageRead=new ArrayList<>();
+                }
+                for (int i=0;i<message_List.size();i++){
+                    messageRead.add(message_List.get(i).getMessageID());
+                }
+                SharedUtil.setDataList("messageRead",messageRead);
+                adapter.notifyDataSetChanged();
 //                if (message_List != null && message_List.size() > 0) {
 //                    if (isDoMore) {//编辑
 //                        adapter.setIsDoMore(false);
@@ -160,19 +186,19 @@ public class MessageActivity extends BaseActivity {
 //                        rl_bottom_mes.setVisibility(View.VISIBLE);
 //                    }
 //                }
-                Database.readmessageid = "";
-                for (int i = 0; i < message_List.size(); i++) {
-//                    if (message_List.get(i) != null && message_List.get(i).get("messageID") != null) {
-//                        Database.readmessageid = Database.readmessageid + message_List.get(i).get("messageID").toString() + ",";
+//                Database.readmessageid = "";
+//                for (int i = 0; i < message_List.size(); i++) {
+////                    if (message_List.get(i) != null && message_List.get(i).get("messageID") != null) {
+////                        Database.readmessageid = Database.readmessageid + message_List.get(i).get("messageID").toString() + ",";
+////                    }
+//                    if (message_List.get(i) != null && message_List.get(i).getMessageID() != null) {
+//                        Database.readmessageid = Database.readmessageid + message_List.get(i).getMessageID() + ",";
 //                    }
-                    if (message_List.get(i) != null && message_List.get(i).getMessageID() != null) {
-                        Database.readmessageid = Database.readmessageid + message_List.get(i).getMessageID() + ",";
-                    }
-                }
-                adapter.notifyDataSetChanged();
-                Database.notreadmessageidSize = 0;
-                mCache.put(Constant.messageID,Database.readmessageid);
-//                SharePreToolsKits.putString(MessageActivity.this, Constant.messageID, Database.readmessageid); //缓存已读消息
+//                }
+//                adapter.notifyDataSetChanged();
+//                Database.notreadmessageidSize = 0;
+//                mCache.put(Constant.messageID,Database.readmessageid);
+////                SharePreToolsKits.putString(MessageActivity.this, Constant.messageID, Database.readmessageid); //缓存已读消息
                 break;
 //            case R.id.tv_del_mes: //删除
 ////                删除这部分有点复杂，比如12345 你删除了13 haspmap里面保存了245 但是2这项其实到了第一条了，如果你不做处理的话，

@@ -18,7 +18,9 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.ui.activity.MessageDetailsActivity;
 import com.glory.bianyitong.util.ACache;
+import com.glory.bianyitong.util.SharedUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,6 +34,7 @@ public class MessageAdapter extends BaseAdapter {
 //    private List<LinkedTreeMap<String, Object>> qiList;
     private List<MessageInfo.ListSystemMsgBean> qiList;
     private boolean isDoMore; //是否进行编辑默认为false
+    private List<String> messageRead;
 
     public MessageAdapter(Context context, List<MessageInfo.ListSystemMsgBean> qiList, HashMap<Integer, Boolean> checkList, boolean isDoMore) {//List<LinkedTreeMap<String, Object>>
         this.context = context;
@@ -172,20 +175,20 @@ public class MessageAdapter extends BaseAdapter {
             holder.item_msg_tv_date.setText("");
         }
 
-        boolean has = false;
-        String[] array = Database.readmessageid.split(",");
-        if (array != null && array.length > 0) {
-            for (int i = 0; i < array.length; i++) {
-                if (array[i].equals(messageID)) {
-                    has = true;
-                }
-            }
-        }
-        if (has) { //Database.readmessageid 里面的都是已读的,
-            holder.item_msg_read.setVisibility(View.INVISIBLE);
-        } else {
-            holder.item_msg_read.setVisibility(View.VISIBLE);
-        }
+//        boolean has = false;
+//        String[] array = Database.readmessageid.split(",");
+//        if (array != null && array.length > 0) {
+//            for (int i = 0; i < array.length; i++) {
+//                if (array[i].equals(messageID)) {
+//                    has = true;
+//                }
+//            }
+//        }
+//        if (has) { //Database.readmessageid 里面的都是已读的,
+//            holder.item_msg_read.setVisibility(View.INVISIBLE);
+//        } else {
+//            holder.item_msg_read.setVisibility(View.VISIBLE);
+//        }
 
         //上面是队点击进行处理，这里是对显示进行处理
         if (getIsCheck().get(position)) {
@@ -193,11 +196,31 @@ public class MessageAdapter extends BaseAdapter {
         } else {
             holder.item_msg_checkbox.setChecked(false);
         }
+        if (SharedUtil.getDataList("messageRead")!=null){
+            messageRead = SharedUtil.getDataList("messageRead");
+            for (String i: messageRead){
+                if (i.equals(qiList.get(position).getMessageID())){
+                    holder.item_msg_read.setVisibility(View.INVISIBLE);
+                    break;
+                }else {
+                    holder.item_msg_read.setVisibility(View.VISIBLE);
+                }
+            }
+        }
         holder.item_mes_lay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                if (qiList.get(position).get("messageID") != null) {
-//                    String messageID = qiList.get(position).get("messageID").toString();
+                if (SharedUtil.getDataList("messageRead")!=null){
+                    messageRead = SharedUtil.getDataList("messageRead");
+                    messageRead.add(qiList.get(position).getMessageID());
+                }else {
+                    messageRead=new ArrayList<String>();
+                    messageRead.add(qiList.get(position).getMessageID());
+                }
+                SharedUtil.setDataList("messageRead",messageRead);
+
+//                if (qiList.get(position).getMessageID() != null) {
+//                    String messageID = qiList.get(position).getMessageID();
 //                    Log.i("resultString", "messageID--------" + messageID);
 //                    boolean isread = false; //默认未读
 //                    String[] array = Database.readmessageid.split(",");
@@ -215,25 +238,6 @@ public class MessageAdapter extends BaseAdapter {
 //                        Database.notreadmessageidSize--;
 //                    }
 //                }
-                if (qiList.get(position).getMessageID() != null) {
-                    String messageID = qiList.get(position).getMessageID();
-                    Log.i("resultString", "messageID--------" + messageID);
-                    boolean isread = false; //默认未读
-                    String[] array = Database.readmessageid.split(",");
-                    if (array != null && array.length > 0) {
-                        for (int i = 0; i < array.length; i++) {
-                            if (array[i].equals(messageID)) {
-                                isread = true;
-                            } else {
-                                isread = false;
-                            }
-                        }
-                    }
-                    if (!isread) {
-                        Database.readmessageid = Database.readmessageid + messageID + ","; //id 拼接字符串 ,分隔 "id,id2,id3"
-                        Database.notreadmessageidSize--;
-                    }
-                }
                 Intent intent = new Intent(context, MessageDetailsActivity.class);
 //                if (qiList.get(position).get("messageContext") != null) {
 //                    intent.putExtra("messageContext", qiList.get(position).get("messageContext").toString());
@@ -267,8 +271,8 @@ public class MessageAdapter extends BaseAdapter {
                 }
                 intent.putExtra("PushID", Integer.parseInt(qiList.get(position).getMessageID()));
                 context.startActivity(intent);
-                ACache cache=ACache.get(context);
-                cache.put(Constant.messageID, Database.readmessageid); //缓存已读消息
+//                ACache cache=ACache.get(context);
+//                cache.put(Constant.messageID, Database.readmessageid); //缓存已读消息
             }
         });
         return convertView;

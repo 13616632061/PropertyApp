@@ -76,6 +76,8 @@ public class SwitchAreaActivity extends BaseActivity {
 //            intent.putExtra("from", "");//index
 //            startActivity(intent);
 //        }
+        request();
+
     }
 
     private void request() { //获取社区
@@ -137,7 +139,6 @@ public class SwitchAreaActivity extends BaseActivity {
 ////            ScrollViewLayout(SwitchAreaActivity.this, list, ll_area_list);
 //            ScrollViewLayout(SwitchAreaActivity.this, Database.my_community_List, ll_area_list);
 //        }
-        request();
     }
     /**
      * 动态添加布局

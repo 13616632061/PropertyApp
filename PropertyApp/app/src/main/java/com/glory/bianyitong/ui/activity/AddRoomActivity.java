@@ -153,10 +153,10 @@ public class AddRoomActivity extends BaseActivity {
      */
     private void request_building(int communityID) { //获取楼栋
         try {
-
-
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("communityBuilding",new Object());
+            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+            Map<String,Object> maps=new HashMap<>();
+            maps.put("communityID",communityID);
+        map.put("communityBuilding",maps);
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
