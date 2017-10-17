@@ -141,15 +141,7 @@ public class MessageActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (message_List.size()>0){
-            if (message_List.size()>SharedUtil.getDataList("messageRead").size()){
-                Database.notreadmessageidSize=message_List.size()-SharedUtil.getDataList("messageRead").size();
-            }else {
-                Database.notreadmessageidSize=0;
-            }
-        }else {
-            Database.notreadmessageidSize=0;
-        }
+
     }
 
     @Override
@@ -170,6 +162,16 @@ public class MessageActivity extends BaseActivity {
                     messageRead.add(message_List.get(i).getMessageID());
                 }
                 SharedUtil.setDataList("messageRead",messageRead);
+                if (message_List.size()>0){
+                    if (message_List.size()>SharedUtil.getDataList("messageRead").size()){
+                        Database.notreadmessageidSize=message_List.size()-SharedUtil.getDataList("messageRead").size();
+                    }else {
+                        Database.notreadmessageidSize=0;
+                    }
+                }else {
+                    Database.notreadmessageidSize=0;
+                }
+                Log.v("sadasdasdaww",Database.notreadmessageidSize+"");
                 adapter.notifyDataSetChanged();
 //                if (message_List != null && message_List.size() > 0) {
 //                    if (isDoMore) {//编辑

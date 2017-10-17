@@ -172,11 +172,15 @@ public class CommunityBulletinActivity extends BaseActivity {
                 }else {
                     communityRead=new ArrayList<>();
                 }
-                for (int i=0;i<Database.list_communityBulletin.size();i++){
-                    communityRead.add(Database.list_communityBulletin.get(i).getBulletinID()+"");
+                if (Database.list_communityBulletin!=null){
+                    for (int i=0;i<Database.list_communityBulletin.size();i++){
+                        communityRead.add(Database.list_communityBulletin.get(i).getBulletinID()+"");
+                    }
+                    SharedUtil.setDataList("communityRead",communityRead);
+                    adapter.notifyDataSetChanged();
                 }
-                SharedUtil.setDataList("communityRead",communityRead);
-                adapter.notifyDataSetChanged();
+
+
 //                if (Database.list_communityBulletin != null && Database.list_communityBulletin.size() > 0) {
 ////                    if (isDoMore) {//编辑
 ////                        adapter.setIsDoMore(false);

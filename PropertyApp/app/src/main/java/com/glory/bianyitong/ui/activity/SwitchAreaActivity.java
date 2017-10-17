@@ -205,7 +205,7 @@ public class SwitchAreaActivity extends BaseActivity {
 //                        }
                         if (list.get(j)!=null) {
                             Database.my_community = list.get(j);
-                            mCache.put( Constant.communityID, list.get(j).getCommunityID()+""); //缓存所选的小区id
+                            mCache.put( Constant.communityID, list.get(j).getUserCommunityID()+""); //缓存所选的小区id
                             item_area_select.setVisibility(View.VISIBLE);
                             EventBus.getDefault().post(true);
                             SwitchAreaActivity.this.finish();

@@ -230,14 +230,7 @@ public class CommunityAnnouceAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (qiList != null && qiList.size() != 0 && qiList.get(position) != null) {
-                    if (SharedUtil.getDataList("communityRead")!=null){
-                        communityRead = SharedUtil.getDataList("communityRead");
-                        communityRead.add(qiList.get(position).getBulletinID()+"");
-                    }else {
-                        communityRead =new ArrayList<String>();
-                        communityRead.add(qiList.get(position).getBulletinID()+"");
-                    }
-                    SharedUtil.setDataList("communityRead", communityRead);
+
 //                    if (qiList.get(position).get("bulletinID") != null) {
 //                        String bulletinId = qiList.get(position).get("bulletinID").toString();
 //                        Log.i("resultString", "bulletinId--------" + bulletinId);

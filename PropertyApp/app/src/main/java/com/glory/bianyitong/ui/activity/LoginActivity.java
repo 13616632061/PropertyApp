@@ -298,7 +298,6 @@ public class LoginActivity extends BaseActivity {
                     Database.islogin = true;
                     Database.USER_MAP = loginInfo.getUser();
                     Database.accessToken=loginInfo.getAccessToken();
-                    SharedUtil.putBean(Database.USER_MAP);
 //                    Database.jgPushID=loginInfo.getUser().getJgPushID();
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, Database.USER_MAP.getJgPushName()));
                     if (loginInfo.getUserCommnunity() != null) {

@@ -40,7 +40,7 @@ public class CommnunityInfo {
     private String buildingName;
     private int roomID;
     private String roomName;
-    private int approvalStatus;
+    private int approvalStatus=-4;
     private int unitID;
     private String unitName;
     private String approvalDate;

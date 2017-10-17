@@ -65,11 +65,15 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import cn.jpush.android.api.JPushInterface;
+import cn.jpush.android.api.TagAliasCallback;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -124,13 +128,6 @@ public class IndexFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        request();
-        if (Database.notreadbulletinSize > 0) {
-            tv_notice_number.setVisibility(View.VISIBLE);
-            tv_notice_number.setText(Database.notreadbulletinSize + "");
-        } else {
-            tv_notice_number.setVisibility(View.GONE);
-        }
         if (Database.notreadmessageidSize > 0) {
             tv_msg_number.setVisibility(View.VISIBLE);
             tv_msg_number.setText(Database.notreadmessageidSize + "");
@@ -138,7 +135,26 @@ public class IndexFragment extends BaseFragment {
             tv_msg_number.setVisibility(View.GONE);
         }
 
+        if (Database.notreadbulletinSize > 0) {
+            tv_notice_number.setVisibility(View.VISIBLE);
+            tv_notice_number.setText(Database.notreadbulletinSize + "");
+        } else {
+            tv_notice_number.setVisibility(View.GONE);
+        }
+//        if (Database.USER_MAP != null) {
+////            if (Database.my_community != null && Database.my_community.get("communityName") != null) {
+////                tvVillageName.setText(Database.my_community.get("communityName").toString());
+////            } else {
+////                tvVillageName.setText("点击添加小区");
+////            }
+//            if (Database.my_community != null && Database.my_community.getCommunityName() != null) {
+//                if (Database.my_community.getApprovalStatus()==1){
+//                }
+//            }
+//        }
     }
+
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -181,10 +197,10 @@ public class IndexFragment extends BaseFragment {
         if (Database.readmessageid == null || Database.readmessageid.equals("")) {
             Database.readmessageid = "";
         }
-
         requestmsg();
 
     }
+
 
     private void initView() {
         villageName.setOnClickListener(this);
@@ -194,17 +210,15 @@ public class IndexFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
+
         if (Database.USER_MAP != null) {
 //            if (Database.my_community != null && Database.my_community.get("communityName") != null) {
 //                tvVillageName.setText(Database.my_community.get("communityName").toString());
 //            } else {
 //                tvVillageName.setText("点击添加小区");
 //            }
-            if (Database.my_community != null && Database.my_community.getCommunityName() != null) {
-                tvVillageName.setText(Database.my_community.getCommunityName()+"("+Database.my_community.getApprovalStatusName()+")");
-            } else {
-                tvVillageName.setText(getResources().getString(R.string.click_add_community));//点击添加小区
-            }
+            requestSQ();
+
         } else {
             SharedUtil.putBoolean("login", false);
             SharedUtil.putString("jgPushID","");
@@ -222,7 +236,6 @@ public class IndexFragment extends BaseFragment {
             index_page++;
             Database.isAddComment = false;
 //            getNews(index_page, true);
-            request();
         } else {
             everyDayRecommendAdapter = new EveryDayRecommendAdapter(context, list);
             listView.setAdapter(everyDayRecommendAdapter);
@@ -236,7 +249,71 @@ public class IndexFragment extends BaseFragment {
 
     }
 
+    private void requestSQ() { //社区
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("userCommnunityMapping",new Object());
+        String jsons=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                try {
+                    JSONObject jo = new JSONObject(s);
+                    AuthAreaInfo areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
+
+                    if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
+                        DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
+                        for (int i = 0; i < Database.my_community_List.size(); i++) {
+                            if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
+                                    == Database.my_community.getUserCommunityID()) {
+                                Database.my_community = Database.my_community_List.get(i);
+                            }
+                            Log.v("sadaddwww",Database.my_community_List.get(i)+"");
+
+                        }
+
+
+                    } else {
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError() {}
+            @Override
+            public void parseError() {}
+            @Override
+            public void onBefore() {
+            }
+            @Override
+            public void onAfter() {
+                if (Database.my_community != null && Database.my_community.getCommunityName() != null) {
+                    if (Database.my_community.getApprovalStatus()==1){
+                        request();
+                        tvVillageName.setText(Database.my_community.getCommunityName()+"("+getString(R.string.audited)+")");
+                    }else if (Database.my_community.getApprovalStatus()==2){
+                        list.clear();
+                        everyDayRecommendAdapter.notifyDataSetChanged();
+                        tvVillageName.setText(Database.my_community.getCommunityName()+"("+getString(R.string.pending_review)+")");
+
+                    }else if (Database.my_community.getApprovalStatus()==0){
+                        list.clear();
+                        everyDayRecommendAdapter.notifyDataSetChanged();
+                        tvVillageName.setText(Database.my_community.getCommunityName()+"("+getString(R.string.audit_failure)+")");
+                    }
+                } else {
+                    tvVillageName.setText(getResources().getString(R.string.click_add_community));//点击添加小区
+                }
+            }
+        }).getEntityData(getActivity(),"/ApiUserCommnunity/Query", jsons);
+
+    }
+
     private void request() { //请求社区公告
+
         try {
             Map<String,Object> map=new BaseRequestBean().getBaseRequest();
             map.put("communityBulletin",new Object());
@@ -331,7 +408,6 @@ public class IndexFragment extends BaseFragment {
                             loading_lay.setVisibility(View.VISIBLE);
                             index_page++;
 //                            getNews(index_page, false);
-                            request();
                         }
                     }
                 }

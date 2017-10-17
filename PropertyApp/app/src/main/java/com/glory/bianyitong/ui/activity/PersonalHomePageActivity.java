@@ -201,7 +201,7 @@ public class PersonalHomePageActivity extends BaseActivity {
                     if (Database.list_news != null && Database.list_news.size() > 0) { //分页加载无数据
 
                     } else { //加载无数据
-                        base_listView.setAdapter(null);
+//                        base_listView.setAdapter(null);
                     }
                     have_GoodsList = false;
                     noGoods.setVisibility(View.VISIBLE);

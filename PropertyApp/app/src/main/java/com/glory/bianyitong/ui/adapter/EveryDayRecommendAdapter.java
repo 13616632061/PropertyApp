@@ -16,6 +16,7 @@ import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
 import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.util.RelativeDateFormat;
+import com.glory.bianyitong.util.SharedUtil;
 import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.ui.activity.EveryDayDetailsActivity;
@@ -32,7 +33,7 @@ public class EveryDayRecommendAdapter extends BaseAdapter {
     private Context context;
 
     private List<listCommunityBulletinInfo.ListCommunityBulletinBean> qiList;
-
+    private List<String> communityRead;
     private LayoutInflater mInflater = null;
 
     public EveryDayRecommendAdapter(Context context, List<listCommunityBulletinInfo.ListCommunityBulletinBean> qiList) {
@@ -119,12 +120,14 @@ public class EveryDayRecommendAdapter extends BaseAdapter {
             holder.item_ca_msg_tv_title.setText("");
             holder.item_ca_msg_tv_date.setText("");
         }
-        boolean has = false;
-        String[] array = Database.readbulletinid.split(",");
-        if (array != null && array.length > 0) {
-            for (int i = 0; i < array.length; i++) {
-                if (array[i].equals(bulletinID)) {
-                    has = true;
+        if (SharedUtil.getDataList("communityRead")!=null){
+            communityRead = SharedUtil.getDataList("communityRead");
+            for (String i: communityRead){
+                if (i.equals(qiList.get(position).getBulletinID()+"")){
+                    holder.item_ca_msg_read.setVisibility(View.INVISIBLE);
+                    break;
+                }else {
+                    holder.item_ca_msg_read.setVisibility(View.VISIBLE);
                 }
             }
         }

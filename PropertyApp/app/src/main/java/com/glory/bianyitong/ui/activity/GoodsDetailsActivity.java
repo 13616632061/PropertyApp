@@ -197,7 +197,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
     @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct, R.id.tv_look_all, R.id.iv_title_right})
     void onClickBtn(View view) {
-        if (!SharedUtil.getBoolean("login")||Database.accessToken==null) {
+        if (Database.accessToken==null) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
         } else {
 

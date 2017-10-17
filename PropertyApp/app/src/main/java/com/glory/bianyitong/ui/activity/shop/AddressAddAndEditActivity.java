@@ -136,7 +136,7 @@ public class AddressAddAndEditActivity extends BaseActivity {
 
     private void initView() {
         addressAddReceiver.setText(listShippingAddressBean.getHarvesterName());
-        addressAddPhone.setText(listShippingAddressBean.getHarvestePhone());
+        addressAddPhone.setText(listShippingAddressBean.getHarvestePhone().replace(" ",""));
         addressAddProvince.setText(listShippingAddressBean.getFreshCabinet().getCommunity().getProvinceName() + listShippingAddressBean.getFreshCabinet().getCommunity().getCityName() + listShippingAddressBean.getFreshCabinet().getCommunity().getDistrictName());
         addressAddArea.setText(listShippingAddressBean.getFreshCabinet().getCommunity().getStreet());
 
@@ -231,8 +231,8 @@ public class AddressAddAndEditActivity extends BaseActivity {
         super.onStart();
         if (!Database.contact_phone_name.equals("")) {
             String[] array = Database.contact_phone_name.split(",");
-            addressAddPhone.setText(array[0]);
-            addressAddPhone.setSelection(array[0].length());
+            addressAddPhone.setText(array[0].replace(" ",""));
+//            addressAddPhone.setSelection(array[0].length());
             Database.contact_phone_name = "";
         }
     }

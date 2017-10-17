@@ -17,6 +17,7 @@ import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.util.JsonHelper;
+import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.google.gson.Gson;
@@ -28,6 +29,7 @@ import com.lzy.okgo.request.BaseRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -90,8 +92,16 @@ public class BulletinDetailsActivity extends BaseActivity {
         tv_ans_content.setText(bulletinContent);
         tv_ans_auth.setText(communityName);
         tv_ans_time.setText(bulletinDatetime);
-
         if (bulletinId != 0) {
+            List<String> communityRead;
+            if (SharedUtil.getDataList("communityRead")!=null){
+                communityRead = SharedUtil.getDataList("communityRead");
+                communityRead.add(bulletinId+"");
+            }else {
+                communityRead =new ArrayList<String>();
+                communityRead.add(bulletinId+"");
+            }
+            SharedUtil.setDataList("communityRead", communityRead);
             request(bulletinId);
         }
     }

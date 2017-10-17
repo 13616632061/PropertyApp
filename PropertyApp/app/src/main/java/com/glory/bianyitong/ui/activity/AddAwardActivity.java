@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
@@ -25,25 +26,30 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.GetOrderCommitAddress;
 import com.glory.bianyitong.bean.entity.response.UserLockMapping;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.DateUtil;
+import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.timeselector.TimeSelector;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by lucy on 2016/11/22.
  * 添加授权
  */
-@Route(value = RouterMapping.ROUTER_ACTIVITY_AddAWARD,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
+@Route(value = RouterMapping.ROUTER_ACTIVITY_AddAWARD, interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class AddAwardActivity extends BaseActivity {
     @BindView(R.id.iv_title_text_right)
     TextView iv_title_text_right;
@@ -80,6 +86,10 @@ public class AddAwardActivity extends BaseActivity {
             TextView tv_time_start;
     @BindView(R.id.tv_time_end)  //结束
             TextView tv_time_end;
+    @BindView(R.id.tv_add_award)
+    TextView tvAddAward;
+    @BindView(R.id.lay_am_bottom)
+    LinearLayout layAmBottom;
     private TimeSelector timeSelector_start;
     private TimeSelector timeSelector_end;
     private int time_Limit = 0; //默认不限制
@@ -90,7 +100,7 @@ public class AddAwardActivity extends BaseActivity {
     private String str_time_start = "";
 
     @InjectParam(key = "from")
-     String from ;
+    String from;
     @InjectParam(key = "authorizationUserID")
     int authorizationUserID = 0;
     @InjectParam(key = "aESUserID")
@@ -107,14 +117,16 @@ public class AddAwardActivity extends BaseActivity {
         Router.injectParams(this);
         if (from.equals("add")) {
             inintTitle(getResources().getString(R.string.add_authorization), false, getResources().getString(R.string.carry_out));//添加授权   完成
+            layAmBottom.setVisibility(View.GONE);
         } else if (from.equals("edit")) {
+            layAmBottom.setVisibility(View.VISIBLE);
             inintTitle(getResources().getString(R.string.modify_authorization), false, getResources().getString(R.string.carry_out));//修改授权   完成
         }
 
         left_return_btn.setOnClickListener(this);
         iv_title_text_right.setOnClickListener(this);
         rl_linkman.setOnClickListener(this);
-
+        tvAddAward.setOnClickListener(this);
         ll_time_start.setOnClickListener(this);
         ll_time_end.setOnClickListener(this);
 
@@ -217,6 +229,56 @@ public class AddAwardActivity extends BaseActivity {
                     request_add(user_type, name, phone, user_identity, time_Limit, startDate, endDate);
                 }
                 break;
+            case R.id.tv_add_award:
+                delete();
+                finish();
+                break;
+        }
+    }
+
+    /**
+     * 删除授权
+     */
+    private void delete() {//
+        try {
+            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+            Map<String,Object> maps=new HashMap<>();
+            maps.put("aESUserID",aESUserID);
+            map.put("userLockMapping",maps);
+            String json = new Gson().toJson(map);
+
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
+                    });
+                    GetOrderCommitAddress bean=new Gson().fromJson(s,GetOrderCommitAddress.class);
+                    if (bean.getStatusCode()==1) {
+                        ToastUtils.showToast(AddAwardActivity.this, getString(R.string.successfully_deleted));//删除成功
+                    } else {
+                        ToastUtils.showToast(AddAwardActivity.this, getString(R.string.failed_to_delete));//删除失败
+                    }
+                }
+
+                @Override
+                public void onError() { }
+                @Override
+                public void parseError() {}
+                @Override
+                public void onBefore() {
+                    progressDialog = ProgressDialog.show(AddAwardActivity.this, "", getString(R.string.delete), true);//删除..
+                    progressDialog.setCanceledOnTouchOutside(true);
+                }
+                @Override
+                public void onAfter() {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                        progressDialog = null;
+                    }
+                }
+            }).getEntityData(this,HttpURL.HTTP_POST_LOCKMAPPING_DELETE,json);
+        }catch (Exception e){
+
         }
     }
 
@@ -225,37 +287,37 @@ public class AddAwardActivity extends BaseActivity {
         super.onStart();
         if (!Database.contact_phone_name.equals("")) {
             String[] array = Database.contact_phone_name.split(",");
-            et_linkman_phone.setText(array[0]);
-            et_linkman_phone.setSelection(array[0].length());
+            et_linkman_phone.setText(array[0].replace(" ",""));
+//            et_linkman_phone.setSelection(array[0].length());
             et_linkman_name.setText(array[1]);
             et_linkman_name.setSelection(array[1].length());
             Database.contact_phone_name = "";
         }
         if (from.equals("edit") && Database.awardpeople != null) {//姓名
-                et_linkman_name.setText(Database.awardpeople.getAuthorizationUserName());
-                et_linkman_name.setFocusable(false);
-                et_linkman_name.setEnabled(false);
-                //电话
-                et_linkman_phone.setText(Database.awardpeople.getAuthorizationUserPhone());
-                et_linkman_phone.setFocusable(false);
-                et_linkman_phone.setEnabled(false);
-                //用户身份
-                int userIdentity = Database.awardpeople.getUserIdentity();
-                if (userIdentity == 1) { //家人
-                    checkedIdentity(1);
-                } else if (userIdentity == 2) {//租客
-                    checkedIdentity(2);
-                } else if (userIdentity == 3) {//临时租客
-                    checkedIdentity(3);
-                }
+            et_linkman_name.setText(Database.awardpeople.getAuthorizationUserName());
+            et_linkman_name.setFocusable(false);
+            et_linkman_name.setEnabled(false);
+            //电话
+            et_linkman_phone.setText(Database.awardpeople.getAuthorizationUserPhone().replace(" ",""));
+            et_linkman_phone.setFocusable(false);
+            et_linkman_phone.setEnabled(false);
+            //用户身份
+            int userIdentity = Database.awardpeople.getUserIdentity();
+            if (userIdentity == 1) { //家人
+                checkedIdentity(1);
+            } else if (userIdentity == 2) {//租客
+                checkedIdentity(2);
+            } else if (userIdentity == 3) {//临时租客
+                checkedIdentity(3);
+            }
 
             if (Database.awardpeople.isTimeLimit()) {//时间限制
-                boolean timeLimit =Database.awardpeople.isTimeLimit();
+                boolean timeLimit = Database.awardpeople.isTimeLimit();
                 if (timeLimit) { //限制
                     ll_limit.setVisibility(View.VISIBLE); // 显示  限制时间选择
                     time_Limit = 1;
                     check_limit.setChecked(true);
-                    if (Database.awardpeople.getStartDate()!= null && Database.awardpeople.getEndDate()!= null) {
+                    if (Database.awardpeople.getStartDate() != null && Database.awardpeople.getEndDate() != null) {
                         String startDate = Database.awardpeople.getStartDate().toString();
                         String endDate = Database.awardpeople.getEndDate().toString();
                         tv_time_start.setText(startDate.substring(0, 10));
@@ -271,9 +333,9 @@ public class AddAwardActivity extends BaseActivity {
                 user_type = Database.awardpeople.getAuthorizationType().toString();
             }
 
-            }
-
         }
+
+    }
 
 
     private void checkedIdentity(int identity) {
@@ -297,53 +359,58 @@ public class AddAwardActivity extends BaseActivity {
     private void request_add(String type, String name, String phone, int userIdentity, int timeLimit, String startDate, String endDate) {
         String url = "";
         String json = "";
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         if (from.equals("add")) {
             url = HttpURL.HTTP_POST_LOCKMAPPING_ADD;//添加授权
-            map.put("userLockMapping",new UserLockMapping(userIdentity,timeLimit,phone,name));
-            map.put("communityID","1");
+            map.put("userLockMapping", new UserLockMapping(userIdentity, timeLimit, phone, name));
+//            map.put("communityID","1");
         } else if (from.equals("edit")) {
-            url =HttpURL.HTTP_POST_LOCKMAPPING_EDIT;//修改授权
-            map.put("userLockMapping",new UserLockMapping(aESUserID,userIdentity,timeLimit,startDate,endDate));
+            url = HttpURL.HTTP_POST_LOCKMAPPING_EDIT;//修改授权
+            map.put("userLockMapping", new UserLockMapping(aESUserID, userIdentity, timeLimit, startDate, endDate));
         }
 
-        json=new Gson().toJson(map);
+        json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
-                if(bean.getStatusCode()==1){
-                    if (from.equals("add")){
+                BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
+                if (bean.getStatusCode() == 1) {
+                    if (from.equals("add")) {
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.added_successfully));//添加成功
                         finish();
-                    }else {
+                    } else {
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.successfully_modified));//修改成功
                         finish();
                     }
-                }else if(bean.getStatusCode()==-126){
-                    if (from.equals("add")){
+                } else if (bean.getStatusCode() == -126) {
+                    if (from.equals("add")) {
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.this_user_already_has_this_permission));//该用户已有此权限
-                    }else {
+                    } else {
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.fail_to_edit));//修改失败
                     }
-                }else {
-                    if (from.equals("add")){
+                } else {
+                    if (from.equals("add")) {
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.add_failed));//添加失败
-                    }else {
+                    } else {
                         ToastUtils.showToast(AddAwardActivity.this, getResources().getString(R.string.fail_to_edit));//修改失败
                     }
                 }
             }
 
             @Override
-            public void onError() { }
+            public void onError() {
+            }
+
             @Override
-            public void parseError() {}
+            public void parseError() {
+            }
+
             @Override
             public void onBefore() {
                 progressDialog = ProgressDialog.show(AddAwardActivity.this, "", getResources().getString(R.string.load), true);
                 progressDialog.setCanceledOnTouchOutside(true);
             }
+
             @Override
             public void onAfter() {
                 if (progressDialog != null) {
@@ -351,7 +418,7 @@ public class AddAwardActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(this,url, json);
+        }).getEntityData(this, url, json);
     }
 
     @Override
@@ -391,5 +458,12 @@ public class AddAwardActivity extends BaseActivity {
             default:
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 }

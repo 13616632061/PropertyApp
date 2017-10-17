@@ -145,6 +145,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         Router.injectParams(this);
         ButterKnife.bind(this);
+        request();
 
         Database.registrationId = JPushInterface.getRegistrationID(getApplicationContext());
         JPushInterface.setDebugMode(true);//测试版为true
@@ -240,8 +241,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
-        request();
-
         if (getIntent().getIntExtra("tabId", -1) != -1) {
             showFragment(getIntent().getIntExtra("tabId", -1));
         }
@@ -263,11 +262,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 try {
                     JSONObject jo = new JSONObject(s);
                     AuthAreaInfo areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
+
                     if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
-                        Log.v("asdasdas0300","--------------------------");
                         for (int i=0;i<areaInfo.getListUserCommnunityMapping().size();i++){
-                            Log.v("asdasdas0300","CommunityID"+areaInfo.getListUserCommnunityMapping().get(i).getCommunityID());
-                            set.add("CommunityID"+areaInfo.getListUserCommnunityMapping().get(i).getCommunityID());
+                            if (areaInfo.getListUserCommnunityMapping().get(i).getApprovalStatus()==1){
+                                set.add("CommunityID"+areaInfo.getListUserCommnunityMapping().get(i).getCommunityID());
+                            }
 
                         }
                         JPushInterface.setTags(MainActivity.this, set, new TagAliasCallback() {
@@ -363,7 +363,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if (!SharedUtil.getBoolean("login")|| Database.accessToken==null){
+        if ( Database.accessToken==null){
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
         }else {
         switch (view.getId()) {
@@ -381,6 +381,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 //                        } else {
 //                            requestlist();
 //                        }
+
                         if (Database.my_community.getApprovalStatus() == 1) {//已审核
                             if (picPopuWindow == null) {
                                 picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
@@ -423,11 +424,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(TextUtil.isEmpty(Database.login_return)){
             ACache cache=ACache.get(this);
             Database.login_return = cache.getAsString(Constant.user);
+                        Log.v("alalalsisisi",Database.login_return);
+
         }
         if(!TextUtil.isEmpty(Database.login_return)){
             LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, new TypeToken<LoginUserInfo>(){}.getType());
             Database.USER_MAP = userInfo.getUser();
-//            Database.accessToken=userInfo.getAccessToken();
+            Database.accessToken=userInfo.getAccessToken();
             if(!(userInfo==null || userInfo.getUserCommnunity()==null)){
                 DataUtils.getUesrCommunity(userInfo);//社区列表
                 DataUtils.my_community(MainActivity.this);
@@ -475,7 +478,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void requestlist() { //获取社区
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("accessToken","-1");
         map.put("userCommnunityMapping",new Object());
         String jsons=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
@@ -491,6 +493,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
                                     == Database.my_community.getUserCommunityID()) {
                                 Database.my_community = Database.my_community_List.get(i);
+
                                 if (Database.my_community.getApprovalStatus() == 1) {
                                     if (picPopuWindow == null) {
                                         picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
@@ -714,19 +717,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 /*
  *  ┏┓　 ┏┓
- * ┏┛┻━━━┛┻┓
+ * ┏┛┻━━━┛┻━━━━━━┓
  * ┃　　　　　　　┃
- * ┃　　　━　　　┃
- * ┃　┳┛　┗┳　┃
+ * ┃　　　━　　　 ┃
+ * ┃　┳┛　┗┳　    ┃
  * ┃　　　　　　　┃
- * ┃　　　┻　　　┃
+ * ┃　　　┻　　　 ┃
  * ┃　　　　　　　┃
  * ┗━┓　　　┏━┛
  *     ┃　　　┃
  *     ┃　　　┃
  *     ┃　　　┗━━━┓
- *     ┃　　　　　　　┣┓
- *     ┃　　　　　　　┏┛
+ *     ┃　　　　　┣┓
+ *     ┃　　　　 ┏┛
  *     ┗┓┓┏━┳┓┏┛
  *       ┃┫┫　┃┫┫
  *       ┗┻┛　┗┻┛

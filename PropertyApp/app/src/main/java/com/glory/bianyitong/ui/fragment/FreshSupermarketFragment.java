@@ -127,7 +127,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     private String orderBy = "";
     private int freshTypeID;//查询商品列表所需参数
     private boolean isLocal = false;//定位状态 false 失败 true 成功
-    private int twoTypeFreshLeafID, twoTypeMerchantId, typeFreshLeafID = 99;//查询二级分类所需参数  类型ID  商户ID
+    private int twoTypeFreshLeafID, twoTypeMerchantId, typeFreshLeafID = 0;//查询二级分类所需参数  类型ID  商户ID
     private boolean listModel = true;//是列表模式
     private ResponseQueryMyLocal.ListAreaBean nowLocal;//当前行政区对象
     public int cabinetID = 0;
@@ -149,7 +149,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     void onClickView(View view) {
         switch (view.getId()) {
             case R.id.rl_address://切换地址
-                if (!SharedUtil.getBoolean("login")|| Database.accessToken==null){
+                if (Database.accessToken==null){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(getActivity());
                 }else{
                     Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
@@ -176,7 +176,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                         .go(getActivity());
                 break;
             case R.id.iv_title_right://购物车
-                if (!SharedUtil.getBoolean("login")||Database.accessToken==null){
+                if (Database.accessToken==null){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(getActivity());
                 }else {
                     Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
@@ -405,7 +405,6 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             //综合排序
             RadioGroup radioGroup = (RadioGroup) pView.findViewById(R.id.tabs_rg);
             radioGroup.setOnCheckedChangeListener(this);
-
             //点击弹窗下方关闭
             View pop_dismis = pView.findViewById(R.id.pop_dismis);
             pop_dismis.setOnClickListener(new View.OnClickListener() {
@@ -627,7 +626,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                 map2.put("freshLeafID", typeFreshLeafID);
                 map.put("fresh", map2);
             } else {
-                map.put("fresh", new RequestProductList(freshTypeID, orderBy, twoTypeMerchantId));
+                map.put("fresh", new RequestProductList(freshTypeID, orderBy, typeFreshLeafID));
             }
         }
 
@@ -661,7 +660,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                 } else {
 
                     if (shopData.size() <= 0) {
-                        showShort(detail.getAlertMessage());
+//                        showShort(detail.getAlertMessage());
                         shopData.clear();
                         shopListAdapter.notifyDataSetChanged();
                     } else {
@@ -822,10 +821,14 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                 orderBy = "";
                 break;
             case R.id.rb_tab_2://价格最低
+                isOne=false;
+                isAll=false;
                 tvFreshSort.setText("价格最低");
                 orderBy = "ASC";
                 break;
             case R.id.rb_tab_3://价格最高
+                isOne=false;
+                isAll=false;
                 tvFreshSort.setText("价格最高");
                 orderBy = "DESC";
                 break;

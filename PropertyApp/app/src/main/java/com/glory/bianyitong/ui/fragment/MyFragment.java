@@ -185,7 +185,7 @@ public class MyFragment extends BaseFragment {
 
     @Override
     public void onClick(View view) {
-        if (!SharedUtil.getBoolean("login") || Database.accessToken == null) {
+        if ( Database.accessToken == null) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
         } else {
 
