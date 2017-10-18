@@ -230,76 +230,85 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
     }
 
     private void request() { //钥匙查询
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("userLockMapping",new Object());
-        String json=new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                    UserLockInfo uinfo = new Gson().fromJson(s.toString(), UserLockInfo.class);
-                if(uinfo==null){
+        try {
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("userLockMapping", new Object());
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    try {
 
-                    return;
-                }
-                    if (uinfo != null && uinfo.getStatusCode()==1) {
-                        locklist = uinfo.getListUserLockMapping();
-                        if (locklist != null && locklist.size() > 0 && locklist.size() == 1) {
-                            hs_open_door_lay.setVisibility(View.GONE);
-                            ll_open_door_lay.setVisibility(View.VISIBLE);
-                            lay_door2.setVisibility(View.GONE);
-                            if (locklist != null && locklist.get(0) != null && locklist.get(0).getLockName() != null) {
-                                tv_door_name1.setText(locklist.get(0).getLockName());
-                            }
-                            tv_key_manager.setVisibility(View.VISIBLE);
-                        } else if (locklist != null && locklist.size() > 0 && locklist.size() == 2) {
-                            hs_open_door_lay.setVisibility(View.GONE);
-                            ll_open_door_lay.setVisibility(View.VISIBLE);
-                            lay_door2.setVisibility(View.VISIBLE);
+
+                        UserLockInfo uinfo = new Gson().fromJson(s.toString(), UserLockInfo.class);
+                        if (uinfo == null) {
+
+                            return;
+                        }
+                        if (uinfo != null && uinfo.getStatusCode() == 1) {
+                            locklist = uinfo.getListUserLockMapping();
+                            if (locklist != null && locklist.size() > 0 && locklist.size() == 1) {
+                                hs_open_door_lay.setVisibility(View.GONE);
+                                ll_open_door_lay.setVisibility(View.VISIBLE);
+                                lay_door2.setVisibility(View.GONE);
+                                if (locklist != null && locklist.get(0) != null && locklist.get(0).getLockName() != null) {
+                                    tv_door_name1.setText(locklist.get(0).getLockName());
+                                }
+                                tv_key_manager.setVisibility(View.VISIBLE);
+                            } else if (locklist != null && locklist.size() > 0 && locklist.size() == 2) {
+                                hs_open_door_lay.setVisibility(View.GONE);
+                                ll_open_door_lay.setVisibility(View.VISIBLE);
+                                lay_door2.setVisibility(View.VISIBLE);
 //                                    if (locklist != null && locklist.get(0) != null && locklist.get(0).get("lockName") != null) {
 //                                        tv_door_name1.setText(locklist.get(0).get("lockName").toString());
 //                                    }
-                            if (locklist != null && locklist.get(0) != null && locklist.get(0).getLockName() != null) {
-                                tv_door_name1.setText(locklist.get(0).getLockName());
-                            }
+                                if (locklist != null && locklist.get(0) != null && locklist.get(0).getLockName() != null) {
+                                    tv_door_name1.setText(locklist.get(0).getLockName());
+                                }
 //                                    if (locklist != null && locklist.get(1) != null && locklist.get(1).get("lockName") != null) {
 //                                        tv_door_name2.setText(locklist.get(1).get("lockName").toString());
 //                                    }
-                            if (locklist != null && locklist.get(1) != null && locklist.get(1).getLockName() != null) {
-                                tv_door_name2.setText(locklist.get(1).getLockName());
+                                if (locklist != null && locklist.get(1) != null && locklist.get(1).getLockName() != null) {
+                                    tv_door_name2.setText(locklist.get(1).getLockName());
+                                }
+                                tv_key_manager.setVisibility(View.VISIBLE);
+                            } else if (locklist != null && locklist.size() > 0 && locklist.size() > 3) {
+                                hs_open_door_lay.setVisibility(View.VISIBLE);
+                                ll_open_door_lay.setVisibility(View.GONE);
+                                horizontalScrollViewLayout(context, locklist, ll_open_the_door);
+                                tv_key_manager.setVisibility(View.VISIBLE);
                             }
-                            tv_key_manager.setVisibility(View.VISIBLE);
-                        } else if (locklist != null && locklist.size() > 0 && locklist.size() > 3) {
-                            hs_open_door_lay.setVisibility(View.VISIBLE);
-                            ll_open_door_lay.setVisibility(View.GONE);
-                            horizontalScrollViewLayout(context, locklist, ll_open_the_door);
-                            tv_key_manager.setVisibility(View.VISIBLE);
+                        } else {
+
                         }
-                    }else {
+                    }catch (Exception e){
 
                     }
+                }
 
-            }
+                @Override
+                public void onError() {
 
-            @Override
-            public void onError() {
+                }
 
-            }
+                @Override
+                public void parseError() {
 
-            @Override
-            public void parseError() {
+                }
 
-            }
+                @Override
+                public void onBefore() {
 
-            @Override
-            public void onBefore() {
+                }
 
-            }
+                @Override
+                public void onAfter() {
 
-            @Override
-            public void onAfter() {
+                }
+            }).getEntityData(context, "/ApiUserKey/Query", json);
+        }catch (Exception e){
 
-            }
-        }).getEntityData(context,"/ApiUserKey/Query",json);
+        }
     }
 
     private void OpenLock(int lockID) { //开锁

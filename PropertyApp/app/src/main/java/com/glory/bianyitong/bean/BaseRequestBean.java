@@ -24,7 +24,7 @@ public class BaseRequestBean{
     private int pageRowNumber=10;
     private String controllerName;
     private String actionName;
-    private String userID= TextUtils.isEmpty(RequestUtil.getuserid())?"0":RequestUtil.getuserid();
+    private String userID= TextUtils.isEmpty(RequestUtil.getuserid())?"":RequestUtil.getuserid();
     private String communityID=TextUtils.isEmpty(RequestUtil.getcommunityid()+"")?"0":RequestUtil.getcommunityid()+"";
 
     public String getTimeStemp() {

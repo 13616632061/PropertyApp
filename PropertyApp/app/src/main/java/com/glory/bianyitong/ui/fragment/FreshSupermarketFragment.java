@@ -149,7 +149,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     void onClickView(View view) {
         switch (view.getId()) {
             case R.id.rl_address://切换地址
-                if (Database.accessToken==null){
+                if (Database.USER_MAP==null){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(getActivity());
                 }else{
                     Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
@@ -176,7 +176,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                         .go(getActivity());
                 break;
             case R.id.iv_title_right://购物车
-                if (Database.accessToken==null){
+                if (Database.USER_MAP==null){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(getActivity());
                 }else {
                     Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)

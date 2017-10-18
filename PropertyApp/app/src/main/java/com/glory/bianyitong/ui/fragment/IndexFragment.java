@@ -31,6 +31,7 @@ import com.glory.bianyitong.ui.activity.AuthAreaActivity;
 import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
 import com.glory.bianyitong.ui.activity.LoginActivity;
 import com.glory.bianyitong.ui.adapter.CommunityAnnouceAdapter;
+import com.glory.bianyitong.ui.adapter.MessageAdapter;
 import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.util.SharedUtil;
@@ -128,19 +129,14 @@ public class IndexFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (Database.notreadmessageidSize > 0) {
-            tv_msg_number.setVisibility(View.VISIBLE);
-            tv_msg_number.setText(Database.notreadmessageidSize + "");
-        } else {
-            tv_msg_number.setVisibility(View.GONE);
-        }
-
-        if (Database.notreadbulletinSize > 0) {
-            tv_notice_number.setVisibility(View.VISIBLE);
-            tv_notice_number.setText(Database.notreadbulletinSize + "");
-        } else {
-            tv_notice_number.setVisibility(View.GONE);
-        }
+        requestMessage();
+        tv_notice_number.setVisibility(View.GONE);
+//        if (Database.notreadbulletinSize > 0) {
+//            tv_notice_number.setVisibility(View.VISIBLE);
+//            tv_notice_number.setText(Database.notreadbulletinSize + "");
+//        } else {
+//            tv_notice_number.setVisibility(View.GONE);
+//        }
 //        if (Database.USER_MAP != null) {
 ////            if (Database.my_community != null && Database.my_community.get("communityName") != null) {
 ////                tvVillageName.setText(Database.my_community.get("communityName").toString());
@@ -185,6 +181,7 @@ public class IndexFragment extends BaseFragment {
         progressDialog.setCanceledOnTouchOutside(true);
         ad_request();
 
+
         if (Database.readbulletinid == null || Database.readbulletinid.equals("")) { //获取已读公告缓存
             Database.readbulletinid = mCache.getAsString(Constant.bulletinID);
         }
@@ -222,6 +219,11 @@ public class IndexFragment extends BaseFragment {
         } else {
             SharedUtil.putBoolean("login", false);
             SharedUtil.putString("jgPushID","");
+            if (Database.my_community != null && Database.my_community.getCommunityID() != 0) {
+                 Database.my_community.setCommunityID(0);
+            }
+            list.clear();
+            everyDayRecommendAdapter = new EveryDayRecommendAdapter(context, list);
             tvVillageName.setText(getResources().getString(R.string.click_to_Login)); //点击登录
         }
 //        if (images != null && images.length > 0) {
@@ -262,14 +264,21 @@ public class IndexFragment extends BaseFragment {
 
                     if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
                         DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
-                        for (int i = 0; i < Database.my_community_List.size(); i++) {
-                            if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
-                                    == Database.my_community.getUserCommunityID()) {
-                                Database.my_community = Database.my_community_List.get(i);
+//                        DataUtils.saveSharePreToolsKits(getActivity());
+                        if (Database.my_community==null){
+                            if (Database.my_community_List.size()>0){
+                                Database.my_community = Database.my_community_List.get(0);
                             }
-                            Log.v("sadaddwww",Database.my_community_List.get(i)+"");
-
+                        }else {
+                            for (int i = 0; i < Database.my_community_List.size(); i++) {
+                                if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
+                                        == Database.my_community.getUserCommunityID()) {
+                                    Database.my_community = Database.my_community_List.get(i);
+                                }
+                                Log.v("sadaddwww",Database.my_community_List.get(i)+"");
+                            }
                         }
+
 
 
                     } else {
@@ -305,6 +314,8 @@ public class IndexFragment extends BaseFragment {
                         tvVillageName.setText(Database.my_community.getCommunityName()+"("+getString(R.string.audit_failure)+")");
                     }
                 } else {
+                    list.clear();
+                    everyDayRecommendAdapter.notifyDataSetChanged();
                     tvVillageName.setText(getResources().getString(R.string.click_add_community));//点击添加小区
                 }
             }
@@ -1055,6 +1066,58 @@ public class IndexFragment extends BaseFragment {
                     }
                 });
 
+    }
+
+
+    private List<MessageInfo.ListSystemMsgBean> message_List=new ArrayList<>();
+    private void requestMessage() { //请求社区公告
+        try {
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("systemMsg", new Object());
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    MessageInfo minfo = new Gson().fromJson(s, MessageInfo.class);
+//                            Log.i("resultString", "adinfo.getListHousekeeper()-------" + hinfo.getListHousekeeper());
+                    if (minfo != null && minfo.getListSystemMsg() != null) {
+                        message_List = minfo.getListSystemMsg();
+                        if (message_List.size() > 0) {
+                            tv_msg_number.setVisibility(View.VISIBLE);
+                            tv_msg_number.setText(message_List.size()-SharedUtil.getDataList("messageRead").size()+ "");
+                        } else {
+                            tv_msg_number.setVisibility(View.GONE);
+
+                        }
+                    } else {
+                        tv_msg_number.setVisibility(View.GONE);
+
+                    }
+                }
+
+                @Override
+                public void onError() {
+
+                }
+
+                @Override
+                public void parseError() {
+
+                }
+
+                @Override
+                public void onBefore() {
+
+                }
+
+                @Override
+                public void onAfter() {
+
+                }
+            }).getEntityData(getActivity(), HttpURL.HTTP_POST_GET_MESSAGE, json);
+        }catch (Exception e){
+
+        }
     }
 
 }

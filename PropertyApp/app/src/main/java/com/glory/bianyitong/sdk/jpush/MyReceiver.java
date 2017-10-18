@@ -118,14 +118,28 @@ public class MyReceiver extends BroadcastReceiver {
 
                         break;
                     case "2":
-                        Intent intent2 = new Intent(context, MessageActivity.class);
-                        intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        context.startActivity(intent2);
+                        try {
+                                Intent intent2 = new Intent(context, MessageDetailsActivity.class);
+                            intent2.putExtra("PushID",Integer.parseInt(hashMap2.get("extId")));
+                                intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                context.startActivity(intent2);
+                        }catch (Exception e){
+                            Intent intent0= new Intent(context, WelcomeActivity.class);
+                            intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(intent0);
+                        }
                         break;
                     case "3":
-                        Intent intent3 = new Intent(context, MessageActivity.class);
-                        intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        context.startActivity(intent3);
+                        try {
+                            Intent intent3 = new Intent(context, MessageDetailsActivity.class);
+                            intent3.putExtra("PushID",Integer.parseInt(hashMap2.get("extId")));
+                            intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(intent3);
+                        }catch (Exception e){
+                            Intent intent0= new Intent(context, WelcomeActivity.class);
+                            intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            context.startActivity(intent0);
+                        }
                         break;
                     case "4":
                         Intent intent4 = new Intent(context, PickupActivity.class);

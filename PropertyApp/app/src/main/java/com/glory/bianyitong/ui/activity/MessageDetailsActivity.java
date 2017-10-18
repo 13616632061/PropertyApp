@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
@@ -15,6 +16,7 @@ import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.ToastUtils;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 import com.lzy.okgo.OkGo;
@@ -23,6 +25,7 @@ import com.lzy.okgo.request.BaseRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -89,68 +92,18 @@ public class MessageDetailsActivity extends BaseActivity {
     }
 
     private void request(int messageid) {
-        String userID = RequestUtil.getuserid();
-        int communityID = RequestUtil.getcommunityid();
-
-//        String json = "{\"systemMsg\": {\"messageID\":" + messageid + ",\"communityID\":" + communityID + "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
+//        String userID = RequestUtil.getuserid();
+//        int communityID = RequestUtil.getcommunityid();
+//
+//        String json = "{\"systemMsg\": {\"messageID\":" + messageid + "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
 //                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
 //                "\"controllerName\": \"SystemMsg\",\"actionName\": \"StructureQuery\"}";
-        String json = "{\"systemMsg\": {\"messageID\":" + messageid + "},\"userid\": \"" + userID + "\",\"groupid\": \"\",\"datetime\": \"\"," +
-                "\"accesstoken\": \"\",\"version\": \"\",\"messagetoken\": \"\",\"DeviceType\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
-                "\"controllerName\": \"SystemMsg\",\"actionName\": \"StructureQuery\"}";
-        Log.i("resultString", "json----------" + json);
-//        OkGo.post(HttpURL.HTTP_LOGIN_AREA + "/SystemMsg/StructureQuery")
-//                .tag(this)//
-////                .headers("", "")//
-//                .params("request", json)
-//                .execute(new StringCallback() {
-//                    @Override
-//                    public void onSuccess(String s, Call call, Response response) {
-//                        Log.i("resultString", "------------");
-//                        Log.i("resultString", s);
-//                        Log.i("resultString", "------------");
-//                        HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
-//                        });
-//                        if (hashMap2 != null && hashMap2.get("listSystemMsg") != null) {
-//                            ArrayList<LinkedTreeMap<String, Object>> list = (ArrayList<LinkedTreeMap<String, Object>>) hashMap2.get("listCommunityBulletin");
-//                            if (list != null && list.size() != 0) {
-//                                if (list.get(0) != null && list.get(0).get("messageTitle") != null) {
-//                                    tv_ans_title.setText(list.get(0).get("messageTitle").toString());
-//                                }
-//                                if (list.get(0) != null && list.get(0).get("messageContext") != null) {
-//                                    tv_ans_content.setText(list.get(0).get("messageContext").toString());
-//                                }
-//                                if (list.get(0) != null && list.get(0).get("messageTime") != null) {
-//                                    tv_ans_time.setText(list.get(0).get("messageTime").toString());
-//                                }
-//                            }
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onError(Call call, Response response, Exception e) {
-//                        super.onError(call, response, e);
-//                        Log.i("resultString", "请求错误------");
-////                        ToastUtils.showToast(MessageDetailsActivity.this, "请求失败...");
-//                        ServiceDialog.showRequestFailed();
-//                    }
-//
-//                    @Override
-//                    public void parseError(Call call, Exception e) {
-//                        super.parseError(call, e);
-//                        Log.i("resultString", "网络解析错误------");
-//                    }
-//
-//                    @Override
-//                    public void onBefore(BaseRequest request) {
-//                        super.onBefore(request);
-//                    }
-//
-//                    @Override
-//                    public void onAfter(@Nullable String s, @Nullable Exception e) {
-//                        super.onAfter(s, e);
-//                    }
-//                });
+//        Log.i("resultString", "json----------" + json);
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        Map<String,Object> map2=new HashMap<>();
+        map2.put("messageID",messageid);
+        map.put("systemMsg",map2);
+        String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {

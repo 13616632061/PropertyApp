@@ -66,4 +66,28 @@
         </LinearLayout>
     </ScrollView>
     <include layout="@layout/base_view_line" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:background="@color/white"
+        android:orientation="vertical">
+
+        <include layout="@layout/base_view_line"></include>
+
+        <TextView
+            android:id="@+id/tv_addarea_auth"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:drawableRight="@drawable/ic_gray_next"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:text="@string/add_community"
+            android:textColor="@color/text_color_somber"
+            android:textSize="15sp"/>
+
+        <include layout="@layout/base_view_line"></include>
+    </LinearLayout>
 </LinearLayout>

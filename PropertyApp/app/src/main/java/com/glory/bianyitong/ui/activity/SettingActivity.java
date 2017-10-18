@@ -27,6 +27,7 @@ import com.glory.bianyitong.util.DataCleanManager;
 import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.ToastUtils;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -192,12 +193,13 @@ public class SettingActivity extends BaseActivity {
 
     private void logout() {
         SharedUtil.putBoolean("login", false);
-        SharedUtil.putBean(new LoginUserInfo.UserBean());
         Database.USER_MAP = null;
         Database.my_community_List = null;
         Database.my_community = null;
         Database.accessToken=null;
+        Database.login_return=null;
         SharedUtil.putString("jgPushID","");
+        mCache.put(Constant.user,"");
         mCache.remove(Constant.user);
         Intent intent = new Intent(SettingActivity.this, LoginActivity.class);
         startActivity(intent);
@@ -206,6 +208,12 @@ public class SettingActivity extends BaseActivity {
             @Override
             public void gotResult(int i, String s, Set<String> set) {
                 Log.d("123123","set Alias result is"+i);
+            }
+        });
+        JPushInterface.setTags(getApplicationContext(), new HashSet<String>(), new TagAliasCallback() {
+            @Override
+            public void gotResult(int i, String s, Set<String> set) {
+
             }
         });
     }

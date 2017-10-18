@@ -197,7 +197,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
     @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct, R.id.tv_look_all, R.id.iv_title_right})
     void onClickBtn(View view) {
-        if (Database.accessToken==null) {
+        if (Database.USER_MAP==null) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
         } else {
 
@@ -779,7 +779,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         webSettings.setBuiltInZoomControls(true); //设置支持缩放
         webSettings.setLoadsImagesAutomatically(true); //支持自动加载图片
         webSettings.setAllowFileAccess(true);//设置可以访问文件
-        webSettings.setUseWideViewPort(false); //将图片调整到适合webview的大小
+        webSettings.setUseWideViewPort(true); //将图片调整到适合webview的大小
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.SINGLE_COLUMN); //支持内容重新布局
         webSettings.supportMultipleWindows(); //多窗口
         webSettings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK); //关闭webview中缓存

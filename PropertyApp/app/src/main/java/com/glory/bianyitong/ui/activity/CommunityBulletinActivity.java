@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import com.glory.bianyitong.bean.listCommunityBulletinInfo;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.SharedUtil;
+import com.glory.bianyitong.view.NewPullToRefreshView;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.glory.bianyitong.R;
@@ -56,11 +58,11 @@ public class CommunityBulletinActivity extends BaseActivity {
     private boolean isDoMore;//是否进行编辑默认为false
     private ListView gg_Listview;
     private CommunityAnnouceAdapter adapter;
-    //    @BindView(R.id.gonggao_list_refresh)
-//    NewPullToRefreshView pullToRefreshView;
-//    private View view_loading;
-//    private TextView noGoods;
-//    private LinearLayout loading_lay;
+        @BindView(R.id.gonggao_list_refresh)
+        NewPullToRefreshView pullToRefreshView;
+    private View view_loading;
+    private TextView noGoods;
+    private LinearLayout loading_lay;
     private boolean have_GoodsList = true;// 判断是否还有
     private boolean getGoodsListStart = false; //
     private ProgressDialog progressDialog = null;
@@ -76,9 +78,10 @@ public class CommunityBulletinActivity extends BaseActivity {
         inintTitle(getString(R.string.community_announcement), false, getString(R.string.all_read)); //社区公告 全部已读
 //        inintTitle(getString(R.string.community_announcement), false, getString(R.string.edit));
 //        inintTitle(getString(R.string.community_announcement), true, "");
-//        view_loading = getLayoutInflater().inflate(R.layout.loading_lay, null);// 加载中.....页面
-//        loading_lay = (LinearLayout) view_loading.findViewById(R.id.loading_lay);
-//        noGoods = (TextView) view_loading.findViewById(R.id.noGoods);
+        view_loading = getLayoutInflater().inflate(R.layout.loading_lay, null);// 加载中.....页面
+        loading_lay = (LinearLayout) view_loading.findViewById(R.id.loading_lay);
+        loading_lay.setVisibility(View.GONE);
+        noGoods = (TextView) view_loading.findViewById(R.id.noGoods);
         left_return_btn.setOnClickListener(this);//返回
         iv_title_text_right.setOnClickListener(this); //编辑  取消
 //        tv_del_ca.setOnClickListener(this);//删除
@@ -141,20 +144,20 @@ public class CommunityBulletinActivity extends BaseActivity {
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {}
         });
-//        pullToRefreshView.setOnHeaderRefreshListener(new NewPullToRefreshView.OnHeaderRefreshListener() {
-//
-//            @Override
-//            public void onHeaderRefresh(NewPullToRefreshView view) {
-//                if (Database.list_communityBulletin != null) {
-//                    getGoodsListStart = true;
+        pullToRefreshView.setOnHeaderRefreshListener(new NewPullToRefreshView.OnHeaderRefreshListener() {
+
+            @Override
+            public void onHeaderRefresh(NewPullToRefreshView view) {
+                if (Database.list_communityBulletin != null) {
+                    getGoodsListStart = true;
 //                    index_page = 0;//重置index_page
 //                    index_page++;
 //                    getGoodsList(index_page, true);//刷新
-//
-//                request();
-//                }
-//            }
-//        });
+
+                request();
+                }
+            }
+        });
     }
 
     @Override
@@ -237,7 +240,9 @@ public class CommunityBulletinActivity extends BaseActivity {
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-//                pullToRefreshView.onHeaderRefreshComplete();
+                loading_lay.setVisibility(View.GONE);
+                noGoods.setVisibility(View.GONE);
+                pullToRefreshView.onHeaderRefreshComplete();
                     listCommunityBulletinInfo cbinfo = new Gson().fromJson(s, listCommunityBulletinInfo.class);
 //                            Log.i("resultString", "adinfo.getListHousekeeper()-------" + hinfo.getListHousekeeper());
                     if (cbinfo != null && cbinfo.getListCommunityBulletin() != null) {
@@ -280,7 +285,7 @@ public class CommunityBulletinActivity extends BaseActivity {
                             }
 //        }
                         } else {//没有数据
-//                                noGoods.setVisibility(View.VISIBLE);
+                                noGoods.setVisibility(View.GONE);
                             gg_Listview.setAdapter(null);
                             have_GoodsList = false;
                             getGoodsListStart = false;
@@ -291,12 +296,14 @@ public class CommunityBulletinActivity extends BaseActivity {
 
             @Override
             public void onError() {
+                pullToRefreshView.onHeaderRefreshComplete();
                 getGoodsListStart = false;
             }
             @Override
             public void parseError() {}
             @Override
             public void onBefore() {
+                pullToRefreshView.onHeaderRefreshComplete();
                 progressDialog = ProgressDialog.show(CommunityBulletinActivity.this, "", getString(R.string.load), true);//加载
                 progressDialog.setCanceledOnTouchOutside(true);
             }

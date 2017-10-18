@@ -1,8 +1,8 @@
 package com.glory.bianyitong.ui.activity;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,17 +11,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chenenyu.router.Router;
+import com.glory.bianyitong.R;
+import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.AuthAreaInfo;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.CommnunityInfo;
 import com.glory.bianyitong.constants.Constant;
-import com.glory.bianyitong.R;
-import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.DataUtils;
-import com.glory.bianyitong.util.ToastUtils;
 import com.google.gson.Gson;
 
 import org.greenrobot.eventbus.EventBus;
@@ -32,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * Created by lucy on 2016/11/22.
@@ -43,6 +43,9 @@ public class SwitchAreaActivity extends BaseActivity {
 
     @BindView(R.id.ll_area_list)
     LinearLayout ll_area_list;
+    @BindView(R.id.tv_addarea_auth)
+    TextView tvAddareaAuth;
+    private AuthAreaInfo areaInfo;
 
     @Override
     protected int getContentId() {
@@ -61,6 +64,20 @@ public class SwitchAreaActivity extends BaseActivity {
             }
         });
 
+        tvAddareaAuth.setOnClickListener(new View.OnClickListener() { //添加小区
+            @Override
+            public void onClick(View view) {
+//                Intent intent = new Intent(AuthAreaActivity.this, AddAreaActivity.class);
+//                startActivity(intent);
+                Intent intent = new Intent(SwitchAreaActivity.this, AddAreaCityActivity.class);
+                startActivity(intent);
+            }
+        });
+        request();
+        if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null){
+            Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)
+                    .go(SwitchAreaActivity.this);
+        }
 //        if (Database.my_community_List != null) {
 ////            ArrayList<LinkedTreeMap<String, Object>> list = Database.my_community_List;
 ////            for (int i = 0; i < list.size(); i++) {
@@ -76,29 +93,33 @@ public class SwitchAreaActivity extends BaseActivity {
 //            intent.putExtra("from", "");//index
 //            startActivity(intent);
 //        }
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         request();
 
     }
 
     private void request() { //获取社区
         try {
-            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-            map.put("userCommnunityMapping",new Object());
-            String jsons=new Gson().toJson(map);
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("userCommnunityMapping", new Object());
+            String jsons = new Gson().toJson(map);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {
-
                     try {
                         JSONObject jo = new JSONObject(s);
-                        AuthAreaInfo areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
+                        areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
                         if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
                             DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
                             DataUtils.saveSharePreToolsKits(SwitchAreaActivity.this);
                             ScrollViewLayout(SwitchAreaActivity.this, Database.my_community_List, ll_area_list);
                         } else {
-                            Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)
-                                    .go(SwitchAreaActivity.this);
+
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -106,19 +127,24 @@ public class SwitchAreaActivity extends BaseActivity {
                 }
 
                 @Override
-                public void onError() {}
+                public void onError() {
+                }
+
                 @Override
-                public void parseError() {}
+                public void parseError() {
+                }
+
                 @Override
                 public void onBefore() {
 
                 }
+
                 @Override
                 public void onAfter() {
 
                 }
-            }).getEntityData(this,"/ApiUserCommnunity/Query", jsons);
-        }catch (Exception e){
+            }).getEntityData(this, "/ApiUserCommnunity/Query", jsons);
+        } catch (Exception e) {
 
         }
     }
@@ -140,6 +166,7 @@ public class SwitchAreaActivity extends BaseActivity {
 //            ScrollViewLayout(SwitchAreaActivity.this, Database.my_community_List, ll_area_list);
 //        }
     }
+
     /**
      * 动态添加布局
      */
@@ -159,7 +186,7 @@ public class SwitchAreaActivity extends BaseActivity {
 //                    item_area_name.setText(list.get(i).get("communityName").toString());
 //                }
                 if (list != null && list.get(i).getCommunityName() != null && list.get(i).getCommunityName().length() != 0 && !list.get(i).getCommunityName().toString().equals("")) {
-                    item_area_name.setText(list.get(i).getCommunityName()+list.get(i).getBuildingName()+list.get(i).getUnitName()+list.get(i).getRoomName()); //小区名称
+                    item_area_name.setText(list.get(i).getCommunityName() + list.get(i).getBuildingName() + list.get(i).getUnitName() + list.get(i).getRoomName()); //小区名称
                 }
 //                if (Database.my_community != null && Database.my_community.get("communityID") != null) {
 //                    if (list.get(i).get("communityID").toString().equals(Database.my_community.get("communityID").toString())) {
@@ -181,7 +208,7 @@ public class SwitchAreaActivity extends BaseActivity {
                         auth_image.setImageResource(R.drawable.log_auth_checking);
                     }
                 }
-                if (Database.my_community != null ) {
+                if (Database.my_community != null) {
                     if (list.get(i).getUserCommunityID() == Database.my_community.getUserCommunityID()) {
                         item_area_select.setVisibility(View.VISIBLE);
                         item_area_lay.setClickable(false);
@@ -203,9 +230,9 @@ public class SwitchAreaActivity extends BaseActivity {
 //                            EventBus.getDefault().post(true);
 //                            SwitchAreaActivity.this.finish();
 //                        }
-                        if (list.get(j)!=null) {
+                        if (list.get(j) != null) {
                             Database.my_community = list.get(j);
-                            mCache.put( Constant.communityID, list.get(j).getUserCommunityID()+""); //缓存所选的小区id
+                            mCache.put(Constant.communityID, list.get(j).getUserCommunityID() + ""); //缓存所选的小区id
                             item_area_select.setVisibility(View.VISIBLE);
                             EventBus.getDefault().post(true);
                             SwitchAreaActivity.this.finish();
@@ -218,4 +245,10 @@ public class SwitchAreaActivity extends BaseActivity {
         }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 }

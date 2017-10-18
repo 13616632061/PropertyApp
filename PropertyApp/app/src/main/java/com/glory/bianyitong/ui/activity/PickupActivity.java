@@ -103,7 +103,7 @@ public class PickupActivity extends BaseActivity implements BaseQuickAdapter.OnI
         super.init();
         inintTitle(getString(R.string.pickup), true, ""); //取件
 
-        if (Database.accessToken==null){
+        if (Database.USER_MAP==null){
             finish();
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
         }

@@ -147,7 +147,6 @@ public class SuggestTypeActivity extends BaseActivity {
                     }
 
                 }else {
-                    showShort("系统异常");
                 }
             }
 

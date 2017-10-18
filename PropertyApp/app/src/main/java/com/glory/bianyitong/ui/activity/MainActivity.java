@@ -41,6 +41,7 @@ import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
+import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.AuthAreaInfo;
 import com.glory.bianyitong.bean.BaseRequestBean;
@@ -95,7 +96,7 @@ import cn.sharesdk.framework.ShareSDK;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 @Route(value = RouterMapping.ROUTER_ACTIVITY_MAIN)
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
     public static final String MESSAGE_RECEIVED_ACTION = "com.example.jpushdemo.MESSAGE_RECEIVED_ACTION";
     public static final String KEY_TITLE = "title";
     public static final String KEY_MESSAGE = "message";
@@ -141,8 +142,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.activity_main);
+//        requestWindowFeature(Window.FEATURE_NO_TITLE);
+//        setContentView(R.layout.activity_main);
         Router.injectParams(this);
         ButterKnife.bind(this);
         request();
@@ -227,6 +228,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
+    protected int getContentId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
     public void onResume() {
 
         isForeground = true;
@@ -270,14 +276,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             }
 
                         }
-                        JPushInterface.setTags(MainActivity.this, set, new TagAliasCallback() {
+                        JPushInterface.setTags(getApplicationContext(), set, new TagAliasCallback() {
                             @Override
                             public void gotResult(int i, String s, Set<String> set) {
 
                             }
                         });
                     } else {
+                        JPushInterface.setTags(MainActivity.this, set, new TagAliasCallback() {
+                            @Override
+                            public void gotResult(int i, String s, Set<String> set) {
 
+                            }
+                        });
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -363,7 +374,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View view) {
-        if ( Database.accessToken==null){
+        if (Database.USER_MAP==null){
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
         }else {
         switch (view.getId()) {
@@ -422,10 +433,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void getUser() {
         if(TextUtil.isEmpty(Database.login_return)){
-            ACache cache=ACache.get(this);
-            Database.login_return = cache.getAsString(Constant.user);
-                        Log.v("alalalsisisi",Database.login_return);
-
+//            ACache cache=ACache.get(this);
+            Database.login_return = mCache.getAsString(Constant.user);
         }
         if(!TextUtil.isEmpty(Database.login_return)){
             LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, new TypeToken<LoginUserInfo>(){}.getType());

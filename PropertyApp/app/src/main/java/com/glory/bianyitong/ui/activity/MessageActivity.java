@@ -11,6 +11,7 @@ import android.widget.TextView;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.MessageInfo;
 import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.ui.fragment.IndexFragment;
 import com.glory.bianyitong.util.SharedUtil;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
@@ -47,7 +48,7 @@ public class MessageActivity extends BaseActivity {
     RelativeLayout lay_no_message;
     private List<LinkedTreeMap<String, Object>> removeList;
 //    private List<LinkedTreeMap<String, Object>> message_List;
-    private List<MessageInfo.ListSystemMsgBean> message_List;
+    private List<MessageInfo.ListSystemMsgBean> message_List=new ArrayList<>();
     private HashMap<Integer, Boolean> checkList;//这是头部那个chexkbox
     private boolean isDoMore;//是否进行编辑默认为false
     private MessageAdapter adapter;
@@ -138,11 +139,7 @@ public class MessageActivity extends BaseActivity {
 //        });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
 
-    }
 
     @Override
     public void onClick(View view) {
@@ -164,12 +161,12 @@ public class MessageActivity extends BaseActivity {
                 SharedUtil.setDataList("messageRead",messageRead);
                 if (message_List.size()>0){
                     if (message_List.size()>SharedUtil.getDataList("messageRead").size()){
-                        Database.notreadmessageidSize=message_List.size()-SharedUtil.getDataList("messageRead").size();
+//                        Database.notreadmessageidSize=message_List.size()-SharedUtil.getDataList("messageRead").size();
                     }else {
-                        Database.notreadmessageidSize=0;
+//                        Database.notreadmessageidSize=0;
                     }
                 }else {
-                    Database.notreadmessageidSize=0;
+//                    Database.notreadmessageidSize=0;
                 }
                 Log.v("sadasdasdaww",Database.notreadmessageidSize+"");
                 adapter.notifyDataSetChanged();
@@ -270,8 +267,6 @@ public class MessageActivity extends BaseActivity {
 
     private void request() { //请求社区公告
         try {
-
-
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             map.put("systemMsg", new Object());
             String json = new Gson().toJson(map);

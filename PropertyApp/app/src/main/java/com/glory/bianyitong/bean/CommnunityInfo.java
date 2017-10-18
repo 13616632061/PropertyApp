@@ -25,7 +25,7 @@ public class CommnunityInfo {
      * unitName : A单元
      * approvalDate : 2017-01-03T16:14:00
      */
-    private int userCommunityID;
+    private int userCommunityID=0;
     private Object userID;
     private String userName;
     private int communityID;

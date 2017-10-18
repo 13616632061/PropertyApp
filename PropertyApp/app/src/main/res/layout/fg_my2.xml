@@ -153,7 +153,7 @@
                     android:layout_gravity="center_horizontal"
                     android:layout_weight="1"
                     android:drawablePadding="4dp"
-                    android:drawableTop="@mipmap/shoucang"
+                    android:drawableTop="@mipmap/icon_collection_normal"
                     android:gravity="center"
                     android:text="@string/favorite_product"
                     android:textColor="@color/tv_color_name"
@@ -426,6 +426,7 @@
 
                 <include layout="@layout/base_view_line"></include>
                 <TextView
+                    android:visibility="gone"
                     android:id="@+id/tv_award_manager"
                     style="@style/my_base_text_style"
                     android:layout_width="match_parent"

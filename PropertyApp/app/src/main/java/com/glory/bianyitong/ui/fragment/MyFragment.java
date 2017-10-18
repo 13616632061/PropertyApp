@@ -185,10 +185,9 @@ public class MyFragment extends BaseFragment {
 
     @Override
     public void onClick(View view) {
-        if ( Database.accessToken == null) {
+        if (Database.USER_MAP==null) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
         } else {
-
             switch (view.getId()) {
                 case R.id.cim_my_head_portrait: //个人信息
 

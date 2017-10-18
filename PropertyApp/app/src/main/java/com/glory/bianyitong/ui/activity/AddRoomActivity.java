@@ -28,6 +28,7 @@ import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
+import com.glory.bianyitong.util.ActivityManager;
 import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.TextUtil;
@@ -313,8 +314,9 @@ public class AddRoomActivity extends BaseActivity {
                 showShort(responseBean.getAlertMessage());
                 if(responseBean.getStatusCode()==1){
                     Database.isAddarea = true;
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)//认证
-                            .go(AddRoomActivity.this);
+//                    Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)//认证
+//                            .go(AddRoomActivity.this);
+                    ActivityManager.removeAllActivity();
                     AddRoomActivity.this.finish();
                 }
 

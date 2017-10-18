@@ -75,16 +75,15 @@
             android:textColor="@color/small_text_color_gray"
             android:textSize="15sp" />
     </RelativeLayout>
-    <!--<com.glory.bianyitong.view.NewPullToRefreshView
+    <com.glory.bianyitong.view.NewPullToRefreshView
         android:id="@+id/gonggao_list_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/rl_bottom_ca"
         android:layout_below="@id/ac_ca_title_line"
         android:background="@color/white"
-        android:orientation="vertical">-->
+        android:orientation="vertical">
 
-    <!--android:layout_above="@id/rl_bottom_ca"-->
+    android:layout_above="@id/rl_bottom_ca"
     <ListView
         android:id="@+id/listView_ca"
         android:layout_width="match_parent"
@@ -92,11 +91,11 @@
         android:layout_below="@id/ac_ca_title_line"
         android:background="@color/white"
         android:divider="@null" />
-    <!--</com.glory.bianyitong.view.NewPullToRefreshView>-->
+    </com.glory.bianyitong.view.NewPullToRefreshView>
     <View
         android:id="@+id/listView_bottom_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/listView_ca"
+        android:layout_below="@id/gonggao_list_refresh"
         android:background="@color/linegray" />
 </RelativeLayout>

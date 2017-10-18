@@ -48,6 +48,7 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.util.ActivityManager;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
@@ -157,7 +158,7 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
         //初始化标题栏
         inintTitle(getResources().getString(R.string.add_community), true, ""); //添加小区
         client=new LocationClient(this);
-
+        ActivityManager.addActivity(this,"addareacityactivity");
         initview();
         userID = RequestUtil.getuserid();
         //定位

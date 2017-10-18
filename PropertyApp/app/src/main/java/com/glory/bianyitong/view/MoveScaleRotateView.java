@@ -132,7 +132,7 @@ public class MoveScaleRotateView extends RelativeLayout {
                         mChildPtrID1 = INVALID_POINTER_ID;
                         if (rawX-lastX<=10&&rawX-lastX>=-10
                                 &&rawY-lastY>=-10&&rawY-lastY<=10){
-                            if (Database.accessToken==null){
+                            if (Database.USER_MAP==null){
                                 Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
                             }else {
                                 Router.build(RouterMapping.ROUTER_ACTIVITY_PICKUP)

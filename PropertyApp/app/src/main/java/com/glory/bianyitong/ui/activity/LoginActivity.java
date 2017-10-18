@@ -305,6 +305,7 @@ public class LoginActivity extends BaseActivity {
                         DataUtils.getUesrCommunity(loginInfo);//社区列表
                         DataUtils.my_community(LoginActivity.this); //获取我的社区
                     }
+                    Database.login_return=s;
                     mCache.put(Constant.user,s);
 //                    SharePreToolsKits.putJsonDataString(LoginActivity.this, Constant.user, s); //缓存登录后信息
                     //登录成功
