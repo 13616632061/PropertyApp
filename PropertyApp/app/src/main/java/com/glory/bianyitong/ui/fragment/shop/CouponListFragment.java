@@ -162,6 +162,11 @@ public class CouponListFragment extends RootFragment implements BaseQuickAdapter
                     }
                 }
                 adapter.notifyDataSetChanged();
+                if (data.size()<=0){
+                    adapter.setEmptyView(R.layout.layout_empty_wushuju);
+                }
+            }else {
+                adapter.setEmptyView(R.layout.layout_empty_wushuju);
             }
         }catch (Exception ex){
 

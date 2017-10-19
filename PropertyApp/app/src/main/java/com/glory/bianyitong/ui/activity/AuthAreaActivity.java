@@ -15,6 +15,8 @@ import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.bean.AuthAreaInfo;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.CommnunityInfo;
+import com.glory.bianyitong.bean.entity.request.RequestQueryUserInfo;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryUserById;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
@@ -49,7 +51,8 @@ public class AuthAreaActivity extends BaseActivity {
     @BindView(R.id.auth_area_list)
     LinearLayout auth_area_list;
     private ProgressDialog progressDialog = null;
-//    ArrayList<LinkedTreeMap<String, Object>> communitylist;
+    private String userName;
+    //    ArrayList<LinkedTreeMap<String, Object>> communitylist;
 //    private String from = "";
 
     @Override
@@ -73,8 +76,14 @@ public class AuthAreaActivity extends BaseActivity {
             public void onClick(View view) {
 //                Intent intent = new Intent(AuthAreaActivity.this, AddAreaActivity.class);
 //                startActivity(intent);
-                Intent intent = new Intent(AuthAreaActivity.this, AddAreaCityActivity.class);
-                startActivity(intent);
+                if (userName!=null){
+                    Intent intent = new Intent(AuthAreaActivity.this, AddAreaCityActivity.class);
+                    startActivity(intent);
+                }else {
+                    showShort("请填写您的真实姓名");
+                    Intent intent = new Intent(AuthAreaActivity.this, PersonalDataActivity.class);
+                    startActivity(intent);
+                }
             }
         });
 //        if (getIntent().getStringExtra("from").equals("index")) {
@@ -82,6 +91,13 @@ public class AuthAreaActivity extends BaseActivity {
 //            startActivity(intent);
 //        }
         request();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        user_request();
+
     }
 
     @Override
@@ -188,5 +204,36 @@ public class AuthAreaActivity extends BaseActivity {
 
         }
     }
+    private void user_request() { //获取个人信息
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("user", new RequestQueryUserInfo((String) (map.get("userID"))));
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryUserById responseQueryUserById = new Gson().fromJson(s, ResponseQueryUserById.class);
+                if (responseQueryUserById.getStatusCode() == 1) {
+                    userName = responseQueryUserById.getListUser().get(0).getUserName();
+                } else {
+                }
 
+            }
+
+            @Override
+            public void onError() {
+            }
+
+            @Override
+            public void parseError() {
+            }
+
+            @Override
+            public void onBefore() {
+            }
+
+            @Override
+            public void onAfter() {
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_QUERY_USER_INFO, json);
+    }
 }

@@ -116,7 +116,7 @@ public class CollectionActivity extends BaseActivity implements View.OnClickList
                     }
                 }else if(bean.getStatusCode()==2){
                     if(list.size()<=0)
-                        collectionAdapter.setEmptyView(R.layout.layout_empty_orderlist);
+                        collectionAdapter.setEmptyView(R.layout.layout_empty_wushuju);
                     else {
                         collectionAdapter.loadMoreEnd();
                     }

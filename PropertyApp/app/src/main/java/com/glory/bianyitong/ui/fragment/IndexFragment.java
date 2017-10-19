@@ -130,6 +130,7 @@ public class IndexFragment extends BaseFragment {
     public void onResume() {
         super.onResume();
         requestMessage();
+        ad_request();
         tv_notice_number.setVisibility(View.GONE);
 //        if (Database.notreadbulletinSize > 0) {
 //            tv_notice_number.setVisibility(View.VISIBLE);
@@ -179,7 +180,6 @@ public class IndexFragment extends BaseFragment {
 //        initList();
         progressDialog = ProgressDialog.show(context, "", getResources().getString(R.string.load), true);
         progressDialog.setCanceledOnTouchOutside(true);
-        ad_request();
 
 
         if (Database.readbulletinid == null || Database.readbulletinid.equals("")) { //获取已读公告缓存

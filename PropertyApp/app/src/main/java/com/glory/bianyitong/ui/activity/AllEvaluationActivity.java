@@ -37,8 +37,6 @@ import butterknife.OnClick;
  */
 @Route(value = RouterMapping.ROUTER_ACTIVITY_ALLORDER_COMMENT)
 public class AllEvaluationActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener {
-
-
     @BindView(R.id.rb_tab_1)
     RadioButton rbTab1;
     @BindView(R.id.rb_tab_2)

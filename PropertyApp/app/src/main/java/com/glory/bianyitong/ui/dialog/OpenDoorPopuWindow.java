@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -82,7 +83,6 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
         EventBus.getDefault().register(this);
         this.context = context;
         this.handler = handler;
-
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         mMenuView = inflater.inflate(R.layout.fg_openthedoor, null);
 
@@ -104,6 +104,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
         initView();
     }
 
+
     private void initView() {
         iv_open_ad = (ImageView) mMenuView.findViewById(R.id.iv_open_ad);
         tv_switch_area_od = (TextView) mMenuView.findViewById(R.id.tv_switch_area_od);
@@ -112,6 +113,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
         iv_opendoor_close = (ImageView) mMenuView.findViewById(R.id.iv_opendoor_close);
         hs_open_door_lay = (HorizontalScrollView) mMenuView.findViewById(R.id.hs_open_door_lay);
         ll_open_door_lay = (LinearLayout) mMenuView.findViewById(R.id.ll_open_door_lay);
+        LinearLayout pop_main= (LinearLayout) mMenuView.findViewById(R.id.pop_main);
 
         lay_door1 = (LinearLayout) mMenuView.findViewById(R.id.lay_door1);
         tv_door_name1 = (TextView) mMenuView.findViewById(R.id.tv_door_name1);
@@ -134,7 +136,19 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
 //        }
         request();
         ad_request();
+
+        setOnDismissListener(new OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                OpenDoorPopuWindow.this.dismiss();
+                handler.sendEmptyMessage(0);
+                EventBus.getDefault().unregister(this);//反注册EventBus
+            }
+        });
+
     }
+
+
 
     @Override
     public void onClick(View arg0) {
@@ -238,8 +252,6 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                 @Override
                 public void onSuccess(String s) {
                     try {
-
-
                         UserLockInfo uinfo = new Gson().fromJson(s.toString(), UserLockInfo.class);
                         if (uinfo == null) {
 
@@ -279,10 +291,9 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                                 tv_key_manager.setVisibility(View.VISIBLE);
                             }
                         } else {
-
+                            ll_open_the_door.removeAllViews();
                         }
                     }catch (Exception e){
-
                     }
                 }
 

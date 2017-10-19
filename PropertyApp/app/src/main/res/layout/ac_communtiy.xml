@@ -53,49 +53,26 @@
             android:visibility="gone" />
     </RelativeLayout>-->
 
-    <RelativeLayout
-        android:id="@+id/lay_no_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone">
-
-        <ImageView
-            android:id="@+id/iv_nomessage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/pic_no_message" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/iv_nomessage"
-            android:layout_marginTop="40dp"
-            android:text="@string/there_is_no_news_yet"
-            android:textColor="@color/small_text_color_gray"
-            android:textSize="15sp" />
-    </RelativeLayout>
-    <com.glory.bianyitong.view.NewPullToRefreshView
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:layout_below="@+id/ac_ca_title_line"
         android:id="@+id/gonggao_list_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/ac_ca_title_line"
-        android:background="@color/white"
-        android:orientation="vertical">
+        android:layout_weight="1"
+        android:layout_height="wrap_content">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/listView_ca"
+            android:background="@color/bggray"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
-    android:layout_above="@id/rl_bottom_ca"
-    <ListView
-        android:id="@+id/listView_ca"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/ac_ca_title_line"
-        android:background="@color/white"
-        android:divider="@null" />
-    </com.glory.bianyitong.view.NewPullToRefreshView>
-    <View
-        android:id="@+id/listView_bottom_line"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_below="@id/gonggao_list_refresh"
-        android:background="@color/linegray" />
+        </android.support.v7.widget.RecyclerView>
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+    <!--<View-->
+        <!--android:id="@+id/listView_bottom_line"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"-->
+        <!--android:layout_below="@id/gonggao_list_refresh"-->
+        <!--android:background="@color/linegray" />-->
 </RelativeLayout>

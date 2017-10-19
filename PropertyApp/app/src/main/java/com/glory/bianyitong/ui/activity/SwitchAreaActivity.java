@@ -16,10 +16,14 @@ import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.AuthAreaInfo;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.CommnunityInfo;
+import com.glory.bianyitong.bean.entity.request.RequestQueryUserInfo;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryUserById;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.DataUtils;
 import com.google.gson.Gson;
 
@@ -46,6 +50,7 @@ public class SwitchAreaActivity extends BaseActivity {
     @BindView(R.id.tv_addarea_auth)
     TextView tvAddareaAuth;
     private AuthAreaInfo areaInfo;
+    private String userName;
 
     @Override
     protected int getContentId() {
@@ -69,15 +74,25 @@ public class SwitchAreaActivity extends BaseActivity {
             public void onClick(View view) {
 //                Intent intent = new Intent(AuthAreaActivity.this, AddAreaActivity.class);
 //                startActivity(intent);
-                Intent intent = new Intent(SwitchAreaActivity.this, AddAreaCityActivity.class);
-                startActivity(intent);
+                if (userName!=null){
+                    Intent intent = new Intent(SwitchAreaActivity.this, AddAreaCityActivity.class);
+                    startActivity(intent);
+                }else {
+                    showShort("请填写您的真实姓名");
+                    Intent intent = new Intent(SwitchAreaActivity.this, PersonalDataActivity.class);
+                    startActivity(intent);
+                }
+
             }
         });
         request();
-        if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null){
-            Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)
-                    .go(SwitchAreaActivity.this);
-        }
+//        if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null){
+//            Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)
+//                    .go(SwitchAreaActivity.this);
+//        }
+
+
+
 //        if (Database.my_community_List != null) {
 ////            ArrayList<LinkedTreeMap<String, Object>> list = Database.my_community_List;
 ////            for (int i = 0; i < list.size(); i++) {
@@ -100,6 +115,7 @@ public class SwitchAreaActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         request();
+        user_request();
 
     }
 
@@ -250,5 +266,38 @@ public class SwitchAreaActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    private void user_request() { //获取个人信息
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("user", new RequestQueryUserInfo((String) (map.get("userID"))));
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryUserById responseQueryUserById = new Gson().fromJson(s, ResponseQueryUserById.class);
+                if (responseQueryUserById.getStatusCode() == 1) {
+                    userName = responseQueryUserById.getListUser().get(0).getUserName();
+                } else {
+                }
+
+            }
+
+            @Override
+            public void onError() {
+            }
+
+            @Override
+            public void parseError() {
+            }
+
+            @Override
+            public void onBefore() {
+            }
+
+            @Override
+            public void onAfter() {
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_QUERY_USER_INFO, json);
     }
 }

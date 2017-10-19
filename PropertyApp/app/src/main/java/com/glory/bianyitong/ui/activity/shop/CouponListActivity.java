@@ -125,6 +125,11 @@ public class CouponListActivity extends BaseActivity {
                         title[1] = "已使用(" +inuse + ")";
                         title[2] = "过期(" + overdue+ ")";
                         initView();
+                    }else {
+                        title[0] = "未使用(" +0 + ")";
+                        title[1] = "已使用(" +0 + ")";
+                        title[2] = "过期(" + 0+ ")";
+                        initView();
                     }
                 }
             }
