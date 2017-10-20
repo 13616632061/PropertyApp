@@ -19,6 +19,7 @@ import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -393,17 +394,28 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                            requestlist();
 //                        }
 
-                        if (Database.my_community.getApprovalStatus() == 1) {//已审核
+                        if (!TextUtils.isEmpty(RequestUtil.getcommunityid()+"")){
                             if (picPopuWindow == null) {
                                 picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
                             }
                             // 显示窗口
                             picPopuWindow.showAtLocation(MainActivity.this.findViewById(R.id.lay_activity_main),
                                     Gravity.NO_GRAVITY, 0, 0); // 设置layout在PopupWindow中显示的位置
-                        } else {
-                            requestlist();
                         }
+
+//                        if (Database.my_community.getApprovalStatus() == 1) {//已审核
+//                            if (picPopuWindow == null) {
+//                                picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
+//                            }
+//                            // 显示窗口
+//                            picPopuWindow.showAtLocation(MainActivity.this.findViewById(R.id.lay_activity_main),
+//                                    Gravity.NO_GRAVITY, 0, 0); // 设置layout在PopupWindow中显示的位置
+//                        } else {
+//                            requestlist();
+//                        }
                     } else {//没有小区
+                        requestSQ();
+                        showShort("请添加或等待小区审核通过后才可开锁");
                         Intent intent = new Intent(MainActivity.this, AuthAreaActivity.class); //
                         intent.putExtra("from", "");
                         startActivity(intent);
@@ -425,6 +437,68 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 break;
         }
         }
+    }
+
+    private void requestSQ() { //社区
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        map.put("userCommnunityMapping",new Object());
+        String jsons=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                try {
+                    JSONObject jo = new JSONObject(s);
+                    AuthAreaInfo areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
+
+                    if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
+                        DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
+//                        DataUtils.saveSharePreToolsKits(getActivity());
+                        if (Database.my_community==null){
+                            for (int i=0;i<Database.my_community_List.size();i++){
+                                if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
+                                    if (Database.my_community_List.get(i).getApprovalStatus()==1){
+                                        Database.my_community = Database.my_community_List.get(i);
+                                    }
+                                }
+                            }
+                        }else {
+                            for (int i = 0; i < Database.my_community_List.size(); i++) {
+                                if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
+                                        == Database.my_community.getUserCommunityID()) {
+                                    Database.my_community = Database.my_community_List.get(i);
+                                }
+                            }
+                        }
+
+
+
+                    } else {
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onError() {}
+            @Override
+            public void parseError() {}
+            @Override
+            public void onBefore() {
+            }
+            @Override
+            public void onAfter() {
+                if (Database.my_community == null ) {
+                    showShort("请添加或等待小区审核通过后才可开锁");
+                    Intent intent = new Intent(MainActivity.this, AuthAreaActivity.class); //
+                    intent.putExtra("from", "");
+                    startActivity(intent);
+                }
+            }
+        }).getEntityData(this,"/ApiUserCommnunity/Query", jsons);
+
     }
 
     public void showFragment(int tabId) {

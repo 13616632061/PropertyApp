@@ -24,6 +24,7 @@ import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.DynamicListInfo;
 import com.glory.bianyitong.bean.entity.request.RequestNeighborhood;
 import com.glory.bianyitong.bean.entity.request.RequestNeighborhoodComment;
 import com.glory.bianyitong.bean.entity.request.RequestNeighborhoodLike;
@@ -116,7 +117,7 @@ public class DynamicDetailsActivity extends BaseActivity {
     private RelativeLayout dynamic_right_more;//更多 (举报)
     private TextView dynamic_tv_comment_number;//评论数
     //评论列表
-    private ArrayList<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodCommentBean> commentlist;//评论数据
+    private ArrayList<DynamicListInfo.ListNeighborhoodCommentBean> commentlist;//评论数据
     private DynamicCommentAdapter dcAdapter;
     private View view_loading;
     private TextView noGoods;
@@ -132,7 +133,7 @@ public class DynamicDetailsActivity extends BaseActivity {
     private Handler handler;
     private String userID;
     private ReportPopuWindow reportPopuWindow;
-
+    private int index_page = 0;
     @Override
     protected int getContentId() {
         return R.layout.lay_dynamic_comment;
@@ -170,6 +171,7 @@ public class DynamicDetailsActivity extends BaseActivity {
         noGoods = (TextView) view_loading.findViewById(R.id.noGoods);
         listView_dynamic.addHeaderView(view_dynamic);
         listView_dynamic.addFooterView(view_loading);
+        listView_dynamic.setAdapter(null);
         listView_dynamic.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(AbsListView view, int scrollState) {
@@ -178,18 +180,23 @@ public class DynamicDetailsActivity extends BaseActivity {
                     // 判断是否滚动到底部
                     if (view.getLastVisiblePosition() == view.getCount() - 1) {
                         //加载更多功能的代码
-//                        if (Database.GOODS_LIST != null && have_GoodsList && !getGoodsListStart) {
-//                            getGoodsListStart = true;
-//                            loading_lay.setVisibility(View.VISIBLE);
-//                            index_page++;
-//                            getGoodsList(index_page, false);
-//                        }
+                        if (commentlist!= null && have_GoodsList && !getGoodsListStart) {
+                            getGoodsListStart = true;
+                            loading_lay.setVisibility(View.VISIBLE);
+                            index_page++;
+                            requestHood(index_page,false);
+                        }
                     }
                 }
             }
             @Override
             public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {}
         });
+
+        index_page = 0;
+        index_page++;
+        requestHood(index_page,true);
+
         view_loading.setVisibility(View.GONE);
         handler = new Handler() { //点赞
             @Override
@@ -197,10 +204,12 @@ public class DynamicDetailsActivity extends BaseActivity {
                 super.handleMessage(msg);
                 switch (msg.what) {
                     case 0:  //点赞
-                        request_like(neighborhoodid, msg.arg1);
+                        int position=msg.arg1;
+                        request_like(neighborhoodid, commentlist.get(position).getNeighboCommentID(),position);
                         break;
                     case 1: //取消点赞
-                        request_like_cancel(msg.arg1);
+                        int position2=msg.arg1;
+                        request_like_cancel( commentlist.get(position2).getLikeStatu(),position2);
                         break;
                     case 2://举报
                         reportPopuWindow = new ReportPopuWindow(DynamicDetailsActivity.this, rhandler, msg.getData());//, msg.arg1, del_handler
@@ -260,9 +269,9 @@ public class DynamicDetailsActivity extends BaseActivity {
                 }else {
                     if (Database.USER_MAP != null) {
                         if (islike) {// 点赞
-                            request_like(neighborhoodid, 0);
+                            request_like(neighborhoodid, 0,-1);
                         } else {//取消点赞
-                            request_like_cancel(neighborhood.getLikeStatu());
+                            request_like_cancel(neighborhood.getLikeStatu(),-1);
                         }
                     } else {//登录
                         Intent intent_login = new Intent();
@@ -301,7 +310,9 @@ public class DynamicDetailsActivity extends BaseActivity {
             Log.i("resultString", "------------进来了");
             Database.isAddComment = false;
             Database.islogin = false;
-            request(false);
+            commentlist.clear();
+            index_page = 1;
+            requestHood(index_page,true);
         }
     }
 
@@ -354,33 +365,33 @@ public class DynamicDetailsActivity extends BaseActivity {
             tv_likeNumber.setText(getString(R.string.praise)+" " + neighborhood.getLikeCount());
         }
 
-        if (neighborhood != null && neighborhood.getListNeighborhoodComment() != null) {//评论列表
-            List<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodCommentBean> list = neighborhood.getListNeighborhoodComment();
-            if (commentlist != null) {
-                commentlist.clear();
-            }
-            if (list != null && list.size() > 0) {
-                for (int i = 0; i < list.size(); i++) {
-                    commentlist.add(list.get(i));
-                }
-            }
-            if (commentlist != null && commentlist.size() != 0) {
-                if (dcAdapter == null || isrefresh) {
-                    have_GoodsList = true;
-                    dcAdapter = new DynamicCommentAdapter(DynamicDetailsActivity.this, commentlist, handler);
-                    listView_dynamic.setAdapter(dcAdapter);
-                } else {
-                    have_GoodsList = true;
-//                    listView_dynamic.requestLayout();
-                    dcAdapter.notifyDataSetChanged();
-                }
-            } else {//没有数据
-                noGoods.setVisibility(View.VISIBLE);
-                listView_dynamic.setAdapter(null); //隐藏listview  可以显示headview
-                have_GoodsList = false;
-                getGoodsListStart = false;
-            }
-        }
+//        if (neighborhood != null && neighborhood.getListNeighborhoodComment() != null) {//评论列表
+//            List<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodCommentBean> list = neighborhood.getListNeighborhoodComment();
+//            if (commentlist != null) {
+//                commentlist.clear();
+//            }
+//            if (list != null && list.size() > 0) {
+//                for (int i = 0; i < list.size(); i++) {
+//                    commentlist.add(list.get(i));
+//                }
+//            }
+//            if (commentlist != null && commentlist.size() != 0) {
+//                if (dcAdapter == null || isrefresh) {
+//                    have_GoodsList = true;
+//                    dcAdapter = new DynamicCommentAdapter(DynamicDetailsActivity.this, commentlist, handler);
+//                    listView_dynamic.setAdapter(dcAdapter);
+//                } else {
+//                    have_GoodsList = true;
+////                    listView_dynamic.requestLayout();
+//                    dcAdapter.notifyDataSetChanged();
+//                }
+//            } else {//没有数据
+//                noGoods.setVisibility(View.VISIBLE);
+//                listView_dynamic.setAdapter(null); //隐藏listview  可以显示headview
+//                have_GoodsList = false;
+//                getGoodsListStart = false;
+//            }
+//        }
     }
 
     /**
@@ -389,8 +400,6 @@ public class DynamicDetailsActivity extends BaseActivity {
      */
     private void request(final boolean isrefresh) { //获取近邻详情
         try {
-
-
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("neighborhood",new RequestNeighborhood(neighborhoodid));
         String json=new Gson().toJson(map);
@@ -435,14 +444,82 @@ public class DynamicDetailsActivity extends BaseActivity {
     }
 
     /**
+     * 近邻分页
+     * @param index_page
+     */
+    private void requestHood(int index_page, final boolean isrefresh) {
+        try {
+            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+            Map<String,Object> map2=new HashMap<>();
+            map2.put("neighborhoodID",neighborhoodid);
+            map.put("neighborhoodComment",map2);
+            map.put("currentPageNumber",index_page);
+            String json=new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    getGoodsListStart = false;
+                    loading_lay.setVisibility(View.GONE);
+                     DynamicListInfo detail=new Gson().fromJson(s,DynamicListInfo.class);
+                    if(detail.getStatusCode()==1){
+                        for (DynamicListInfo.ListNeighborhoodCommentBean data:detail.getListNeighborhoodComment()){
+                            commentlist.add(data);
+
+                        }
+                        if (commentlist != null && commentlist.size() != 0) {
+                            if (dcAdapter == null || isrefresh) {
+                                have_GoodsList = true;
+                                dcAdapter = new DynamicCommentAdapter(DynamicDetailsActivity.this, commentlist, handler);
+                                listView_dynamic.setAdapter(dcAdapter);
+                            }else if (have_GoodsList) {
+                                listView_dynamic.requestLayout();
+                                dcAdapter.notifyDataSetChanged();
+                                noGoods.setVisibility(View.GONE);
+                            } else {
+                                noGoods.setVisibility(View.VISIBLE);
+                            }
+
+//                           listView_dynamic.requestLayout();
+                         }
+                    }else {
+                        if (commentlist != null && commentlist.size() != 0){
+                            noGoods.setVisibility(View.VISIBLE);
+                            have_GoodsList = false;
+                            getGoodsListStart = false;
+                        }
+
+                    }
+
+                }
+
+                @Override
+                public void onError() {
+                    getGoodsListStart = false;
+                    loading_lay.setVisibility(View.GONE);
+                }
+                @Override
+                public void parseError() {}
+                @Override
+                public void onBefore() { }
+                @Override
+                public void onAfter() {
+
+                }
+            }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_HBORHOODCOMMENT_QUERY,json);
+        }catch (Exception e){
+
+        }
+    }
+
+
+
+    /**
      * 点赞
      * @param neighborhoodID
      * @param commentToID
      */
-    private void request_like(int neighborhoodID, int commentToID) { //点赞
+    private void request_like(int neighborhoodID, int commentToID, final int position) { //点赞
         try {
-
-
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("neighborhoodLike",new RequestNeighborhoodComment(neighborhoodID,Database.USER_MAP.getCustomerPhoto(),commentToID));
         String json=new Gson().toJson(map);
@@ -452,8 +529,15 @@ public class DynamicDetailsActivity extends BaseActivity {
                 BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
                 showShort(bean.getAlertMessage());
                 if(bean.getStatusCode()==1){
-                    request(false); //刷新
-                    EventBus.getDefault().post("addComment");
+                    if (position==-1){
+                        request(false); //刷新
+                        EventBus.getDefault().post("addComment");
+                    }else {
+                        commentlist.get(position).setLikeCount(commentlist.get(position).getLikeCount()+1);
+                        commentlist.get(position).setLikeStatu(bean.getNeighborhoodLikeID());
+                        dcAdapter.notifyDataSetChanged();
+                    }
+
                 }
             }
             @Override
@@ -476,10 +560,8 @@ public class DynamicDetailsActivity extends BaseActivity {
         }
     }
 
-    private void request_like_cancel(int neighborhoodLikeID) { //取消点赞
+    private void request_like_cancel(int neighborhoodLikeID, final int position) { //取消点赞
         try {
-
-
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("neighborhoodLike",new RequestNeighborhoodLike(neighborhoodLikeID));
         String json=new Gson().toJson(map);
@@ -490,8 +572,14 @@ public class DynamicDetailsActivity extends BaseActivity {
                 BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
                 showShort(bean.getAlertMessage());
                 if(bean.getStatusCode()==1){
-                    request(false); //刷新
-                    EventBus.getDefault().post("addComment");
+                    if (position==-1) {
+                        request(false); //刷新
+                        EventBus.getDefault().post("addComment");
+                    }else {
+                        commentlist.get(position).setLikeCount(commentlist.get(position).getLikeCount()-1);
+                        commentlist.get(position).setLikeStatu(-1);
+                        dcAdapter.notifyDataSetChanged();
+                    }
                 }
 
             }

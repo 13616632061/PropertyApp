@@ -63,6 +63,7 @@ public class MessageDetailsActivity extends BaseActivity {
     protected void init() {
         super.init();
         PushID = getIntent().getIntExtra("PushID", 0);
+
         id = getIntent().getStringExtra("id");
         inintTitle(getString(R.string.message_details), true, "");
         left_return_btn.setOnClickListener(new View.OnClickListener() { //返回
@@ -86,6 +87,11 @@ public class MessageDetailsActivity extends BaseActivity {
         tv_ans_title.setText(messageTitle);
         tv_ans_content.setText(messageContext);
         tv_ans_time.setText(messageTime);
+        String msg = getIntent().getStringExtra("msg");
+        Log.v("sad",msg);
+        if (msg!=null){
+            tv_ans_content.setText(msg);
+        }
         if (PushID != 0) {
             request(PushID);
         }

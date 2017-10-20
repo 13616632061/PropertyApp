@@ -36,6 +36,46 @@
         android:layout_width="match_parent"
         android:layout_height="1px"
         android:background="@color/linegray"/>
+
+    <LinearLayout
+        android:id="@+id/lay_search_nothing"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+
+        <LinearLayout
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+
+            <ImageView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/hnsearch"
+                android:layout_gravity="center"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="20dp"
+                android:text="暂无相关数据"
+                android:textColor="@color/black"
+                android:textSize="16sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:textColor="@color/small_text_color_gray"
+                android:textSize="11sp" />
+        </LinearLayout>
+    </LinearLayout>
     <com.glory.bianyitong.view.NewPullToRefreshView
         android:id="@+id/neighbour_pullToRefreshView"
         android:layout_width="match_parent"
@@ -51,4 +91,5 @@
             android:layoutAnimation="@anim/navagation_gridview_anim"
             android:listSelector="@android:color/transparent" />
     </com.glory.bianyitong.view.NewPullToRefreshView>
+
 </LinearLayout>

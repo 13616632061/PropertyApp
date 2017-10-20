@@ -365,8 +365,12 @@ public class LoginActivity extends BaseActivity {
 //                    if (Database.my_community_List.get(0) != null && Database.my_community_List.get(0).get("communityID") != null) {
 //                        Database.my_community = Database.my_community_List.get(0);
 //                    }
-                    if (Database.my_community_List.get(0) != null && Database.my_community_List.get(0).getCommunityID() != 0) {
-                        Database.my_community = Database.my_community_List.get(0);
+                    for (int i=0;i<Database.my_community_List.size();i++){
+                        if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
+                            if (Database.my_community_List.get(i).getApprovalStatus()==1){
+                                Database.my_community = Database.my_community_List.get(i);
+                            }
+                        }
                     }
                 }
             }
@@ -375,9 +379,16 @@ public class LoginActivity extends BaseActivity {
 //                if (Database.my_community_List.get(0) != null && Database.my_community_List.get(0).get("communityID") != null) {
 //                    Database.my_community = Database.my_community_List.get(0);
 //                }
-                if (Database.my_community_List.get(0) != null && Database.my_community_List.get(0).getCommunityID() != 0) {
-                    Database.my_community = Database.my_community_List.get(0);
+                for (int i=0;i<Database.my_community_List.size();i++){
+                    if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
+                        if (Database.my_community_List.get(i).getApprovalStatus()==1){
+                            Database.my_community = Database.my_community_List.get(i);
+                        }
+                    }
                 }
+//                if (Database.my_community_List.get(0) != null && Database.my_community_List.get(0).getCommunityID() != 0) {
+//                    Database.my_community = Database.my_community_List.get(0);
+//                }
             }
         }
     }

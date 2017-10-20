@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.chenenyu.router.Router;
 import com.github.lazylibrary.util.ToastUtils;
+import com.glory.bianyitong.bean.DynamicListInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.util.DateUtil;
@@ -41,12 +42,12 @@ import java.util.List;
  */
 public class DynamicCommentAdapter extends BaseAdapter {
     private Context context;
-    private ArrayList<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodCommentBean> list;
+    private ArrayList<DynamicListInfo.ListNeighborhoodCommentBean> list;
     private Handler handler;
 
     private LayoutInflater mInflater = null;
 
-    public DynamicCommentAdapter(Context context, ArrayList<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodCommentBean> list, Handler handler) {
+    public DynamicCommentAdapter(Context context, ArrayList<DynamicListInfo.ListNeighborhoodCommentBean> list, Handler handler) {
         this.context = context;
         this.list = list;
         this.handler = handler;
@@ -123,10 +124,10 @@ public class DynamicCommentAdapter extends BaseAdapter {
                 holder.comment_time.setText("");
             }
 
-            holder.tv_likeNumber_to_comment.setText(list.get(position).getLikeCountX()+"");//  评论点赞数
+            holder.tv_likeNumber_to_comment.setText(list.get(position).getLikeCount()+"");//  评论点赞数
 
 
-            if (list.get(position).getLikeStatuX() >=0) {
+            if (list.get(position).getLikeStatu() >=0) {
                 //点赞
                 holder.tv_likeImage.setImageResource(R.drawable.log_already_like);
             } else {
@@ -134,13 +135,13 @@ public class DynamicCommentAdapter extends BaseAdapter {
             }
             /**************************************重要注释*****************************多级评论huangyue*/
             if (list.get(position).getListComment() != null ) {
-                List<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodCommentBean.ListCommentBean> listComment = list.get(position).getListComment();
+                List<DynamicListInfo.ListNeighborhoodCommentBean.ListCommentBean> listComment = list.get(position).getListComment();
                 if (listComment != null && listComment.size() > 0) {
                     holder.tv_comment_to_comment_num.setText(listComment.size() + ""); //评论评论数
                     holder.lay_comment_to_comment.setVisibility(View.VISIBLE);
                     ScrollViewLayout(context, listComment, holder.lay_comment_list
-                            , list.get(position).getNeighborhoodIDX()
-                            , 1);
+                            , list.get(position).getNeighborhoodID()
+                            , 1,position);
 
                 } else {
                     holder.lay_comment_to_comment.setVisibility(View.GONE);
@@ -167,17 +168,18 @@ public class DynamicCommentAdapter extends BaseAdapter {
             public void onClick(View v) {
                 ServiceDialog.ButtonClickZoomInAnimation(lay_like_ddll, 0.95f);
                 if (Database.USER_MAP != null) {
-                    if (list.get(position).getLikeStatuX()>=0) {
+                    if (list.get(position).getLikeStatu()>=0) {
                         //取消点赞
                         Message msg = new Message();
                         msg.what = 1;
-                        msg.arg1 =list.get(position).getLikeStatuX();
+//                        msg.arg1 =list.get(position).getLikeStatu();
+                        msg.arg1 =position;
                         handler.sendMessage(msg);
                     } else {
                         //点赞
                         Message msg = new Message();
                         msg.what = 0;
-                        msg.arg1 = list.get(position).getNeighboCommentID();
+                        msg.arg1 = position;
                         handler.sendMessage(msg);
                     }
                 } else {//登录
@@ -191,12 +193,12 @@ public class DynamicCommentAdapter extends BaseAdapter {
             public void onClick(View v) {
                 ServiceDialog.ButtonClickZoomInAnimation(lay_comment, 0.95f);
 
-                    if (list != null && list.get(position).getNeighborhoodIDX()>0 &&
+                    if (list != null && list.get(position).getNeighborhoodID()>0 &&
                             list.get(position).getNeighboCommentID()>0) {
                         Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_COMMENT)
-                                .with("neighborhoodID",list.get(position).getNeighborhoodIDX())
+                                .with("neighborhoodID",list.get(position).getNeighborhoodID())
                                 .with("CommentToID",list.get(position).getNeighboCommentID())
-                                .with("commentToUserID",list.get(position).getAesUserIDX())
+                                .with("commentToUserID",list.get(position).getAesUserID())
                                 .with("commentToUserName",list.get(position).getUserName())
                                 .go(context);
 
@@ -225,7 +227,7 @@ public class DynamicCommentAdapter extends BaseAdapter {
                     bundle.putInt("reportID", list.get(position).getNeighboCommentID());//举报ID(近邻id或评论id)
                     bundle.putString("reportUserID", Database.USER_MAP.getUserID());//举报人ID（默认0）
                     bundle.putString("reportUserName", Database.USER_MAP.getUserName());//举报人姓名
-                    bundle.putString("publisherID", list.get(position).getAesUserIDX());//发布者ID
+                    bundle.putString("publisherID", list.get(position).getAesUserID());//发布者ID
                     msg.setData(bundle);
                     handler.sendMessage(msg);
                 } else {//登录
@@ -246,12 +248,12 @@ public class DynamicCommentAdapter extends BaseAdapter {
     /**
      * 动态添加布局
      */
-    public void ScrollViewLayout(final Context context, final List<ResponseFriendDetail.ListNeighborhoodBean.ListNeighborhoodCommentBean.ListCommentBean> list, LinearLayout lay_gallery
-            , final int neighborhoodID, final int CommentToID) {
+    public void ScrollViewLayout(final Context context, final List<DynamicListInfo.ListNeighborhoodCommentBean.ListCommentBean> lists, LinearLayout lay_gallery
+            , final int neighborhoodID, final int CommentToID, final int position) {
         lay_gallery.removeAllViews();
         LayoutInflater mInflater = LayoutInflater.from(context);
-        if (list != null && list.size() != 0) {
-            for (int i = 0; i < list.size(); i++) {
+        if (lists != null && lists.size() != 0) {
+            for (int i = 0; i < lists.size(); i++) {
                 final View view = mInflater.inflate(R.layout.item_comment_to_comment, lay_gallery, false);
                 final LinearLayout lay_comment1 = (LinearLayout) view.findViewById(R.id.lay_comment1); // xx : xxxx
                 final TextView tv_comment_text = (TextView) view.findViewById(R.id.tv_comment_text);
@@ -272,20 +274,29 @@ public class DynamicCommentAdapter extends BaseAdapter {
 //                }
 
                 // xx2 回复 xx3 : xxxx
-                userName = list.get(i).getUserNameX().toString();
-                commentToUserName = list.get(i).getCommentToUserName().toString();
-                commentContent = list.get(i).getCommentContent();
+                if (lists.get(i).getUserName()!=null){
+                    userName = lists.get(i).getUserName().toString();
+                }
+                if ( lists.get(i).getCommentToUserName()!=null){
+                    commentToUserName = lists.get(i).getCommentToUserName().toString();
+                }
 
-                if (list != null && list.get(i).getAesCommentToUserID() != null ) {
+                commentContent = lists.get(i).getCommentContent();
+
+                if (lists != null && lists.get(i).getAesCommentToUserID() != null ) {
 //                    lay_comment1.setVisibility(View.GONE);
 //                    lay_comment2.setVisibility(View.VISIBLE);
-                    text = userName + " 回复 " + commentToUserName + " : " + commentContent;
+                    if (lists.get(i).getAesCommentToUserID().equals(lists.get(i).getAesUserID())){
+                        text = userName + " : " + commentContent;
+                    }else {
+                        text = userName + " 回复 " + commentToUserName + " : " + commentContent;
+                    }
                     SpannableStringBuilder builder = new SpannableStringBuilder(text);
                     ForegroundColorSpan color_somber = new ForegroundColorSpan(context.getResources().getColor(R.color.text_color_somber));
                     ForegroundColorSpan color_somber2 = new ForegroundColorSpan(context.getResources().getColor(R.color.text_color_somber));
                     int size = userName.length() + 4 + commentToUserName.length() + 3;
                     builder.setSpan(color_somber, userName.length() + 1, userName.length() + 3, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-                    builder.setSpan(color_somber2, size, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+//                    builder.setSpan(color_somber2, size, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     tv_comment_text.setText(builder);
                 } else {
 //                    lay_comment1.setVisibility(View.VISIBLE);
@@ -304,10 +315,10 @@ public class DynamicCommentAdapter extends BaseAdapter {
                         // TODO Auto-generated method stub
                         ServiceDialog.ButtonClickZoomInAnimation(lay_comment1, 0.95f);
                         Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_COMMENT)
-                                .with("neighborhoodID",list.get(j).getNeighborhoodIDX())
-                                .with("CommentToID",list.get(j).getNeighboCommentID())
-                                .with("commentToUserID",list.get(j).getAesCommentToUserID())
-                                .with("commentToUserName",list.get(j).getCommentToUserName())
+                                .with("neighborhoodID",lists.get(j).getNeighborhoodID())
+                                .with("CommentToID",lists.get(j).getNeighboCommentID())
+                                .with("commentToUserID",lists.get(j).getAesCommentToUserID())
+                                .with("commentToUserName",lists.get(j).getCommentToUserName())
                                 .go(context);
 //                        if (Database.USER_MAP != null) {
 //                            Intent intent = new Intent(context, AddCommentActivity.class);
@@ -329,10 +340,10 @@ public class DynamicCommentAdapter extends BaseAdapter {
                         // TODO Auto-generated method stub
                         ServiceDialog.ButtonClickZoomInAnimation(tv_comment_text, 0.95f);
                         Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_COMMENT)
-                                .with("neighborhoodID",list.get(j).getNeighborhoodIDX())
-                                .with("CommentToID",list.get(j).getNeighboCommentID())
-                                .with("commentToUserID",list.get(j).getAesCommentToUserID())
-                                .with("commentToUserName",list.get(j).getCommentToUserName())
+                                .with("neighborhoodID",lists.get(j).getNeighborhoodID())
+                                .with("CommentToID",list.get(position).getNeighboCommentID())
+                                .with("commentToUserID",lists.get(j).getAesUserID())
+                                .with("commentToUserName",lists.get(j).getCommentToUserName())
                                 .go(context);
 
 //                        if (Database.USER_MAP != null) {

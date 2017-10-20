@@ -8,6 +8,15 @@ public class BaseResponseBean {
     protected int statusCode;
     protected String alertMessage;
     protected int currentPageNumber;
+    private int neighborhoodLikeID;
+
+    public int getNeighborhoodLikeID() {
+        return neighborhoodLikeID;
+    }
+
+    public void setNeighborhoodLikeID(int neighborhoodLikeID) {
+        this.neighborhoodLikeID = neighborhoodLikeID;
+    }
 
     public int getStatusCode() {
         return statusCode;

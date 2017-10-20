@@ -192,7 +192,12 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                     gridLayoutManager = new GridLayoutManager(getActivity(), 1);
                     recRightList.setLayoutManager(gridLayoutManager);
                     recRightList.setAdapter(shopListAdapter);
+                    shopListAdapter.bindToRecyclerView(recRightList);
+                    if (shopData.size() <= 0) {
+                        shopListAdapter.setEmptyView(R.layout.layout_empty_wushuju);
+                    }
                     shopListAdapter.notifyDataSetChanged();
+
                 } else {
                     shopListAdapter = new FreshShopListAdapter(R.layout.item_fresh_list_v, shopData, getActivity());
                     shopListAdapter.setOnLoadMoreListener(this);
@@ -200,6 +205,10 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                     gridLayoutManager = new GridLayoutManager(getActivity(), 2);
                     recRightList.setLayoutManager(gridLayoutManager);
                     recRightList.setAdapter(shopListAdapter);
+                    shopListAdapter.bindToRecyclerView(recRightList);
+                    if (shopData.size() <= 0) {
+                        shopListAdapter.setEmptyView(R.layout.layout_empty_wushuju);
+                    }
                     shopListAdapter.notifyDataSetChanged();
                 }
 
@@ -255,6 +264,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         shopListAdapter = new FreshShopListAdapter(R.layout.item_fresh_list, shopData, getActivity());
         shopListAdapter.setOnItemClickListener(this);
         shopListAdapter.setOnLoadMoreListener(this);
+        shopListAdapter.bindToRecyclerView(recRightList);
         gridLayoutManager = new GridLayoutManager(getActivity(), 1);
         recRightList.setLayoutManager(gridLayoutManager);
         recRightList.setAdapter(shopListAdapter);
@@ -661,6 +671,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
                     if (shopData.size() <= 0) {
 //                        showShort(detail.getAlertMessage());
+                        shopListAdapter.setEmptyView(R.layout.layout_empty_wushuju);
                         shopData.clear();
                         shopListAdapter.notifyDataSetChanged();
                     } else {

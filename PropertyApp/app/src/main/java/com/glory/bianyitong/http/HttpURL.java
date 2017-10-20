@@ -109,7 +109,8 @@ public class HttpURL {
     public static String HTTP_POST_OPEN_LOCK="/ApiOpenLock/Open";
     //广告查询
     public static String HTTP_POST_GET_AD="/ApiAdvertising/Query";
-
+    //首页广告
+    public static String HTTP_POST_INDEX_QUERY="/ApiIndex/Query";
     /**
      * 物业管家
      */
@@ -159,7 +160,8 @@ public class HttpURL {
     public static String HTTP_POST_FRIEND_COMMENT_ADD="/ApiNeighborhoodComment/Add";
     //举报
     public static String HTTP_POST_FRIEND_COMMENT_REPORT="/ApiReport/Add";
-
+    //近邻分页
+    public static String HTTP_POST_FRIEND_HBORHOODCOMMENT_QUERY="/ApiNeighborhoodComment/Query";
 
     /**
      * 生鲜

@@ -266,8 +266,12 @@ public class IndexFragment extends BaseFragment {
                         DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
 //                        DataUtils.saveSharePreToolsKits(getActivity());
                         if (Database.my_community==null){
-                            if (Database.my_community_List.size()>0){
-                                Database.my_community = Database.my_community_List.get(0);
+                            for (int i=0;i<Database.my_community_List.size();i++){
+                                if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
+                                    if (Database.my_community_List.get(i).getApprovalStatus()==1){
+                                        Database.my_community = Database.my_community_List.get(i);
+                                    }
+                                }
                             }
                         }else {
                             for (int i = 0; i < Database.my_community_List.size(); i++) {
@@ -299,7 +303,7 @@ public class IndexFragment extends BaseFragment {
             }
             @Override
             public void onAfter() {
-                if (Database.my_community != null && Database.my_community.getCommunityName() != null) {
+                if (Database.my_community != null && Database.my_community.getCommunityName() != null&&Database.my_community_List.size()>0) {
                     if (Database.my_community.getApprovalStatus()==1){
                         request();
                         tvVillageName.setText(Database.my_community.getCommunityName()+"("+getString(R.string.audited)+")");
@@ -564,7 +568,7 @@ public class IndexFragment extends BaseFragment {
         int communityID = RequestUtil.getcommunityid();
 
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("advertising",new RequestAdvertising(1));
+//        map.put("advertising",new RequestAdvertising(1));
         String json=new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -611,7 +615,7 @@ public class IndexFragment extends BaseFragment {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(getActivity(),HttpURL.HTTP_POST_GET_AD,json);
+        }).getEntityData(getActivity(),HttpURL.HTTP_POST_INDEX_QUERY,json);
     }
 
 

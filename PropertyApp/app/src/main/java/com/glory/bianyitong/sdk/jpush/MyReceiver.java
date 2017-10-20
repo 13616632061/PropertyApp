@@ -132,7 +132,7 @@ public class MyReceiver extends BroadcastReceiver {
                     case "3":
                         try {
                             Intent intent3 = new Intent(context, MessageDetailsActivity.class);
-                            intent3.putExtra("PushID",Integer.parseInt(hashMap2.get("extId")));
+                            intent3.putExtra("msg",hashMap2.get("extMessage"));
                             intent3.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             context.startActivity(intent3);
                         }catch (Exception e){

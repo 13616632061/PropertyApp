@@ -191,54 +191,56 @@ public class SwitchAreaActivity extends BaseActivity {
         LayoutInflater mInflater = LayoutInflater.from(context);
         if (list != null && list.size() != 0) {
             for (int i = 0; i < list.size(); i++) {
-                final View view = mInflater.inflate(R.layout.view_item_switch_area, lay_gallery, false);
-                final RelativeLayout item_area_lay = (RelativeLayout) view.findViewById(R.id.item_area_lay);
-                final TextView item_area_name = (TextView) view.findViewById(R.id.item_area_name);
-                final TextView item_area_line = (TextView) view.findViewById(R.id.item_area_line);
-                final ImageView item_area_select = (ImageView) view.findViewById(R.id.item_area_select);
-                final TextView auth_text = (TextView) view.findViewById(R.id.auth_text);
-                final ImageView auth_image = (ImageView) view.findViewById(R.id.auth_image);
+                if (list.get(i).getApprovalStatus()==1) {
+
+                    final View view = mInflater.inflate(R.layout.view_item_switch_area, lay_gallery, false);
+                    final RelativeLayout item_area_lay = (RelativeLayout) view.findViewById(R.id.item_area_lay);
+                    final TextView item_area_name = (TextView) view.findViewById(R.id.item_area_name);
+                    final TextView item_area_line = (TextView) view.findViewById(R.id.item_area_line);
+                    final ImageView item_area_select = (ImageView) view.findViewById(R.id.item_area_select);
+                    final TextView auth_text = (TextView) view.findViewById(R.id.auth_text);
+                    final ImageView auth_image = (ImageView) view.findViewById(R.id.auth_image);
 //                if (list != null && list.get(i).get("communityName") != null && list.get(i).get("communityName").toString().length() != 0 && !list.get(i).get("communityName").toString().equals("")) {
 //                    item_area_name.setText(list.get(i).get("communityName").toString());
 //                }
-                if (list != null && list.get(i).getCommunityName() != null && list.get(i).getCommunityName().length() != 0 && !list.get(i).getCommunityName().toString().equals("")) {
-                    item_area_name.setText(list.get(i).getCommunityName() + list.get(i).getBuildingName() + list.get(i).getUnitName() + list.get(i).getRoomName()); //小区名称
-                }
+                    if (list != null && list.get(i).getCommunityName() != null && list.get(i).getCommunityName().length() != 0 && !list.get(i).getCommunityName().toString().equals("")) {
+                        item_area_name.setText(list.get(i).getCommunityName() + list.get(i).getBuildingName() + list.get(i).getUnitName() + list.get(i).getRoomName()); //小区名称
+                    }
 //                if (Database.my_community != null && Database.my_community.get("communityID") != null) {
 //                    if (list.get(i).get("communityID").toString().equals(Database.my_community.get("communityID").toString())) {
 //                        item_area_select.setVisibility(View.VISIBLE);
 //                        item_area_lay.setClickable(false);
 //                    }
 //                }
-                if (list != null && list.get(i) != null) {
+                    if (list != null && list.get(i) != null) {
 //                    int sta = Double.valueOf(list.get(i).get("approvalStatus").toString()).intValue();
-                    int sta = list.get(i).getApprovalStatus();
-                    if (sta == 1) { //已审核
-                        auth_text.setText(getString(R.string.audited));
-                        auth_image.setImageResource(R.drawable.log_auth_already);
-                    } else if (sta == 2) {//待审核
-                        auth_text.setText(getString(R.string.pending_review));
-                        auth_image.setImageResource(R.drawable.log_auth_checking);
-                    } else if (sta == 0) {//审核失败
-                        auth_text.setText(getString(R.string.audit_failure));
-                        auth_image.setImageResource(R.drawable.log_auth_checking);
+                        int sta = list.get(i).getApprovalStatus();
+                        if (sta == 1) { //已审核
+                            auth_text.setText(getString(R.string.audited));
+                            auth_image.setImageResource(R.drawable.log_auth_already);
+                        } else if (sta == 2) {//待审核
+                            auth_text.setText(getString(R.string.pending_review));
+                            auth_image.setImageResource(R.drawable.log_auth_checking);
+                        } else if (sta == 0) {//审核失败
+                            auth_text.setText(getString(R.string.audit_failure));
+                            auth_image.setImageResource(R.drawable.log_auth_checking);
+                        }
                     }
-                }
-                if (Database.my_community != null) {
-                    if (list.get(i).getUserCommunityID() == Database.my_community.getUserCommunityID()) {
-                        item_area_select.setVisibility(View.VISIBLE);
-                        item_area_lay.setClickable(false);
+                    if (Database.my_community != null) {
+                        if (list.get(i).getUserCommunityID() == Database.my_community.getUserCommunityID()) {
+                            item_area_select.setVisibility(View.VISIBLE);
+                            item_area_lay.setClickable(false);
+                        }
                     }
-                }
-                if (i == list.size() - 1) { //最后一根线
-                    item_area_line.setVisibility(View.GONE);
-                }
-                final int j = i;
-                item_area_lay.setOnClickListener(new View.OnClickListener() {
+                    if (i == list.size() - 1) { //最后一根线
+                        item_area_line.setVisibility(View.GONE);
+                    }
+                    final int j = i;
+                    item_area_lay.setOnClickListener(new View.OnClickListener() {
 
-                    @Override
-                    public void onClick(View arg0) {
-                        // TODO Auto-generated method stub
+                        @Override
+                        public void onClick(View arg0) {
+                            // TODO Auto-generated method stub
 //                        if (list.get(j).get("communityID") != null) {
 //                            Database.my_community = list.get(j);
 //                            SharePreToolsKits.putString(SwitchAreaActivity.this, Constant.communityID, list.get(j).get("communityID").toString()); //缓存所选的小区id
@@ -246,17 +248,18 @@ public class SwitchAreaActivity extends BaseActivity {
 //                            EventBus.getDefault().post(true);
 //                            SwitchAreaActivity.this.finish();
 //                        }
-                        if (list.get(j) != null) {
-                            Database.my_community = list.get(j);
-                            mCache.put(Constant.communityID, list.get(j).getUserCommunityID() + ""); //缓存所选的小区id
-                            item_area_select.setVisibility(View.VISIBLE);
-                            EventBus.getDefault().post(true);
-                            SwitchAreaActivity.this.finish();
+                            if (list.get(j) != null) {
+                                Database.my_community = list.get(j);
+                                mCache.put(Constant.communityID, list.get(j).getUserCommunityID() + ""); //缓存所选的小区id
+                                item_area_select.setVisibility(View.VISIBLE);
+                                EventBus.getDefault().post(true);
+                                SwitchAreaActivity.this.finish();
+                            }
                         }
-                    }
-                });
+                    });
 
-                lay_gallery.addView(view);
+                    lay_gallery.addView(view);
+                }
             }
         }
     }

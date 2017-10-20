@@ -225,6 +225,11 @@ public class YellowPageActivity extends BaseActivity {
 
                         }
                     }
+                }else {
+                    if (dataMap.size()>0){
+                        adapter = new ConveniencePhoneAdapter(YellowPageActivity.this, dataMap, mhandler);
+                        list_conveniencephone.setAdapter(adapter);
+                    }
                 }
             }
 

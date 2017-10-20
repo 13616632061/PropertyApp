@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,43 +14,32 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.glory.bianyitong.bean.BaseRequestBean;
-import com.glory.bianyitong.bean.entity.request.RequestNeighborhood;
-import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
-import com.glory.bianyitong.http.HttpURL;
-import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.http.RequestUtil;
-import com.glory.bianyitong.ui.adapter.ConveniencePhoneAdapter;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.google.gson.reflect.TypeToken;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.ui.activity.LoginActivity;
 import com.glory.bianyitong.ui.activity.ReleaseDynamicActivity;
 import com.glory.bianyitong.ui.adapter.NeighbourAdapter;
-import com.glory.bianyitong.ui.dialog.CustomProgressDialog;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.view.NewPullToRefreshView;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.BaseRequest;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Call;
-import okhttp3.Response;
 
 /**
  * Created by lucy on 2016/11/10.
@@ -65,6 +53,8 @@ public class NeighbourFragment extends BaseFragment {
     ListView listView_neighbour;
     @BindView(R.id.neighbour_pullToRefreshView)
     NewPullToRefreshView base_pullToRefreshView;
+    @BindView(R.id.lay_search_nothing)
+    LinearLayout laySearchNothing;
     private View view_loading;
     private TextView noGoods;
     private LinearLayout loading_lay;
@@ -122,8 +112,10 @@ public class NeighbourFragment extends BaseFragment {
                     }
                 }
             }
+
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {}
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+            }
         });
 
         base_pullToRefreshView.setOnHeaderRefreshListener(new NewPullToRefreshView.OnHeaderRefreshListener() {
@@ -155,7 +147,14 @@ public class NeighbourFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-        if (Database.isAddarea) {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Database.list_neighbour == null) {
+            laySearchNothing.setVisibility(View.GONE);
             getGoodsListStart = true;
             index_page = 0;//重置index_page
             index_page++;
@@ -177,15 +176,16 @@ public class NeighbourFragment extends BaseFragment {
 
     /**
      * 近邻查询
+     *
      * @param page
      * @param isrefresh
      */
     private void request(int page, final boolean isrefresh) {
 
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("currentPageNumber",page);
-        map.put("neighborhood",new Object());
-        String json=new Gson().toJson(map);
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("currentPageNumber", page);
+        map.put("neighborhood", new Object());
+        String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -194,8 +194,8 @@ public class NeighbourFragment extends BaseFragment {
                 loading_lay.setVisibility(View.GONE);
                 HashMap<String, Object> hashMap2 = JsonHelper.fromJson(s, new TypeToken<HashMap<String, Object>>() {
                 });
-                ResponseFriendDetail detail=new Gson().fromJson(s,ResponseFriendDetail.class);
-                if(detail.getStatusCode()==1){
+                ResponseFriendDetail detail = new Gson().fromJson(s, ResponseFriendDetail.class);
+                if (detail.getStatusCode() == 1) {
                     List<ResponseFriendDetail.ListNeighborhoodBean> neighborlist = detail.getListNeighborhood();
                     //分页加载数据----------------------------------------------------
                     if (Database.list_neighbour == null) {
@@ -208,7 +208,7 @@ public class NeighbourFragment extends BaseFragment {
                             }
                         }
                         if (Database.list_neighbour.size() != 0
-                                && neighborlist.get(neighborlist.size() - 1).getNeighborhoodID() ==(Database.list_neighbour.get(Database.list_neighbour.size() - 1).getNeighborhoodID())) {
+                                && neighborlist.get(neighborlist.size() - 1).getNeighborhoodID() == (Database.list_neighbour.get(Database.list_neighbour.size() - 1).getNeighborhoodID())) {
                             have_GoodsList = false;
                         } else {
                             for (int i = 0; i < neighborlist.size(); i++) {
@@ -237,6 +237,10 @@ public class NeighbourFragment extends BaseFragment {
                         have_GoodsList = false;
                     }
                 } else {
+                    if (Database.list_neighbour==null){
+                        laySearchNothing.setVisibility(View.VISIBLE);
+
+                    }
                     if (Database.list_news != null && Database.list_news.size() > 0) { //分页加载无数据
 
                     } else { //加载无数据
@@ -273,7 +277,7 @@ public class NeighbourFragment extends BaseFragment {
                 }
                 base_pullToRefreshView.onHeaderRefreshComplete();
             }
-        }).getEntityData(getActivity(),HttpURL.HTTP_POST_FRIEND_QUERY,json);
+        }).getEntityData(getActivity(), HttpURL.HTTP_POST_FRIEND_QUERY, json);
 
     }
 

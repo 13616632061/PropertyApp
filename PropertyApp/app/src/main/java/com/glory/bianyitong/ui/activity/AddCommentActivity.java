@@ -66,7 +66,7 @@ public class AddCommentActivity extends BaseActivity {
      int CommentToID; //近邻 评论 id
     @InjectParam(key = "commentToUserID")
      int commentToUserID; //被评论 评论的用户id
-    @InjectParam(key = "neighborhoodID")
+    @InjectParam(key = "commentToUserID")
      String commentToUserName ; //被评论的用户名
 
     @Override
