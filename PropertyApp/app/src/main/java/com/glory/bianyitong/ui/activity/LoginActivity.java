@@ -3,35 +3,40 @@ package com.glory.bianyitong.ui.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Message;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.chenenyu.router.annotation.Route;
+import com.glory.bianyitong.R;
+import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.GetSMSCheckInfo;
 import com.glory.bianyitong.bean.GetSMSCodeInfo;
 import com.glory.bianyitong.bean.LoginUserInfo;
 import com.glory.bianyitong.bean.UserInfo;
 import com.glory.bianyitong.constants.Constant;
+import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.jpush.ExampleUtil;
+import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.SharedUtil;
+import com.glory.bianyitong.util.ToastUtils;
+import com.glory.bianyitong.widght.linkman.ClearEditText;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
-import com.glory.bianyitong.R;
-import com.glory.bianyitong.base.BaseActivity;
-import com.glory.bianyitong.constants.Database;
-import com.glory.bianyitong.util.ActivityUtils;
-import com.glory.bianyitong.util.ToastUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +47,7 @@ import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
 
@@ -83,7 +89,7 @@ public class LoginActivity extends BaseActivity {
     };
     private final Handler mHandler = new Handler() {
         @Override
-        public void handleMessage(android.os.Message msg) {
+        public void handleMessage(Message msg) {
             super.handleMessage(msg);
             switch (msg.what) {
                 case MSG_SET_ALIAS:
@@ -107,6 +113,10 @@ public class LoginActivity extends BaseActivity {
     CheckBox ck_login_contract;
     @BindView(R.id.tv_contract)
     TextView tv_contract;
+    @BindView(R.id.clean_word)
+    RelativeLayout cleanWord;
+    @BindView(R.id.clean_password)
+    RelativeLayout cleanPassword;
     private TimeCount time; //倒计时
     private ProgressDialog progressDialog = null;
 
@@ -121,11 +131,75 @@ public class LoginActivity extends BaseActivity {
         text_GetCode.setOnClickListener(this);
         btn_Login.setOnClickListener(this);
         tv_contract.setOnClickListener(this);
+        cleanWord.setOnClickListener(this);
+        cleanPassword.setOnClickListener(this);
         time = new TimeCount(60000, 1000);
         //15899647853
         login_phone.setText(mCache.getAsString("phone")); //上一个人的电话号码
-    }
+        if (!login_phone.getText().toString().trim().equals("")){
+            cleanWord.setVisibility(View.VISIBLE);
+        }
+        login_phone.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    cleanWord.setVisibility(View.VISIBLE);
+                }else {
+                    cleanWord.setVisibility(View.GONE);
+                }
+            }
+        });
+        login_phone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    cleanWord.setVisibility(View.VISIBLE);
+                } else {
+                    cleanWord.setVisibility(View.GONE);
+                }
+            }
+        });
+        login_code.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus){
+                    cleanPassword.setVisibility(View.VISIBLE);
+                }else {
+                    cleanPassword.setVisibility(View.GONE);
+                }
+            }
+        });
+        login_code.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    cleanPassword.setVisibility(View.VISIBLE);
+                } else {
+                    cleanPassword.setVisibility(View.GONE);
+                }
+            }
+        });
+
+    }
 
 
     @Override
@@ -135,6 +209,7 @@ public class LoginActivity extends BaseActivity {
             case R.id.text_GetCode: //获取验证码
                 String phone = login_phone.getText().toString().trim();
                 boolean isphone = ActivityUtils.isMobileNO(phone);
+                cleanWord.setVisibility(View.GONE);
                 if (phone.equals("")) {
                     ToastUtils.showToast(LoginActivity.this, getString(R.string.the_phone_number_can_not_be_empty));//手机号不能为空
                 } else if (!isphone) {
@@ -166,13 +241,19 @@ public class LoginActivity extends BaseActivity {
                 intent.putExtra("from", "contract");
                 startActivity(intent);
                 break;
+            case R.id.clean_word://清除登录账号
+                login_phone.setText("");
+                break;
+            case R.id.clean_password://清除验证码
+                login_code.setText("");
+                break;
         }
     }
 
     //生成验证码
     private void createCode(final String phone) {
-        Map<String,String> map=new HashMap<>();
-        map.put("phoneNum",phone);
+        Map<String, String> map = new HashMap<>();
+        map.put("phoneNum", phone);
         String url = "/SMSCode/GetSMSCheck";
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -183,49 +264,61 @@ public class LoginActivity extends BaseActivity {
                 try {
                     JSONObject jo = new JSONObject(s);
                     GetSMSCheckInfo smsinfo = new Gson().fromJson(jo.toString(), GetSMSCheckInfo.class);
-                    if(smsinfo!=null && smsinfo.getStatusCode() == 1){
-                        getCode(phone);
+                    if (smsinfo != null && smsinfo.getStatusCode() == 1) {
                         login_code.setFocusable(true);
                         login_code.setFocusableInTouchMode(true);
                         login_code.requestFocus();
-                    }else if(smsinfo!=null && smsinfo.getAlertMessage()!=null){
+                        showShort("验证码发送成功");
+                    } else if (smsinfo != null &&smsinfo.getStatusCode()==2){//1为真实接口，2为虚拟接口
+                        login_code.setText(smsinfo.getAlertMessage());
+//                        getCode(phone);
+                    }else if (smsinfo != null && smsinfo.getAlertMessage() != null) {
                         ToastUtils.showToast(LoginActivity.this, smsinfo.getAlertMessage());
-                    }else {
+                    } else {
                         ToastUtils.showToast(LoginActivity.this, getString(R.string.failed_to_generate_verification_code));//生成验证码失败
                     }
+
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
             }
+
             @Override
-            public void onError() {}
+            public void onError() {
+            }
+
             @Override
-            public void parseError() {}
+            public void parseError() {
+            }
+
             @Override
-            public void onBefore() {}
+            public void onBefore() {
+            }
+
             @Override
-            public void onAfter() {}
+            public void onAfter() {
+            }
         }).getEntityData(url, map);
     }
 
     //获取验证码
     private void getCode(String phone) {
-        String url="/SMSCode/GetVituralSMSCheckCode";
-        Map<String,String> map=new HashMap<>();
-        map.put("phoneNumber",phone);
-        map.put("accessToken","-1");//此接口不需要token验证
-        String json=new Gson().toJson(map);
+        String url = "/SMSCode/GetVituralSMSCheckCode";
+        Map<String, String> map = new HashMap<>();
+        map.put("phoneNumber", phone);
+        map.put("accessToken", "-1");//此接口不需要token验证
+        String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
                 try {
                     JSONObject jo = new JSONObject(s);
                     GetSMSCodeInfo getcodeinfo = new Gson().fromJson(jo.toString(), GetSMSCodeInfo.class);
-                    if(getcodeinfo!=null && getcodeinfo.getMsg()!=null){
-                        String code = getcodeinfo.getMsg();
+                    if (getcodeinfo != null && getcodeinfo.getAlertMessage() != null) {
+                        String code = getcodeinfo.getAlertMessage();
                         login_code.setText(code);
-                    }else if (getcodeinfo.getAlertMessage() != null) { //返回消息
+                    } else if (getcodeinfo.getAlertMessage() != null) { //返回消息
                         ToastUtils.showToast(LoginActivity.this, getcodeinfo.getAlertMessage());
                     } else {
                         ToastUtils.showToast(LoginActivity.this, getString(R.string.failed_to_generate_verification_code));//生成验证码失败
@@ -254,14 +347,14 @@ public class LoginActivity extends BaseActivity {
             public void onAfter() {
 
             }
-        }).getEntityDataForGet(url,map);
+        }).getEntityDataForGet(url, map);
 
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        OkGoRequest.openLogin=true;
+        OkGoRequest.openLogin = true;
     }
 
     //登录
@@ -269,20 +362,20 @@ public class LoginActivity extends BaseActivity {
         Database.USER_MAP = null;
         Database.my_community = null;
         Database.my_community_List = null;
-        mCache.put("phone",phone);
+        mCache.put("phone", phone);
         if (Database.registrationId == null) {
             Database.registrationId = "";
         }
-        Map<String,Object> map= new  BaseRequestBean().getBaseRequest();
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
 
-        map.put("phoneNumber",phone);
-        map.put("smsCheckCode",code);
-        map.put("deviceType",3);
-        map.put("accessToken","-1");//此接口不需要token验证
+        map.put("phoneNumber", phone);
+        map.put("smsCheckCode", code);
+        map.put("deviceType", 3);
+        map.put("accessToken", "-1");//此接口不需要token验证
 //        Log.i("resultString", "registrationId---------" + Database.registrationId);
 //        String query = "\"phoneNumber\":\""+phone+"\",\"smsCheckCode\":\""+code+"\"";
 //        String json = RequestUtil.getJson(LoginActivity.this, query);
-        String json =new Gson().toJson(map);
+        String json = new Gson().toJson(map);
         String url = "/ApiLogin/AppLogin";
 
 //        String json = "{\"phoneNumber\":\"" + phone + "\",\"smsCheckCode\":\"" + code + "\",\"DeviceType\": \"3\",\"jGPushID\":\"" + Database.registrationId + "\"}";
@@ -292,12 +385,12 @@ public class LoginActivity extends BaseActivity {
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                    LoginUserInfo loginInfo = new Gson().fromJson(s, LoginUserInfo.class);
+                LoginUserInfo loginInfo = new Gson().fromJson(s, LoginUserInfo.class);
                 showShort(loginInfo.getAlertMessage());
-                if(loginInfo.getStatusCode()==1){
+                if (loginInfo.getStatusCode() == 1) {
                     Database.islogin = true;
                     Database.USER_MAP = loginInfo.getUser();
-                    Database.accessToken=loginInfo.getAccessToken();
+                    Database.accessToken = loginInfo.getAccessToken();
 //                    Database.jgPushID=loginInfo.getUser().getJgPushID();
                     mHandler.sendMessage(mHandler.obtainMessage(MSG_SET_ALIAS, Database.USER_MAP.getJgPushName()));
                     if (loginInfo.getUserCommnunity() != null) {
@@ -305,8 +398,8 @@ public class LoginActivity extends BaseActivity {
                         DataUtils.getUesrCommunity(loginInfo);//社区列表
                         DataUtils.my_community(LoginActivity.this); //获取我的社区
                     }
-                    Database.login_return=s;
-                    mCache.put(Constant.user,s);
+                    Database.login_return = s;
+                    mCache.put(Constant.user, s);
 //                    SharePreToolsKits.putJsonDataString(LoginActivity.this, Constant.user, s); //缓存登录后信息
                     //登录成功
                     LoginActivity.this.finish();
@@ -338,9 +431,8 @@ public class LoginActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(this,url, json);
+        }).getEntityData(this, url, json);
     }
-
 
 
     private void my_community() { //我的社区
@@ -365,9 +457,9 @@ public class LoginActivity extends BaseActivity {
 //                    if (Database.my_community_List.get(0) != null && Database.my_community_List.get(0).get("communityID") != null) {
 //                        Database.my_community = Database.my_community_List.get(0);
 //                    }
-                    for (int i=0;i<Database.my_community_List.size();i++){
+                    for (int i = 0; i < Database.my_community_List.size(); i++) {
                         if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
-                            if (Database.my_community_List.get(i).getApprovalStatus()==1){
+                            if (Database.my_community_List.get(i).getApprovalStatus() == 1) {
                                 Database.my_community = Database.my_community_List.get(i);
                             }
                         }
@@ -379,9 +471,9 @@ public class LoginActivity extends BaseActivity {
 //                if (Database.my_community_List.get(0) != null && Database.my_community_List.get(0).get("communityID") != null) {
 //                    Database.my_community = Database.my_community_List.get(0);
 //                }
-                for (int i=0;i<Database.my_community_List.size();i++){
+                for (int i = 0; i < Database.my_community_List.size(); i++) {
                     if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
-                        if (Database.my_community_List.get(i).getApprovalStatus()==1){
+                        if (Database.my_community_List.get(i).getApprovalStatus() == 1) {
                             Database.my_community = Database.my_community_List.get(i);
                         }
                     }
@@ -544,6 +636,13 @@ public class LoginActivity extends BaseActivity {
 //                Database.my_community_List.add(userCommnunityBean);
             }
         }
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
     }
 
     class TimeCount extends CountDownTimer {

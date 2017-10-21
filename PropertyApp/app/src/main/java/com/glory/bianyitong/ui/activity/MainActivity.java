@@ -415,10 +415,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                        }
                     } else {//没有小区
                         requestSQ();
-                        showShort("请添加或等待小区审核通过后才可开锁");
-                        Intent intent = new Intent(MainActivity.this, AuthAreaActivity.class); //
-                        intent.putExtra("from", "");
-                        startActivity(intent);
+//                        showShort("请添加或等待小区审核通过后才可开锁");
+//                        Intent intent = new Intent(MainActivity.this, AuthAreaActivity.class); //
+//                        intent.putExtra("from", "");
+//                        startActivity(intent);
                     }
 
                 } else {//登录
@@ -495,6 +495,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     Intent intent = new Intent(MainActivity.this, AuthAreaActivity.class); //
                     intent.putExtra("from", "");
                     startActivity(intent);
+                }else {
+                    IndexFragment.callBack.notifyVillName(Database.my_community.getCommunityName()+"("+getString(R.string.audited)+")");
+                    if (!TextUtils.isEmpty(RequestUtil.getcommunityid()+"")){
+                        if (picPopuWindow == null) {
+                            picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
+                        }
+                        // 显示窗口
+                        picPopuWindow.showAtLocation(MainActivity.this.findViewById(R.id.lay_activity_main),
+                                Gravity.NO_GRAVITY, 0, 0); // 设置layout在PopupWindow中显示的位置
+                    }
                 }
             }
         }).getEntityData(this,"/ApiUserCommnunity/Query", jsons);

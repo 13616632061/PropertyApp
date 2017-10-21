@@ -11,6 +11,17 @@ public class GetSMSCodeInfo extends ResponseBaseInfo{
      */
 
     private String msg;
+    private String alertMessage;
+
+    @Override
+    public String getAlertMessage() {
+        return alertMessage;
+    }
+
+    @Override
+    public void setAlertMessage(String alertMessage) {
+        this.alertMessage = alertMessage;
+    }
 
     public String getMsg() {
         return msg;

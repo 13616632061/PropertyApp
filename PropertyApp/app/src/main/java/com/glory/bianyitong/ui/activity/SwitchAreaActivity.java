@@ -191,7 +191,6 @@ public class SwitchAreaActivity extends BaseActivity {
         LayoutInflater mInflater = LayoutInflater.from(context);
         if (list != null && list.size() != 0) {
             for (int i = 0; i < list.size(); i++) {
-                if (list.get(i).getApprovalStatus()==1) {
 
                     final View view = mInflater.inflate(R.layout.view_item_switch_area, lay_gallery, false);
                     final RelativeLayout item_area_lay = (RelativeLayout) view.findViewById(R.id.item_area_lay);
@@ -236,7 +235,9 @@ public class SwitchAreaActivity extends BaseActivity {
                         item_area_line.setVisibility(View.GONE);
                     }
                     final int j = i;
-                    item_area_lay.setOnClickListener(new View.OnClickListener() {
+
+                final int finalI = i;
+                item_area_lay.setOnClickListener(new View.OnClickListener() {
 
                         @Override
                         public void onClick(View arg0) {
@@ -248,18 +249,22 @@ public class SwitchAreaActivity extends BaseActivity {
 //                            EventBus.getDefault().post(true);
 //                            SwitchAreaActivity.this.finish();
 //                        }
-                            if (list.get(j) != null) {
-                                Database.my_community = list.get(j);
-                                mCache.put(Constant.communityID, list.get(j).getUserCommunityID() + ""); //缓存所选的小区id
-                                item_area_select.setVisibility(View.VISIBLE);
-                                EventBus.getDefault().post(true);
-                                SwitchAreaActivity.this.finish();
+                            if (list.get(finalI).getApprovalStatus()==1) {
+
+                                if (list.get(j) != null) {
+                                    Database.my_community = list.get(j);
+                                    mCache.put(Constant.communityID, list.get(j).getUserCommunityID() + ""); //缓存所选的小区id
+                                    item_area_select.setVisibility(View.VISIBLE);
+                                    EventBus.getDefault().post(true);
+                                    SwitchAreaActivity.this.finish();
+                                }
+                            }else {
+                                showShort("请添加已认证小区");
                             }
                         }
                     });
+                lay_gallery.addView(view);
 
-                    lay_gallery.addView(view);
-                }
             }
         }
     }

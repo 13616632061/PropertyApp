@@ -31,19 +31,42 @@
         android:layout_marginTop="30dp"
         android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/login_phone"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:layout_centerVertical="true"
-            android:background="@null"
-            android:drawableLeft="@drawable/log_phone_login"
-            android:drawablePadding="15dp"
-            android:enabled="true"
-            android:hint="@string/input_phone_no"
-            android:inputType="phone"
-            android:maxLength="11"
-            android:textSize="16sp" />
+            android:layout_height="30dp"
+            android:background="@drawable/white_bg_search">
+            <EditText
+                android:id="@+id/login_phone"
+                android:layout_width="match_parent"
+                android:layout_height="32dp"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:drawableLeft="@drawable/log_phone_login"
+                android:drawablePadding="15dp"
+                android:enabled="true"
+                android:hint="@string/input_phone_no"
+                android:inputType="phone"
+                android:maxLength="11"
+                android:textSize="16sp" />
+            <RelativeLayout
+                android:id="@+id/clean_word"
+                android:layout_width="28dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/login_icon_del" />
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+
 
         <View
             android:layout_width="match_parent"
@@ -56,7 +79,17 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:orientation="horizontal">
-
+            <EditText
+                android:id="@+id/login_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:drawableLeft="@drawable/log_code_login"
+                android:drawablePadding="15dp"
+                android:hint="@string/please_enter_verification_code"
+                android:inputType="number"
+                android:textSize="16sp" />
             <TextView
                 android:id="@+id/text_GetCode"
                 android:layout_width="60dp"
@@ -67,19 +100,22 @@
                 android:text="@string/obtain"
                 android:textColor="@color/text_color_somber"
                 android:textSize="15sp" />
-
-            <EditText
-                android:id="@+id/login_code"
-                android:layout_width="match_parent"
+            <RelativeLayout
+                android:id="@+id/clean_password"
+                android:visibility="gone"
+                android:layout_width="28dp"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_toLeftOf="@id/text_GetCode"
-                android:background="@null"
-                android:drawableLeft="@drawable/log_code_login"
-                android:drawablePadding="15dp"
-                android:hint="@string/please_enter_verification_code"
-                android:inputType="number"
-                android:textSize="16sp" />
+                android:layout_marginRight="5dp"
+                android:layout_toLeftOf="@+id/text_GetCode">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/login_icon_del" />
+            </RelativeLayout>
+
         </RelativeLayout>
 
 

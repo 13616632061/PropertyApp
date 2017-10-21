@@ -158,7 +158,7 @@ public class CommunityBulletinActivity extends BaseActivity implements BaseQuick
                         }
                     }else {
                         if(list.size()<=0)
-                            adapter.setEmptyView(R.layout.layout_empty_orderlist);
+                            adapter.setEmptyView(R.layout.layout_empty_wushuju);
                         else {
                             adapter.loadMoreEnd();
                         }

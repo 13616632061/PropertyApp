@@ -116,6 +116,7 @@ public class IndexFragment extends BaseFragment {
     private ProgressDialog progressDialog = null;
     private String userID;
     private List<listCommunityBulletinInfo.ListCommunityBulletinBean> list=new ArrayList<>();
+    public static CallBack callBack;
 
     @Nullable
     @Override
@@ -180,6 +181,12 @@ public class IndexFragment extends BaseFragment {
 //        initList();
         progressDialog = ProgressDialog.show(context, "", getResources().getString(R.string.load), true);
         progressDialog.setCanceledOnTouchOutside(true);
+        callBack = new CallBack() {
+            @Override
+            public void notifyVillName(String result) {
+                tvVillageName.setText(result);
+            }
+        };
 
 
         if (Database.readbulletinid == null || Database.readbulletinid.equals("")) { //获取已读公告缓存
@@ -226,11 +233,6 @@ public class IndexFragment extends BaseFragment {
             everyDayRecommendAdapter = new EveryDayRecommendAdapter(context, list);
             tvVillageName.setText(getResources().getString(R.string.click_to_Login)); //点击登录
         }
-//        if (images != null && images.length > 0) {
-//
-//        } else {
-//
-//        }
 
         if (list == null && have_GoodsList && !getGoodsListStart || Database.isAddComment) {
             getGoodsListStart = true;
@@ -249,6 +251,17 @@ public class IndexFragment extends BaseFragment {
             requestnotice();
         }
 
+    }
+
+    /**
+     * 有小区开锁更改选中小区
+     *
+     */
+    public interface CallBack {
+        /**
+         *
+         */
+        public void notifyVillName(String result);
     }
 
     private void requestSQ() { //社区

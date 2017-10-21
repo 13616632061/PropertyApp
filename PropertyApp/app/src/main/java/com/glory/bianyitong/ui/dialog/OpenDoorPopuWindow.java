@@ -251,7 +251,6 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {
-                    try {
                         UserLockInfo uinfo = new Gson().fromJson(s.toString(), UserLockInfo.class);
                         if (uinfo == null) {
 
@@ -284,7 +283,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                                     tv_door_name2.setText(locklist.get(1).getLockName());
                                 }
                                 tv_key_manager.setVisibility(View.VISIBLE);
-                            } else if (locklist != null && locklist.size() > 0 && locklist.size() > 3) {
+                            } else if (locklist != null && locklist.size() > 0 && locklist.size() >= 3) {
                                 hs_open_door_lay.setVisibility(View.VISIBLE);
                                 ll_open_door_lay.setVisibility(View.GONE);
                                 horizontalScrollViewLayout(context, locklist, ll_open_the_door);
@@ -293,8 +292,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                         } else {
                             ll_open_the_door.removeAllViews();
                         }
-                    }catch (Exception e){
-                    }
+
                 }
 
                 @Override
