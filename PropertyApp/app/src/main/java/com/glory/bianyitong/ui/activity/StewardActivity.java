@@ -136,7 +136,7 @@ public class StewardActivity extends BaseActivity {
                                 steward_phone.setText(housekeeper.getWorkPhoneNum());
                                 phone_str = housekeeper.getWorkPhoneNum();
                             }
-                            steward_cert.setText(getResources().getString(R.string.certification) + ":" + housekeeper.getCommunityName() + housekeeper.getUnitName() + housekeeper.getBuildingName());
+                            steward_cert.setText(getResources().getString(R.string.certification) + ":" + housekeeper.getCommunityName() + housekeeper.getBuildingName() + housekeeper.getUnitName());
                             if (housekeeper != null && housekeeper.getHouseKepperPhoto() != null) {
                                 ServiceDialog.setPicture(housekeeper.getHouseKepperPhoto(), steward_pic, null);//管家 头像
                             }

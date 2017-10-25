@@ -287,6 +287,7 @@ public class IndexFragment extends BaseFragment {
                                 }
                             }
                         }else {
+                            Log.v("sadwiuuudsuu",mCache.getAsString(Constant.communityID)+"*---");
                             for (int i = 0; i < Database.my_community_List.size(); i++) {
                                 if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
                                         == Database.my_community.getUserCommunityID()) {

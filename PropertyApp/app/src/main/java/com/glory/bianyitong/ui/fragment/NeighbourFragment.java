@@ -147,20 +147,20 @@ public class NeighbourFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (Database.list_neighbour == null) {
+//        if (Database.list_neighbour == null) {
             laySearchNothing.setVisibility(View.GONE);
             getGoodsListStart = true;
             index_page = 0;//重置index_page
             index_page++;
             request(index_page, true);//刷新
             Database.isAddarea = false;
-        }
+//        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

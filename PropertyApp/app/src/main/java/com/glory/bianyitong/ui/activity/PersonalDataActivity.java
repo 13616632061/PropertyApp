@@ -5,6 +5,7 @@ package com.glory.bianyitong.ui.activity;
  */
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -29,9 +30,11 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.LoginUserInfo;
 import com.glory.bianyitong.bean.entity.request.RequestQueryUserInfo;
 import com.glory.bianyitong.bean.entity.request.RequestUserBean;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryUserById;
+import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
@@ -43,6 +46,7 @@ import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.CircleImageView;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.util.Map;
 
@@ -138,17 +142,24 @@ public class PersonalDataActivity extends BaseActivity {
         user_request();
 
     }
-
+    private ProgressDialog progressDialog;
     private void user_request() { //获取个人信息
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("user", new RequestQueryUserInfo((String) (map.get("userID"))));
         String json = new Gson().toJson(map);
+        progressDialog = ProgressDialog.show(this, "","加载中", true);
+        progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
                 ResponseQueryUserById responseQueryUserById = new Gson().fromJson(s, ResponseQueryUserById.class);
                 if (responseQueryUserById.getStatusCode() == 1) {
                     ServiceDialog.setPicture(responseQueryUserById.getListUser().get(0).getCustomerPhoto(), my_head_pic, null);
+                    //保存头像到本地
+                    LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, new TypeToken<LoginUserInfo>(){}.getType());
+                    userInfo.getUser().setCustomerPhoto(responseQueryUserById.getListUser().get(0).getCustomerPhoto());
+                    Database.login_return=new Gson().toJson(userInfo);
+                    BaseActivity.mCache.put(Constant.user, Database.login_return);
                     text_nickname.setText(responseQueryUserById.getListUser().get(0).getLoginName());
                     tv_personal_desc.setText(responseQueryUserById.getListUser().get(0).getPhoneNumber());
                     if (responseQueryUserById.getListUser().get(0).getGender().equals("1")) {
@@ -160,15 +171,17 @@ public class PersonalDataActivity extends BaseActivity {
                 } else {
                     showShort(responseQueryUserById.getAlertMessage());
                 }
-
+                progressDialog.dismiss();
             }
 
             @Override
             public void onError() {
+                progressDialog.dismiss();
             }
 
             @Override
             public void parseError() {
+                progressDialog.dismiss();
             }
 
             @Override
@@ -177,6 +190,7 @@ public class PersonalDataActivity extends BaseActivity {
 
             @Override
             public void onAfter() {
+                progressDialog.dismiss();
             }
         }).getEntityData(this, HttpURL.HTTP_POST_QUERY_USER_INFO, json);
     }
@@ -242,7 +256,22 @@ public class PersonalDataActivity extends BaseActivity {
                 PersonalDataActivity.this.finish();
                 break;
             case R.id.rl_my_head_pic://头像
-                startLocation();
+
+                //7.0相机权限
+                String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                if (Build.VERSION.SDK_INT >= 23) {
+                    int check = ContextCompat.checkSelfPermission(this, permissions[0]);
+                    // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
+                    if (check == PackageManager.PERMISSION_GRANTED) {
+                        //调用相机
+                        startLocation();
+                    } else {
+                        requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    }
+                }else {
+                    //调用相机
+                    startLocation();
+                }
                 break;
             case R.id.rl_nickname://昵称
                 Router.build(RouterMapping.ROUTER_ACTIVITY_MY_UPDATE_NAME)
@@ -329,6 +358,8 @@ public class PersonalDataActivity extends BaseActivity {
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("user",new RequestUserBean(Database.USER_MAP.getLoginName(),gender));
         String json=new Gson().toJson(map);
+        progressDialog = ProgressDialog.show(this, "","加载中", true);
+        progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -343,15 +374,18 @@ public class PersonalDataActivity extends BaseActivity {
                 }else {
                     ToastUtils.showToast(PersonalDataActivity.this,bean.getAlertMessage());//修改失败
                 }
+                progressDialog.dismiss();
             }
 
             @Override
             public void onError() {
+                progressDialog.dismiss();
 
             }
 
             @Override
             public void parseError() {
+                progressDialog.dismiss();
 
             }
 
@@ -362,6 +396,7 @@ public class PersonalDataActivity extends BaseActivity {
 
             @Override
             public void onAfter() {
+                progressDialog.dismiss();
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_MY_EDITUSERINFO,json);

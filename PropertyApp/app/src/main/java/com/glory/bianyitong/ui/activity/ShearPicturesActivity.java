@@ -1,16 +1,22 @@
 package com.glory.bianyitong.ui.activity;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -40,6 +46,7 @@ import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.DataUtils;
+import com.glory.bianyitong.util.FormatNowDate;
 import com.glory.bianyitong.util.ImageUtil;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
@@ -47,6 +54,7 @@ import com.glory.bianyitong.widght.photoViewUtil.ClipZoomImageView;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Map;
 
 /**
@@ -199,8 +207,24 @@ public class ShearPicturesActivity extends BaseActivity implements OnClickListen
             intent.setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
             startActivityForResult(intent, 1);
         } else if (type.equals("Camera")) {// 拍照
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            startActivityForResult(intent, 2);
+            String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+            if (Build.VERSION.SDK_INT >= 23) {
+                int check = ContextCompat.checkSelfPermission(this, permissions[0]);
+                // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
+                if (check == PackageManager.PERMISSION_GRANTED) {
+                    //调用相机
+                    useCamera();
+                } else {
+                    requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }
+            } else {
+                useCamera();
+            }
+
+
+        }else {
+            useCamera();
         }
         userID = RequestUtil.getuserid();
         left_return_btn = (RelativeLayout) findViewById(R.id.left_return_btn);
@@ -214,6 +238,21 @@ public class ShearPicturesActivity extends BaseActivity implements OnClickListen
         imageView.setHorizontalPadding(55);// 图片水平方向与View的边距
         // 获取阿里云OSS相关秘钥数据
         getData();
+    }
+
+    private void useCamera() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        File file = new File(Environment.getExternalStorageDirectory().getAbsolutePath()
+//                + "/test/" + System.currentTimeMillis() + ".jpg");
+//        file.getParentFile().mkdirs();
+//
+//        //改变Uri  com.xykj.customview.fileprovider注意和xml中的一致
+//        Uri uri = FileProvider.getUriForFile(this, "com.xykj.customview.fileprovider", file);
+//        //添加权限
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//
+//        intent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+        startActivityForResult(intent, 2);
     }
 
     @Override
@@ -295,9 +334,10 @@ public class ShearPicturesActivity extends BaseActivity implements OnClickListen
             new Thread(new Runnable() {
                 public void run() {
                     btnbool = false;
+                    FormatNowDate formatNowDate=new FormatNowDate();
                     // 上传图片
                     // 用户ID + 时间戳 视频名称。第一个UID为上传到的bucket下面的文件夹名称。
-                    String uploadObject = userID + "/userHeader/_" + System.currentTimeMillis() + "_logo" + ".jpg";
+                    String uploadObject =formatNowDate.refFormatNowDate()+".jpg";
                     // 把图片进行压缩
                     Bitmap bitmap = ImageUtil.comp(bitm);
                     if (bitmap != null) {

@@ -2,10 +2,14 @@ package com.glory.bianyitong.ui.fragment;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,11 +19,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.OrderNumberInfo;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
 import com.glory.bianyitong.bean.entity.response.ResponseShare;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
@@ -297,8 +303,8 @@ public class MyFragment extends BaseFragment {
                             .go(this);
                     break;
                 case R.id.tv_shopping_cart://购物车
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
-                            .go(this);
+                    queryAddress();
+
                     break;
                 case R.id.tv_coupon://优惠券券
                     Router.build(RouterMapping.ROUTER_ACTIVITY_COUPON_LIST)
@@ -315,6 +321,54 @@ public class MyFragment extends BaseFragment {
                     startActivity(new Intent(getActivity(), MyBillActivity.class));
                     break;
             }
+        }
+    }
+
+    private void queryAddress() {//默认收货地址
+        try {
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("shippingAddress", new Object());
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    ResponseQueryAddress queryAddress = new Gson().fromJson(s, ResponseQueryAddress.class);
+                    if (queryAddress.getStatusCode() == 1) {
+                        if (queryAddress.getListShippingAddress() != null && queryAddress.getListShippingAddress().size() > 0) {
+                            if (queryAddress.getListShippingAddress() == null&&queryAddress.getListShippingAddress().size()<=0) {
+                                showShort("请添加默认收货地址");
+                            } else {
+                                Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
+                                        .go(getActivity());
+                            }
+                        }
+                    } else if (queryAddress.getStatusCode() == 2) {
+                        showShort("请添加默认收货地址");
+                    }
+                }
+
+                @Override
+                public void onError() {
+
+                }
+
+                @Override
+                public void parseError() {
+
+                }
+
+                @Override
+                public void onBefore() {
+
+                }
+
+                @Override
+                public void onAfter() {
+
+                }
+            }).getEntityData(getActivity(), HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+        }catch (Exception e){
+
         }
     }
 
@@ -493,6 +547,7 @@ public class MyFragment extends BaseFragment {
             String pic = Database.USER_MAP.getCustomerPhoto();
             if (!customerPhoto.equals(pic)) {
                 ServiceDialog.setPicture(pic, cimMyHeadPortrait, null);
+//                Glide.with(this).load(pic).error(R.drawable.wait).placeholder(R.drawable.wait).into(cimMyHeadPortrait);
                 customerPhoto = pic;
             }
         }

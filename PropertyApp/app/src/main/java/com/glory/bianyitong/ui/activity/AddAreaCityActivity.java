@@ -241,6 +241,8 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             map.put("community", new RequestQueryAreaList(name));
             String json = new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(this, "","加载中", true);//开锁中
+            progressDialog.setCanceledOnTouchOutside(true);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {
@@ -258,21 +260,23 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
                             showShort(responseListCommunity.getAlertMessage());
                         }
                     }
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void onError() {
+                    progressDialog.dismiss();
                     freshListFrRefresh.setRefreshing(false);
                 }
 
                 @Override
                 public void parseError() {
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void onBefore() {
-                    progressDialog = ProgressDialog.show(AddAreaCityActivity.this, "", getResources().getString(R.string.load), true);//加载
-                    progressDialog.setCanceledOnTouchOutside(true);
+
                 }
 
                 @Override
@@ -295,6 +299,8 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
             map.put("currentPageNumber",currentPageNumber);
             map.put("community", new RequestLocalAreaBean(longitude, latitude));
             String json = new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(this, "","加载中", true);
+            progressDialog.setCanceledOnTouchOutside(true);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {
@@ -328,15 +334,18 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
                             showShort(responseListCommunity.getAlertMessage());
                         }
                     }
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void onError() {
+                    progressDialog.dismiss();
                     freshListFrRefresh.setRefreshing(false);
                 }
 
                 @Override
                 public void parseError() {
+                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -345,6 +354,7 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
 
                 @Override
                 public void onAfter() {
+                    progressDialog.dismiss();
                 }
             }).getEntityData(this, HttpURL.HTTP_POST_LOCAL_AREA, json);
         } catch (Exception e) {

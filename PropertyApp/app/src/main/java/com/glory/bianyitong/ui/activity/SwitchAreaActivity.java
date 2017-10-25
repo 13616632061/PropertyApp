@@ -1,5 +1,6 @@
 package com.glory.bianyitong.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -85,7 +86,7 @@ public class SwitchAreaActivity extends BaseActivity {
 
             }
         });
-        request();
+//        request();
 //        if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null){
 //            Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)
 //                    .go(SwitchAreaActivity.this);
@@ -118,12 +119,14 @@ public class SwitchAreaActivity extends BaseActivity {
         user_request();
 
     }
-
+    private ProgressDialog progressDialog;
     private void request() { //获取社区
         try {
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             map.put("userCommnunityMapping", new Object());
             String jsons = new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(this, "","加载中", true);
+            progressDialog.setCanceledOnTouchOutside(true);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {
@@ -132,7 +135,7 @@ public class SwitchAreaActivity extends BaseActivity {
                         areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
                         if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
                             DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
-                            DataUtils.saveSharePreToolsKits(SwitchAreaActivity.this);
+//                            DataUtils.saveSharePreToolsKits(SwitchAreaActivity.this);
                             ScrollViewLayout(SwitchAreaActivity.this, Database.my_community_List, ll_area_list);
                         } else {
 
@@ -140,14 +143,17 @@ public class SwitchAreaActivity extends BaseActivity {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void onError() {
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void parseError() {
+                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -157,7 +163,7 @@ public class SwitchAreaActivity extends BaseActivity {
 
                 @Override
                 public void onAfter() {
-
+                    progressDialog.dismiss();
                 }
             }).getEntityData(this, "/ApiUserCommnunity/Query", jsons);
         } catch (Exception e) {
@@ -253,6 +259,7 @@ public class SwitchAreaActivity extends BaseActivity {
 
                                 if (list.get(j) != null) {
                                     Database.my_community = list.get(j);
+                                    mCache.put(Constant.community, new Gson().toJson(Database.my_community)); //缓存所选的社区
                                     mCache.put(Constant.communityID, list.get(j).getUserCommunityID() + ""); //缓存所选的小区id
                                     item_area_select.setVisibility(View.VISIBLE);
                                     EventBus.getDefault().post(true);

@@ -113,6 +113,7 @@ public class BaseRequestBean{
     public Map<String,Object> getBaseRequest(){
         Map<String,Object> map=new HashMap<>();
         map.put("timeStemp",getTimeStemp());
+        map.put("ip",TextUtils.isEmpty(Database.ip)?"":Database.ip);
         map.put("accessToken",TextUtils.isEmpty(Database.accessToken)?"":Database.accessToken);
         map.put("version",getVersion());
         map.put("deviceType",getDeviceType());

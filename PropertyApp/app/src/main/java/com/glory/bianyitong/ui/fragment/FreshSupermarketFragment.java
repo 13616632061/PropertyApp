@@ -179,8 +179,8 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                 if (Database.USER_MAP==null){
                     Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(getActivity());
                 }else {
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
-                            .go(getActivity());
+                    queryAddress();
+
                 }
                 break;
             case R.id.iv_rec_line://切换列表样式
@@ -214,6 +214,54 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
 
                 break;
+        }
+    }
+
+    private void queryAddress() {//判断是否有收货地址
+        try {
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("shippingAddress", new Object());
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    ResponseQueryAddress queryAddress = new Gson().fromJson(s, ResponseQueryAddress.class);
+                    if (queryAddress.getStatusCode() == 1) {
+                        if (queryAddress.getListShippingAddress() != null && queryAddress.getListShippingAddress().size() > 0) {
+                            if (queryAddress.getListShippingAddress() == null&&queryAddress.getListShippingAddress().size()<=0) {
+                                showShort("请添加默认收货地址");
+                            } else {
+                                Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
+                                        .go(getActivity());
+                            }
+                        }
+                    } else if (queryAddress.getStatusCode() == 2) {
+                        showShort("请添加默认收货地址");
+                    }
+                }
+
+                @Override
+                public void onError() {
+
+                }
+
+                @Override
+                public void parseError() {
+
+                }
+
+                @Override
+                public void onBefore() {
+
+                }
+
+                @Override
+                public void onAfter() {
+
+                }
+            }).getEntityData(getActivity(), HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+        }catch (Exception e){
+
         }
     }
 

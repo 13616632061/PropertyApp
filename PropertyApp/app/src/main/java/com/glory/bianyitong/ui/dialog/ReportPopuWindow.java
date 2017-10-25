@@ -73,6 +73,52 @@ public class ReportPopuWindow extends PopupWindow implements View.OnClickListene
         });
     }
 
+    public ReportPopuWindow(final Context context,Handler del_handler, Bundle bundle,String delete) {//, int position,
+        super(context);
+        this.context = context;
+//        this.position = position;
+        this.del_handler = del_handler;
+        this.bundle = bundle;
+
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mMenuView = inflater.inflate(R.layout.dialog_news_delete, null);
+        news_delete = (TextView) mMenuView.findViewById(R.id.news_delete);
+        new_cancel = (TextView) mMenuView.findViewById(R.id.new_cancel);
+
+        news_delete.setText(context.getString(R.string.delete));//删除
+        news_delete.setOnClickListener(this);
+        new_cancel.setOnClickListener(this);
+
+        this.setContentView(mMenuView);
+        // 设置SelectPicPopupWindow弹出窗体的宽
+        this.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
+        // 设置SelectPicPopupWindow弹出窗体的高
+        this.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        // 设置SelectPicPopupWindow弹出窗体可点击
+        this.setFocusable(true);
+        // 设置SelectPicPopupWindow弹出窗体动画效果
+        this.setAnimationStyle(R.style.AnimationWindow);
+        // 实例化一个ColorDrawable颜色为半透明
+        ColorDrawable dw = new ColorDrawable(0x80000000);
+        // 设置SelectPicPopupWindow弹出窗体的背景
+        this.setBackgroundDrawable(dw);
+        // mMenuView添加OnTouchListener监听判断获取触屏位置如果在选择框外面则销毁弹出框
+        mMenuView.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+
+                int height = mMenuView.findViewById(R.id.pop_layout2).getTop();
+                int y = (int) event.getY();
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (y < height) {
+                        dismiss();
+                    }
+                }
+                return true;
+            }
+        });
+    }
+
     @Override
     public void onClick(View arg0) {
         // TODO Auto-generated method stub

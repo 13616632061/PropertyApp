@@ -22,7 +22,7 @@ public class ExpressBarAddAdapter extends BaseQuickAdapter<ItemMenu<ResponseQuer
     @Override
     protected void convert(BaseViewHolder helper, ItemMenu<ResponseQueryExpressBar.ListFreshCabinetBean> item) {
         helper.setText(R.id.local_content_txt,item.getData().getCabinetName());
-        helper.setText(R.id.address_content_txt,item.getData().getAddress());
+        helper.setText(R.id.address_content_txt,"收货地址:"+item.getData().getAddress());
         helper.setText(R.id.local_content_distance,"约 "+(int)item.getData().getDistance()+" 米");
     }
 }

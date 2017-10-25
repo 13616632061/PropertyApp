@@ -94,12 +94,18 @@ public class DynamicDetailsActivity extends BaseActivity {
 //                bundle.putString("reportUserName",Database.USER_MAP.getUserName());//举报人姓名
 //                bundle.putInt("publisherID", publisherID);//发布者ID
 
-                int reportType = msg.getData().getInt("reportType");
-                int reportID = msg.getData().getInt("reportID");
-                String reportUserID = msg.getData().getString("reportUserID");
-                String reportUserName = msg.getData().getString("reportUserName");
-                String publisherID = msg.getData().getString("publisherID");
-                reports(reportType, reportID, reportUserID, reportUserName, publisherID);
+                if (!Database.USER_MAP.getUserID().equals(aesUserID)){
+                    int reportType = msg.getData().getInt("reportType");
+                    int reportID = msg.getData().getInt("reportID");
+                    String reportUserID = msg.getData().getString("reportUserID");
+                    String reportUserName = msg.getData().getString("reportUserName");
+                    String publisherID = msg.getData().getString("publisherID");
+                    reports(reportType, reportID, reportUserID, reportUserName, publisherID);
+                }else {
+                    delete(msg.getData().getInt("reportID"));
+//                    showShort("删除"+msg.getData().getInt("reportID"));
+                }
+
             }
         }
     };
@@ -127,6 +133,8 @@ public class DynamicDetailsActivity extends BaseActivity {
     private ProgressDialog progressDialog = null;
     @InjectParam(key = "neighborhoodID")
     int neighborhoodid; //近邻 id
+    @InjectParam(key = "aesUserID")
+    String  aesUserID; //被看用户userid
 
     private String publisherID;//发布者 id
     private boolean islike = false; //近邻是否可以点赞
@@ -217,6 +225,12 @@ public class DynamicDetailsActivity extends BaseActivity {
                         reportPopuWindow.showAtLocation(DynamicDetailsActivity.this.findViewById(R.id.lay_dynamic_commment),
                                 Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
                         break;
+                    case 3://删除
+                        reportPopuWindow = new ReportPopuWindow(DynamicDetailsActivity.this, rhandler, msg.getData(),"删除");//, msg.arg1, del_handler
+                        // 显示窗口
+                        reportPopuWindow.showAtLocation(DynamicDetailsActivity.this.findViewById(R.id.lay_dynamic_commment),
+                                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
+                        break;
                 }
             }
         };
@@ -282,17 +296,28 @@ public class DynamicDetailsActivity extends BaseActivity {
                 break;
             case R.id.dynamic_right_more: //更多
                 ServiceDialog.ButtonClickZoomInAnimation(dynamic_right_more, 0.95f);
+
                 if (Database.USER_MAP != null) {
-                    Message msg = new Message();
-                    msg.what = 2;
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("reportType", 1);//举报类型：1近邻2近邻评论3新闻评论
-                    bundle.putInt("reportID", neighborhood.getNeighborhoodID());//举报ID(近邻id或评论id)
-                    bundle.putString("reportUserID", Database.USER_MAP.getUserID());//举报人ID（默认0）
-                    bundle.putString("reportUserName", Database.USER_MAP.getUserName());//举报人姓名
-                    bundle.putString("publisherID", publisherID);//发布者ID
-                    msg.setData(bundle);
-                    handler.sendMessage(msg);
+                    if (!Database.USER_MAP.getUserID().equals(aesUserID)){//别人发表评论
+                        Message msg = new Message();
+                        msg.what = 2;
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("reportType", 1);//举报类型：1近邻2近邻评论3新闻评论
+                        bundle.putInt("reportID", neighborhood.getNeighborhoodID());//举报ID(近邻id或评论id)
+                        bundle.putString("reportUserID", Database.USER_MAP.getUserID());//举报人ID（默认0）
+                        bundle.putString("reportUserName", Database.USER_MAP.getUserName());//举报人姓名
+                        bundle.putString("publisherID", publisherID);//发布者ID
+                        msg.setData(bundle);
+                        handler.sendMessage(msg);
+                    }else {
+                        Message msg = new Message();
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("reportID", neighborhood.getNeighborhoodID());//举报ID(近邻id或评论id)
+                        msg.setData(bundle);
+                        msg.what = 3;
+                        handler.sendMessage(msg);
+                    }
+
                 } else {//登录
                     Intent intent_login = new Intent();
                     intent_login.setClass(DynamicDetailsActivity.this, LoginActivity.class);
@@ -555,6 +580,46 @@ public class DynamicDetailsActivity extends BaseActivity {
                 lay_like_dy.setClickable(true);
             }
         }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_LIKE,json);
+        }catch (Exception e){
+
+        }
+    }
+
+
+
+    /**
+     * 删除自己的发布
+     * @param neighborhoodID
+     */
+    private void delete(int neighborhoodID) { //点赞
+        try {
+            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+            Map<String,Object> map2=new HashMap<>();
+            map2.put("neighborhoodID",neighborhoodID);
+            map.put("neighborhood",map2);
+            String json=new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
+                    showShort(bean.getAlertMessage());
+                    if(bean.getStatusCode()==1){
+                        finish();
+                    }
+                    showShort(bean.getAlertMessage());
+                }
+                @Override
+                public void onError() {
+                }
+                @Override
+                public void parseError() {}
+                @Override
+                public void onBefore() {
+                }
+                @Override
+                public void onAfter() {
+                }
+            }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_DELETE,json);
         }catch (Exception e){
 
         }

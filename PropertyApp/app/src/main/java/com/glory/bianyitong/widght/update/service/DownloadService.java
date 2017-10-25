@@ -35,7 +35,7 @@ import okhttp3.Response;
  */
 public class DownloadService extends Service {
 //    private static final String DOWN_APK_URL = UPVersion.url;
-    private static final String DOWN_APK_URL = "http://192.168.26.114:1755/APP/BianYiTong.apk";
+    private static final String DOWN_APK_URL = "http://szbianyitong.oss-cn-shenzhen.aliyuncs.com/Download/apk/byt1.0.0.apk";
 
     private static final String TAG = DownloadService.class.getSimpleName();
     private static final String APK_NAME = "bianyitong.apk";
@@ -161,26 +161,29 @@ public class DownloadService extends Service {
             intent.addCategory("android.intent.category.DEFAULT");
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.setDataAndType(Uri.fromFile(fileLocation), "application/vnd.android.package-archive");
+
+
+            //表示返回的PendingIntent仅能执行一次，执行完后自动取消
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+
+            Notification notification = new Notification.Builder(this)
+                    .setSmallIcon(R.drawable.logo_5)//App小的图标
+                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_5))//App大图标
+                    .setContentTitle(getString(R.string.bianyitong_to_update))//设置通知的信息
+                    .setContentIntent(pendingIntent)
+                    .setWhen(System.currentTimeMillis())
+                    .setContentText(message)
+                    .setAutoCancel(false)//用户点击后自动删除
+                    //.setDefaults(Notification.DEFAULT_LIGHTS)//灯光
+                    .setPriority(Notification.PRIORITY_DEFAULT)//设置优先级
+                    .setOngoing(true)
+                    .setProgress(AllProgress, progress, false) //AllProgress最大进度 //progress 当前进度
+                    .build();
+            notification.flags = Notification.FLAG_AUTO_CANCEL;
+            manager.notify(0, notification);
         }
 
-        //表示返回的PendingIntent仅能执行一次，执行完后自动取消
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
 
-        Notification notification = new Notification.Builder(this)
-                .setSmallIcon(R.drawable.logo_5)//App小的图标
-                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_5))//App大图标
-                .setContentTitle(getString(R.string.bianyitong_to_update))//设置通知的信息
-                .setContentIntent(pendingIntent)
-                .setWhen(System.currentTimeMillis())
-                .setContentText(message)
-                .setAutoCancel(false)//用户点击后自动删除
-                //.setDefaults(Notification.DEFAULT_LIGHTS)//灯光
-                .setPriority(Notification.PRIORITY_DEFAULT)//设置优先级
-                .setOngoing(true)
-                .setProgress(AllProgress, progress, false) //AllProgress最大进度 //progress 当前进度
-                .build();
-        notification.flags = Notification.FLAG_AUTO_CANCEL;
-        manager.notify(0, notification);
     }
 
     /**

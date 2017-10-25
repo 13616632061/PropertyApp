@@ -126,9 +126,12 @@ public class YellowPageActivity extends BaseActivity {
      * 黄页分组
      */
     private void requestyellowPageGroup() {
+
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("yellowPageGroup",new Object());
         String json=new Gson().toJson(map);
+        progressDialog = ProgressDialog.show(this, "","加载中", true);
+        progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -154,26 +157,23 @@ public class YellowPageActivity extends BaseActivity {
 
             @Override
             public void onError() {
+                progressDialog.dismiss();
                 showShort(getString(R.string.system_error));
             }
 
             @Override
             public void parseError() {
-
+                progressDialog.dismiss();
             }
 
             @Override
             public void onBefore() {
-                progressDialog = ProgressDialog.show(YellowPageActivity.this, "", getString(R.string.load), true);//加载
-                progressDialog.setCanceledOnTouchOutside(true);
+
             }
 
             @Override
             public void onAfter() {
-                if (progressDialog != null) {
-                    progressDialog.dismiss();
-                    progressDialog = null;
-                }
+                progressDialog.dismiss();
             }
         }).getEntityData(this,HttpURL.HTTP_POST_YELLOWPAGE_QUERY,json);
 
@@ -188,6 +188,7 @@ public class YellowPageActivity extends BaseActivity {
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("yellowPage",new RequestYellowItem(bean.getYellowPageGroupID()));
         String json=new Gson().toJson(map);
+
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -231,16 +232,18 @@ public class YellowPageActivity extends BaseActivity {
                         list_conveniencephone.setAdapter(adapter);
                     }
                 }
+                progressDialog.dismiss();
             }
 
             @Override
             public void onError() {
+                progressDialog.dismiss();
                 showShort(getString(R.string.system_error));
             }
 
             @Override
             public void parseError() {
-
+                progressDialog.dismiss();
             }
 
             @Override
@@ -250,7 +253,7 @@ public class YellowPageActivity extends BaseActivity {
 
             @Override
             public void onAfter() {
-
+                progressDialog.dismiss();
             }
         }).getEntityData(this,HttpURL.HTTP_POST_YELLOWITEM_QUERY,json);
 

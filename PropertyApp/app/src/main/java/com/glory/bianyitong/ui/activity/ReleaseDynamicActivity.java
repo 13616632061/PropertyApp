@@ -48,6 +48,7 @@ import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.DateUtil;
+import com.glory.bianyitong.util.FormatNowDate;
 import com.glory.bianyitong.util.ImageUtil;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.TextUtil;
@@ -262,7 +263,8 @@ public class ReleaseDynamicActivity extends BaseActivity implements ChooseAdapte
                     bmap.recycle();
 //                    image.recycle();
                     // 用户ID + 时间戳 视频名称。第一个UID为上传到的bucket下面的文件夹名称。
-                    final String testObject = userID + "/surrounding/_" + System.currentTimeMillis() + "ReleasePhoto" + ".jpg";
+                    FormatNowDate formatNowDate=new FormatNowDate();
+                    final String testObject = formatNowDate.refFormatNowDate()+".jpg";
                     // 构造上传请求
                     PutObjectRequest put = new PutObjectRequest(testBucket, testObject, uploadFilePath);
 

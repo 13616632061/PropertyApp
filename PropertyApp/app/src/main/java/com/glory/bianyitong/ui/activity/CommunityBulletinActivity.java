@@ -1,5 +1,6 @@
 package com.glory.bianyitong.ui.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -131,13 +132,16 @@ public class CommunityBulletinActivity extends BaseActivity implements BaseQuick
         }
     }
 
-
+    private ProgressDialog progressDialog;
     private void request() { //请求社区公告
         adapter.setEnableLoadMore(false);
         try {
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             map.put("communityBulletin", new Object());
+            map.put("currentPageNumber",currentPageNumber);
             String json = new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(this, "","加载中", true);
+            progressDialog.setCanceledOnTouchOutside(true);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {
@@ -163,15 +167,18 @@ public class CommunityBulletinActivity extends BaseActivity implements BaseQuick
                             adapter.loadMoreEnd();
                         }
                     }
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void onError() {
+                    progressDialog.dismiss();
                     gonggaoListRefresh.setRefreshing(false);
                 }
 
                 @Override
                 public void parseError() {
+                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -181,7 +188,7 @@ public class CommunityBulletinActivity extends BaseActivity implements BaseQuick
 
                 @Override
                 public void onAfter() {
-
+                    progressDialog.dismiss();
                 }
             }).getEntityData(this, HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA_NOTICE, json);
         } catch (Exception e) {

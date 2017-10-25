@@ -56,6 +56,7 @@ import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.activity.ReleaseDynamicActivity;
 import com.glory.bianyitong.ui.adapter.shop.CommentAddAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
+import com.glory.bianyitong.util.FormatNowDate;
 import com.glory.bianyitong.util.ImageUtil;
 import com.glory.bianyitong.widght.photos.EventEntry;
 import com.glory.bianyitong.widght.photos.PhotosActivity;
@@ -373,7 +374,8 @@ public class CommentActivity extends BaseActivity implements BaseQuickAdapter.On
                     bmap.recycle();
 //                    image.recycle();
                     // 用户ID + 时间戳 视频名称。第一个UID为上传到的bucket下面的文件夹名称。
-                    final String testObject =  RequestUtil.getuserid() + "/suggestion/_" + System.currentTimeMillis() + "_SuggestPhoto" + ".jpg";
+                    FormatNowDate formatNowDate=new FormatNowDate();
+                    final String testObject =  formatNowDate.refFormatNowDate()+"_SuggestPhoto" + ".jpg";
                     // 构造上传请求
                     PutObjectRequest put = new PutObjectRequest(testBucket, testObject, uploadFilePath);
 

@@ -270,6 +270,8 @@ public class MessageActivity extends BaseActivity {
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             map.put("systemMsg", new Object());
             String json = new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(this, "","加载中", true);
+            progressDialog.setCanceledOnTouchOutside(true);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {
@@ -327,6 +329,7 @@ public class MessageActivity extends BaseActivity {
                 @Override
                 public void onError() {
                     getGoodsListStart = false;
+                    progressDialog.dismiss();
                     loading_lay.setVisibility(View.GONE);
                     listView_mes.setVisibility(View.GONE);
                     lay_no_message.setVisibility(View.VISIBLE);
@@ -334,13 +337,12 @@ public class MessageActivity extends BaseActivity {
 
                 @Override
                 public void parseError() {
-
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void onBefore() {
-                    progressDialog = ProgressDialog.show(MessageActivity.this, "", getString(R.string.load), true);//加载
-                    progressDialog.setCanceledOnTouchOutside(true);
+
                 }
 
                 @Override

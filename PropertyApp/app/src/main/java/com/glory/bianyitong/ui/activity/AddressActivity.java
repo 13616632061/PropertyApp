@@ -120,9 +120,8 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
         }
     }
     private void queryAddress() {
+        adapter.notifyDataSetChanged();
         try {
-
-
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("shippingAddress", new Object());
         String json = new Gson().toJson(map);
@@ -223,6 +222,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
             public void onSuccess(String s) {
                 BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
                 if(bean.getStatusCode()==1){
+                    data.clear();
                     queryAddress();
                 }
                 showShort(bean.getAlertMessage());

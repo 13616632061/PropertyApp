@@ -3,10 +3,15 @@ package com.glory.bianyitong.base;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,6 +26,12 @@ import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.ScreenUtil;
 import com.glory.bianyitong.util.ToastUtils;
 
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.util.Enumeration;
+
 import butterknife.ButterKnife;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -29,7 +40,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  */
 public abstract class BaseActivity extends AppCompatActivity implements View.OnClickListener {
 //    InputMethodManager manager;
-    protected ACache mCache;
+    public static ACache mCache;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -37,6 +48,8 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         mCache=ACache.get(this);
         Database.currentActivity = this;
         ButterKnife.bind(this);  //自动化声明控件
+        Database.ip=getIPAddress(this);
+
 //       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            Window window = getWindow();
 //            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
@@ -92,6 +105,50 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
     }
 
 
+    public static String getIPAddress(Context context) {
+        NetworkInfo info = ((ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
+        if (info != null && info.isConnected()) {
+            if (info.getType() == ConnectivityManager.TYPE_MOBILE) {//当前使用2G/3G/4G网络
+                try {
+                    //Enumeration<NetworkInterface> en=NetworkInterface.getNetworkInterfaces();
+                    for (Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces(); en.hasMoreElements(); ) {
+                        NetworkInterface intf = en.nextElement();
+                        for (Enumeration<InetAddress> enumIpAddr = intf.getInetAddresses(); enumIpAddr.hasMoreElements(); ) {
+                            InetAddress inetAddress = enumIpAddr.nextElement();
+                            if (!inetAddress.isLoopbackAddress() && inetAddress instanceof Inet4Address) {
+                                return inetAddress.getHostAddress();
+                            }
+                        }
+                    }
+                } catch (SocketException e) {
+                    e.printStackTrace();
+                }
+
+            } else if (info.getType() == ConnectivityManager.TYPE_WIFI) {//当前使用无线网络
+                WifiManager wifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+                WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                String ipAddress = intIP2StringIP(wifiInfo.getIpAddress());//得到IPV4地址
+                return ipAddress;
+            }
+        } else {
+            //当前无网络连接,请在设置中打开网络
+        }
+        return null;
+    }
+
+    /**
+     * 将得到的int类型的IP转换为String类型
+     *
+     * @param ip
+     * @return
+     */
+    public static String intIP2StringIP(int ip) {
+        return (ip & 0xFF) + "." +
+                ((ip >> 8) & 0xFF) + "." +
+                ((ip >> 16) & 0xFF) + "." +
+                (ip >> 24 & 0xFF);
+    }
 
     //初始化标题栏   标题  右边是否隐藏  右边
     public void inintTitle(String title, boolean isGone, String rightText) {

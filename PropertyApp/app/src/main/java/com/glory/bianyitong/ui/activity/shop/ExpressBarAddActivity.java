@@ -125,8 +125,6 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
 
     private void queryExpressBarByLocal() {
         try {
-
-
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         RequestQueryExpressBarByLocal.Local local = new RequestQueryExpressBarByLocal.Local((Double) mCache.getAsObject("longitude"),
         (Double) mCache.getAsObject("latitude"));

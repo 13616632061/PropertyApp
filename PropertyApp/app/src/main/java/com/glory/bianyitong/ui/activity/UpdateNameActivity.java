@@ -96,6 +96,8 @@ public class UpdateNameActivity extends BaseActivity {
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("user",new RequestUserBean(name,Database.USER_MAP.getCustomerPhoto(),Database.USER_MAP.getSignature()));
         String json=new Gson().toJson(map);
+        progressDialog = ProgressDialog.show(this, "","加载中", true);
+        progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -111,15 +113,18 @@ public class UpdateNameActivity extends BaseActivity {
                 }else {
                     ToastUtils.showToast(UpdateNameActivity.this,bean.getAlertMessage());//修改失败
                 }
+                progressDialog.dismiss();
             }
 
             @Override
             public void onError() {
+                progressDialog.dismiss();
 
             }
 
             @Override
             public void parseError() {
+                progressDialog.dismiss();
 
             }
 
@@ -130,6 +135,7 @@ public class UpdateNameActivity extends BaseActivity {
 
             @Override
             public void onAfter() {
+                progressDialog.dismiss();
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_MY_EDITUSERINFO,json);

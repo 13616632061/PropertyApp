@@ -24,9 +24,12 @@ import java.util.List;
  */
 public class Database {
     public static int NEW_VERSION = 0;
-    public static Activity currentActivity = null; // 当前页面
 
+    public static Activity currentActivity = null; // 当前页面
+    public static String ip = "";//ip地址
     public static String contact_phone_name = "";//选择的联系人 电话  姓名
+    public static String DOWN_APK_URL = null;//下载链接地址
+
     public static String suggest_type_name_id = "";//建议类型
 
     public static String readbulletinid = "";// 已读的公告id

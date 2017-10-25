@@ -202,9 +202,9 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         } else {
 
             switch (view.getId()) {
-                case R.id.iv_title_right:
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
-                            .go(this);
+                case R.id.iv_title_right://购物车
+                    queryAddress(1);
+
                     break;
                 case R.id.detail_kefu://客服
                     break;
@@ -238,7 +238,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                     }
                     break;
                 case R.id.detail_addshopping_payproduct://立即购买
-                    queryAddress();
+                    queryAddress(0);
                     break;
                 case R.id.tv_look_all://查看全部评论
                     if (product != null) {
@@ -252,6 +252,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
             }
         }
     }
+
 
     /**
      * 立即购买时查询商品剩余
@@ -654,17 +655,14 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
     /**
      * //默认收货地址
+     * @param i
      */
-    private void queryAddress() {
+    private void queryAddress(final int i) {
         try {
-
-
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("shippingAddress", new Object());
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-
-
             @Override
             public void onSuccess(String s) {
                 ResponseQueryAddress queryAddress = new Gson().fromJson(s, ResponseQueryAddress.class);
@@ -678,7 +676,12 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                         if (addressBeabean == null) {
                             showShort("请添加默认收货地址");
                         } else {
-                            godownFind();//
+                            if (i==0){
+                                godownFind();//
+                            }else {
+                                Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
+                                        .go(getApplicationContext());
+                            }
                         }
                     }
                 } else if (queryAddress.getStatusCode() == 2) {

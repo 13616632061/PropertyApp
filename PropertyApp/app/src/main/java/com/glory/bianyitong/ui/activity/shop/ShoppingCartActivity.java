@@ -264,8 +264,6 @@ public class ShoppingCartActivity extends BaseActivity implements View.OnClickLi
 
     private void queryAddress() {//默认收货地址
         try {
-
-
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("shippingAddress", new Object());
         String json = new Gson().toJson(map);

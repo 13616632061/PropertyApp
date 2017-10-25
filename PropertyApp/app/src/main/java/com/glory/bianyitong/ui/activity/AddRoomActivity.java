@@ -159,6 +159,8 @@ public class AddRoomActivity extends BaseActivity {
             maps.put("communityID",communityID);
         map.put("communityBuilding",maps);
         String json=new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(this, "","加载中", true);
+            progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -180,15 +182,19 @@ public class AddRoomActivity extends BaseActivity {
                 }else {
                     showShort(queryBuild.getAlertMessage());
                 }
+                progressDialog.dismiss();
             }
             @Override
-            public void onError() {}
+            public void onError() {                progressDialog.dismiss();
+            }
             @Override
-            public void parseError() {}
+            public void parseError() {                progressDialog.dismiss();
+            }
             @Override
             public void onBefore() {}
             @Override
-            public void onAfter() {}
+            public void onAfter() {                progressDialog.dismiss();
+            }
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_BUILD,json);
         }catch (Exception e){
 
@@ -206,6 +212,8 @@ public class AddRoomActivity extends BaseActivity {
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("communityUnit",new RequestCommunityUnit(buildingID));
         String json=new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(this, "","加载中", true);//开锁中
+            progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -221,17 +229,20 @@ public class AddRoomActivity extends BaseActivity {
                 }else {
                     showShort(queryUnit.getAlertMessage());
                 }
-
+                progressDialog.dismiss();
             }
 
             @Override
-            public void onError() {}
+            public void onError() {                progressDialog.dismiss();
+            }
             @Override
-            public void parseError() {}
+            public void parseError() {                progressDialog.dismiss();
+            }
             @Override
             public void onBefore() {}
             @Override
-            public void onAfter() {}
+            public void onAfter() {                progressDialog.dismiss();
+            }
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_UNIT,json);
         }catch (Exception e){
 
@@ -249,7 +260,8 @@ public class AddRoomActivity extends BaseActivity {
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("communityRoom",new RequestCommunityRoom(unitID));
         String json=new Gson().toJson(map);
-
+            progressDialog = ProgressDialog.show(this, "","加载中", true);//开锁中
+            progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -265,17 +277,20 @@ public class AddRoomActivity extends BaseActivity {
                 }else {
                     showShort(queryRoom.getAlertMessage());
                 }
-
+                progressDialog.dismiss();
             }
 
             @Override
-            public void onError() {}
+            public void onError() {                progressDialog.dismiss();
+            }
             @Override
-            public void parseError() {}
+            public void parseError() {                progressDialog.dismiss();
+            }
             @Override
             public void onBefore() {}
             @Override
-            public void onAfter() {}
+            public void onAfter() {                progressDialog.dismiss();
+            }
         }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_ROOM,json);
         }catch (Exception e){
 
@@ -303,6 +318,8 @@ public class AddRoomActivity extends BaseActivity {
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("userCommnunityMapping",new RequestApplyArea(provinceID, cityID, communityID, buildingID, unitID, roomID));
         String json=new Gson().toJson(map);
+        progressDialog = ProgressDialog.show(this, "","加载中", true);
+        progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -319,17 +336,15 @@ public class AddRoomActivity extends BaseActivity {
                     ActivityManager.removeAllActivity();
                     AddRoomActivity.this.finish();
                 }
-
+                progressDialog.dismiss();
             }
 
             @Override
-            public void onError() {}
+            public void onError() { progressDialog.dismiss();}
             @Override
-            public void parseError() {}
+            public void parseError() { progressDialog.dismiss();}
             @Override
             public void onBefore() {
-                progressDialog = ProgressDialog.show(AddRoomActivity.this, "", getString(R.string.commit), true);//提交
-                progressDialog.setCanceledOnTouchOutside(true);
             }
             @Override
             public void onAfter() {

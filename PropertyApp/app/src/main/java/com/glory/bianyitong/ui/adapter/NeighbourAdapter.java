@@ -172,6 +172,7 @@ public class NeighbourAdapter extends BaseAdapter {
 //                            context.startActivity(intent);
                             Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_DETAIL)
                                     .with("neighborhoodID",list.get(j).getNeighborhoodID())
+                                    .with("aesUserID",list.get(j).getAesUserID())
                                     .go(context);
 //                            Intent intent = new Intent(context, DynamicDetailsActivity.class);
 //                            intent.putExtra("neighborhoodID", Double.valueOf(list.get(j).get("neighborhoodID").toString()).intValue());
@@ -225,6 +226,7 @@ public class NeighbourAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_DETAIL)
                         .with("neighborhoodID",list.get(position).getNeighborhoodID())
+                        .with("aesUserID",list.get(position).getAesUserID())
                         .go(context);
 //                Intent intent = new Intent(context, DynamicDetailsActivity.class);
 //                intent.putExtra("neighborhoodID", Double.valueOf(list.get(position).get("neighborhoodID").toString()).intValue());

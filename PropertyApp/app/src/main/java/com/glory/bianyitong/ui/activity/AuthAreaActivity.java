@@ -164,6 +164,8 @@ public class AuthAreaActivity extends BaseActivity {
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("userCommnunityMapping",new Object());
         String jsons=new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(AuthAreaActivity.this, "", getString(R.string.obtain), true);//Obtain 获取
+            progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -173,7 +175,7 @@ public class AuthAreaActivity extends BaseActivity {
                     AuthAreaInfo areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
                     if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
                         DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
-                        DataUtils.saveSharePreToolsKits(AuthAreaActivity.this);
+//                        DataUtils.saveSharePreToolsKits(AuthAreaActivity.this);
                         ScrollViewLayout(AuthAreaActivity.this, Database.my_community_List, auth_area_list);
                     } else {
 //                        ToastUtils.showToast(AuthAreaActivity.this, getString(R.string.get_community_failure)); //获取社区失败
@@ -189,8 +191,7 @@ public class AuthAreaActivity extends BaseActivity {
             public void parseError() {}
             @Override
             public void onBefore() {
-                progressDialog = ProgressDialog.show(AuthAreaActivity.this, "", getString(R.string.obtain), true);//Obtain 获取
-                progressDialog.setCanceledOnTouchOutside(true);
+
             }
             @Override
             public void onAfter() {

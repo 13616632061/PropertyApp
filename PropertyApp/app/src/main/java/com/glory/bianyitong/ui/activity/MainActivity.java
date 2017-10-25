@@ -11,6 +11,10 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -18,6 +22,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -46,6 +51,7 @@ import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.AuthAreaInfo;
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.CommnunityInfo;
 import com.glory.bianyitong.bean.LoginUserInfo;
 import com.glory.bianyitong.bean.UPVersionInfo;
 import com.glory.bianyitong.constants.Constant;
@@ -66,6 +72,7 @@ import com.glory.bianyitong.ui.fragment.OpenTheDoorFragment;
 import com.glory.bianyitong.util.ACache;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DataUtils;
+import com.glory.bianyitong.util.FormatNowDate;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.LogUtils;
 import com.glory.bianyitong.util.SharedUtil;
@@ -82,7 +89,12 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -148,6 +160,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         Router.injectParams(this);
         ButterKnife.bind(this);
         request();
+        //7.0相机权限
+        String[] permissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        if (Build.VERSION.SDK_INT >= 23) {
+            int check = ContextCompat.checkSelfPermission(this, permissions[0]);
+            // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
+            if (check == PackageManager.PERMISSION_GRANTED) {
+                //调用相机
+            } else {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+            }
+        }
+
+        FormatNowDate formatNowDate=new FormatNowDate();
+        Log.v("sadawwwwasd",formatNowDate.refFormatNowDate());
 
         Database.registrationId = JPushInterface.getRegistrationID(getApplicationContext());
         JPushInterface.setDebugMode(true);//测试版为true
@@ -227,6 +253,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         requestUpdate();
     }
+
 
     @Override
     protected int getContentId() {
@@ -524,10 +551,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, new TypeToken<LoginUserInfo>(){}.getType());
             Database.USER_MAP = userInfo.getUser();
             Database.accessToken=userInfo.getAccessToken();
-            if(!(userInfo==null || userInfo.getUserCommnunity()==null)){
+
+            if(!(userInfo.getUserCommnunity()==null)){
                 DataUtils.getUesrCommunity(userInfo);//社区列表
                 DataUtils.my_community(MainActivity.this);
             }
+        }
+        if (!TextUtil.isEmpty(mCache.getAsString(Constant.community))){
+            Database.my_community=new Gson().fromJson(mCache.getAsString(Constant.community),new TypeToken<CommnunityInfo>(){}.getType());
         }
 //        getWeiXin();
     }
@@ -705,7 +736,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void requestUpdate() {
 //        String json = "{\"version\":{},\"controllerName\": \"Version\",\"actionName\": \"StructureQuery\"," +
 //                "\"userID\": \"" + RequestUtil.getuserid() + "\",\"datetime\": \"" + RequestUtil.getCurrentTime() + "\"}";
-        String url = "/Version/StructureQuery";
+//        String url = "/Version/StructureQuery";
         String jsons=new Gson().toJson(new BaseRequestBean());
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -715,18 +746,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 Log.i("resultString", "------------");
                 try {
                     JSONObject jo = new JSONObject(s);
-                    UPVersionInfo upVersionInfo = new Gson().fromJson(jo.toString(), UPVersionInfo.class);
-                    Log.i("resultString", "upVersionInfo.getListVersion()-------" + upVersionInfo.getListVersion());
-                    if (upVersionInfo != null && upVersionInfo.getListVersion() != null && upVersionInfo.getListVersion().size() > 0) {
-                        if (upVersionInfo.getListVersion().get(0) != null && upVersionInfo.getListVersion().get(0).getUpdatePath() != null) {
-                            UPVersion.url = upVersionInfo.getListVersion().get(0).getUpdatePath();
+                    final UPVersionInfo upVersionInfo = new Gson().fromJson(jo.toString(), UPVersionInfo.class);
+                    Log.i("resultString", "upVersionInfo.getListVersion()-------" + upVersionInfo.getVersion());
+                    if (upVersionInfo.getVersion() != null ) {
+                        if (upVersionInfo.getVersion().getUpdatePath() != null) {
+                            UPVersion.url = upVersionInfo.getVersion().getUpdatePath();
                         }
-                        if (upVersionInfo.getListVersion().get(0) != null && upVersionInfo.getListVersion().get(0).getImprint() != null) {
-                            UPVersion.info = upVersionInfo.getListVersion().get(0).getImprint();
+                        if (upVersionInfo.getVersion().getImprint() != null) {
+                            UPVersion.info = upVersionInfo.getVersion().getImprint();
                         }
-                        if (upVersionInfo.getListVersion().get(0) != null) {
-                            UPVersion.versionCode = upVersionInfo.getListVersion().get(0).getVersionCode();
+                            UPVersion.versionCode = Integer.valueOf(upVersionInfo.getVersion().getVersionCode());
+
+                        if (upVersionInfo.getVersion().getUpdatePath()!=null){
+                            Database.DOWN_APK_URL=upVersionInfo.getVersion().getUpdatePath();
                         }
+
                         if (UPVersion.versionCode > Integer.valueOf(Constant.VERSIONCODE)) {
                             //下面是自定义dialog
                             View view = View.inflate(MainActivity.this, R.layout.download_layout, null);
@@ -735,7 +769,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
                             dialog.setContentView(view);
                             TextView content = (TextView) view.findViewById(R.id.tv_content);
-                            content.setText(upVersionInfo.getListVersion().get(0).getImprint()); //内容
+                            content.setText(upVersionInfo.getVersion().getImprint()); //内容
                             //取消
                             TextView cancel = (TextView) view.findViewById(R.id.btn_cancel);
                             cancel.setOnClickListener(new View.OnClickListener() {
@@ -746,7 +780,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                                        SPUtils.put(MainActivity.this, SPUtils.APK_VERSION, "1.2.0");
 //                                    }
                                     //Log.e("TAG","isCheck == " + isCheck);
-                                    dialog.dismiss();
+                                    if (upVersionInfo.getVersion().isPrerequisite()){
+                                        showShort("请下载最新版本!");
+                                        finish();
+                                    }else {
+                                        dialog.dismiss();
+                                    }
                                 }
                             });
                             //确定
@@ -754,13 +793,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             Sure.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    startService(new Intent(MainActivity.this, DownloadService.class));
-                                    //startService(new Intent(MainActivity.this, DownloadService2.class));
-                                    //当true时 保存版本信息
+                                    if (Database.DOWN_APK_URL!=null){
+                                        startService(new Intent(MainActivity.this, DownloadService.class));
+                                        //startService(new Intent(MainActivity.this, DownloadService2.class));
+                                        //当true时 保存版本信息
 //                                    if (isCheck) {
 //                                        SPUtils.put(MainActivity.this, SPUtils.APK_VERSION, "1.2.0");
 //                                    }
-                                    dialog.dismiss();
+                                        dialog.dismiss();
+                                    }else {
+                                        showShort("服务器下载地址出现错误，请到应用商店下载！");
+                                    }
+
                                 }
                             });
                         }
@@ -786,7 +830,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onAfter() {
             }
-        }).getEntityData(this,url, jsons);
+        }).getEntityData(this,HttpURL.HTTP_POST_APIVERSION_QUERY, jsons);
 
     }
 

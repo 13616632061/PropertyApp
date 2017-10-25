@@ -1,8 +1,11 @@
 package com.glory.bianyitong.exception;
 
+import android.annotation.TargetApi;
 import android.app.Application;
 import android.app.Service;
 import android.content.Context;
+import android.os.Build;
+import android.os.StrictMode;
 import android.os.Vibrator;
 
 import com.baidu.mapapi.SDKInitializer;
@@ -80,6 +83,7 @@ public class MyApplication extends Application {
         return Instance;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     @Override
     public void onCreate() {
         super.onCreate();
@@ -90,6 +94,9 @@ public class MyApplication extends Application {
         Router.initialize(this,true);
         Instance = this;
         SharedUtil.init(this);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+        builder.detectFileUriExposure();
 
         // 动态添加路由表
         Router.handleRouteTable(new RouteTable() {

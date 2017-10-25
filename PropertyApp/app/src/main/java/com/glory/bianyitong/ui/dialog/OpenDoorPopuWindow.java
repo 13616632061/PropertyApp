@@ -21,12 +21,15 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.glory.bianyitong.R;
+import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.AdvertisingInfo2;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.LoginUserInfo;
 import com.glory.bianyitong.bean.UserLockInfo;
 import com.glory.bianyitong.bean.entity.request.RequestAdvertising;
 import com.glory.bianyitong.bean.entity.response.ResponseOpenLock;
+import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
@@ -338,6 +341,12 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                 }
                 if (bean.getAccessToken()!=null&&!bean.getAccessToken().equals(""))
                 Database.accessToken = bean.getAccessToken();
+                LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, new TypeToken<LoginUserInfo>(){}.getType());
+                userInfo.setAccessToken(Database.accessToken);
+                Database.login_return=new Gson().toJson(userInfo);
+                BaseActivity.mCache.put(Constant.user, Database.login_return);
+
+
                 if(bean!=null)
                 ToastUtils.showToast(context, bean.getAlertMessage());
                 progressDialog.dismiss();

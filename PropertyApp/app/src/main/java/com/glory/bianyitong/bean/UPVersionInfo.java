@@ -1,142 +1,70 @@
 package com.glory.bianyitong.bean;
 
-import java.util.List;
-
 /**
  * Created by lucy on 2017/2/9.
  */
 public class UPVersionInfo {
 
     /**
-     * tableColumnPermission : []
-     * listVersion : [{"versionID":1,"versionDate":"2017-02-09T00:00:00","versionNumber":"1.0.0","versionCode":"1.0.0","deviceTypeID":3,"imprint":"测试版","appTypeID":0,"prerequisite":false,"updatePath":"http://www.baidu.com"}]
-     * version : null
-     * datetime : null
-     * accesstoken : null
-     * statuscode : 1
-     * statusmessage : 消息处理成功
-     * alertmessage : 消息处理成功
-     * totalrownum : null
-     * totalpagenum : null
-     * nowpagenum : null
-     * pagerownum : null
+     * version : {"versionID":106,"versionDate":"2017-10-17T00:00:00","versionNumber":"1.0.0","versionCode":"29","deviceTypeID":3,"imprint":"测试版","appTypeID":0,"prerequisite":false,"updatePath":"http://www.baidu.com"}
+     * statusCode : 1
+     * alertMessage : 消息处理成功
+     * currentPageNumber : 0
+     * pageRowNumber : 0
      */
 
-    private Object version;
-    private Object datetime;
-    private Object accesstoken;
-    private int statuscode;
-    private String statusmessage;
-    private String alertmessage;
-    private Object totalrownum;
-    private Object totalpagenum;
-    private Object nowpagenum;
-    private Object pagerownum;
-    private List<?> tableColumnPermission;
-    private List<ListVersionBean> listVersion;
+    private VersionBean version;
+    private int statusCode;
+    private String alertMessage;
+    private int currentPageNumber;
+    private int pageRowNumber;
 
-    public Object getVersion() {
+    public VersionBean getVersion() {
         return version;
     }
 
-    public void setVersion(Object version) {
+    public void setVersion(VersionBean version) {
         this.version = version;
     }
 
-    public Object getDatetime() {
-        return datetime;
+    public int getStatusCode() {
+        return statusCode;
     }
 
-    public void setDatetime(Object datetime) {
-        this.datetime = datetime;
+    public void setStatusCode(int statusCode) {
+        this.statusCode = statusCode;
     }
 
-    public Object getAccesstoken() {
-        return accesstoken;
+    public String getAlertMessage() {
+        return alertMessage;
     }
 
-    public void setAccesstoken(Object accesstoken) {
-        this.accesstoken = accesstoken;
+    public void setAlertMessage(String alertMessage) {
+        this.alertMessage = alertMessage;
     }
 
-    public int getStatuscode() {
-        return statuscode;
+    public int getCurrentPageNumber() {
+        return currentPageNumber;
     }
 
-    public void setStatuscode(int statuscode) {
-        this.statuscode = statuscode;
+    public void setCurrentPageNumber(int currentPageNumber) {
+        this.currentPageNumber = currentPageNumber;
     }
 
-    public String getStatusmessage() {
-        return statusmessage;
+    public int getPageRowNumber() {
+        return pageRowNumber;
     }
 
-    public void setStatusmessage(String statusmessage) {
-        this.statusmessage = statusmessage;
+    public void setPageRowNumber(int pageRowNumber) {
+        this.pageRowNumber = pageRowNumber;
     }
 
-    public String getAlertmessage() {
-        return alertmessage;
-    }
-
-    public void setAlertmessage(String alertmessage) {
-        this.alertmessage = alertmessage;
-    }
-
-    public Object getTotalrownum() {
-        return totalrownum;
-    }
-
-    public void setTotalrownum(Object totalrownum) {
-        this.totalrownum = totalrownum;
-    }
-
-    public Object getTotalpagenum() {
-        return totalpagenum;
-    }
-
-    public void setTotalpagenum(Object totalpagenum) {
-        this.totalpagenum = totalpagenum;
-    }
-
-    public Object getNowpagenum() {
-        return nowpagenum;
-    }
-
-    public void setNowpagenum(Object nowpagenum) {
-        this.nowpagenum = nowpagenum;
-    }
-
-    public Object getPagerownum() {
-        return pagerownum;
-    }
-
-    public void setPagerownum(Object pagerownum) {
-        this.pagerownum = pagerownum;
-    }
-
-    public List<?> getTableColumnPermission() {
-        return tableColumnPermission;
-    }
-
-    public void setTableColumnPermission(List<?> tableColumnPermission) {
-        this.tableColumnPermission = tableColumnPermission;
-    }
-
-    public List<ListVersionBean> getListVersion() {
-        return listVersion;
-    }
-
-    public void setListVersion(List<ListVersionBean> listVersion) {
-        this.listVersion = listVersion;
-    }
-
-    public static class ListVersionBean {
+    public static class VersionBean {
         /**
-         * versionID : 1
-         * versionDate : 2017-02-09T00:00:00
+         * versionID : 106
+         * versionDate : 2017-10-17T00:00:00
          * versionNumber : 1.0.0
-         * versionCode : 1.0.0
+         * versionCode : 29
          * deviceTypeID : 3
          * imprint : 测试版
          * appTypeID : 0
@@ -147,7 +75,7 @@ public class UPVersionInfo {
         private int versionID;
         private String versionDate;
         private String versionNumber;
-        private int versionCode;
+        private String versionCode;
         private int deviceTypeID;
         private String imprint;
         private int appTypeID;
@@ -178,11 +106,11 @@ public class UPVersionInfo {
             this.versionNumber = versionNumber;
         }
 
-        public int getVersionCode() {
+        public String getVersionCode() {
             return versionCode;
         }
 
-        public void setVersionCode(int versionCode) {
+        public void setVersionCode(String versionCode) {
             this.versionCode = versionCode;
         }
 

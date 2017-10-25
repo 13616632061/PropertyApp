@@ -10,7 +10,7 @@ public class HttpURL {
 //    public static String HTTP_LOGIN_AREA = "https://www.pgagolf.cn:4432";
 
     public static String HTTP_LOGIN = "http://dev.bytsz.com.cn";
-    public static String HTTP_LOGIN_AREA = "https://byt.bytsz.com.cn";
+    public static String HTTP_LOGIN_AREA = "http://dev.bytsz.com.cn";
 
     public static String HTTP_URl = "http://dev.bytsz.com.cn";
 
@@ -154,6 +154,8 @@ public class HttpURL {
     public static String HTTP_POST_FRIEND_DETAIL="/ApiNeighborhood/Query";
     //近邻点赞
     public static String HTTP_POST_FRIEND_LIKE="/ApiNeighborhoodLike/Add";
+    //删除一条近邻
+    public static String HTTP_POST_FRIEND_DELETE="/ApiNeighborhood/Delete";
     //近邻点赞取消
     public static String HTTP_POST_FRIEND_LIKE_CANCEL="/ApiNeighborhoodLike/Delete";
     //近邻评论
@@ -233,4 +235,10 @@ public static String HTTP_POST_ORDER_QUERYCABINET="/ApiShopAddress/QueryCabinet"
      */
     public static String HTTP_POST_COUPON_APIUSERBILL="/ApiUserBill/Query";//我的账单列表
     public static String HTTP_POST_COUPON_APIUSERBILL_QUERY="/ApiUserBill/Query";//查看账单明细
+
+
+    /**+
+     * 查看版本号
+     */
+    public static String HTTP_POST_APIVERSION_QUERY="/ApiVersion/Query";//查看版本号
 }
