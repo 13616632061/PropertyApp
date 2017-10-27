@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -767,6 +768,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             final Dialog dialog = new AlertDialog.Builder(MainActivity.this).create();
                             dialog.show();
 
+
+
                             dialog.setContentView(view);
                             TextView content = (TextView) view.findViewById(R.id.tv_content);
                             content.setText(upVersionInfo.getVersion().getImprint()); //内容
@@ -800,13 +803,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                                    if (isCheck) {
 //                                        SPUtils.put(MainActivity.this, SPUtils.APK_VERSION, "1.2.0");
 //                                    }
-                                        dialog.dismiss();
+//                                        dialog.dismiss();
+                                        if (upVersionInfo.getVersion().isPrerequisite()){
+                                            showShort("正在后台下载，请稍等");
+                                        }else {
+                                            showShort("正在后台下载，请稍等");
+                                            dialog.dismiss();
+                                        }
                                     }else {
                                         showShort("服务器下载地址出现错误，请到应用商店下载！");
                                     }
 
                                 }
                             });
+
+                            if (upVersionInfo.getVersion().isPrerequisite()){//强制更新
+                                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                    @Override
+                                    public void onDismiss(DialogInterface dialog) {
+                                        showShort("请下载最新版本!");
+                                        finish();
+                                    }
+                                });
+                            }
                         }
                     }
                 } catch (JSONException e) {

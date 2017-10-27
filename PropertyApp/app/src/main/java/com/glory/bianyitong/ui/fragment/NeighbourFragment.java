@@ -134,8 +134,7 @@ public class NeighbourFragment extends BaseFragment {
             mMainAdapter = new NeighbourAdapter(context, Database.list_neighbour, "near");
             listView_neighbour.setAdapter(mMainAdapter);
         } else {
-            progressDialog = ProgressDialog.show(context, "", getResources().getString(R.string.load), true);
-            progressDialog.setCanceledOnTouchOutside(true);
+
             getGoodsListStart = true;
             loading_lay.setVisibility(View.VISIBLE);
             index_page++;
@@ -152,6 +151,7 @@ public class NeighbourFragment extends BaseFragment {
             getGoodsListStart = true;
             index_page = 0;//重置index_page
             index_page++;
+
             request(index_page, true);//刷新
             Database.isAddarea = false;
 //        }
@@ -170,6 +170,7 @@ public class NeighbourFragment extends BaseFragment {
             getGoodsListStart = true;
             index_page = 0;//重置index_page
             index_page++;
+
             request(index_page, true);//刷新
         }
     }
@@ -185,10 +186,16 @@ public class NeighbourFragment extends BaseFragment {
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("currentPageNumber", page);
         map.put("neighborhood", new Object());
+        if (isrefresh&&page==1){
+            progressDialog = ProgressDialog.show(getActivity(), "","加载中", true);
+            progressDialog.setCanceledOnTouchOutside(true);
+        }
+
         String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
+
                 base_pullToRefreshView.onHeaderRefreshComplete();
                 getGoodsListStart = false;
                 loading_lay.setVisibility(View.GONE);
@@ -250,17 +257,26 @@ public class NeighbourFragment extends BaseFragment {
                     noGoods.setVisibility(View.VISIBLE);
                     loading_lay.setVisibility(View.GONE);
                 }
+                progressDialog.dismiss();
             }
 
             @Override
             public void onError() {
                 base_pullToRefreshView.onHeaderRefreshComplete();
                 getGoodsListStart = false;
+                if (progressDialog!=null){
+                    progressDialog.dismiss();
+
+                }
                 loading_lay.setVisibility(View.GONE);
             }
 
             @Override
             public void parseError() {
+                if (progressDialog!=null){
+                    progressDialog.dismiss();
+
+                }
                 base_pullToRefreshView.onHeaderRefreshComplete();
             }
 
@@ -271,9 +287,9 @@ public class NeighbourFragment extends BaseFragment {
 
             @Override
             public void onAfter() {
-                if (progressDialog != null) {
+                if (progressDialog!=null){
                     progressDialog.dismiss();
-                    progressDialog = null;
+
                 }
                 base_pullToRefreshView.onHeaderRefreshComplete();
             }

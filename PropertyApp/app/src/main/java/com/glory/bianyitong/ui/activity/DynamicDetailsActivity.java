@@ -1,6 +1,8 @@
 package com.glory.bianyitong.ui.activity;
 
 import android.app.ProgressDialog;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -25,6 +27,7 @@ import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
 import com.glory.bianyitong.bean.DynamicListInfo;
+import com.glory.bianyitong.bean.GiveUpInfo;
 import com.glory.bianyitong.bean.entity.request.RequestNeighborhood;
 import com.glory.bianyitong.bean.entity.request.RequestNeighborhoodComment;
 import com.glory.bianyitong.bean.entity.request.RequestNeighborhoodLike;
@@ -33,8 +36,10 @@ import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.adapter.GiveUpAdapter;
 import com.glory.bianyitong.ui.dialog.NewsDeletePopuWindow;
 import com.glory.bianyitong.ui.dialog.ReportPopuWindow;
+import com.glory.bianyitong.ui.dialog.ShouCangPopuWindow;
 import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.view.MyGridView;
 import com.google.gson.Gson;
@@ -72,7 +77,7 @@ import okhttp3.Response;
  * 动态正文(详情)
  */
 @Route(value = RouterMapping.ROUTER_ACTIVITY_FRIEND_DETAIL,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
-public class DynamicDetailsActivity extends BaseActivity {
+public class DynamicDetailsActivity extends BaseActivity implements View.OnLongClickListener {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
     @BindView(R.id.ll_addcomment_dy)//评论
@@ -83,6 +88,8 @@ public class DynamicDetailsActivity extends BaseActivity {
     ImageView iv_like; //点赞图标
     @BindView(R.id.listView_dynamic) //评论列表
             ListView listView_dynamic;
+    private String aseUserID;
+
     Handler rhandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -106,6 +113,11 @@ public class DynamicDetailsActivity extends BaseActivity {
 //                    showShort("删除"+msg.getData().getInt("reportID"));
                 }
 
+            }else if (msg.what==11){//收藏
+                shoucang();
+            }else if (msg.what==12){//复制
+                ClipboardManager cmb = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                cmb.setText(dynamic_tv_content.getText().toString().trim()); //将内容放入粘贴管理器,在别的地方长按选择"粘贴"即可
             }
         }
     };
@@ -124,6 +136,7 @@ public class DynamicDetailsActivity extends BaseActivity {
     private TextView dynamic_tv_comment_number;//评论数
     //评论列表
     private ArrayList<DynamicListInfo.ListNeighborhoodCommentBean> commentlist;//评论数据
+    private ArrayList<GiveUpInfo.ListNeighborhoodLikeBean> giveuplist=new ArrayList<>();//点赞列表
     private DynamicCommentAdapter dcAdapter;
     private View view_loading;
     private TextView noGoods;
@@ -141,6 +154,8 @@ public class DynamicDetailsActivity extends BaseActivity {
     private Handler handler;
     private String userID;
     private ReportPopuWindow reportPopuWindow;
+    private GiveUpAdapter giveUpAdapter=null;
+    private int listOr=1;//1.评论列表2.点赞列表
     private int index_page = 0;
     @Override
     protected int getContentId() {
@@ -172,6 +187,10 @@ public class DynamicDetailsActivity extends BaseActivity {
         gridView = (MyGridView) view_dynamic.findViewById(R.id.gv_dynamic_pic);
         dynamic_tv_comment_number = (TextView) view_dynamic.findViewById(R.id.dynamic_tv_comment_number);
         tv_likeNumber = (TextView) view_dynamic.findViewById(R.id.tv_likeNumber);
+        dynamic_tv_content.setOnLongClickListener(this);
+        dynamic_tv_comment_number.setOnClickListener(this);
+        tv_likeNumber.setOnClickListener(this);
+
         dynamic_right_more.setOnClickListener(this);
         //----------
         view_loading = getLayoutInflater().inflate(R.layout.loading_lay, null);// 加载中.....页面
@@ -192,7 +211,11 @@ public class DynamicDetailsActivity extends BaseActivity {
                             getGoodsListStart = true;
                             loading_lay.setVisibility(View.VISIBLE);
                             index_page++;
-                            requestHood(index_page,false);
+                            if (listOr==1){
+                                requestHood(index_page,false);
+                            }else if (listOr==2){
+                                requestGiveUp(index_page,false);
+                            }
                         }
                     }
                 }
@@ -204,6 +227,7 @@ public class DynamicDetailsActivity extends BaseActivity {
         index_page = 0;
         index_page++;
         requestHood(index_page,true);
+
 
         view_loading.setVisibility(View.GONE);
         handler = new Handler() { //点赞
@@ -230,6 +254,15 @@ public class DynamicDetailsActivity extends BaseActivity {
                         // 显示窗口
                         reportPopuWindow.showAtLocation(DynamicDetailsActivity.this.findViewById(R.id.lay_dynamic_commment),
                                 Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
+                        break;
+
+                    case 4://删除
+                        int[] location=new int[2];
+                        dynamic_tv_content.getLocationOnScreen(location);
+                        ShouCangPopuWindow shouCangPopuWindow = new ShouCangPopuWindow(DynamicDetailsActivity.this, rhandler);//, msg.arg1, del_handler
+                        // 显示窗口
+                        shouCangPopuWindow.showAtLocation(dynamic_tv_content,
+                                Gravity.NO_GRAVITY, location[0], location[1]-50); // 设置layout在PopupWindow中显示的位置
                         break;
                 }
             }
@@ -276,6 +309,26 @@ public class DynamicDetailsActivity extends BaseActivity {
                 break;
             case R.id.left_return_btn:
                 DynamicDetailsActivity.this.finish();
+                break;
+            case R.id.tv_likeNumber://点赞列表
+                listOr=2;
+                index_page=1;
+                giveuplist.clear();
+                commentlist.clear();
+                if (dcAdapter!=null){
+                    dcAdapter.notifyDataSetChanged();
+                }
+                requestGiveUp(index_page,true);
+                break;
+            case R.id.dynamic_tv_comment_number://评论列表
+                listOr=1;
+                index_page = 1;
+                commentlist.clear();
+                giveuplist.clear();
+                if (giveUpAdapter!=null){
+                    giveUpAdapter.notifyDataSetChanged();
+                }
+                requestHood(index_page,true);
                 break;
             case R.id.lay_like_dy:
                 if (Database.USER_MAP==null){
@@ -420,6 +473,43 @@ public class DynamicDetailsActivity extends BaseActivity {
     }
 
     /**
+     * 收藏
+     */
+    private void shoucang() { //收藏
+        try {
+            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+            Map<String,Object> map2=new HashMap<>();
+            map2.put("collectType",1);
+            map2.put("aesUserID",aseUserID);
+            map2.put("collectContent",dynamic_tv_content.getText().toString().trim());
+            map.put("neighborhoodCollect",map2);
+            String json=new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    ResponseFriendDetail detail=new Gson().fromJson(s,ResponseFriendDetail.class);
+                    showShort(detail.getAlertMessage());
+
+                }
+
+                @Override
+                public void onError() {
+
+                }
+                @Override
+                public void parseError() {}
+                @Override
+                public void onBefore() { }
+                @Override
+                public void onAfter() {
+                }
+            }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_APINEIGHCOLLECTION_ADD,json);
+        }catch (Exception e){
+
+        }
+    }
+
+    /**
      * 近邻详情
      * @param isrefresh
      */
@@ -436,7 +526,7 @@ public class DynamicDetailsActivity extends BaseActivity {
                 ResponseFriendDetail detail=new Gson().fromJson(s,ResponseFriendDetail.class);
                 if(detail.getStatusCode()==1){
                     neighborhood = detail.getListNeighborhood().get(0); //近邻详情数据
-
+                    aseUserID = neighborhood.getAesUserID();
                     showdata(isrefresh);
                 }else {
                     getGoodsListStart = false;
@@ -536,7 +626,73 @@ public class DynamicDetailsActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 点赞列表
+     * @param index_page
+     */
+    private void requestGiveUp(int index_page,final boolean isrefresh) {
+        try {
+            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+            Map<String,Object> map2=new HashMap<>();
+            map2.put("neighborhoodID",neighborhoodid);
+            map.put("neighborhoodLike",map2);
+            map.put("currentPageNumber",index_page);
+            String json=new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    getGoodsListStart = false;
+                    loading_lay.setVisibility(View.GONE);
+                    GiveUpInfo detail=new Gson().fromJson(s,GiveUpInfo.class);
+                    if(detail.getStatusCode()==1){
+                        for (GiveUpInfo.ListNeighborhoodLikeBean data:detail.getListNeighborhoodLike()){
+                            giveuplist.add(data);
 
+                        }
+                        if (giveuplist != null && giveuplist.size() != 0) {
+                            if (giveUpAdapter == null || isrefresh) {
+                                have_GoodsList = true;
+                                giveUpAdapter = new GiveUpAdapter(DynamicDetailsActivity.this, giveuplist);
+                                listView_dynamic.setAdapter(giveUpAdapter);
+                            }else if (have_GoodsList) {
+                                listView_dynamic.requestLayout();
+                                giveUpAdapter.notifyDataSetChanged();
+                                noGoods.setVisibility(View.GONE);
+                            } else {
+                                noGoods.setVisibility(View.VISIBLE);
+                            }
+
+//                           listView_dynamic.requestLayout();
+                        }
+                    }else {
+                        if (giveuplist != null && giveuplist.size() != 0){
+                            noGoods.setVisibility(View.VISIBLE);
+                            have_GoodsList = false;
+                            getGoodsListStart = false;
+                        }
+
+                    }
+
+                }
+
+                @Override
+                public void onError() {
+                    getGoodsListStart = false;
+                    loading_lay.setVisibility(View.GONE);
+                }
+                @Override
+                public void parseError() {}
+                @Override
+                public void onBefore() { }
+                @Override
+                public void onAfter() {
+
+                }
+            }).getEntityData(this,HttpURL.HTTP_POST_FRIEND_HBORHOODLIKE_QUERY,json);
+        }catch (Exception e){
+
+        }
+    }
 
     /**
      * 点赞
@@ -703,4 +859,11 @@ public class DynamicDetailsActivity extends BaseActivity {
         }
     }
 
+    @Override
+    public boolean onLongClick(View v) {
+        Message msg = new Message();
+        msg.what = 4;
+        handler.sendMessage(msg);
+        return false;
+    }
 }

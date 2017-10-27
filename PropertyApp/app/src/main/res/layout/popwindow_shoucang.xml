@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:background="#00000000"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/touming"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/copy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="复制"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:layout_gravity="end"
+            android:gravity="center"
+            android:background="@drawable/j_left"/>
+        <TextView
+            android:id="@+id/shoucang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="1dp"
+            android:text="收藏"
+            android:paddingBottom="6dp"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:gravity="center"
+            android:background="@drawable/j_right"/>
+    </LinearLayout>
+
+</LinearLayout>

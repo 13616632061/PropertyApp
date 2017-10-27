@@ -16,6 +16,7 @@ import android.graphics.Bitmap;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -54,6 +55,7 @@ public class ImagePagerActivity extends BaseActivity {
         initCirclePoint();
         adViewPager.setAdapter(adapter);
         adViewPager.setOnPageChangeListener(new AdPageChangeListener());
+
 
         left_return_btn.setOnClickListener(new OnClickListener() {
 
@@ -147,6 +149,7 @@ public class ImagePagerActivity extends BaseActivity {
                         }
                     }
                 });
+
     }
 
     private final class AdPageAdapter extends PagerAdapter {
@@ -185,6 +188,8 @@ public class ImagePagerActivity extends BaseActivity {
 
                 @Override
                 public void onClick(View v) {
+                    Log.v("sadas","sadawwww");
+
                     // intent.setClass(GoodsDetailActivity.this, ImagePagerActivity.class);
                 }
             });

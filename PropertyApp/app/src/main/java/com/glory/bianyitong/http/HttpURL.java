@@ -164,7 +164,10 @@ public class HttpURL {
     public static String HTTP_POST_FRIEND_COMMENT_REPORT="/ApiReport/Add";
     //近邻分页
     public static String HTTP_POST_FRIEND_HBORHOODCOMMENT_QUERY="/ApiNeighborhoodComment/Query";
-
+    //近邻分页
+    public static String HTTP_POST_FRIEND_HBORHOODLIKE_QUERY="/ApiNeighborhoodLike/Query";
+    //近邻收藏
+    public static String HTTP_POST_FRIEND_APINEIGHCOLLECTION_ADD="/ApiNeighCollection/Add";
     /**
      * 生鲜
      */

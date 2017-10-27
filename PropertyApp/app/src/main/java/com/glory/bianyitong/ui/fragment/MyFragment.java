@@ -1,5 +1,6 @@
 package com.glory.bianyitong.ui.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -414,13 +415,15 @@ public class MyFragment extends BaseFragment {
             headPortraitCiv.setImageResource(R.drawable.head);
         }
     }
-
+    private ProgressDialog progressDialog = null;
     private void getShareInfo() {
         try {
 
 
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             String json = new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(getActivity(), "","加载中", true);
+            progressDialog.setCanceledOnTouchOutside(true);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {
@@ -442,10 +445,12 @@ public class MyFragment extends BaseFragment {
 
                 @Override
                 public void onError() {
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void parseError() {
+                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -454,6 +459,7 @@ public class MyFragment extends BaseFragment {
 
                 @Override
                 public void onAfter() {
+                    progressDialog.dismiss();
                 }
             }).getEntityData(getActivity(), HttpURL.HTTP_POST_MY_GETSHARE, json);
         } catch (Exception e) {

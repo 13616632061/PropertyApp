@@ -245,12 +245,13 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
             request();
         }
     }
-
     private void request() { //钥匙查询
         try {
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             map.put("userLockMapping", new Object());
             String json = new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(context, "","加载中", true);
+            progressDialog.setCanceledOnTouchOutside(true);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {
@@ -295,17 +296,18 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                         } else {
                             ll_open_the_door.removeAllViews();
                         }
+                    progressDialog.dismiss();
 
                 }
 
                 @Override
                 public void onError() {
-
+                    progressDialog.dismiss();
                 }
 
                 @Override
                 public void parseError() {
-
+                    progressDialog.dismiss();
                 }
 
                 @Override
@@ -315,7 +317,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
 
                 @Override
                 public void onAfter() {
-
+                    progressDialog.dismiss();
                 }
             }).getEntityData(context, "/ApiUserKey/Query", json);
         }catch (Exception e){

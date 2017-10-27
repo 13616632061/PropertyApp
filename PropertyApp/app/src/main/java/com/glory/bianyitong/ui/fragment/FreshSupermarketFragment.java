@@ -1,6 +1,7 @@
 package com.glory.bianyitong.ui.fragment;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -323,11 +324,12 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         initLocalData();
 
     }
-
+    private ProgressDialog progressDialog = null;
     private void typeGo(double latitude, double longitude) {
         try {
 
-
+            progressDialog = ProgressDialog.show(getActivity(), "","加载中", true);
+            progressDialog.setCanceledOnTouchOutside(true);
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         Map<String, Object> freshMap = new HashMap<>();
         freshMap.put("cabinetID", cabinetID);//默认为0
@@ -364,11 +366,12 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
             @Override
             public void onError() {
-
+                progressDialog.dismiss();
             }
 
             @Override
             public void parseError() {
+                progressDialog.dismiss();
 
             }
 
@@ -379,6 +382,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
             @Override
             public void onAfter() {
+                progressDialog.dismiss();
 
             }
         }).getEntityData(getActivity(), HttpURL.HTTP_POST_SHOP_QUERY_TTPE_RIGHT, json);

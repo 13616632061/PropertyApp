@@ -145,15 +145,31 @@ public class DownloadService extends Service {
 
 
         Intent intent = null;
+        Notification notification=null;
+        Notification.Builder builder = new Notification.Builder(this);
+
+        builder.setSmallIcon(R.drawable.logo_5);//App小的图标
+        builder.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_5));//App大图标
+        builder.setContentTitle(getString(R.string.bianyitong_to_update));//设置通知的信息
+        builder.setWhen(System.currentTimeMillis());
+        builder.setContentText(message);
+        builder.setAutoCancel(false);//用户点击后自动删除
+                //.setDefaults(Notification.DEFAULT_LIGHTS)//灯光
+        builder.setPriority(Notification.PRIORITY_DEFAULT);//设置优先级
+        builder.setOngoing(true);
+        builder.setProgress(AllProgress, progress, false); //AllProgress最大进度 //progress 当前进度
+        notification=builder.build();
+        notification.flags = Notification.FLAG_AUTO_CANCEL;
+        manager.notify(0, notification);
         if (progress == 100) {
             message = getString(R.string.after_downloading_click_install);
             //Log.e(TAG, "下载完成 " + progress);
 
             //安装apk
             installApk();
-            if (manager != null) {
-                manager.cancel(0);//下载完毕 移除通知栏
-            }
+//            if (manager != null) {
+//                manager.cancel(0);//下载完毕 移除通知栏
+//            }
 
             //当进度为100%时 传入安装apk的intent
             File fileLocation = new File(Environment.getExternalStorageDirectory(), APK_NAME);
@@ -165,22 +181,11 @@ public class DownloadService extends Service {
 
             //表示返回的PendingIntent仅能执行一次，执行完后自动取消
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_ONE_SHOT);
-
-            Notification notification = new Notification.Builder(this)
-                    .setSmallIcon(R.drawable.logo_5)//App小的图标
-                    .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.logo_5))//App大图标
-                    .setContentTitle(getString(R.string.bianyitong_to_update))//设置通知的信息
-                    .setContentIntent(pendingIntent)
-                    .setWhen(System.currentTimeMillis())
-                    .setContentText(message)
-                    .setAutoCancel(false)//用户点击后自动删除
-                    //.setDefaults(Notification.DEFAULT_LIGHTS)//灯光
-                    .setPriority(Notification.PRIORITY_DEFAULT)//设置优先级
-                    .setOngoing(true)
-                    .setProgress(AllProgress, progress, false) //AllProgress最大进度 //progress 当前进度
-                    .build();
+            builder.setContentIntent(pendingIntent);
+            notification=builder.build();
             notification.flags = Notification.FLAG_AUTO_CANCEL;
             manager.notify(0, notification);
+
         }
 
 
