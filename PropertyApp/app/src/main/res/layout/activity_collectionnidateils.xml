@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:fitsSystemWindows="true"
+    android:background="@color/white"
+    android:layout_marginBottom="2dp">
+    <include layout="@layout/base_text_title"></include>
+    <include layout="@layout/base_view_line"></include>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/llear"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:fillViewport="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center_vertical">
+
+            <com.glory.bianyitong.widght.CircleImageView
+                android:id="@+id/dynamic_user_head"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginLeft="11dp" />
+            <TextView
+                android:id="@+id/dynamic_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="5dp"
+                android:text=""
+                android:textColor="@color/small_text_color_gray"
+                android:textSize="14sp" />
+
+
+        </LinearLayout>
+        <include layout="@layout/base_view_line"></include>
+        <TextView
+            android:id="@+id/dynamic_tv_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="10dp"
+            android:lineSpacingExtra="2dp"
+            android:text=""
+            android:textColor="@color/text_color_somber"
+            android:textSize="15sp" />
+        <ImageView
+            android:layout_margin="10dp"
+            android:id="@+id/collection_pic"
+            android:adjustViewBounds="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"/>
+
+    </LinearLayout>
+    <TextView
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/dynamic_right_data"
+        android:layout_width="wrap_content"
+        android:layout_marginLeft="11dp"
+        android:layout_height="wrap_content"
+        android:text="123"
+        android:layout_marginRight="14dp"
+        android:textColor="@color/small_text_color_gray" />
+    </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

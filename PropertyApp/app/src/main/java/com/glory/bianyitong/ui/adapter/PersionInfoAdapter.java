@@ -19,6 +19,7 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseQuerySendInfo;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.util.ActivityManager;
 import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.view.MyGridView;
 import com.glory.bianyitong.widght.CircleImageView;
@@ -163,6 +164,7 @@ public class PersionInfoAdapter extends BaseAdapter {
 //                            intent.setClass(context, ImagePagerActivity.class);
 //                            intent.putExtra("pictureList", pictureList2);
 //                            context.startActivity(intent);
+                            ActivityManager.removeAllActivity();
                             Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_DETAIL)
                                     .with("neighborhoodID",list.get(j).getNeighborhoodID())
                                     .with("aesUserID",list.get(j).getAesUserID())
@@ -217,6 +219,7 @@ public class PersionInfoAdapter extends BaseAdapter {
         holder.item_near_content_lay.setOnClickListener(new View.OnClickListener() {//动态详情
             @Override
             public void onClick(View v) {
+                ActivityManager.removeAllActivity();
                 Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_DETAIL)
                         .with("neighborhoodID",list.get(position).getNeighborhoodID())
                         .with("aesUserID",list.get(position).getAesUserID())

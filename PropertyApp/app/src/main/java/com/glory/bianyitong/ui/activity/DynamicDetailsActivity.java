@@ -40,6 +40,7 @@ import com.glory.bianyitong.ui.adapter.GiveUpAdapter;
 import com.glory.bianyitong.ui.dialog.NewsDeletePopuWindow;
 import com.glory.bianyitong.ui.dialog.ReportPopuWindow;
 import com.glory.bianyitong.ui.dialog.ShouCangPopuWindow;
+import com.glory.bianyitong.util.ActivityManager;
 import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.view.MyGridView;
 import com.google.gson.Gson;
@@ -166,6 +167,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
     protected void init() {
         super.init();
         Router.injectParams(this);
+        ActivityManager.addActivity(this,"dynamicdetailsactivity");
 //        neighborhoodid = getIntent().getIntExtra("neighborhoodID", 0); //近邻 id
         inintTitle(getString(R.string.dynamic_text), true, "");//动态正文
         left_return_btn.setOnClickListener(this);
@@ -272,6 +274,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent();
                 intent.setClass(DynamicDetailsActivity.this, ImagePagerActivity.class);
+                intent.putExtra("aesUserID",aesUserID);
                 intent.putExtra("pictureList", pictureList);
                 startActivity(intent);
             }

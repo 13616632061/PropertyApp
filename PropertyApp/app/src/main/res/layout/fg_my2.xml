@@ -480,6 +480,19 @@
                     android:drawableRight="@drawable/ic_gray_next"
                     android:gravity="center_vertical"
                     android:text="@string/my_release" />
+                <include layout="@layout/base_view_line"></include>
+
+                <TextView
+                    android:id="@+id/fg_tv_my_collection"
+                    style="@style/my_base_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="15dp"
+                    android:drawableLeft="@drawable/collection"
+                    android:drawablePadding="18dp"
+                    android:drawableRight="@drawable/ic_gray_next"
+                    android:gravity="center_vertical"
+                    android:text="我的收藏" />
             </LinearLayout>
 
             <View

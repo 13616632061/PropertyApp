@@ -74,7 +74,7 @@ public class GiveUpAdapter extends BaseAdapter {
 
             holder.comment_user_head = (CircleImageView) convertView.findViewById(R.id.comment_user_head);
             holder.comment_user_name = (TextView) convertView.findViewById(R.id.comment_user_name);
-
+            holder.main= (LinearLayout) convertView.findViewById(R.id.main);
 
             convertView.setTag(holder);
         } else {
@@ -93,6 +93,15 @@ public class GiveUpAdapter extends BaseAdapter {
         } else {
             holder.comment_user_name.setText("");
         }
+        holder.main.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_USER_INFO)
+                        .with("userID",list.get(position).getAesUserID())
+                        .go(context);
+            }
+
+        });
 
         return convertView;
     }
@@ -101,6 +110,7 @@ public class GiveUpAdapter extends BaseAdapter {
     public static class ViewHolder {
         CircleImageView comment_user_head; //评论人头像
         TextView comment_user_name; //名称
+        LinearLayout main;//条目点击
     }
 
 }

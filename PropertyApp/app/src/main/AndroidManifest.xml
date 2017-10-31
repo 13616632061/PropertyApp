@@ -153,6 +153,20 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+        <!--收藏近邻-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.CollectionNiActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <!--收藏近邻详情-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.CollectionNiDetailsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <!--我来(添加)评论-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.AddCommentActivity"

@@ -78,7 +78,7 @@ public class DownloadService extends Service {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                okHttpDownLoadApk(DOWN_APK_URL);
+                okHttpDownLoadApk(Database.DOWN_APK_URL);
             }
         }).start();
     }

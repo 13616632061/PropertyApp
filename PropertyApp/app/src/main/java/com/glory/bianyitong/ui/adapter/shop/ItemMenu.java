@@ -8,13 +8,14 @@ import com.chad.library.adapter.base.BaseViewHolder;
 import com.chad.library.adapter.base.entity.MultiItemEntity;
 import com.chad.library.adapter.base.entity.SectionEntity;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Created by Administrator on 2017/7/3.
  */
 
-public class ItemMenu<T> extends SectionEntity<T> {
+public class ItemMenu<T> extends SectionEntity<T> implements Serializable{
 
 
     private T data;

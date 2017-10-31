@@ -1,22 +1,52 @@
 package com.glory.bianyitong.ui.activity;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
+import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.exception.MyApplication;
+import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.ui.dialog.CollectionPopuWindow;
+import com.glory.bianyitong.ui.dialog.ReportPopuWindow;
 import com.glory.bianyitong.view.ViewPagerFixed;
 import com.glory.bianyitong.widght.photoViewUtil.PhotoView;
+import com.google.gson.Gson;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
@@ -25,16 +55,40 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.ImageView.ScaleType;
 import android.widget.RelativeLayout.LayoutParams;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class ImagePagerActivity extends BaseActivity {
 
-    private RelativeLayout left_return_btn;
+    private TextView left_return_btn;
     private ViewPagerFixed adViewPager; //自定义 viewpager 防止放大缩小闪退
     private List<View> pageViews;
     private ImageView[] imageViews;
     private ImageView imageView2;
     private AdPageAdapter adapter;
     private ArrayList<String> pictureList = null;
+
+    Handler rhandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == 10) {
+                shoucang();
+            }
+            if (msg.what==11){
+                Glide.with(ImagePagerActivity.this).load(pictureList.get(mPosition)).asBitmap().into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                        saveImageToGallery(ImagePagerActivity.this,resource);
+                    }
+                });
+//                download(pictureList.get(mPosition));
+            }
+        }
+    };
+    private ImageView more;
+    private int mPosition;
+
 
     @Override
     protected int getContentId() {
@@ -48,14 +102,44 @@ public class ImagePagerActivity extends BaseActivity {
             pictureList = getIntent().getStringArrayListExtra("pictureList");
         }
 
-        left_return_btn = (RelativeLayout) findViewById(R.id.left_return_btn);
-        adViewPager = (ViewPagerFixed) findViewById(R.id.viewpager2);
 
+        left_return_btn = (TextView) findViewById(R.id.left_return_btn);
+        more = (ImageView) findViewById(R.id.more);
+        adViewPager = (ViewPagerFixed) findViewById(R.id.viewpager2);
+        if (getIntent().getStringExtra("aesUserID")==null){
+            more.setVisibility(View.GONE);
+        }
         initPageAdapter();
         initCirclePoint();
         adViewPager.setAdapter(adapter);
-        adViewPager.setOnPageChangeListener(new AdPageChangeListener());
+        adViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 
+
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mPosition = position;
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        more.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CollectionPopuWindow collectionPopuWindow = new CollectionPopuWindow(ImagePagerActivity.this, rhandler);//, msg.arg1, del_handler
+                // 显示窗口
+                collectionPopuWindow.showAtLocation(ImagePagerActivity.this.findViewById(R.id.lay_dynamic_commment),
+                        Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
+            }
+        });
 
         left_return_btn.setOnClickListener(new OnClickListener() {
 
@@ -67,7 +151,42 @@ public class ImagePagerActivity extends BaseActivity {
             }
         });
     }
+    /**
+     * 收藏
+     */
+    private void shoucang() { //收藏
+        try {
+            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+            Map<String,Object> map2=new HashMap<>();
+            map2.put("collectType",2);
+            map2.put("aesUserID",getIntent().getStringExtra("aesUserID"));
+            map2.put("collectContent",pictureList.get(mPosition));
+            map.put("neighborhoodCollect",map2);
+            String json=new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    ResponseFriendDetail detail=new Gson().fromJson(s,ResponseFriendDetail.class);
+                    showShort(detail.getAlertMessage());
 
+                }
+
+                @Override
+                public void onError() {
+
+                }
+                @Override
+                public void parseError() {}
+                @Override
+                public void onBefore() { }
+                @Override
+                public void onAfter() {
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_FRIEND_APINEIGHCOLLECTION_ADD,json);
+        }catch (Exception e){
+
+        }
+    }
     private void initPageAdapter() {
         pageViews = new ArrayList<View>();
         if (pictureList != null && pictureList.size() != 0 && !pictureList.equals("")) {
@@ -170,6 +289,8 @@ public class ImagePagerActivity extends BaseActivity {
             ((ViewPager) container).removeView(views.get(position));
         }
 
+
+
         /**
          * 获取ViewPager的个数
          */
@@ -237,6 +358,38 @@ public class ImagePagerActivity extends BaseActivity {
                 }
             }
         }
+    }
+
+    // 保存图片到手机指定目录
+    public static void saveImageToGallery(Context context, Bitmap bmp) {
+        // 首先保存图片
+        File appDir = new File(Environment.getExternalStorageDirectory(), "Boohee");
+        if (!appDir.exists()) {
+            appDir.mkdir();
+        }
+        String fileName = System.currentTimeMillis() + ".jpg";
+        File file = new File(appDir, fileName);
+        try {
+            FileOutputStream fos = new FileOutputStream(file);
+            bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // 其次把文件插入到系统图库
+        try {
+            MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                    file.getAbsolutePath(), fileName, null);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        // 最后通知图库更新
+        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + file)));
+        Toast.makeText(context,"保存成功",Toast.LENGTH_SHORT).show();
     }
 
 }

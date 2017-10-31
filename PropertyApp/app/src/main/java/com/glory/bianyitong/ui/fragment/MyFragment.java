@@ -3,14 +3,10 @@ package com.glory.bianyitong.ui.fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,11 +16,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.CollectionNiInfo;
 import com.glory.bianyitong.bean.OrderNumberInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
 import com.glory.bianyitong.bean.entity.response.ResponseShare;
@@ -34,11 +30,11 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.share.ShareUtil;
+import com.glory.bianyitong.ui.activity.CollectionNiActivity;
 import com.glory.bianyitong.ui.activity.MyBillActivity;
 import com.glory.bianyitong.ui.activity.shop.RefundMoneyActivity;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
-import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.CircleImageView;
@@ -120,6 +116,8 @@ public class MyFragment extends BaseFragment {
     TextView tvRefundSaleNumber;
     @BindView(R.id.residential_quarters)
     TextView residentialQuarters;
+    @BindView(R.id.fg_tv_my_collection)
+    TextView fgTvMyCollection;
     private View view_my;
     private CircleImageView headPortraitCiv; //个人信息
     private String customerPhoto = "";
@@ -165,6 +163,7 @@ public class MyFragment extends BaseFragment {
         ll_describe.setOnClickListener(this);
 
 //        rl_myAddress.setOnClickListener(this);
+        fgTvMyCollection.setOnClickListener(this);
         tv_award_manager.setOnClickListener(this);
         tv_auth_area.setOnClickListener(this);
         fg_tv_my_news.setOnClickListener(this);
@@ -192,7 +191,7 @@ public class MyFragment extends BaseFragment {
 
     @Override
     public void onClick(View view) {
-        if (Database.USER_MAP==null) {
+        if (Database.USER_MAP == null) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
         } else {
             switch (view.getId()) {
@@ -321,6 +320,9 @@ public class MyFragment extends BaseFragment {
                 case R.id.residential_quarters://我的账单
                     startActivity(new Intent(getActivity(), MyBillActivity.class));
                     break;
+                case R.id.fg_tv_my_collection:
+                    startActivity(new Intent(getActivity(), CollectionNiActivity.class));
+                    break;
             }
         }
     }
@@ -336,7 +338,7 @@ public class MyFragment extends BaseFragment {
                     ResponseQueryAddress queryAddress = new Gson().fromJson(s, ResponseQueryAddress.class);
                     if (queryAddress.getStatusCode() == 1) {
                         if (queryAddress.getListShippingAddress() != null && queryAddress.getListShippingAddress().size() > 0) {
-                            if (queryAddress.getListShippingAddress() == null&&queryAddress.getListShippingAddress().size()<=0) {
+                            if (queryAddress.getListShippingAddress() == null && queryAddress.getListShippingAddress().size() <= 0) {
                                 showShort("请添加默认收货地址");
                             } else {
                                 Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
@@ -368,7 +370,7 @@ public class MyFragment extends BaseFragment {
 
                 }
             }).getEntityData(getActivity(), HttpURL.HTTP_POST_QUERY_ADDRESS, json);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -415,14 +417,16 @@ public class MyFragment extends BaseFragment {
             headPortraitCiv.setImageResource(R.drawable.head);
         }
     }
+
     private ProgressDialog progressDialog = null;
+
     private void getShareInfo() {
         try {
 
 
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             String json = new Gson().toJson(map);
-            progressDialog = ProgressDialog.show(getActivity(), "","加载中", true);
+            progressDialog = ProgressDialog.show(getActivity(), "", "加载中", true);
             progressDialog.setCanceledOnTouchOutside(true);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override

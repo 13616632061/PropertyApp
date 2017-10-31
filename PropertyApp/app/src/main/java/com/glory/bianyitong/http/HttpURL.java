@@ -9,8 +9,8 @@ public class HttpURL {
 //    public static String HTTP_LOGIN = "https://www.pgagolf.cn:4432/WebApi/Post";
 //    public static String HTTP_LOGIN_AREA = "https://www.pgagolf.cn:4432";
 
-    public static String HTTP_LOGIN = "http://dev.bytsz.com.cn";
-    public static String HTTP_LOGIN_AREA = "http://dev.bytsz.com.cn";
+    public static String HTTP_LOGIN = "http://app.bytsz.com.cn";
+    public static String HTTP_LOGIN_AREA = "http://app.bytsz.com.cn";
 
     public static String HTTP_URl = "http://dev.bytsz.com.cn";
 
@@ -26,7 +26,7 @@ public class HttpURL {
 //
 //    public static String HTTP_LOGIN3 = "http://ad.51maimai.com.cn/";
 
-    public static String HTTP_NEW_URL = "http://dev.bytsz.com.cn";
+    public static String HTTP_NEW_URL = "http://app.bytsz.com.cn";
 
 
     /**
@@ -168,6 +168,8 @@ public class HttpURL {
     public static String HTTP_POST_FRIEND_HBORHOODLIKE_QUERY="/ApiNeighborhoodLike/Query";
     //近邻收藏
     public static String HTTP_POST_FRIEND_APINEIGHCOLLECTION_ADD="/ApiNeighCollection/Add";
+    //近邻删除收藏
+    public static String HTTP_POST_FRIEND_APINEIGHCOLLECTION_DELETE="/ApiNeighCollection/Delete";
     /**
      * 生鲜
      */
@@ -201,7 +203,7 @@ public class HttpURL {
     public static String HTTP_POST_COLLECTION_ADD="/ApiFreshCollection/Add";//添加
     public static String HTTP_POST_COLLECTION_DELETE="/ApiFreshCollection/Delete";//删除
     public static String HTTP_POST_COLLECTION_QUERY="/ApiFreshCollection/Query";//查询我的收藏
-
+    public static String HTTP_POST_COLLECTIONNI_QUERY="/ApiNeighCollection/Query";//查询我的近邻收藏
 
     /**
      * 订单

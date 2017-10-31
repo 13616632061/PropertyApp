@@ -85,6 +85,15 @@ public class GiveUpInfo  {
         private String loginName;
         private String customerPhoto;
         private String likeDateTime;
+        private String aesUserID;
+
+        public String getAesUserID() {
+            return aesUserID;
+        }
+
+        public void setAesUserID(String aesUserID) {
+            this.aesUserID = aesUserID;
+        }
 
         public int getNeighborhoodLikeID() {
             return neighborhoodLikeID;
