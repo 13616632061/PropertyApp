@@ -21,22 +21,23 @@
             android:orientation="vertical"
             >
             <TextView
+                android:id="@+id/save_pic"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:gravity="center"
+                android:text="保存相册"
+                android:textColor="@color/color_red_del"
+                android:textSize="17sp" />
+            <include layout="@layout/base_view_line"></include>
+            <TextView
                 android:id="@+id/collection_pic"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:gravity="center"
                 android:text="收藏"
-                android:textColor="@color/color_blue_phone"
+                android:textColor="@color/color_red_del"
                 android:textSize="17sp" />
-            <include layout="@layout/base_view_line"></include>
-            <TextView
-                android:id="@+id/save_pic"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:gravity="center"
-                android:text="保存图片"
-                android:textColor="@color/color_blue_phone"
-                android:textSize="17sp" />
+
         </LinearLayout>
 
 

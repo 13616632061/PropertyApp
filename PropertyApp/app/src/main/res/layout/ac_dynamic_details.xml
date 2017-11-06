@@ -76,7 +76,7 @@
             android:textColor="@color/text_color_somber"
             android:textSize="15sp" />
 
-        <com.glory.bianyitong.view.MyGridView
+        <com.glory.bianyitong.view.MyGridView2
             android:id="@+id/gv_dynamic_pic"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
             android:numColumns="3"
             android:scrollbars="none"
             android:verticalSpacing="8dp"
-            android:visibility="visible"></com.glory.bianyitong.view.MyGridView>
+            android:visibility="visible"></com.glory.bianyitong.view.MyGridView2>
 
         <View
             android:layout_width="match_parent"
@@ -110,6 +110,12 @@
                 android:text="@string/comments_zero"
                 android:textColor="@color/tv_color_name"
                 android:textSize="15sp" />
+            <View
+                android:id="@+id/view_comment_numbe"
+                android:layout_below="@+id/dynamic_tv_comment_number"
+                android:layout_width="45dp"
+                android:layout_height="1dp"
+                android:background="@color/tv_color_name"/>
 
             <TextView
                 android:id="@+id/tv_likeNumber"
@@ -119,6 +125,15 @@
                 android:text="@string/praise_zero"
                 android:textColor="@color/tv_color_name"
                 android:textSize="15sp" />
+            <View
+                android:visibility="gone"
+                android:id="@+id/view_likeNumber"
+                android:layout_below="@+id/tv_likeNumber"
+                android:layout_alignParentRight="true"
+                android:layout_width="30dp"
+                android:layout_height="1dp"
+                android:background="@color/tv_color_name"/>
         </RelativeLayout>
+
     </LinearLayout>
 </RelativeLayout>

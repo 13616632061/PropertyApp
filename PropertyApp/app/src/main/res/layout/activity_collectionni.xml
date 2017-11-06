@@ -39,7 +39,7 @@
         android:id="@+id/fresh_list_fr_refresh"
         android:layout_width="match_parent"
         android:layout_weight="1"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rec_collection"
             android:background="@color/bggray"

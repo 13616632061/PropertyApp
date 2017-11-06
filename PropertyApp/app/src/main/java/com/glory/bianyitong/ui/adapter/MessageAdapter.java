@@ -215,6 +215,11 @@ public class MessageAdapter extends BaseAdapter {
                     messageRead.add(qiList.get(position).getMessageID());
                 }else {
                     messageRead=new ArrayList<String>();
+                    for (String s:messageRead){
+                        if (s.equals(qiList.get(position).getMessageID())){
+                            break;
+                        }
+                    }
                     messageRead.add(qiList.get(position).getMessageID());
                 }
                 SharedUtil.setDataList("messageRead",messageRead);

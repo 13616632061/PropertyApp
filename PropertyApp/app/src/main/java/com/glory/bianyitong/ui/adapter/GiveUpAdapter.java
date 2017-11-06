@@ -28,6 +28,7 @@ import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.activity.LoginActivity;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
+import com.glory.bianyitong.util.ActivityManager;
 import com.glory.bianyitong.util.DateUtil;
 import com.glory.bianyitong.widght.CircleImageView;
 
@@ -96,6 +97,7 @@ public class GiveUpAdapter extends BaseAdapter {
         holder.main.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ActivityManager.removeActivity("personalhamepageactivity");
                 Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_USER_INFO)
                         .with("userID",list.get(position).getAesUserID())
                         .go(context);

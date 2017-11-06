@@ -1102,7 +1102,33 @@ public class IndexFragment extends BaseFragment {
                         message_List = minfo.getListSystemMsg();
                         if (message_List.size() > 0) {
                             tv_msg_number.setVisibility(View.VISIBLE);
-                            tv_msg_number.setText(message_List.size()-SharedUtil.getDataList("messageRead").size()+ "");
+                            List<String> messageRead = null;
+                            if (SharedUtil.getDataList("messageRead")!=null){
+                                messageRead = SharedUtil.getDataList("messageRead");
+                            }
+                            List<String> newList = new  ArrayList<String>();
+                            for (String cd:messageRead) {
+                                if(!newList.contains(cd)){
+                                    newList.add(cd);
+                                }
+                            }
+                            int number=message_List.size();
+                            if (messageRead!=null)
+                            for (int i=0;i<message_List.size();i++){
+                                for (String s2:newList){
+                                    Log.v("sadwoaodnao0",s2);
+                                    if (message_List.get(i).getMessageID().equals(s2)){
+                                        number--;
+                                    }
+
+                                }
+                            }
+                            if (number>0){
+                                tv_msg_number.setText(number+"");
+                            }else {
+                                tv_msg_number.setVisibility(View.GONE);
+                            }
+
                         } else {
                             tv_msg_number.setVisibility(View.GONE);
 

@@ -43,6 +43,7 @@ import com.glory.bianyitong.ui.dialog.ShouCangPopuWindow;
 import com.glory.bianyitong.util.ActivityManager;
 import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.view.MyGridView;
+import com.glory.bianyitong.view.MyGridView2;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
@@ -129,7 +130,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
     private TextView dynamic_user_name;//名称
     private TextView tv_likeNumber; //点赞数
     private TextView dynamic_tv_content; //文字描述
-    private MyGridView gridView; //图片
+    private MyGridView2 gridView; //图片
     private ArrayList<String> pictureList = null; //图片数组
     private DynamicPicsAdapter picsAdapter;
     private TextView dynamic_tv_date;//发布时间
@@ -158,6 +159,9 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
     private GiveUpAdapter giveUpAdapter=null;
     private int listOr=1;//1.评论列表2.点赞列表
     private int index_page = 0;
+    private View view_comment_numbe;
+    private View view_likeNumber;
+
     @Override
     protected int getContentId() {
         return R.layout.lay_dynamic_comment;
@@ -181,12 +185,15 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
         ll_addcomment_dy.setOnClickListener(this);
         lay_like_dy.setOnClickListener(this);
 
+
+        view_comment_numbe = view_dynamic.findViewById(R.id.view_comment_numbe);
+        view_likeNumber = view_dynamic.findViewById(R.id.view_likeNumber);
         dynamic_user_head = (CircleImageView) view_dynamic.findViewById(R.id.dynamic_user_head);
         dynamic_user_name = (TextView) view_dynamic.findViewById(R.id.dynamic_user_name);
         dynamic_tv_date = (TextView) view_dynamic.findViewById(R.id.dynamic_tv_date);
         dynamic_right_more = (RelativeLayout) view_dynamic.findViewById(R.id.dynamic_right_more);
         dynamic_tv_content = (TextView) view_dynamic.findViewById(R.id.dynamic_tv_content);
-        gridView = (MyGridView) view_dynamic.findViewById(R.id.gv_dynamic_pic);
+        gridView = (MyGridView2) view_dynamic.findViewById(R.id.gv_dynamic_pic);
         dynamic_tv_comment_number = (TextView) view_dynamic.findViewById(R.id.dynamic_tv_comment_number);
         tv_likeNumber = (TextView) view_dynamic.findViewById(R.id.tv_likeNumber);
         dynamic_tv_content.setOnLongClickListener(this);
@@ -314,6 +321,8 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                 DynamicDetailsActivity.this.finish();
                 break;
             case R.id.tv_likeNumber://点赞列表
+                view_likeNumber.setVisibility(View.VISIBLE);
+                view_comment_numbe.setVisibility(View.GONE);
                 listOr=2;
                 index_page=1;
                 giveuplist.clear();
@@ -324,6 +333,8 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                 requestGiveUp(index_page,true);
                 break;
             case R.id.dynamic_tv_comment_number://评论列表
+                view_likeNumber.setVisibility(View.GONE);
+                view_comment_numbe.setVisibility(View.VISIBLE);
                 listOr=1;
                 index_page = 1;
                 commentlist.clear();

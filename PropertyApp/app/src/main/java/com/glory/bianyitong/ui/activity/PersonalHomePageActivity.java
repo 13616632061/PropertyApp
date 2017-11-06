@@ -27,6 +27,7 @@ import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.PersionInfoAdapter;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
+import com.glory.bianyitong.util.ActivityManager;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
@@ -89,6 +90,7 @@ public class PersonalHomePageActivity extends BaseActivity {
     protected void init() {
         super.init();
         Router.injectParams(this);
+        ActivityManager.addActivity(this,"personalhamepageactivity");
         headview = getLayoutInflater().inflate(R.layout.ac_personalhomepage, null);
         left_return_btn = (RelativeLayout) headview.findViewById(R.id.left_return_btn);
         cim_ta_head_pic = (CircleImageView) headview.findViewById(R.id.cim_ta_head_pic);

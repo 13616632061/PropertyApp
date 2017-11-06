@@ -8,22 +8,19 @@ import android.widget.GridView;
 /**
  * Created by lucy on 2017/1/5.
  */
-public class MyGridView extends GridView{
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        return false;
-    }
+public class MyGridView2 extends GridView{
+
 
     //重新  ScrollView中嵌套GridView，ListView只显示一行的解决办法
-    public MyGridView(Context context, AttributeSet attrs) {
+    public MyGridView2(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public MyGridView(Context context) {
+    public MyGridView2(Context context) {
         super(context);
     }
 
-    public MyGridView(Context context, AttributeSet attrs, int defStyle) {
+    public MyGridView2(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

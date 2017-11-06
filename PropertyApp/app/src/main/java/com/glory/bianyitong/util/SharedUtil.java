@@ -48,7 +48,6 @@ public class SharedUtil {
         Gson gson = new Gson();
         //转换成json数据，再保存
         String strJson = gson.toJson(datalist);
-        editor.clear();
         editor.putString(tag, strJson);
         editor.commit();
 

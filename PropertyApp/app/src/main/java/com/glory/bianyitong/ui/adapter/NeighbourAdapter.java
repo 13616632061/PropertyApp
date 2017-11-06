@@ -1,12 +1,18 @@
 package com.glory.bianyitong.ui.adapter;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -29,6 +35,7 @@ import com.glory.bianyitong.ui.activity.PersonalHomePageActivity;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.widght.CircleImageView;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,7 +45,6 @@ import java.util.List;
  */
 public class NeighbourAdapter extends BaseAdapter {
     private Context context;
-
     private  List<ResponseFriendDetail.ListNeighborhoodBean> list;
 
     private String from = "";
@@ -78,6 +84,7 @@ public class NeighbourAdapter extends BaseAdapter {
         return position;
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public View getView(final int position, View convertView, ViewGroup parent) {
         ViewHolder holder = null;
         if (convertView == null) {
@@ -90,6 +97,7 @@ public class NeighbourAdapter extends BaseAdapter {
             holder.tv_near_userName = (TextView) convertView.findViewById(R.id.tv_near_userName);
             holder.tv_near_text = (TextView) convertView.findViewById(R.id.tv_near_text);
 
+            holder.tv_near_quanwen= (TextView) convertView.findViewById(R.id.tv_near_quanwen);
 //            holder.near_image_one = (ImageView) convertView.findViewById(R.id.near_image_one);
 //            holder.near_pic_lay2 = (LinearLayout) convertView.findViewById(R.id.near_pic_lay2);
 //            holder.near_image_two1 = (ImageView) convertView.findViewById(R.id.near_image_two1);
@@ -115,6 +123,9 @@ public class NeighbourAdapter extends BaseAdapter {
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
+
+
+
         if (from.equals("my")) { //我的发布
             holder.lay_iv_mynews_more.setVisibility(View.VISIBLE);
             holder.iv_icon_yellow.setVisibility(View.VISIBLE);
@@ -147,6 +158,7 @@ public class NeighbourAdapter extends BaseAdapter {
             String date = DateUtil.format(DateUtil.parse(list.get(position).getDatetime(),DateUtil.DEFAULT_PATTERN));
             holder.tv_mynews_time.setText(date);//  发布时间
             holder.tv_near_text.setText(list.get(position).getNeighborhoodContent());//  文字内容
+
             holder.tv_near_praise.setText(list.get(position).getLikeCount()+ "");//  赞
             holder.tv_near_comment.setText(list.get(position).getCommentCount()+"");//  评论
 
@@ -163,6 +175,7 @@ public class NeighbourAdapter extends BaseAdapter {
 //                    }
 //                    final ArrayList<String> pictureList2 = pictureList;
                     final int j = position;
+
                     holder.gv_dynamic_pic2.setOnItemClickListener(new AdapterView.OnItemClickListener() { //看大图
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -220,6 +233,33 @@ public class NeighbourAdapter extends BaseAdapter {
                 holder.gv_dynamic_pic2.setVisibility(View.GONE);
             }
         }
+
+        try {
+            Log.v("asdowqwqnd",list.get(position).getNeighborhoodContent().getBytes("utf-8").length+"");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        try {
+        if (list.get(position).getNeighborhoodContent().getBytes("utf-8").length>480){
+            holder.tv_near_quanwen.setVisibility(View.VISIBLE);
+        }else {
+            holder.tv_near_quanwen.setVisibility(View.GONE);
+        }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+
+
+        holder.near_pic_list_lay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_DETAIL)
+                        .with("neighborhoodID",list.get(position).getNeighborhoodID())
+                        .with("aesUserID",list.get(position).getAesUserID())
+                        .go(context);
+            }
+        });
 
         holder.item_near_content_lay.setOnClickListener(new View.OnClickListener() {//动态详情
             @Override
@@ -297,6 +337,8 @@ public class NeighbourAdapter extends BaseAdapter {
         public LinearLayout item_lay_like; //点赞
 
         public TextView view_neighbor_line;
+        public TextView tv_near_quanwen;
     }
+
 
 }

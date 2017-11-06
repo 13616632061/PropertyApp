@@ -105,6 +105,7 @@ public class CollectionNiActivity extends BaseActivity implements BaseQuickAdapt
 //                        recyclerView.removeViewAt(position);
                         adapter.remove(position);
                         adapter.notifyDataSetChanged();
+
                     }
 
                     showShort(detail.getAlertMessage());

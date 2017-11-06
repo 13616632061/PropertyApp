@@ -51,7 +51,12 @@ public class ActivityManager {
      */
     public static void removeActivity(String key)
     {
-        activitys.remove(key);
+        try {
+            activitys.remove(key);
+
+        }catch (Exception ex){
+
+        }
     }
 
     /**

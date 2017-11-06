@@ -88,7 +88,6 @@ public class MessageDetailsActivity extends BaseActivity {
         tv_ans_content.setText(messageContext);
         tv_ans_time.setText(messageTime);
         String msg = getIntent().getStringExtra("msg");
-        Log.v("sad",msg);
         if (msg!=null){
             tv_ans_content.setText(msg);
         }

@@ -110,7 +110,7 @@ public class ImagePagerActivity extends BaseActivity {
             more.setVisibility(View.GONE);
         }
         initPageAdapter();
-        initCirclePoint();
+//        initCirclePoint();
         adViewPager.setAdapter(adapter);
         adViewPager.setOnPageChangeListener(new OnPageChangeListener() {
 

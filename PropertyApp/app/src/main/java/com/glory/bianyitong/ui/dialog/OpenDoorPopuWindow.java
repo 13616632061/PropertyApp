@@ -20,6 +20,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.AdvertisingInfo2;
@@ -34,6 +35,7 @@ import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.activity.KeyManagerActivity;
 import com.glory.bianyitong.ui.activity.SwitchAreaActivity;
 import com.glory.bianyitong.util.JsonHelper;
@@ -260,6 +262,10 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
 
                             return;
                         }
+                        if(uinfo.getStatusCode()==-105){
+                            dismiss();
+                            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
+                        }
                         if (uinfo != null && uinfo.getStatusCode() == 1) {
                             locklist = uinfo.getListUserLockMapping();
                             if (locklist != null && locklist.size() > 0 && locklist.size() == 1) {
@@ -388,6 +394,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
             @Override
             public void onSuccess(String s) {
                 AdvertisingInfo2 adinfo = new Gson().fromJson(s, AdvertisingInfo2.class);
+
 //                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
                 if (adinfo != null && adinfo.getListAdvertising() != null) {
                     if(adinfo.getStatusCode()==1){
@@ -400,6 +407,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                     }
 
                 }
+
             }
 
             @Override

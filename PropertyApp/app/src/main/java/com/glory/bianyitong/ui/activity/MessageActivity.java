@@ -156,6 +156,11 @@ public class MessageActivity extends BaseActivity {
                     messageRead=new ArrayList<>();
                 }
                 for (int i=0;i<message_List.size();i++){
+                    for (String s:messageRead){
+                        if (s.equals(message_List.get(i).getMessageID())){
+                            break;
+                        }
+                    }
                     messageRead.add(message_List.get(i).getMessageID());
                 }
                 SharedUtil.setDataList("messageRead",messageRead);

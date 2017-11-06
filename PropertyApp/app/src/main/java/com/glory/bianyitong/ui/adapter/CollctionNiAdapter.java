@@ -46,8 +46,10 @@ public class CollctionNiAdapter extends BaseQuickAdapter<ItemMenu<CollectionNiIn
             if (item.getData().getCollectType()==1){//1文字，2图片，3视频
                 helper.setText(R.id.dynamic_tv_content,item.getData().getCollectContent());
                 helper.setVisible(R.id.collection_pic,false);
+                helper.setVisible(R.id.dynamic_tv_content,true);
             }else if (item.getData().getCollectType()==2){
                 helper.setVisible(R.id.dynamic_tv_content,false);
+                helper.setVisible(R.id.collection_pic,true);
                 ImageView imageView2=helper.getView(R.id.collection_pic);
                 Glide.with(context).load(item.getData().getCollectContent()).error(R.drawable.wait).placeholder(R.drawable.wait).into(imageView2);
             }
