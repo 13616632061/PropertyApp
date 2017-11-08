@@ -56,6 +56,15 @@ public class AdvertisingInfo2 extends BaseResponseBean{
         @SerializedName("communityID")
         private int communityIDX;       //社区ID
         private int advertisingLocation;       //广告位置  - 1首页广告  2开门页广告 3生鲜广告
+        private String advertisingUrl;
+
+        public String getAdvertisingUrl() {
+            return advertisingUrl;
+        }
+
+        public void setAdvertisingUrl(String advertisingUrl) {
+            this.advertisingUrl = advertisingUrl;
+        }
 
         public int getAdvertisingID() {
             return advertisingID;

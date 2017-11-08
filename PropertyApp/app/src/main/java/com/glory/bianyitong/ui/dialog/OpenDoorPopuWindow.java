@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Vibrator;
 import android.support.annotation.Nullable;
@@ -36,6 +37,7 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.activity.HtmlActivity;
 import com.glory.bianyitong.ui.activity.KeyManagerActivity;
 import com.glory.bianyitong.ui.activity.SwitchAreaActivity;
 import com.glory.bianyitong.util.JsonHelper;
@@ -82,6 +84,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
     private View mMenuView;
     private LayoutInflater inflater;
     private Handler handler;
+    private List<AdvertisingInfo2.ListAdvertisingBean> ad_list;
 
     public OpenDoorPopuWindow(final Context context, Handler handler) {
         super(context);
@@ -188,6 +191,19 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
 //                }
                 if (locklist != null && locklist.get(1) != null) {
                     OpenLock(locklist.get(1).getLockID());
+                }
+                break;
+            case R.id.iv_open_ad://广告点击
+                if (ad_list.get(0).getAdvertisingUrl()!=null){
+//                    Intent intent4 = new Intent();
+//                    intent4.setAction("android.intent.action.VIEW");
+//                    Uri content_url = Uri.parse(ad_list.get(0).getAdvertisingUrl());
+//                    intent4.setData(content_url);
+//                    context.startActivity(intent4);
+                    Intent intent4 = new Intent(context, HtmlActivity.class);
+                    intent4.putExtra("from", "webview");
+                    intent4.putExtra("url", ad_list.get(0).getAdvertisingUrl());
+                    context.startActivity(intent4);
                 }
                 break;
             default:
@@ -398,7 +414,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
 //                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
                 if (adinfo != null && adinfo.getListAdvertising() != null) {
                     if(adinfo.getStatusCode()==1){
-                        List<AdvertisingInfo2.ListAdvertisingBean> ad_list = adinfo.getListAdvertising();
+                        ad_list = adinfo.getListAdvertising();
                         if (ad_list != null && ad_list.get(0) != null && ad_list.get(0).getAdvertisingPicture() != null) {
                             String data = ad_list.get(0).getAdvertisingPicture();
 //                                ServiceDialog.setPicture(ad_list.get(0).get("advertisingPicture").toString(), iv_open_ad, null);

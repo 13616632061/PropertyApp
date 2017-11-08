@@ -71,7 +71,10 @@ public class HtmlActivity extends BaseActivity {
         } else if (from != null && from.equals("about")) {
             title = getString(R.string.about_us);//关于我们
             url = HttpURL.HTTP_LOGIN_AREA + "/About/About.html?versionName=" + Constant.VERSIONNAME;
-        } else {
+        } else if (from != null && from.equals("webview")) {
+            title = "广告";//关于我们
+            url = getIntent().getStringExtra("url");
+        }else {
             HtmlActivity.this.finish();
             return;
         }

@@ -2,7 +2,7 @@ package com.glory.bianyitong.ui.activity;
 
 
 import android.app.ProgressDialog;
-import android.support.annotation.Nullable;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AbsListView;
@@ -14,52 +14,40 @@ import android.widget.TextView;
 import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
+import com.glory.bianyitong.R;
+import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.entity.request.RequestQuerySendInfo;
 import com.glory.bianyitong.bean.entity.request.RequestQueryUserInfo;
-import com.glory.bianyitong.bean.entity.response.ResponseFriendDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseQuerySendInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryUserById;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.adapter.PersionInfoAdapter;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.ActivityManager;
-import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.TextUtil;
-import com.glory.bianyitong.util.ToastUtils;
-import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
-import com.glory.bianyitong.R;
-import com.glory.bianyitong.base.BaseActivity;
-import com.glory.bianyitong.ui.adapter.NeighbourAdapter;
-import com.glory.bianyitong.view.NewPullToRefreshView;
 import com.glory.bianyitong.widght.CircleImageView;
-import com.google.gson.reflect.TypeToken;
-import com.lzy.okgo.OkGo;
-import com.lzy.okgo.callback.StringCallback;
-import com.lzy.okgo.request.BaseRequest;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import okhttp3.Call;
-import okhttp3.Response;
+import butterknife.ButterKnife;
 
 /**
  * Created by lucy on 2016/11/14.
  * 个人主页
  */
-@Route(value = RouterMapping.ROUTER_ACTIVITY_FRIEND_USER_INFO,interceptors = RouterMapping.INTERCEPTOR_LOGIN)
+@Route(value = RouterMapping.ROUTER_ACTIVITY_FRIEND_USER_INFO, interceptors = RouterMapping.INTERCEPTOR_LOGIN)
 public class PersonalHomePageActivity extends BaseActivity {
     @BindView(R.id.base_listView)
     ListView base_listView;
+
 
     private View headview;
     private RelativeLayout left_return_btn;
@@ -74,11 +62,11 @@ public class PersonalHomePageActivity extends BaseActivity {
     private boolean have_GoodsList = true;// 判断是否还有
     private boolean getGoodsListStart = false; //
     private ProgressDialog progressDialog = null;
-    private List<ResponseQuerySendInfo.ListNeighborhoodBean> list_dongtai;
+    private List<ResponseQuerySendInfo.ListNeighborhoodBean> list_dongtai = new ArrayList<>();
     private PersionInfoAdapter mMainAdapter;
 
     @InjectParam(key = "userID")
-     String userID ;
+    String userID;
     private int index_page = 0;
 
     @Override
@@ -90,7 +78,7 @@ public class PersonalHomePageActivity extends BaseActivity {
     protected void init() {
         super.init();
         Router.injectParams(this);
-        ActivityManager.addActivity(this,"personalhamepageactivity");
+        ActivityManager.addActivity(this, "personalhamepageactivity");
         headview = getLayoutInflater().inflate(R.layout.ac_personalhomepage, null);
         left_return_btn = (RelativeLayout) headview.findViewById(R.id.left_return_btn);
         cim_ta_head_pic = (CircleImageView) headview.findViewById(R.id.cim_ta_head_pic);
@@ -149,17 +137,17 @@ public class PersonalHomePageActivity extends BaseActivity {
     private void request(int page, final boolean isrefresh) {
 
 
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("currentPageNumber",page);
-        map.put("neighborhood",new RequestQuerySendInfo(userID));
-        String json=new Gson().toJson(map);
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("currentPageNumber", page);
+        map.put("neighborhood", new RequestQuerySendInfo(userID));
+        String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
                 getGoodsListStart = false;
                 loading_lay.setVisibility(View.GONE);
-                ResponseQuerySendInfo querySendInfo=new Gson().fromJson(s, ResponseQuerySendInfo.class);
-                if(querySendInfo.getStatusCode()==1){
+                ResponseQuerySendInfo querySendInfo = new Gson().fromJson(s, ResponseQuerySendInfo.class);
+                if (querySendInfo.getStatusCode() == 1) {
                     //分页加载数据----------------------------------------------------
                     if (list_dongtai == null) {
                         list_dongtai = querySendInfo.getListNeighborhood();
@@ -171,7 +159,7 @@ public class PersonalHomePageActivity extends BaseActivity {
                             }
                         }
                         if (list_dongtai.size() != 0
-                                && querySendInfo.getListNeighborhood().get(querySendInfo.getListNeighborhood().size() - 1).getNeighborhoodID()==(list_dongtai.get(list_dongtai.size() - 1).getNeighborhoodID())) {
+                                && querySendInfo.getListNeighborhood().get(querySendInfo.getListNeighborhood().size() - 1).getNeighborhoodID() == (list_dongtai.get(list_dongtai.size() - 1).getNeighborhoodID())) {
                             have_GoodsList = false;
                         } else {
                             for (int i = 0; i < querySendInfo.getListNeighborhood().size(); i++) {
@@ -200,6 +188,8 @@ public class PersonalHomePageActivity extends BaseActivity {
                         have_GoodsList = false;
                     }
                 } else {
+                    mMainAdapter = new PersionInfoAdapter(PersonalHomePageActivity.this, list_dongtai, "personal");
+                    base_listView.setAdapter(mMainAdapter);
                     if (Database.list_news != null && Database.list_news.size() > 0) { //分页加载无数据
 
                     } else { //加载无数据
@@ -239,53 +229,66 @@ public class PersonalHomePageActivity extends BaseActivity {
                     progressDialog = null;
                 }
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_MY_GETSEND_INFO,json);
+        }).getEntityData(this, HttpURL.HTTP_POST_MY_GETSEND_INFO, json);
 
 
     }
 
     private void user_request() { //获取个人信息
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("user",new RequestQueryUserInfo(userID));
-        String json=new Gson().toJson(map);
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("user", new RequestQueryUserInfo(userID));
+        String json = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                ResponseQueryUserById responseQueryUserById=new Gson().fromJson(s,ResponseQueryUserById.class);
-                if(responseQueryUserById.getStatusCode()==1){
+                ResponseQueryUserById responseQueryUserById = new Gson().fromJson(s, ResponseQueryUserById.class);
+                if (responseQueryUserById.getStatusCode() == 1) {
                     showinfo(responseQueryUserById);
-                }else {
+                } else {
                     showShort(responseQueryUserById.getAlertMessage());
                 }
 
             }
 
             @Override
-            public void onError() {}
+            public void onError() {
+            }
+
             @Override
-            public void parseError() {}
+            public void parseError() {
+            }
+
             @Override
-            public void onBefore() {}
+            public void onBefore() {
+            }
+
             @Override
-            public void onAfter() {}
-        }).getEntityData(this,HttpURL.HTTP_POST_QUERY_USER_INFO,json);
+            public void onAfter() {
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_QUERY_USER_INFO, json);
     }
 
     //显示用户个人信息
     private void showinfo(ResponseQueryUserById user_list) {
         if (user_list.getListUser().get(0) != null) {
-            if(!TextUtil.isEmpty(user_list.getListUser().get(0).getLoginName()))
+            if (!TextUtil.isEmpty(user_list.getListUser().get(0).getLoginName()))
                 text_ta_name.setText(user_list.getListUser().get(0).getLoginName());
 
 
-            if(!TextUtil.isEmpty(user_list.getListUser().get(0).getSignature()))
+            if (!TextUtil.isEmpty(user_list.getListUser().get(0).getSignature()))
                 ta_signature.setText(user_list.getListUser().get(0).getSignature());
 
-            if(!TextUtil.isEmpty(user_list.getListUser().get(0).getCustomerPhoto()))
+            if (!TextUtil.isEmpty(user_list.getListUser().get(0).getCustomerPhoto()))
                 ServiceDialog.setPicture(user_list.getListUser().get(0).getCustomerPhoto(), cim_ta_head_pic, null);
 
 
         }
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // TODO: add setContentView(...) invocation
+        ButterKnife.bind(this);
+    }
 }

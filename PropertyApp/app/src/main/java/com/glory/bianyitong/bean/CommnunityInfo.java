@@ -26,9 +26,9 @@ public class CommnunityInfo {
      * approvalDate : 2017-01-03T16:14:00
      */
     private int userCommunityID=0;
-    private Object userID;
+    private String  userID;
     private String userName;
-    private int communityID;
+    private int communityID=0;
     private String communityName;
     private int userIDentityID;
     private String userIDentityName;
@@ -62,11 +62,11 @@ public class CommnunityInfo {
         this.userCommunityID = userCommunityID;
     }
 
-    public Object getUserID() {
+    public String getUserID() {
         return userID;
     }
 
-    public void setUserID(Object userID) {
+    public void setUserID(String userID) {
         this.userID = userID;
     }
 

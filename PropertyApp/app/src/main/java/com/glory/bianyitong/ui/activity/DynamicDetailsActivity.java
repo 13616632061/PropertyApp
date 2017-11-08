@@ -161,6 +161,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
     private int index_page = 0;
     private View view_comment_numbe;
     private View view_likeNumber;
+    private boolean wherelist=true;
 
     @Override
     protected int getContentId() {
@@ -247,10 +248,12 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                     case 0:  //点赞
                         int position=msg.arg1;
                         request_like(neighborhoodid, commentlist.get(position).getNeighboCommentID(),position);
+
                         break;
                     case 1: //取消点赞
                         int position2=msg.arg1;
                         request_like_cancel( commentlist.get(position2).getLikeStatu(),position2);
+
                         break;
                     case 2://举报
                         reportPopuWindow = new ReportPopuWindow(DynamicDetailsActivity.this, rhandler, msg.getData());//, msg.arg1, del_handler
@@ -321,6 +324,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                 DynamicDetailsActivity.this.finish();
                 break;
             case R.id.tv_likeNumber://点赞列表
+                wherelist=false;
                 view_likeNumber.setVisibility(View.VISIBLE);
                 view_comment_numbe.setVisibility(View.GONE);
                 listOr=2;
@@ -333,6 +337,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                 requestGiveUp(index_page,true);
                 break;
             case R.id.dynamic_tv_comment_number://评论列表
+                wherelist=true;
                 view_likeNumber.setVisibility(View.GONE);
                 view_comment_numbe.setVisibility(View.VISIBLE);
                 listOr=1;
@@ -542,6 +547,9 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                     neighborhood = detail.getListNeighborhood().get(0); //近邻详情数据
                     aseUserID = neighborhood.getAesUserID();
                     showdata(isrefresh);
+                }else if (detail.getStatusCode()==2){
+                    showShort("该动态已删除");
+                    finish();
                 }else {
                     getGoodsListStart = false;
                     loading_lay.setVisibility(View.GONE);
@@ -726,13 +734,17 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                 if(bean.getStatusCode()==1){
                     if (position==-1){
                         request(false); //刷新
-                        EventBus.getDefault().post("addComment");
+//                        EventBus.getDefault().post("addComment");
                     }else {
                         commentlist.get(position).setLikeCount(commentlist.get(position).getLikeCount()+1);
                         commentlist.get(position).setLikeStatu(bean.getNeighborhoodLikeID());
                         dcAdapter.notifyDataSetChanged();
                     }
-
+                    if (!wherelist){
+                        giveuplist.clear();
+                        index_page=1;
+                        requestGiveUp(index_page,true);
+                    }
                 }
             }
             @Override
@@ -761,7 +773,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
      * 删除自己的发布
      * @param neighborhoodID
      */
-    private void delete(int neighborhoodID) { //点赞
+    private void delete(int neighborhoodID) {
         try {
             Map<String,Object> map=new BaseRequestBean().getBaseRequest();
             Map<String,Object> map2=new HashMap<>();
@@ -775,6 +787,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                     showShort(bean.getAlertMessage());
                     if(bean.getStatusCode()==1){
                         finish();
+                        EventBus.getDefault().post("addComment");
                     }
                     showShort(bean.getAlertMessage());
                 }
@@ -809,12 +822,19 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                 if(bean.getStatusCode()==1){
                     if (position==-1) {
                         request(false); //刷新
-                        EventBus.getDefault().post("addComment");
+//                        EventBus.getDefault().post("addComment");
                     }else {
                         commentlist.get(position).setLikeCount(commentlist.get(position).getLikeCount()-1);
                         commentlist.get(position).setLikeStatu(-1);
                         dcAdapter.notifyDataSetChanged();
                     }
+                    if (!wherelist){
+                        giveuplist.clear();
+                        giveUpAdapter.notifyDataSetChanged();
+                        index_page=1;
+                        requestGiveUp(index_page,true);
+                    }
+
                 }
 
             }

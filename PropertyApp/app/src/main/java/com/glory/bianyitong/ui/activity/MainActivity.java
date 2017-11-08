@@ -408,6 +408,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }else {
         switch (view.getId()) {
             case R.id.iv_open_the_door: //开门
+                if (!SharedUtil.getBoolean("welcome2")&&Database.my_community==null){
+                    startActivity(Welcome2Activity.class);
+                    SharedUtil.putBoolean("welcome2",true);
+                }else {
+                    SharedUtil.putBoolean("welcome2",true);
                 if (Database.USER_MAP != null) {
                     if (Database.my_community != null && Database.my_community_List != null) {
 //                        if (Database.my_community.get("approvalStatus") != null
@@ -456,6 +461,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                    intent_login.setClass(MainActivity.this, LoginActivity.class);
 //                    startActivity(intent_login);
                 }
+                }
+
                 break;
             case R.id.iv_pickup: //取件
                 Router.build(RouterMapping.ROUTER_ACTIVITY_PICKUP)
@@ -558,9 +565,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 DataUtils.my_community(MainActivity.this);
             }
         }
-        if (!TextUtil.isEmpty(mCache.getAsString(Constant.community))){
+//        if (!TextUtil.isEmpty(mCache.getAsString(Constant.community))){
             Database.my_community=new Gson().fromJson(mCache.getAsString(Constant.community),new TypeToken<CommnunityInfo>(){}.getType());
-        }
+//        }
 //        getWeiXin();
     }
 

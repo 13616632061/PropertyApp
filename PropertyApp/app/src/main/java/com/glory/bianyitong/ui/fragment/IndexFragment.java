@@ -1,8 +1,11 @@
 package com.glory.bianyitong.ui.fragment;
 
+import android.app.Notification;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 import com.glory.bianyitong.bean.AdvertisingInfo2;
 import com.glory.bianyitong.bean.AuthAreaInfo;
 import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.CommnunityInfo;
 import com.glory.bianyitong.bean.entity.request.RequestAdvertising;
 import com.glory.bianyitong.bean.listCommunityBulletinInfo;
 import com.glory.bianyitong.bean.MessageInfo;
@@ -29,6 +33,7 @@ import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.ui.activity.AddAreaCityActivity;
 import com.glory.bianyitong.ui.activity.AuthAreaActivity;
 import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
+import com.glory.bianyitong.ui.activity.HtmlActivity;
 import com.glory.bianyitong.ui.activity.LoginActivity;
 import com.glory.bianyitong.ui.adapter.CommunityAnnouceAdapter;
 import com.glory.bianyitong.ui.adapter.MessageAdapter;
@@ -63,6 +68,8 @@ import com.lzy.okgo.request.BaseRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -75,6 +82,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import cn.jpush.android.api.JPushInterface;
 import cn.jpush.android.api.TagAliasCallback;
+import me.leolin.shortcutbadger.ShortcutBadger;
 import okhttp3.Call;
 import okhttp3.Response;
 
@@ -117,6 +125,7 @@ public class IndexFragment extends BaseFragment {
     private String userID;
     private List<listCommunityBulletinInfo.ListCommunityBulletinBean> list=new ArrayList<>();
     public static CallBack callBack;
+    private List<AdvertisingInfo2.ListAdvertisingBean> adlist;
 
     @Nullable
     @Override
@@ -132,6 +141,11 @@ public class IndexFragment extends BaseFragment {
         super.onResume();
         requestMessage();
         ad_request();
+
+        if (Database.USER_MAP != null) {
+            requestSQ();
+
+        }
         tv_notice_number.setVisibility(View.GONE);
 //        if (Database.notreadbulletinSize > 0) {
 //            tv_notice_number.setVisibility(View.VISIBLE);
@@ -221,7 +235,7 @@ public class IndexFragment extends BaseFragment {
 //            } else {
 //                tvVillageName.setText("点击添加小区");
 //            }
-            requestSQ();
+
 
         } else {
             SharedUtil.putBoolean("login", false);
@@ -264,6 +278,9 @@ public class IndexFragment extends BaseFragment {
         public void notifyVillName(String result);
     }
 
+
+    private boolean haveSQ=false;
+
     private void requestSQ() { //社区
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("userCommnunityMapping",new Object());
@@ -287,20 +304,31 @@ public class IndexFragment extends BaseFragment {
                                 }
                             }
                         }else {
-                            Log.v("sadwiuuudsuu",mCache.getAsString(Constant.communityID)+"*---");
                             for (int i = 0; i < Database.my_community_List.size(); i++) {
                                 if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
                                         == Database.my_community.getUserCommunityID()) {
                                     Database.my_community = Database.my_community_List.get(i);
+                                    haveSQ=true;
+                                    break;
+                                }else {
+                                    haveSQ=false;
                                 }
-                                Log.v("sadaddwww",Database.my_community_List.get(i)+"");
                             }
+                            if (!haveSQ&&Database.my_community_List.size()>0){
+                                Database.my_community = Database.my_community_List.get(0);
+                            }
+                            if (Database.my_community_List.size()<=0){
+                                Database.my_community =null;
+                                mCache.put(Constant.community, new Gson().toJson(Database.my_community)); //缓存所选的社区
+                                mCache.put(Constant.communityID, "0"); //缓存所选的小区id
+                            }
+
                         }
-
-
-
                     } else {
-
+                        Database.my_community =null;
+                        Database.my_community_List=new ArrayList<CommnunityInfo>();
+                        mCache.put(Constant.community, new Gson().toJson(Database.my_community)); //缓存所选的社区
+                        mCache.put(Constant.communityID, "0"); //缓存所选的小区id
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -404,6 +432,17 @@ public class IndexFragment extends BaseFragment {
                     @Override
                     public void onItemClick(int position) {
                         //每一张图片的点击事件
+                        if (adlist.get(position).getAdvertisingUrl()!=null){
+//                            Intent intent = new Intent();
+//                            intent.setAction("android.intent.action.VIEW");
+//                            Uri content_url = Uri.parse(adlist.get(position).getAdvertisingUrl());
+//                            intent.setData(content_url);
+//                            startActivity(intent);
+                            Intent intent4 = new Intent(context, HtmlActivity.class);
+                            intent4.putExtra("from", "webview");
+                            intent4.putExtra("url", adlist.get(position).getAdvertisingUrl());
+                            context.startActivity(intent4);
+                        }
 
                     }
                 });
@@ -590,7 +629,7 @@ public class IndexFragment extends BaseFragment {
                 AdvertisingInfo2 adinfo = new Gson().fromJson(s, AdvertisingInfo2.class);
 //                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
                 if (adinfo != null && adinfo.getListAdvertising() != null) {
-                    List<AdvertisingInfo2.ListAdvertisingBean> adlist = adinfo.getListAdvertising();
+                    adlist = adinfo.getListAdvertising();
                     String adstr = "";
                     for (int i = 0; i < adlist.size(); i++) {
                         if (adlist.get(i) != null && adlist.get(i).getAdvertisingPicture() != null) {
@@ -1086,10 +1125,11 @@ public class IndexFragment extends BaseFragment {
 
     }
 
-
+    int number=0;
     private List<MessageInfo.ListSystemMsgBean> message_List=new ArrayList<>();
     private void requestMessage() { //请求社区公告
         try {
+            SharedUtil.putString("number",number+"");
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             map.put("systemMsg", new Object());
             String json = new Gson().toJson(map);
@@ -1102,6 +1142,8 @@ public class IndexFragment extends BaseFragment {
                         message_List = minfo.getListSystemMsg();
                         if (message_List.size() > 0) {
                             tv_msg_number.setVisibility(View.VISIBLE);
+
+
                             List<String> messageRead = null;
                             if (SharedUtil.getDataList("messageRead")!=null){
                                 messageRead = SharedUtil.getDataList("messageRead");
@@ -1112,7 +1154,9 @@ public class IndexFragment extends BaseFragment {
                                     newList.add(cd);
                                 }
                             }
-                            int number=message_List.size();
+                            number=message_List.size();
+                            SharedUtil.putString("number",number+"");
+
                             if (messageRead!=null)
                             for (int i=0;i<message_List.size();i++){
                                 for (String s2:newList){
@@ -1125,16 +1169,21 @@ public class IndexFragment extends BaseFragment {
                             }
                             if (number>0){
                                 tv_msg_number.setText(number+"");
+                                //桌面数量显示
+                                ShortcutBadger.applyCount(context,number); //for 1.1.4+
                             }else {
                                 tv_msg_number.setVisibility(View.GONE);
+                                ShortcutBadger.removeCount(context);
                             }
 
                         } else {
                             tv_msg_number.setVisibility(View.GONE);
+                            ShortcutBadger.removeCount(context);
 
                         }
                     } else {
                         tv_msg_number.setVisibility(View.GONE);
+                        ShortcutBadger.removeCount(context);
 
                     }
                 }

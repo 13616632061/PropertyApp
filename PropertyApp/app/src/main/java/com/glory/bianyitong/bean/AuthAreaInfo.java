@@ -161,7 +161,7 @@ public class AuthAreaInfo {
          */
 
         private int userCommunityID;
-        private int userID;
+        private String userID;
         private String userName;
         private int communityID;
         private String communityName;
@@ -197,11 +197,11 @@ public class AuthAreaInfo {
             this.userCommunityID = userCommunityID;
         }
 
-        public int getUserID() {
+        public String getUserID() {
             return userID;
         }
 
-        public void setUserID(int userID) {
+        public void setUserID(String userID) {
             this.userID = userID;
         }
 

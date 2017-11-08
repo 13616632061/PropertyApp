@@ -179,7 +179,13 @@ public class MyReleaseActivity extends BaseActivity {
 //        }
         getGoodsListStart = true;
         loading_lay.setVisibility(View.VISIBLE);
-        index_page++;
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        index_page=1;
         reqeust(index_page, true);
     }
 

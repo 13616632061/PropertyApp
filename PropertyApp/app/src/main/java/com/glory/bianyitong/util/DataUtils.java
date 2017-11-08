@@ -228,10 +228,10 @@ public class DataUtils {
                 }else {
                     commnunityInfo.setApprovalStatusName("");
                 }
-                if (userCommnunityBean.getUserID() != 0) {
+                if (userCommnunityBean.getUserID() != null) {
                     commnunityInfo.setUserID(userCommnunityBean.getUserID());
                 }else {
-                    commnunityInfo.setUserID(0);
+                    commnunityInfo.setUserID("0");
                 }
                 if (userCommnunityBean.getUserName() != null) {
                     commnunityInfo.setUserName(userCommnunityBean.getUserName());

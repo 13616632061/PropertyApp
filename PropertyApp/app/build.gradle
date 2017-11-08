@@ -14,10 +14,10 @@ android {
     buildToolsVersion '25.0.0'
     defaultConfig {
         applicationId "com.glory.bianyitong"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
-        versionCode 36
-        versionName "1.0.36"
+        versionCode 37
+        versionName "1.0.37"
         vectorDrawables.useSupportLibrary = true
 
         ndk {
@@ -90,4 +90,6 @@ dependencies {
     compile 'com.tencent.bugly:nativecrashreport:latest.release'
     //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
     compile 'com.android.support:support-v4:25.3.1'
+    //图标数量
+    compile "me.leolin:ShortcutBadger:1.1.19@aar"
 }

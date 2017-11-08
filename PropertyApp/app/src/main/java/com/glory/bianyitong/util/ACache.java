@@ -7,6 +7,9 @@ import android.graphics.Canvas;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
+
+import com.glory.bianyitong.constants.Constant;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,6 +19,7 @@ import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -48,18 +52,103 @@ public class ACache {
     }
 
     public static ACache get(Context ctx, String cacheName) {
-        File f = new File(ctx.getCacheDir(), cacheName);
+        if(ctx.getCacheDir().exists()){
+            if(ctx.getCacheDir().listFiles().length > 0)
+            {
+                copyFolder(ctx.getCacheDir().getPath(),ctx.getFilesDir().getPath());
+                deleteAll(ctx.getCacheDir());
+            }
+        }
+        File f = new File(ctx.getFilesDir(), cacheName);
+//        File f = new File(ctx.getCacheDir(), cacheName);
+
         return get(f, MAX_SIZE, MAX_COUNT);
     }
+
+
+
 
     public static ACache get(File cacheDir) {
         return get(cacheDir, MAX_SIZE, MAX_COUNT);
     }
 
     public static ACache get(Context ctx, long max_zise, int max_count) {
-        File f = new File(ctx.getCacheDir(), "BYT");
+        if(ctx.getCacheDir().exists()){
+            if(ctx.getCacheDir().listFiles().length > 0)
+            {
+                copyFolder(ctx.getCacheDir().getPath()  ,ctx.getFilesDir().getPath());
+                deleteAll(ctx.getCacheDir());
+            }
+        }
+        File f = new File(ctx.getFilesDir(), "BYT");
+//        File f = new File(ctx.getCacheDir(), "BYT");
         return get(f, max_zise, max_count);
     }
+
+    /**
+     * 复制整个文件夹内容
+     * @param oldPath String 原文件路径 如：c:/fqf
+     * @param newPath String 复制后路径 如：f:/fqf/ff
+     * @return boolean
+     */
+    public static void copyFolder(String oldPath, String newPath) {
+
+        try {
+            (new File(newPath)).mkdirs(); //如果文件夹不存在 则建立新文件夹
+            File a=new File(oldPath);
+            String[] file=a.list();
+            File temp=null;
+            for (int i = 0; i < file.length; i++) {
+                if(oldPath.endsWith(File.separator)){
+                    temp=new File(oldPath+file[i]);
+                }
+                else{
+                    temp=new File(oldPath+File.separator+file[i]);
+                }
+
+                if(temp.isFile()){
+                    FileInputStream input = new FileInputStream(temp);
+                    FileOutputStream output = new FileOutputStream(newPath + "/" +
+                            (temp.getName()).toString());
+                    byte[] b = new byte[1024 * 5];
+                    int len;
+                    while ( (len = input.read(b)) != -1) {
+                        output.write(b, 0, len);
+                    }
+                    output.flush();
+                    output.close();
+                    input.close();
+                }
+                if(temp.isDirectory()){//如果是子文件夹
+                    copyFolder(oldPath+"/"+file[i],newPath+"/"+file[i]);
+                }
+            }
+        }
+        catch (Exception e) {
+            System.out.println("复制整个文件夹内容操作出错");
+            e.printStackTrace();
+
+        }
+
+    }
+    public static void deleteAll(File file){
+
+        if(file.isFile() || file.list().length ==0)
+        {
+            file.delete();
+        }else{
+            File[] files = file.listFiles();
+            for (int i = 0; i < files.length; i++) {
+                deleteAll(files[i]);
+                files[i].delete();
+            }
+
+
+            if(file.exists())         //如果文件本身就是目录 ，就要删除目录
+                file.delete();
+        }
+    }
+
 
     public static ACache get(File cacheDir, long max_zise, int max_count) {
         ACache manager = mInstanceMap.get(cacheDir.getAbsoluteFile() + myPid());

@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -18,16 +20,29 @@ import android.widget.TextView;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.AuthAreaInfo;
+import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.LoginUserInfo;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.dialog.OpenDoorPopuWindow;
+import com.glory.bianyitong.ui.fragment.IndexFragment;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DataCleanManager;
+import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.ToastUtils;
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -182,12 +197,39 @@ public class SettingActivity extends BaseActivity {
                     }
                 });
                 builder.create().show();
+                exit();
                 break;
             case R.id.tv_about: //关于
                 Intent intent_about = new Intent(SettingActivity.this, HtmlActivity.class);
                 intent_about.putExtra("from", "about");
                 startActivity(intent_about);
                 break;
+        }
+    }
+
+    private void exit() { //退出
+        try {
+
+        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+        String jsons=new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+            }
+
+            @Override
+            public void onError() {}
+            @Override
+            public void parseError() {}
+            @Override
+            public void onBefore() {
+            }
+            @Override
+            public void onAfter() {
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_LOGIN_EXIT, jsons);
+        }catch (Exception e){
+
         }
     }
 

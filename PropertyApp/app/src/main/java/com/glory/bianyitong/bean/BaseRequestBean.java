@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.RequestUtil;
+import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DateUtil;
 
 import java.util.Date;
@@ -115,7 +116,7 @@ public class BaseRequestBean{
         map.put("timeStemp",getTimeStemp());
         map.put("ip",TextUtils.isEmpty(Database.ip)?"":Database.ip);
         map.put("accessToken",TextUtils.isEmpty(Database.accessToken)?"":Database.accessToken);
-        map.put("version",getVersion());
+        map.put("version", ActivityUtils.getVersionName());
         map.put("deviceType",getDeviceType());
         map.put("currentPageNumber",getCurrentPageNumber());
         map.put("pageRowNumber",getPageRowNumber());

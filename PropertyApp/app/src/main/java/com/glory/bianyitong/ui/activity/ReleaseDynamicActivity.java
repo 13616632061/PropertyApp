@@ -331,6 +331,7 @@ public class ReleaseDynamicActivity extends BaseActivity implements ChooseAdapte
                 if(baseResponseBean.getStatusCode()==1){
                     Database.isAddarea = true;
                     EventBus.getDefault().post("MyRelease");
+                    EventBus.getDefault().post("addCommentRefursh");
                     finish();
                 }
 

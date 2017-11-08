@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.ui.activity.BillDetailsActivity;
 import com.glory.bianyitong.ui.activity.BulletinDetailsActivity;
 import com.glory.bianyitong.ui.activity.MainActivity;
@@ -13,8 +14,10 @@ import com.glory.bianyitong.ui.activity.MessageActivity;
 import com.glory.bianyitong.ui.activity.MessageDetailsActivity;
 import com.glory.bianyitong.ui.activity.PickupActivity;
 import com.glory.bianyitong.ui.activity.WelcomeActivity;
+import com.glory.bianyitong.util.ACache;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.JsonHelper;
+import com.glory.bianyitong.util.SharedUtil;
 import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
@@ -24,6 +27,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 import cn.jpush.android.api.JPushInterface;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 /**
  * 自定义接收器
@@ -88,10 +92,21 @@ public class MyReceiver extends BroadcastReceiver {
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知");
 
             int notifactionId = bundle.getInt(JPushInterface.EXTRA_NOTIFICATION_ID);
-//            String type = bundle.getString(JPushInterface.EXTRA_MESSAGE);
-//            String type2 = bundle.getString(JPushInterface.EXTRA_EXTRA);
+            String type = bundle.getString(JPushInterface.EXTRA_MESSAGE);
+            String type2 = bundle.getString(JPushInterface.EXTRA_EXTRA);
 //            Log.i("resultString","type----===="+type);
 //            Log.i("resultString","type2----===="+type2);
+            HashMap<String, String > hashMap2 = JsonHelper.fromJson(type2, new TypeToken<HashMap<String, String>>() {
+            });
+            if (hashMap2.size()>0) {
+                switch (hashMap2.get("extMsg")) {
+                    case "2":
+                    case "3":
+                        ShortcutBadger.applyCount(context, Integer.parseInt(SharedUtil.getString("number"))+ 1); //for 1.1.4+
+                        SharedUtil.putString("number", Integer.parseInt(SharedUtil.getString("number"))+ 1+"");
+                        break;
+                }
+            }
 
             Log.d(TAG, "[MyReceiver] 接收到推送下来的通知的ID: " + notifactionId);
         } else if (JPushInterface.ACTION_NOTIFICATION_OPENED.equals(intent.getAction())) {
@@ -123,6 +138,7 @@ public class MyReceiver extends BroadcastReceiver {
                             intent2.putExtra("PushID",Integer.parseInt(hashMap2.get("extId")));
                                 intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 context.startActivity(intent2);
+                            ShortcutBadger.applyCount(context, Integer.parseInt(BaseActivity.mCache.getAsString("number")+1)); //for 1.1.4+
                         }catch (Exception e){
                             Intent intent0= new Intent(context, WelcomeActivity.class);
                             intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

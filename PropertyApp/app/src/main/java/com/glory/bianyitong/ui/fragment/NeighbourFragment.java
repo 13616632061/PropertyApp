@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,6 +65,7 @@ public class NeighbourFragment extends BaseFragment {
     //    private ArrayList<LinkedTreeMap<String, Object>> neighbourlist;
     private NeighbourAdapter mMainAdapter;
     private int index_page = 0;
+    private int nowPosition;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -100,6 +102,7 @@ public class NeighbourFragment extends BaseFragment {
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 // 当不滚动时
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    nowPosition= listView_neighbour.getFirstVisiblePosition();
                     // 判断是否滚动到底部
                     if (view.getLastVisiblePosition() == view.getCount() - 1) {
                         //加载更多功能的代码
@@ -107,7 +110,7 @@ public class NeighbourFragment extends BaseFragment {
                             getGoodsListStart = true;
                             loading_lay.setVisibility(View.VISIBLE);
                             index_page++;
-                            request(index_page, false);
+                            request(index_page, false,false);
                         }
                     }
                 }
@@ -125,7 +128,7 @@ public class NeighbourFragment extends BaseFragment {
                     getGoodsListStart = true;
                     index_page = 0;//重置index_page
                     index_page++;
-                    request(index_page, true);//刷新
+                    request(index_page, true,false);//刷新
                 }
             }
         });
@@ -138,7 +141,7 @@ public class NeighbourFragment extends BaseFragment {
             getGoodsListStart = true;
             loading_lay.setVisibility(View.VISIBLE);
             index_page++;
-            request(index_page, false);
+            request(index_page, false,false);
         }
 
     }
@@ -146,15 +149,14 @@ public class NeighbourFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
-//        if (Database.list_neighbour == null) {
+        if (Database.list_neighbour == null) {
             laySearchNothing.setVisibility(View.GONE);
             getGoodsListStart = true;
             index_page = 0;//重置index_page
             index_page++;
-
-            request(index_page, true);//刷新
+            request(index_page, true,false);//刷新
             Database.isAddarea = false;
-//        }
+        }
     }
 
     @Override
@@ -171,7 +173,13 @@ public class NeighbourFragment extends BaseFragment {
             index_page = 0;//重置index_page
             index_page++;
 
-            request(index_page, true);//刷新
+            request(index_page, true,true);//刷新
+        }else if (ss.equals("addCommentRefursh")){
+            getGoodsListStart = true;
+            index_page = 0;//重置index_page
+            index_page++;
+
+            request(index_page, true,false);//刷新
         }
     }
 
@@ -181,7 +189,7 @@ public class NeighbourFragment extends BaseFragment {
      * @param page
      * @param isrefresh
      */
-    private void request(int page, final boolean isrefresh) {
+    private void request(int page, final boolean isrefresh,final boolean isHead) {
 
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
         map.put("currentPageNumber", page);
@@ -292,6 +300,9 @@ public class NeighbourFragment extends BaseFragment {
 
                 }
                 base_pullToRefreshView.onHeaderRefreshComplete();
+                if (isHead){
+                    listView_neighbour.setSelection(nowPosition);
+                }
             }
         }).getEntityData(getActivity(), HttpURL.HTTP_POST_FRIEND_QUERY, json);
 

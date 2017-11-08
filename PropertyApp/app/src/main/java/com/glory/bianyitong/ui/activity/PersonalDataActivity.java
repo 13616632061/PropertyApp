@@ -358,7 +358,6 @@ public class PersonalDataActivity extends BaseActivity {
         Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("user",new RequestUserBean(Database.USER_MAP.getLoginName(),gender));
         String json=new Gson().toJson(map);
-        progressDialog = ProgressDialog.show(this, "","加载中", true);
         progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -374,18 +373,15 @@ public class PersonalDataActivity extends BaseActivity {
                 }else {
                     ToastUtils.showToast(PersonalDataActivity.this,bean.getAlertMessage());//修改失败
                 }
-                progressDialog.dismiss();
             }
 
             @Override
             public void onError() {
-                progressDialog.dismiss();
 
             }
 
             @Override
             public void parseError() {
-                progressDialog.dismiss();
 
             }
 
@@ -396,7 +392,6 @@ public class PersonalDataActivity extends BaseActivity {
 
             @Override
             public void onAfter() {
-                progressDialog.dismiss();
 
             }
         }).getEntityData(this,HttpURL.HTTP_POST_MY_EDITUSERINFO,json);
