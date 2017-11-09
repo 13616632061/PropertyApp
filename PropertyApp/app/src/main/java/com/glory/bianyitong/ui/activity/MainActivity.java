@@ -727,7 +727,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
+        Database.list_neighbour=null;
     }
 
     public void registerMessageReceiver() {

@@ -15,6 +15,7 @@ import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
@@ -23,6 +24,7 @@ import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.exception.MyApplication;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
+import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.ui.dialog.CollectionPopuWindow;
 import com.glory.bianyitong.ui.dialog.ReportPopuWindow;
 import com.glory.bianyitong.view.ViewPagerFixed;
@@ -73,7 +75,11 @@ public class ImagePagerActivity extends BaseActivity {
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             if (msg.what == 10) {
-                shoucang();
+                if (Database.USER_MAP==null){
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(ImagePagerActivity.this);
+                }else {
+                    shoucang();
+                }
             }
             if (msg.what==11){
                 Glide.with(ImagePagerActivity.this).load(pictureList.get(mPosition)).asBitmap().into(new SimpleTarget<Bitmap>() {

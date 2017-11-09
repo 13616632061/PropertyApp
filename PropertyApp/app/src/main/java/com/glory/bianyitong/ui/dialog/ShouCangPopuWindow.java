@@ -12,7 +12,10 @@ import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
+import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.router.RouterMapping;
 
 /**
  * Created by Administrator on 2016/11/22.
@@ -77,11 +80,15 @@ public class ShouCangPopuWindow extends PopupWindow implements View.OnClickListe
         // TODO Auto-generated method stub
         switch (arg0.getId()) {
             case R.id.shoucang:
-                Message msg = new Message();
-                msg.what = 11;
-                del_handler.sendMessage(msg);
+                if (Database.USER_MAP==null){
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(context);
+                }else {
+                    Message msg = new Message();
+                    msg.what = 11;
+                    del_handler.sendMessage(msg);
 
-                ShouCangPopuWindow.this.dismiss();
+                    ShouCangPopuWindow.this.dismiss();
+                }
                 break;
             case R.id.copy:
                 Message msg2 = new Message();
