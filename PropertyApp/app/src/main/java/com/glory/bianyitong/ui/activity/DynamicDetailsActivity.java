@@ -224,9 +224,9 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                             loading_lay.setVisibility(View.VISIBLE);
                             index_page++;
                             if (listOr == 1) {
-                                requestHood(index_page, false);
+                                requestHood(index_page, false,false);
                             } else if (listOr == 2) {
-                                requestGiveUp(index_page, false);
+                                requestGiveUp(index_page, false,false);
                             }
                         }
                     }
@@ -240,7 +240,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
 
         index_page = 0;
         index_page++;
-        requestHood(index_page, true);
+        requestHood(index_page, true,false);
 
 
         view_loading.setVisibility(View.GONE);
@@ -356,7 +356,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                 if (dcAdapter != null) {
                     dcAdapter.notifyDataSetChanged();
                 }
-                requestGiveUp(index_page, true);
+                requestGiveUp(index_page, true,true);
                 break;
             case R.id.dynamic_tv_comment_number://评论列表
                 wherelist = true;
@@ -369,7 +369,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                 if (giveUpAdapter != null) {
                     giveUpAdapter.notifyDataSetChanged();
                 }
-                requestHood(index_page, true);
+                requestHood(index_page, true,true);
                 break;
             case R.id.lay_like_dy:
                 if (Database.USER_MAP == null) {
@@ -431,7 +431,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
             Database.islogin = false;
             commentlist.clear();
             index_page = 1;
-            requestHood(index_page, true);
+            requestHood(index_page, true,false);
         }
     }
 
@@ -618,7 +618,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
      *
      * @param index_page
      */
-    private void requestHood(int index_page, final boolean isrefresh) {
+    private void requestHood(int index_page, final boolean isrefresh, final boolean isOne) {
         try {
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             Map<String, Object> map2 = new HashMap<>();
@@ -679,7 +679,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
 
                 @Override
                 public void onAfter() {
-                    if (isrefresh){
+                    if (isOne){
                         listView_dynamic.setSelection(1);
 
                     }
@@ -695,7 +695,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
      *
      * @param index_page
      */
-    private void requestGiveUp(int index_page, final boolean isrefresh) {
+    private void requestGiveUp(int index_page, final boolean isrefresh, final boolean isOne) {
         try {
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
             Map<String, Object> map2 = new HashMap<>();
@@ -756,7 +756,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
 
                 @Override
                 public void onAfter() {
-                    if (isrefresh){
+                    if (isOne){
                         listView_dynamic.setSelection(1);
 
                     }
@@ -795,7 +795,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                         if (!wherelist) {
                             giveuplist.clear();
                             index_page = 1;
-                            requestGiveUp(index_page, true);
+                            requestGiveUp(index_page, true,true);
                         }
                     }
                 }
@@ -894,7 +894,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                             giveuplist.clear();
                             giveUpAdapter.notifyDataSetChanged();
                             index_page = 1;
-                            requestGiveUp(index_page, true);
+                            requestGiveUp(index_page, true,true);
                         }
 
                     }
@@ -973,7 +973,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
         Message msg = new Message();
         msg.what = 4;
         handler.sendMessage(msg);
-        dynamic_tv_content.setBackgroundColor(getResources().getColor(R.color.linewhite));
+        dynamic_tv_content.setBackgroundColor(getResources().getColor(R.color.gray));
         return false;
     }
 
