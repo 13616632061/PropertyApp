@@ -112,6 +112,8 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
             } else if (msg.what == 12) {//复制
                 ClipboardManager cmb = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
                 cmb.setText(dynamic_tv_content.getText().toString().trim()); //将内容放入粘贴管理器,在别的地方长按选择"粘贴"即可
+            }else if (msg.what==9){//删除评论
+                deleteMine(msg.getData().getInt("reportID"));
             }
         }
     };
@@ -156,6 +158,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
     private boolean wherelist = true;
     private int x;
     private int y;
+    private int nowPosition;
 
     @Override
     protected int getContentId() {
@@ -216,6 +219,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
             public void onScrollStateChanged(AbsListView view, int scrollState) {
                 // 当不滚动时
                 if (scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE) {
+                    nowPosition = listView_dynamic.getFirstVisiblePosition();
                     // 判断是否滚动到底部
                     if (view.getLastVisiblePosition() == view.getCount() - 1) {
                         //加载更多功能的代码
@@ -265,8 +269,8 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                         reportPopuWindow.showAtLocation(DynamicDetailsActivity.this.findViewById(R.id.lay_dynamic_commment),
                                 Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
                         break;
-                    case 3://删除
-                        reportPopuWindow = new ReportPopuWindow(DynamicDetailsActivity.this, rhandler, msg.getData(), "删除");//, msg.arg1, del_handler
+                    case 3://删除近邻
+                        reportPopuWindow = new ReportPopuWindow(DynamicDetailsActivity.this, rhandler, msg.getData(), 1);//, msg.arg1, del_handler
                         // 显示窗口
                         reportPopuWindow.showAtLocation(DynamicDetailsActivity.this.findViewById(R.id.lay_dynamic_commment),
                                 Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
@@ -287,6 +291,12 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                                 dynamic_tv_content.setBackgroundColor(getResources().getColor(R.color.white));
                             }
                         });
+                        break;
+                    case 5://删除评论
+                        reportPopuWindow = new ReportPopuWindow(DynamicDetailsActivity.this, rhandler, msg.getData(), 2);//, msg.arg1, del_handler
+                        // 显示窗口
+                        reportPopuWindow.showAtLocation(DynamicDetailsActivity.this.findViewById(R.id.lay_dynamic_commment),
+                                Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0); // 设置layout在PopupWindow中显示的位置
                         break;
                 }
             }
@@ -819,6 +829,55 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
                     lay_like_dy.setClickable(true);
                 }
             }).getEntityData(this, HttpURL.HTTP_POST_FRIEND_LIKE, json);
+        } catch (Exception e) {
+
+        }
+    }
+
+
+    /**
+     * 删除自己的评论
+     *
+     * @param neighborhoodID
+     */
+    private void deleteMine(int neighborhoodID) {
+        try {
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            Map<String, Object> map2 = new HashMap<>();
+            map2.put("neighboCommentID", neighborhoodID);
+            map.put("neighborhoodComment", map2);
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
+                    showShort(bean.getAlertMessage());
+                    if (bean.getStatusCode() == 1) {
+                        commentlist.clear();
+                        dcAdapter.notifyDataSetChanged();
+                        index_page=1;
+                        request(false);
+                        requestHood(index_page, true,false);
+                    }
+                    showShort(bean.getAlertMessage());
+                }
+
+                @Override
+                public void onError() {
+                }
+
+                @Override
+                public void parseError() {
+                }
+
+                @Override
+                public void onBefore() {
+                }
+
+                @Override
+                public void onAfter() {
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_NEIGHBORHOOD_DELETE, json);
         } catch (Exception e) {
 
         }

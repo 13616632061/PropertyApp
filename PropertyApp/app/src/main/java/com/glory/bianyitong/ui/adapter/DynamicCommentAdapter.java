@@ -8,6 +8,7 @@ import android.os.Message;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -220,15 +221,23 @@ public class DynamicCommentAdapter extends BaseAdapter {
                 ServiceDialog.ButtonClickZoomInAnimation(commment_right_more, 0.95f);
                 if (Database.USER_MAP != null) {
                     Message msg = new Message();
-                    msg.what = 2;
+                    if (!list.get(position).getAesUserID().equals(Database.USER_MAP.getUserID())){
+                        msg.what = 2;
 //                msg.arg1 = Double.valueOf(list.get(position).get("neighboCommentID").toString()).intValue();
-                    Bundle bundle = new Bundle();
-                    bundle.putInt("reportType", 2);//举报类型：1近邻2近邻评论3新闻评论
-                    bundle.putInt("reportID", list.get(position).getNeighboCommentID());//举报ID(近邻id或评论id)
-                    bundle.putString("reportUserID", Database.USER_MAP.getUserID());//举报人ID（默认0）
-                    bundle.putString("reportUserName", Database.USER_MAP.getUserName());//举报人姓名
-                    bundle.putString("publisherID", list.get(position).getAesUserID());//发布者ID
-                    msg.setData(bundle);
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("reportType", 2);//举报类型：1近邻2近邻评论3新闻评论
+                        bundle.putInt("reportID", list.get(position).getNeighboCommentID());//举报ID(近邻id或评论id)
+                        bundle.putString("reportUserID", Database.USER_MAP.getUserID());//举报人ID（默认0）
+                        bundle.putString("reportUserName", Database.USER_MAP.getUserName());//举报人姓名
+                        bundle.putString("publisherID", list.get(position).getAesUserID());//发布者ID
+                        msg.setData(bundle);
+                    }else {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("reportID",list.get(position).getNeighboCommentID());//举报ID(近邻id或评论id)
+                        msg.setData(bundle);
+                        msg.what = 5;
+                    }
+
                     handler.sendMessage(msg);
                 } else {//登录
                     login();
@@ -312,14 +321,24 @@ public class DynamicCommentAdapter extends BaseAdapter {
 
                     @Override
                     public void onClick(View arg0) {
-                        // TODO Auto-generated method stub
-                        ServiceDialog.ButtonClickZoomInAnimation(lay_comment1, 0.95f);
-                        Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_COMMENT)
-                                .with("neighborhoodID",lists.get(j).getNeighborhoodID())
-                                .with("CommentToID",lists.get(j).getNeighboCommentID())
-                                .with("commentToUserID",lists.get(j).getAesCommentToUserID())
-                                .with("commentToUserName",lists.get(j).getCommentToUserName())
-                                .go(context);
+                        if (!lists.get(j).getAesUserID().equals(Database.USER_MAP.getUserID())){
+                            // TODO Auto-generated method stub
+                            ServiceDialog.ButtonClickZoomInAnimation(lay_comment1, 0.95f);
+                            Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_COMMENT)
+                                    .with("neighborhoodID",lists.get(j).getNeighborhoodID())
+                                    .with("CommentToID",lists.get(j).getNeighboCommentID())
+                                    .with("commentToUserID",lists.get(j).getAesCommentToUserID())
+                                    .with("commentToUserName",lists.get(j).getCommentToUserName())
+                                    .go(context);
+                        }else {
+                            Message msg = new Message();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("reportID",lists.get(j).getNeighboCommentID());//举报ID(近邻id或评论id)
+                            msg.setData(bundle);
+                            msg.what = 5;
+                            handler.sendMessage(msg);
+                        }
+
 //                        if (Database.USER_MAP != null) {
 //                            Intent intent = new Intent(context, AddCommentActivity.class);
 //                            intent.putExtra("neighborhoodID", neighborhoodID);
@@ -337,15 +356,23 @@ public class DynamicCommentAdapter extends BaseAdapter {
 
                     @Override
                     public void onClick(View arg0) {
-                        // TODO Auto-generated method stub
-                        ServiceDialog.ButtonClickZoomInAnimation(tv_comment_text, 0.95f);
-                        Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_COMMENT)
-                                .with("neighborhoodID",lists.get(j).getNeighborhoodID())
-                                .with("CommentToID",list.get(position).getNeighboCommentID())
-                                .with("commentToUserID",lists.get(j).getAesUserID())
-                                .with("commentToUserName",lists.get(j).getCommentToUserName())
-                                .go(context);
-
+                        if (!lists.get(j).getAesUserID().equals(Database.USER_MAP.getUserID())) {
+                            // TODO Auto-generated method stub
+                            ServiceDialog.ButtonClickZoomInAnimation(tv_comment_text, 0.95f);
+                            Router.build(RouterMapping.ROUTER_ACTIVITY_FRIEND_COMMENT)
+                                    .with("neighborhoodID", lists.get(j).getNeighborhoodID())
+                                    .with("CommentToID", list.get(position).getNeighboCommentID())
+                                    .with("commentToUserID", lists.get(j).getAesUserID())
+                                    .with("commentToUserName", lists.get(j).getCommentToUserName())
+                                    .go(context);
+                        }else {
+                            Message msg = new Message();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("reportID",lists.get(j).getNeighboCommentID());//举报ID(近邻id或评论id)
+                            msg.setData(bundle);
+                            msg.what = 5;
+                            handler.sendMessage(msg);
+                        }
 //                        if (Database.USER_MAP != null) {
 //                            Intent intent = new Intent(context, AddCommentActivity.class);
 //                            intent.putExtra("neighborhoodID", neighborhoodID);
@@ -358,6 +385,7 @@ public class DynamicCommentAdapter extends BaseAdapter {
 //                        }
                     }
                 });
+
                 lay_gallery.addView(view);
             }
         }

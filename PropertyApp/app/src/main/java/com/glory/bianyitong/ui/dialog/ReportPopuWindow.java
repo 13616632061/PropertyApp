@@ -73,7 +73,7 @@ public class ReportPopuWindow extends PopupWindow implements View.OnClickListene
         });
     }
 
-    public ReportPopuWindow(final Context context,Handler del_handler, Bundle bundle,String delete) {//, int position,
+    public ReportPopuWindow(final Context context, final Handler del_handler, final Bundle bundle, int delete) {//, int position,
         super(context);
         this.context = context;
 //        this.position = position;
@@ -86,7 +86,21 @@ public class ReportPopuWindow extends PopupWindow implements View.OnClickListene
         new_cancel = (TextView) mMenuView.findViewById(R.id.new_cancel);
 
         news_delete.setText(context.getString(R.string.delete));//删除
-        news_delete.setOnClickListener(this);
+        if (delete==1){
+            news_delete.setOnClickListener(this);
+        }else {
+            news_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Message msg = new Message();
+                    msg.what = 9;
+                    msg.setData(bundle);
+                    del_handler.sendMessage(msg);
+
+                    ReportPopuWindow.this.dismiss();
+                }
+            });
+        }
         new_cancel.setOnClickListener(this);
 
         this.setContentView(mMenuView);
