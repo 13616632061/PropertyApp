@@ -164,9 +164,9 @@
     <string name="the_article_is_deleted">条被删除</string>
     <string name="select_city">选择城市</string>
     <string name="select_the_cell">选择小区</string>
-    <string name="choose_floor">选择楼栋</string>
-    <string name="select_room_number">选择房号</string>
-    <string name="select_the_unit">选择单元</string>
+    <string name="choose_floor">请选择楼栋</string>
+    <string name="select_room_number">请选择房号</string>
+    <string name="select_the_unit">请选择单元</string>
     <string name="select_the_province">选择省份</string>
     <string name="please_enter_a_valid_phone_number">请输入正确的手机号</string>
     <string name="verification_code_must_be_filled">验证码不能为空</string>

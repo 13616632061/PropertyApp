@@ -76,12 +76,12 @@ public class ListCommunityRoomActivity extends BaseActivity {
                         if (list.get(j).getRoomID() >0) {
                             Database.roomName = list.get(j).getRoomName();
                             Database.roomID =  list.get(j).getRoomID();
-
-                            ListCommunityRoomActivity.this.finish();
                             if (ActivityManager.getActivity("addroomactivity")!=null){
                                 ActivityManager.removeActivity("addroomactivity");
                             }
                             startActivity(AddRoomActivity.class);
+                            ListCommunityRoomActivity.this.finish();
+
                         }
 
                     }

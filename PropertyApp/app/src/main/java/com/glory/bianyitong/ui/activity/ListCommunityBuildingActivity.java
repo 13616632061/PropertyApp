@@ -99,7 +99,6 @@ public class ListCommunityBuildingActivity extends BaseActivity {
                             Database.unitID = 0;
                             Database.roomName = "";
                             Database.roomID = 0;
-                            ListCommunityBuildingActivity.this.finish();
                             request_cell(Database.buildingID);
                         }
 
@@ -136,6 +135,7 @@ public class ListCommunityBuildingActivity extends BaseActivity {
                         Database.listCommunityUnit=queryUnit.getListCommunityUnit();
                         Intent intent = new Intent(ListCommunityBuildingActivity.this, ListCommunityUnitActivity.class);
                         startActivity(intent);
+
                     }else {
                         showShort(queryUnit.getAlertMessage());
                     }
@@ -151,7 +151,8 @@ public class ListCommunityBuildingActivity extends BaseActivity {
                 @Override
                 public void onBefore() {}
                 @Override
-                public void onAfter() {                progressDialog.dismiss();
+                public void onAfter() {                                 ListCommunityBuildingActivity.this.finish();
+                    progressDialog.dismiss();
                 }
             }).getEntityData(this, HttpURL.HTTP_POST_LOCAL_AREA_QUERY_UNIT,json);
         }catch (Exception e){
