@@ -214,3 +214,7 @@
 # Router
 -keep class com.chenenyu.router.** {*;}
 -keep class * implements com.chenenyu.router.ParamInjector {*;}
+
+-dontwarn com.tencent.bugly.**
+-keep public class com.tencent.bugly.**{*;}
+-keep class android.support.**{*;}

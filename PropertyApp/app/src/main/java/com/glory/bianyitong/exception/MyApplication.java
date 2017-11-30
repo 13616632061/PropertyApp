@@ -62,6 +62,7 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import java.util.Map;
@@ -89,7 +90,8 @@ public class MyApplication extends Application {
         super.onCreate();
 //        CrashHandler crashHandler = CrashHandler.getInstance();
 //        crashHandler.init(getApplicationContext(), this);
-        CrashReport.initCrashReport(getApplicationContext(),"350a43e596", false);//初始化bugly
+//        CrashReport.initCrashReport(getApplicationContext(),"350a43e596", false);//初始化bugly
+        Bugly.init(getApplicationContext(), "4ac9a86c99", false);
         SDKInitializer.initialize(getApplicationContext());
         Router.initialize(this,true);
         Instance = this;

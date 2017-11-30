@@ -110,7 +110,11 @@ public class OrderListFragment extends RootFragment implements SwipeRefreshLayou
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {
-                    orderListFrRefresh.setRefreshing(false);
+                    try {
+                        orderListFrRefresh.setRefreshing(false);
+                    }catch (Exception e){
+
+                    }
                     entity = new Gson().fromJson(s,ResponseQueryOrderList.class);
                     if(entity.getStatusCode()==1){
                         for (ResponseQueryOrderList.ListOrderBean listBean: entity.getList_Order()) {

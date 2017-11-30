@@ -16,8 +16,8 @@ android {
         applicationId "com.glory.bianyitong"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 38
-        versionName "1.0.38"
+        versionCode 39
+        versionName "1.0.39"
         vectorDrawables.useSupportLibrary = true
 
         ndk {
@@ -52,6 +52,7 @@ android {
             jniLibs.srcDir('libs')
         }
     }
+
 }
 
 dependencies {
@@ -85,11 +86,16 @@ dependencies {
     compile files('libs/BaiduLBS_Android.jar')
     //        compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:1.0.2'
     compile files('libs/libammsdk.jar')
-    compile 'com.tencent.bugly:crashreport:latest.release'
-    //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
-    compile 'com.tencent.bugly:nativecrashreport:latest.release'
-    //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
+//    compile 'com.tencent.bugly:crashreport:latest.release'
+//    //其中latest.release指代最新Bugly SDK版本号，也可以指定明确的版本号，例如2.1.9
+//    compile 'com.tencent.bugly:nativecrashreport:latest.release'
+//    //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
     compile 'com.android.support:support-v4:25.3.1'
     //图标数量
     compile "me.leolin:ShortcutBadger:1.1.19@aar"
+
+    //注释掉原有bugly的仓库
+//    compile 'com.tencent.bugly:crashreport:latest.release'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.3.2
+    compile 'com.tencent.bugly:crashreport_upgrade:latest.release'//其中latest.release指代最新版本号，也可以指定明确的版本号，例如1.2.0
+    compile 'com.tencent.bugly:nativecrashreport:latest.release' //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
 }

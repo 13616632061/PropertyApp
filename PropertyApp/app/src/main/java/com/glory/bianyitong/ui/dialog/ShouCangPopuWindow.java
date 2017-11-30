@@ -74,6 +74,50 @@ public class ShouCangPopuWindow extends PopupWindow implements View.OnClickListe
         });
     }
 
+    public ShouCangPopuWindow(final Context context, Handler del_handler,boolean is) {//, int position,
+        super(context);
+        this.context = context;
+//        this.position = position;
+        this.del_handler = del_handler;
+        this.bundle = bundle;
+
+        inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        mMenuView = inflater.inflate(R.layout.popwindow_shoucang, null);
+        copy = (TextView) mMenuView.findViewById(R.id.copy);
+        shoucang = (TextView) mMenuView.findViewById(R.id.shoucang);
+        shoucang.setVisibility(View.GONE);
+        copy.setOnClickListener(this);
+        shoucang.setOnClickListener(this);
+
+        this.setContentView(mMenuView);
+        // 设置SelectPicPopupWindow弹出窗体的宽
+        this.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+        // 设置SelectPicPopupWindow弹出窗体的高
+        this.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        // 设置SelectPicPopupWindow弹出窗体可点击
+        this.setFocusable(true);
+//        // 设置SelectPicPopupWindow弹出窗体动画效果
+//        this.setAnimationStyle(R.style.AnimationWindow);
+        // 实例化一个ColorDrawable颜色为半透明
+        ColorDrawable dw = new ColorDrawable(0x00000000);
+        // 设置SelectPicPopupWindow弹出窗体的背景
+        this.setBackgroundDrawable(dw);
+        // mMenuView添加OnTouchListener监听判断获取触屏位置如果在选择框外面则销毁弹出框
+        mMenuView.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+
+                int height = mMenuView.findViewById(R.id.pop_layout2).getTop();
+                int y = (int) event.getY();
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (y < height) {
+                        dismiss();
+                    }
+                }
+                return true;
+            }
+        });
+    }
 
     @Override
     public void onClick(View arg0) {

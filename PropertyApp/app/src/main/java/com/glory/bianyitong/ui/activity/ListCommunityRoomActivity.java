@@ -12,6 +12,7 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryRoom;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.util.ActivityManager;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.List;
@@ -77,6 +78,10 @@ public class ListCommunityRoomActivity extends BaseActivity {
                             Database.roomID =  list.get(j).getRoomID();
 
                             ListCommunityRoomActivity.this.finish();
+                            if (ActivityManager.getActivity("addroomactivity")!=null){
+                                ActivityManager.removeActivity("addroomactivity");
+                            }
+                            startActivity(AddRoomActivity.class);
                         }
 
                     }

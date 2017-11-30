@@ -1,11 +1,18 @@
 package com.glory.bianyitong.ui.activity;
 
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -13,7 +20,9 @@ import com.bumptech.glide.Glide;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.CollectionNiInfo;
+import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
+import com.glory.bianyitong.ui.dialog.ShouCangPopuWindow;
 import com.glory.bianyitong.widght.CircleImageView;
 
 import java.util.ArrayList;
@@ -26,7 +35,7 @@ import butterknife.OnClick;
  * Created by lucy on 2017/10/30.
  * 我的近邻收藏详情
  */
-public class CollectionNiDetailsActivity extends BaseActivity {
+public class CollectionNiDetailsActivity extends BaseActivity implements View.OnLongClickListener {
 
 
     @BindView(R.id.iv_title_back)
@@ -53,6 +62,19 @@ public class CollectionNiDetailsActivity extends BaseActivity {
     ImageView collectionPic;
     @BindView(R.id.llear)
     LinearLayout llear;
+    private int x;
+    private int y;
+
+    Handler rhandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+           if (msg.what == 12) {//复制
+                ClipboardManager cmb = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                cmb.setText(dynamicTvContent.getText().toString().trim()); //将内容放入粘贴管理器,在别的地方长按选择"粘贴"即可
+            }
+        }
+    };
 
     @Override
     protected int getContentId() {
@@ -64,6 +86,8 @@ public class CollectionNiDetailsActivity extends BaseActivity {
         super.init();
         inintTitle("详情", true, "");//详情
         initview();
+
+        dynamicTvContent.setOnLongClickListener(this);
 
     }
 
@@ -79,7 +103,14 @@ public class CollectionNiDetailsActivity extends BaseActivity {
             dynamicTvContent.setVisibility(View.GONE);
             Glide.with(this).load(getIntent().getStringExtra("collectContent")).error(R.drawable.wait).placeholder(R.drawable.wait).into(collectionPic);
         }
-
+        dynamicTvContent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                x = (int) event.getX();
+                y = (int) event.getY();
+                return false;
+            }
+        });
 
     }
 
@@ -107,5 +138,35 @@ public class CollectionNiDetailsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        dynamicTvContent.setBackgroundColor(getResources().getColor(R.color.gray));
+        int[] location = new int[2];
+        dynamicTvContent.getLocationOnScreen(location);
+        ShouCangPopuWindow shouCangPopuWindow = new ShouCangPopuWindow(this, rhandler,false);//, msg.arg1, del_handler
+        //获取PopWindow宽和高
+
+        // 显示窗口
+        shouCangPopuWindow.showAtLocation(dynamicTvContent,
+                Gravity.NO_GRAVITY, x - 50, y - getScrollY() +80); // 设置layout在PopupWindow中显示的位置
+        shouCangPopuWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                dynamicTvContent.setBackgroundColor(getResources().getColor(R.color.white));
+            }
+        });
+        return false;
+    }
+
+    public int getScrollY() {
+        View c = dynamicTvContent;
+        if (c == null) {
+            return 0;
+        }
+        int firstVisiblePosition = dynamicTvContent.getVerticalScrollbarPosition();
+        int top = c.getTop();
+        return -top + firstVisiblePosition * c.getHeight();
     }
 }

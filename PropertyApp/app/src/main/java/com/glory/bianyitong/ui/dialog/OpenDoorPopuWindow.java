@@ -409,6 +409,8 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
+                try {
+
                 AdvertisingInfo2 adinfo = new Gson().fromJson(s, AdvertisingInfo2.class);
 
 //                    Log.i("resultString", "adinfo.getListAdvertising()-------" + adinfo.getListAdvertising());
@@ -417,12 +419,16 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                         ad_list = adinfo.getListAdvertising();
                         if (ad_list != null && ad_list.get(0) != null && ad_list.get(0).getAdvertisingPicture() != null) {
                             String data = ad_list.get(0).getAdvertisingPicture();
-//                                ServiceDialog.setPicture(ad_list.get(0).get("advertisingPicture").toString(), iv_open_ad, null);
+//                                ServiceDialog.setPicture(ad_list.get(0).get("advertisingPicture").toString(), iv_open_ad, null);+
                             Glide.with(context).load(data).error(R.drawable.wait).placeholder(R.drawable.wait).into(iv_open_ad);
                         }
                     }
 
                 }
+                }catch (Exception e){
+
+                }
+
 
             }
 

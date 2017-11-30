@@ -75,14 +75,14 @@ public class SwitchAreaActivity extends BaseActivity {
             public void onClick(View view) {
 //                Intent intent = new Intent(AuthAreaActivity.this, AddAreaActivity.class);
 //                startActivity(intent);
-                if (userName!=null){
+//                if (userName!=null){
                     Intent intent = new Intent(SwitchAreaActivity.this, AddAreaCityActivity.class);
                     startActivity(intent);
-                }else {
-                    showShort("请填写您的真实姓名");
-                    Intent intent = new Intent(SwitchAreaActivity.this, PersonalDataActivity.class);
-                    startActivity(intent);
-                }
+//                }else {
+//                    showShort("请填写您的真实姓名");
+//                    Intent intent = new Intent(SwitchAreaActivity.this, PersonalDataActivity.class);
+//                    startActivity(intent);
+//                }
 
             }
         });

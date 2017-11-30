@@ -4,6 +4,7 @@ package com.glory.bianyitong.ui.activity;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.entity.request.RequestLocalAreaBean;
 import com.glory.bianyitong.bean.entity.request.RequestQueryAreaList;
 import com.glory.bianyitong.bean.entity.response.ResponseListCommunity;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryBuild;
 import com.glory.bianyitong.constants.Database;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
@@ -51,6 +53,7 @@ import com.yanzhenjie.permission.PermissionNo;
 import com.yanzhenjie.permission.PermissionYes;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -219,6 +222,8 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
             }
         }
     }
+
+
 
     /**
      * 搜索小区
@@ -518,9 +523,63 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
         Database.id_city = nearlist.get(position).getCityID();
         Database.str_province = nearlist.get(position).getProvinceName();
         Database.str_city = nearlist.get(position).getCityName();
-        Router.build(RouterMapping.ROUTER_ACTIVITY_AREA_ADD)
-                .with("communityID", nearlist.get(position).getCommunityID())
-                .go(AddAreaCityActivity.this);
+//        Router.build(RouterMapping.ROUTER_ACTIVITY_AREA_ADD)
+//                .with("communityID", nearlist.get(position).getCommunityID())
+//                .go(AddAreaCityActivity.this);
+        request_building(Database.communityID );
+
+    }
+    /**
+     * 获取楼宇
+     * @param communityID
+     */
+    private void request_building(int communityID) { //获取楼栋
+        try {
+            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+            Map<String,Object> maps=new HashMap<>();
+            maps.put("communityID",communityID);
+            map.put("communityBuilding",maps);
+            String json=new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(this, "","加载中", true);
+            progressDialog.setCanceledOnTouchOutside(true);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+
+                    if(TextUtil.isEmpty(s)){
+                        showShort("系统异常");
+                        return;
+                    }
+                    ResponseQueryBuild queryBuild=new Gson().fromJson(s, ResponseQueryBuild.class);
+                    if(queryBuild.getStatusCode()==1){
+                        Database.list_CommunityBuilding=queryBuild.getListCommunityBuilding();
+                        Intent intent = new Intent(AddAreaCityActivity.this, ListCommunityBuildingActivity.class);
+                        intent.putExtra("data",queryBuild);
+                        startActivity(intent);
+//                    if(queryBuild!=null)
+//                    Router.build(RouterMapping.ROUTER_ACTIVITY_AREA_LIST)
+//                            .with("list",queryBuild)
+//                            .go(AddRoomActivity.this);
+                    }else {
+                        showShort(queryBuild.getAlertMessage());
+                    }
+                    progressDialog.dismiss();
+                }
+                @Override
+                public void onError() {                progressDialog.dismiss();
+                }
+                @Override
+                public void parseError() {                progressDialog.dismiss();
+                }
+                @Override
+                public void onBefore() {}
+                @Override
+                public void onAfter() {                progressDialog.dismiss();
+                }
+            }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_BUILD,json);
+        }catch (Exception e){
+
+        }
     }
 
     @Override

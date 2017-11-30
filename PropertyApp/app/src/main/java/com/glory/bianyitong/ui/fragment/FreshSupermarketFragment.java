@@ -400,8 +400,13 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             popupWindowLeft.setBackgroundDrawable(new BitmapDrawable());
             popupWindowLeft.setFocusable(true);
             popupWindowLeft.setOutsideTouchable(true);
-            popupWindowLeft.setWidth(((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 153, getResources().getDisplayMetrics())));
-            popupWindowLeft.setHeight(((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 239, getResources().getDisplayMetrics())));
+            try {
+                popupWindowLeft.setWidth(((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 153, getResources().getDisplayMetrics())));
+                popupWindowLeft.setHeight(((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 239, getResources().getDisplayMetrics())));
+            }catch (Exception e){
+
+            }
+
             RecyclerView rec_pop = (RecyclerView) pView.findViewById(R.id.rec_pop);
             twoAdapter = new FreshPopTypeTwoAdapter(R.layout.item_pop_fresh, typeTwoData, getActivity());
             twoAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {

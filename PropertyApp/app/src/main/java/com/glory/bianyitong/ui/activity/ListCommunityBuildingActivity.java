@@ -1,7 +1,9 @@
 package com.glory.bianyitong.ui.activity;
 
 
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -12,12 +14,20 @@ import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
+import com.glory.bianyitong.bean.BaseRequestBean;
+import com.glory.bianyitong.bean.entity.request.RequestCommunityUnit;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryBuild;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryUnit;
 import com.glory.bianyitong.constants.Database;
+import com.glory.bianyitong.http.HttpURL;
+import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.util.TextUtil;
+import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -90,6 +100,7 @@ public class ListCommunityBuildingActivity extends BaseActivity {
                             Database.roomName = "";
                             Database.roomID = 0;
                             ListCommunityBuildingActivity.this.finish();
+                            request_cell(Database.buildingID);
                         }
 
                     }
@@ -99,6 +110,53 @@ public class ListCommunityBuildingActivity extends BaseActivity {
             }
         }
     }
+    private ProgressDialog progressDialog = null;
+    /**
+     * 获取单元
+     * @param buildingID
+     */
+    private void request_cell(int buildingID) { //获取单元
+        try {
 
+
+            Map<String,Object> map=new BaseRequestBean().getBaseRequest();
+            map.put("communityUnit",new RequestCommunityUnit(buildingID));
+            String json=new Gson().toJson(map);
+            progressDialog = ProgressDialog.show(this, "","加载中", true);//开锁中
+            progressDialog.setCanceledOnTouchOutside(true);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    if(TextUtil.isEmpty(s)){
+                        showShort("系统异常");
+                        return;
+                    }
+                    ResponseQueryUnit queryUnit=new Gson().fromJson(s,ResponseQueryUnit.class);
+                    if(queryUnit.getStatusCode()==1){
+                        Database.listCommunityUnit=queryUnit.getListCommunityUnit();
+                        Intent intent = new Intent(ListCommunityBuildingActivity.this, ListCommunityUnitActivity.class);
+                        startActivity(intent);
+                    }else {
+                        showShort(queryUnit.getAlertMessage());
+                    }
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onError() {                progressDialog.dismiss();
+                }
+                @Override
+                public void parseError() {                progressDialog.dismiss();
+                }
+                @Override
+                public void onBefore() {}
+                @Override
+                public void onAfter() {                progressDialog.dismiss();
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_LOCAL_AREA_QUERY_UNIT,json);
+        }catch (Exception e){
+
+        }
+    }
 
 }

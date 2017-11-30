@@ -7,12 +7,12 @@ package com.glory.bianyitong.http;
 public class HttpURL {
     //外网
 //    public static String HTTP_LOGIN = "https://www.pgagolf.cn:4432/WebApi/Post";
-//    public static String HTTP_LOGIN_AREA = "https://www.pgagolf.cn:4432";
+//    public static String HTTP_LOGIN_AREA = "https://www.pgagolf.cn:4432";app2
 
     public static String HTTP_LOGIN = "http://dev.bytsz.com.cn";
-    public static String HTTP_LOGIN_AREA = "http://dev.bytsz.com.cn";
+    public static String HTTP_LOGIN_AREA = HTTP_LOGIN;
 
-    public static String HTTP_URl = "http://dev.bytsz.com.cn";
+//    public static String HTTP_URl = "http://dev.bytsz.com.cn";
 
     //请求地址
 //    public static String HTTP_LOGIN = "http://192.168.26.114:1755/WebApi/Post";
@@ -26,7 +26,7 @@ public class HttpURL {
 //
 //    public static String HTTP_LOGIN3 = "http://ad.51maimai.com.cn/";
 
-    public static String HTTP_NEW_URL = "http://dev.bytsz.com.cn";
+    public static String HTTP_NEW_URL = HTTP_LOGIN;
 
 
     /**
