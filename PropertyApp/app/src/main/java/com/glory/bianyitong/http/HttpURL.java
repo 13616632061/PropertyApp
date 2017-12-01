@@ -238,7 +238,7 @@ public static String HTTP_POST_ORDER_QUERYCABINET="/ApiShopAddress/QueryCabinet"
     /**+
      * 消息
      */
-    public static String HTTP_POST_COUPON_SYSTEMMSG="/ApiSystemMsg/Query";//我的优惠券列表查询
+    public static String HTTP_POST_COUPON_SYSTEMMSG="/ApiSystemMsg/Query";
     /**+
      * 我的账单
      */

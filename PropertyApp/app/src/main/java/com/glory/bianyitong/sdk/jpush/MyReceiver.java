@@ -102,8 +102,8 @@ public class MyReceiver extends BroadcastReceiver {
                 switch (hashMap2.get("extMsg")) {
                     case "2":
                     case "3":
-                        ShortcutBadger.applyCount(context, Integer.parseInt(SharedUtil.getString("number"))+ 1); //for 1.1.4+
-                        SharedUtil.putString("number", Integer.parseInt(SharedUtil.getString("number"))+ 1+"");
+                            ShortcutBadger.applyCount(context, Integer.parseInt(SharedUtil.getString("number"))+ 1); //for 1.1.4+
+                            SharedUtil.putString("number", Integer.parseInt(SharedUtil.getString("number"))+ 1+"");
                         break;
                 }
             }
@@ -134,11 +134,15 @@ public class MyReceiver extends BroadcastReceiver {
                         break;
                     case "2":
                         try {
-                                Intent intent2 = new Intent(context, MessageDetailsActivity.class);
+
+                            Intent intent2 = new Intent(context, MessageDetailsActivity.class);
                             intent2.putExtra("PushID",Integer.parseInt(hashMap2.get("extId")));
                                 intent2.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 context.startActivity(intent2);
-                            ShortcutBadger.applyCount(context, Integer.parseInt(BaseActivity.mCache.getAsString("number")+1)); //for 1.1.4+
+                            if (BaseActivity.mCache.getAsString("number")!=null){
+                                ShortcutBadger.applyCount(context, Integer.parseInt(BaseActivity.mCache.getAsString("number")+1)); //for 1.1.4+
+                            }
+
                         }catch (Exception e){
                             Intent intent0= new Intent(context, WelcomeActivity.class);
                             intent0.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

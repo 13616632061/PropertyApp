@@ -200,6 +200,11 @@ public class IndexFragment extends BaseFragment {
             public void notifyVillName(String result) {
                 tvVillageName.setText(result);
             }
+
+            @Override
+            public void notifyNum() {
+                requestMessage();
+            }
         };
 
 
@@ -268,14 +273,18 @@ public class IndexFragment extends BaseFragment {
     }
 
     /**
-     * 有小区开锁更改选中小区
+     *
      *
      */
     public interface CallBack {
         /**
-         *
+         *有小区开锁更改选中小区
          */
         public void notifyVillName(String result);
+        /**
+         * 推送消息更新数量
+         */
+        public void notifyNum();
     }
 
 
@@ -1155,9 +1164,8 @@ public class IndexFragment extends BaseFragment {
                                 }
                             }
                             number=message_List.size();
-                            SharedUtil.putString("number",number+"");
 
-                            if (messageRead!=null)
+//                            if (messageRead!=null)
                             for (int i=0;i<message_List.size();i++){
                                 for (String s2:newList){
                                     Log.v("sadwoaodnao0",s2);
@@ -1175,6 +1183,7 @@ public class IndexFragment extends BaseFragment {
                                 tv_msg_number.setVisibility(View.GONE);
                                 ShortcutBadger.removeCount(context);
                             }
+                            SharedUtil.putString("number",number+"");
 
                         } else {
                             tv_msg_number.setVisibility(View.GONE);
@@ -1212,5 +1221,6 @@ public class IndexFragment extends BaseFragment {
 
         }
     }
+
 
 }
