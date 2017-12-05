@@ -64,6 +64,8 @@ public class CollectionNiActivity extends BaseActivity implements BaseQuickAdapt
     private ArrayList<ItemMenu<CollectionNiInfo.ListNeighborhoodCollectBean>> list = new ArrayList<>();
     private CollctionNiAdapter adapter;
     private int currentPageNumber=1;
+    public static CallBack callBack;
+
     @Override
     protected int getContentId() {
         return R.layout.activity_collectionni;
@@ -74,7 +76,14 @@ public class CollectionNiActivity extends BaseActivity implements BaseQuickAdapt
         super.init();
         inintTitle("收藏", true, "");//收藏
         initview();
+        callBack = new CallBack() {
+            @Override
+            public void delCollection(int position) {
+                delete(position);
+            }
 
+
+        };
     }
 
     @OnClick({R.id.iv_title_back, R.id.iv_title_text_left2})
@@ -238,9 +247,9 @@ public class CollectionNiActivity extends BaseActivity implements BaseQuickAdapt
                 intent.putExtra("pictureList", pictureList);
                 startActivity(intent);
                 break;
-            case R.id.tv_shop_delete:
-                delete(position);
-                break;
+//            case R.id.tv_shop_delete:
+//                delete(position);
+//                break;
             case R.id.llear:
                 Intent intent1=new Intent(CollectionNiActivity.this,CollectionNiDetailsActivity.class);
                 intent1.putExtra("createDate",list.get(position).getData().getCreateDate());
@@ -256,5 +265,9 @@ public class CollectionNiActivity extends BaseActivity implements BaseQuickAdapt
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
+    }
+
+    public interface CallBack{
+        public void delCollection(int position);
     }
 }

@@ -9,7 +9,7 @@ public class HttpURL {
 //    public static String HTTP_LOGIN = "https://www.pgagolf.cn:4432/WebApi/Post";
 //    public static String HTTP_LOGIN_AREA = "https://www.pgagolf.cn:4432";app2
 
-    public static String HTTP_LOGIN = "http://dev.bytsz.com.cn";
+    public static String HTTP_LOGIN = "http://app.bytsz.com.cn";
     public static String HTTP_LOGIN_AREA = HTTP_LOGIN;
 
 //    public static String HTTP_URl = "http://dev.bytsz.com.cn";

@@ -81,7 +81,6 @@ public class AddRoomActivity extends BaseActivity {
         });
         ActivityManager.addActivity(this, "addroomactivity");
         user_request();
-
         userID = RequestUtil.getuserid();
         tv_building_no.setOnClickListener(this);
         tv_cell_no.setOnClickListener(this);
@@ -89,6 +88,8 @@ public class AddRoomActivity extends BaseActivity {
         tv_submit_addarea.setOnClickListener(this);
 
     }
+
+
 
     private void user_request() { //获取个人信息
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
@@ -103,6 +104,7 @@ public class AddRoomActivity extends BaseActivity {
                     loginName = responseQueryUserById.getListUser().get(0).getLoginName();
                     if (userName!=null){
                         realName.setText(userName);
+                        realName.setSelection(realName.getText().length());
                     }
                 } else {
                 }

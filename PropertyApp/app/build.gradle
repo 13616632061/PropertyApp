@@ -16,8 +16,8 @@ android {
         applicationId "com.glory.bianyitong"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 39
-        versionName "1.0.39"
+        versionCode 40
+        versionName "1.0.40"
         vectorDrawables.useSupportLibrary = true
 
         ndk {

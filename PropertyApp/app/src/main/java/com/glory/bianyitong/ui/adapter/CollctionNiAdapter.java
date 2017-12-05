@@ -1,19 +1,24 @@
 package com.glory.bianyitong.ui.adapter;
 
 import android.content.Context;
+import android.support.annotation.IntRange;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AbsListView;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.bean.CollectionNiInfo;
+import com.glory.bianyitong.ui.activity.CollectionNiActivity;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 
 import java.util.List;
@@ -23,20 +28,23 @@ import java.util.List;
  */
 public class CollctionNiAdapter extends BaseQuickAdapter<ItemMenu<CollectionNiInfo.ListNeighborhoodCollectBean>,BaseViewHolder> {
     Context context;
+    private HorizontalScrollView hor_scrollview;
+
     public CollctionNiAdapter(Context context,@LayoutRes int layoutResId, @Nullable List<ItemMenu<CollectionNiInfo.ListNeighborhoodCollectBean>> data) {
         super(layoutResId, data);
         this.context=context;
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, ItemMenu<CollectionNiInfo.ListNeighborhoodCollectBean> item) {
+    protected void convert(final BaseViewHolder helper, ItemMenu<CollectionNiInfo.ListNeighborhoodCollectBean> item) {
+        TextView tv_shop_delete = helper.getView(R.id.tv_shop_delete);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         int width = wm.getDefaultDisplay().getWidth();
         LinearLayout llear=helper.getView(R.id.llear);
         ViewGroup.LayoutParams layoutParams = llear.getLayoutParams();
         layoutParams.width=width;
         llear.setLayoutParams(layoutParams);
-        helper.addOnClickListener(R.id.tv_shop_delete);
+//        helper.addOnClickListener(R.id.tv_shop_delete);
         helper.addOnClickListener(R.id.llear);
         ImageView imageView=helper.getView(R.id.dynamic_user_head);
         Glide.with(context).load(item.getData().getCollectUserPicture()).error(R.drawable.wait).placeholder(R.drawable.wait).into(imageView);
@@ -54,7 +62,18 @@ public class CollctionNiAdapter extends BaseQuickAdapter<ItemMenu<CollectionNiIn
                 Glide.with(context).load(item.getData().getCollectContent()).error(R.drawable.wait).placeholder(R.drawable.wait).into(imageView2);
             }
         }
+        tv_shop_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hor_scrollview = helper.getView(R.id.hor_scrollview);
 
+                hor_scrollview.scrollTo(0,0);
+
+                CollectionNiActivity.callBack.delCollection(helper.getPosition());
+            }
+        });
         helper.addOnClickListener(R.id.collection_pic);
     }
+
+
 }
