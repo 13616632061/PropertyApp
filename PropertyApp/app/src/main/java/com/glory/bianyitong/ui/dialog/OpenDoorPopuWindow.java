@@ -348,8 +348,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
     }
 
     private void OpenLock(int lockID) { //开锁
-        Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);//获取系统振动
-        vibrator.vibrate(500);
+
 
         final Map<String,Object> map=new BaseRequestBean().getBaseRequest();
         map.put("lockID",lockID);
@@ -362,6 +361,8 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                 ResponseOpenLock bean=new Gson().fromJson(s,ResponseOpenLock.class);
                 if(bean.getStatusCode()==1) {
                     Database.accessToken = bean.getAccessToken();
+                    Vibrator vibrator = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);//获取系统振动
+                    vibrator.vibrate(500);
                 }
                 if (bean.getAccessToken()!=null&&!bean.getAccessToken().equals(""))
                 Database.accessToken = bean.getAccessToken();
