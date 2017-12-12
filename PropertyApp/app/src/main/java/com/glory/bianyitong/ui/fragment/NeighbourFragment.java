@@ -121,17 +121,22 @@ public class NeighbourFragment extends BaseFragment {
             }
         });
 
-        base_pullToRefreshView.setOnHeaderRefreshListener(new NewPullToRefreshView.OnHeaderRefreshListener() {
-            @Override
-            public void onHeaderRefresh(NewPullToRefreshView view) {
-                if (Database.list_neighbour != null) {
-                    getGoodsListStart = true;
-                    index_page = 0;//重置index_page
-                    index_page++;
-                    request(index_page, true,false);//刷新
+        try {
+            base_pullToRefreshView.setOnHeaderRefreshListener(new NewPullToRefreshView.OnHeaderRefreshListener() {
+                @Override
+                public void onHeaderRefresh(NewPullToRefreshView view) {
+                    if (Database.list_neighbour != null) {
+                        getGoodsListStart = true;
+                        index_page = 0;//重置index_page
+                        index_page++;
+                        request(index_page, true,false);//刷新
+                    }
                 }
-            }
-        });
+            });
+        }catch (Exception e){
+
+        }
+
 
         if (Database.list_neighbour != null && Database.list_neighbour.size() > 0) {
             mMainAdapter = new NeighbourAdapter(context, Database.list_neighbour, "near");

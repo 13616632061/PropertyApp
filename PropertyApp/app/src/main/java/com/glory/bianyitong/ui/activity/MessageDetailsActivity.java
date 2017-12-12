@@ -89,7 +89,11 @@ public class MessageDetailsActivity extends BaseActivity {
         }
         tv_ans_title.setText(messageTitle);
         tv_ans_content.setText(messageContext);
-        tv_ans_time.setText(messageTime.substring(0,10));
+        if (messageTime.length()>10){
+            tv_ans_time.setText(messageTime.substring(0,10));
+        }else {
+            tv_ans_time.setText(messageTime);
+        }
         String msg = getIntent().getStringExtra("msg");
         if (msg!=null){
             tv_ans_content.setText(msg);
@@ -133,7 +137,11 @@ public class MessageDetailsActivity extends BaseActivity {
                             tv_ans_content.setText(list.get(0).get("messageContext").toString());
                         }
                         if (list.get(0) != null && list.get(0).get("messageTime") != null) {
-                            tv_ans_time.setText(list.get(0).get("messageTime").toString().substring(0,10));
+                            if (list.get(0).get("messageTime").toString().length()>10){
+                                tv_ans_time.setText(list.get(0).get("messageTime").toString().substring(0,10));
+                            }else {
+                                tv_ans_time.setText(list.get(0).get("messageTime").toString());
+                            }
                         }
                     }
                 }

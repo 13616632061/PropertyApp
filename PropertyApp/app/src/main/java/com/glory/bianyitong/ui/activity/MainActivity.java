@@ -693,6 +693,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             //如果文件夹不存在，创建一个（只能在应用包下面的目录，其他目录需要申请权限 OWL）
             if (!dir.exists()) {
                 Log.d("FileBoyMap", "mythou copyImage2Data----->dir not exist");
+                dir.mkdirs();//创建文件夹
             }
             boolean result = dir.mkdirs();
             Log.d("FileBoyMap", "dir.mkdirs()----->result = " + result);

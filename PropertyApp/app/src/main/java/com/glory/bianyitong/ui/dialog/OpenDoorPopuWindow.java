@@ -54,6 +54,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -289,7 +291,12 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
                                 ll_open_door_lay.setVisibility(View.VISIBLE);
                                 lay_door2.setVisibility(View.GONE);
                                 if (locklist != null && locklist.get(0) != null && locklist.get(0).getLockName() != null) {
-                                    tv_door_name1.setText(locklist.get(0).getLockName());
+//                                    tv_door_name1.setText(locklist.get(0).getLockName());
+                                    try {
+                                        tv_door_name1.setText(cutByteByU8(locklist.get(0).getLockName(),14));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                                 tv_key_manager.setVisibility(View.VISIBLE);
                             } else if (locklist != null && locklist.size() > 0 && locklist.size() == 2) {
@@ -300,13 +307,23 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
 //                                        tv_door_name1.setText(locklist.get(0).get("lockName").toString());
 //                                    }
                                 if (locklist != null && locklist.get(0) != null && locklist.get(0).getLockName() != null) {
-                                    tv_door_name1.setText(locklist.get(0).getLockName());
+//                                    tv_door_name1.setText(locklist.get(0).getLockName());
+                                    try {
+                                        tv_door_name1.setText(cutByteByU8(locklist.get(0).getLockName(),14));
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
                                 }
 //                                    if (locklist != null && locklist.get(1) != null && locklist.get(1).get("lockName") != null) {
 //                                        tv_door_name2.setText(locklist.get(1).get("lockName").toString());
 //                                    }
                                 if (locklist != null && locklist.get(1) != null && locklist.get(1).getLockName() != null) {
-                                    tv_door_name2.setText(locklist.get(1).getLockName());
+//                                    tv_door_name2.setText(locklist.get(1).getLockName());
+                                    try {
+                                        tv_door_name2.setText(cutByteByU8(locklist.get(0).getLockName(),14));
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
                                 }
                                 tv_key_manager.setVisibility(View.VISIBLE);
                             } else if (locklist != null && locklist.size() > 0 && locklist.size() >= 3) {
@@ -460,4 +477,30 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
         int res = context.checkCallingOrSelfPermission(permission);
         return (res == PackageManager.PERMISSION_GRANTED);
     }
+
+    public static String cutByteByU8(String s1, int j) throws IOException {
+
+        byte []buf = s1.getBytes("GBK");
+        String s =null;
+
+        if (buf.length>=j){
+            int count = 0;
+            int i =0;
+            for(i = j-1 ; i >= 0 ; i--){
+                if(buf[i]<0)
+                    count++;
+                else
+                    break;
+            }
+            //因為UTF-8三個字節表示一個漢字
+            if(count%2== 0)
+                s =new String(buf,0,j,"GBK");
+            else if(count%2 == 1)
+                s= new String(buf,0,j-1,"GBK");
+        }else {
+            s=s1;
+        }
+        return s;
+    }
+
 }

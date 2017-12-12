@@ -45,8 +45,8 @@ public class CommunityAnnouceAdapter extends BaseQuickAdapter<ItemMenu<listCommu
     protected void convert(BaseViewHolder helper, ItemMenu<listCommunityBulletinInfo.ListCommunityBulletinBean> item) {
         ImageView imageView= helper.getView(R.id.item_ca_msg_read);
         helper.setText(R.id.item_ca_msg_tv_title, item.getData().getBulletinTittle());
-        if (item.getData().getBulletinDatetime() != null) { //时间
-            String time = item.getData().getBulletinDatetime().substring(0, 10);
+        if (item.getData().getCreateDate() != null&&item.getData().getCreateDate().length()>=10) { //时间
+            String time = item.getData().getCreateDate().substring(0, 10);
             helper.setText(R.id.item_ca_msg_tv_date, time);
         } else {
             helper.setText(R.id.item_ca_msg_tv_date, "");

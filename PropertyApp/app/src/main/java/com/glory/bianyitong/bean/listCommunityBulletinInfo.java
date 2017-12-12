@@ -38,6 +38,16 @@ public class listCommunityBulletinInfo extends ResponseBaseInfo{
         private String bulletinDeadline;   //公告截止日期
         private Object endBulletinDeadline;   //
         private String bulletinContent;   //公告内容
+        private String createDate;//公告创建日期
+
+
+        public String getCreateDate() {
+            return createDate;
+        }
+
+        public void setCreateDate(String createDate) {
+            this.createDate = createDate;
+        }
 
         public int getBulletinID() {
             return bulletinID;

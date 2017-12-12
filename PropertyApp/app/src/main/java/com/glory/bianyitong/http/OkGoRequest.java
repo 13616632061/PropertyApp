@@ -147,7 +147,7 @@ public class OkGoRequest {
     }
 
     public void getEntityData(String url, Map<String,String> map) {
-        JSONObject request=new JSONObject(map);
+        final JSONObject request=new JSONObject(map);
 
         OkGo.post(BuildConfig.DEBUG?HttpURL.HTTP_NEW_URL+url:HttpURL.HTTP_LOGIN+url)
                 .tag(this)
@@ -157,7 +157,7 @@ public class OkGoRequest {
                     public void onSuccess(String s, Call call, Response response) {
                         LogUtils.d("OkGoGo","---------------------start----------------------");
                         LogUtils.d("OkGoGo","URL:   "+response.request().url());
-//                        LogUtils.d("OkGoGo","params:    "+request);
+                        LogUtils.d("OkGoGo","params:    "+request);
                         LogUtils.d("OkGoGo","response:    "+s);
                         LogUtils.d("OkGoGo","----------------------end-----------------------");
 

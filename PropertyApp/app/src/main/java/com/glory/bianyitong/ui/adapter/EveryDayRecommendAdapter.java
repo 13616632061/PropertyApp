@@ -94,15 +94,15 @@ public class EveryDayRecommendAdapter extends BaseAdapter {
                 bulletinContent = qiList.get(position).getBulletinContent();
             }
             holder.item_ca_msg_tv_title.setText(bulletinTittle);
-            holder.view_item_commutiy_line.setVisibility(View.GONE);
+//            holder.view_item_commutiy_line.setVisibility(View.GONE);
 //            if (qiList.get(position).get("bulletinDatetime") != null) { //时间
 //                String time = qiList.get(position).get("bulletinDatetime").toString().substring(0, 10);
 //                holder.item_ca_msg_tv_date.setText(time);
 //            } else {
 //                holder.item_ca_msg_tv_date.setText("");
 //            }
-            if (qiList.get(position).getBulletinDatetime() != null) { //时间
-                String time = qiList.get(position).getBulletinDatetime().substring(0, 10);
+            if (qiList.get(position).getCreateDate() != null&&qiList.get(position).getCreateDate().length()>=10) { //时间
+                String time = qiList.get(position).getCreateDate().substring(0, 10);
                 holder.item_ca_msg_tv_date.setText(time);
             } else {
                 holder.item_ca_msg_tv_date.setText("");

@@ -133,6 +133,7 @@ public class IndexFragment extends BaseFragment {
         context = getActivity();
         View view = inflater.inflate(R.layout.fg_index, container, false);
         ButterKnife.bind(this, view);
+
         return view;
     }
 

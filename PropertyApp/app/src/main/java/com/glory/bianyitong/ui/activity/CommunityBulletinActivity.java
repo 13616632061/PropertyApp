@@ -237,8 +237,8 @@ public class CommunityBulletinActivity extends BaseActivity implements BaseQuick
                         intent.putExtra("bulletinTittle", "");
                     }
 
-                    if (list.get(position).getData().getBulletinDatetime() != null) {
-                        intent.putExtra("bulletinDatetime", list.get(position).getData().getBulletinDatetime().substring(0, 10));
+                    if (list.get(position).getData().getCreateDate() != null&&list.get(position).getData().getCreateDate().length()>=10 ) {
+                        intent.putExtra("bulletinDatetime", list.get(position).getData().getCreateDate().substring(0, 10));
                     } else {
                         intent.putExtra("bulletinDatetime", "");
                     }

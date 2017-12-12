@@ -133,8 +133,8 @@ public class BulletinDetailsActivity extends BaseActivity {
                         if (list.get(0) != null && list.get(0).get("communityName") != null) {
                             tv_ans_auth.setText(list.get(0).get("communityName").toString());
                         }
-                        if (list.get(0) != null && list.get(0).get("bulletinDatetime") != null) {
-                            String time=list.get(0).get("bulletinDatetime").toString();
+                        if (list.get(0) != null && list.get(0).get("createDate") != null) {
+                            String time=list.get(0).get("createDate").toString();
                             if(!TextUtil.isEmpty(time)){
                                 tv_ans_time.setText( DateUtil.format(DateUtil.parse(time),DateUtil.DEFAULT_PATTERN));
                             }else {
