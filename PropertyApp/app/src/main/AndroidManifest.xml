@@ -164,6 +164,13 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
+        <!--我的积分-->
+        <activity
+            android:name="com.glory.bianyitong.ui.activity.MyPonintsActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <!--动态正文(详情)-->
         <activity
             android:name="com.glory.bianyitong.ui.activity.DynamicDetailsActivity"

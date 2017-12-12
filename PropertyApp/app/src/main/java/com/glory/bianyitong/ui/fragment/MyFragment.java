@@ -20,7 +20,6 @@ import com.chenenyu.router.Router;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.BaseRequestBean;
-import com.glory.bianyitong.bean.CollectionNiInfo;
 import com.glory.bianyitong.bean.OrderNumberInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
 import com.glory.bianyitong.bean.entity.response.ResponseShare;
@@ -32,6 +31,7 @@ import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.share.ShareUtil;
 import com.glory.bianyitong.ui.activity.CollectionNiActivity;
 import com.glory.bianyitong.ui.activity.MyBillActivity;
+import com.glory.bianyitong.ui.activity.MyPonintsActivity;
 import com.glory.bianyitong.ui.activity.shop.RefundMoneyActivity;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.ui.dialog.ShareSdkDialog;
@@ -118,6 +118,8 @@ public class MyFragment extends BaseFragment {
     TextView residentialQuarters;
     @BindView(R.id.fg_tv_my_collection)
     TextView fgTvMyCollection;
+    @BindView(R.id.my_points)
+    TextView myPoints;
     private View view_my;
     private CircleImageView headPortraitCiv; //个人信息
     private String customerPhoto = "";
@@ -183,7 +185,7 @@ public class MyFragment extends BaseFragment {
         tvCoupon.setOnClickListener(this);
         tvFavoriteProduct.setOnClickListener(this);
         residentialQuarters.setOnClickListener(this);
-
+        myPoints.setOnClickListener(this);
         tvRefundSale.setOnClickListener(this);
         getShareInfo();
     }
@@ -322,6 +324,9 @@ public class MyFragment extends BaseFragment {
                     break;
                 case R.id.fg_tv_my_collection:
                     startActivity(new Intent(getActivity(), CollectionNiActivity.class));
+                    break;
+                case R.id.my_points://我的积分
+                    startActivity(new Intent(getActivity(), MyPonintsActivity.class));
                     break;
             }
         }

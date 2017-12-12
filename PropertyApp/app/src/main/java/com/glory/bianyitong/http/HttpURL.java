@@ -250,4 +250,9 @@ public static String HTTP_POST_ORDER_QUERYCABINET="/ApiShopAddress/QueryCabinet"
      * 查看版本号
      */
     public static String HTTP_POST_APIVERSION_QUERY="/ApiVersion/Query";//查看版本号
+    /**+
+     * 积分
+     */
+    public static String HTTP_POST_APIUSERPOINT_QUERY="/ApiUserPoint/Query";//几分数量
+    public static String HTTP_POST_APIUSERPOINTDETAIL_QUERY="/ApiUserPointDetail/Query";//积分列表
 }

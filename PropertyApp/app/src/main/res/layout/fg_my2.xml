@@ -426,6 +426,19 @@
 
                 <include layout="@layout/base_view_line"></include>
                 <TextView
+                    android:id="@+id/my_points"
+                    style="@style/my_base_text_style"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginRight="15dp"
+                    android:drawableLeft="@drawable/ponints"
+                    android:drawablePadding="25dp"
+                    android:drawableRight="@drawable/ic_gray_next"
+                    android:gravity="center_vertical"
+                    android:text="@string/my_points" />
+
+                <include layout="@layout/base_view_line"></include>
+                <TextView
                     android:visibility="gone"
                     android:id="@+id/tv_award_manager"
                     style="@style/my_base_text_style"

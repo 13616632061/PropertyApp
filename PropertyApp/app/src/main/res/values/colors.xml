@@ -71,6 +71,7 @@
     <color name="text_color_title">#1f1f1f</color>
     <!--照片-->
     <color name="photo_background_color">#FF424242</color>
+    <color name="d8_line">#d8d8d8</color>
     <color name="album_tip_background_color">#66000000</color>
     <color name="touming">#00000000</color>
     <color name="album_text_background_color">#FFFFFFFF</color>
@@ -88,6 +89,12 @@
     <color name="hint_gray_color">#BCBCBC</color>
     <!--提交 黄色 颜色-->
     <color name="submit_yellow_color">#FCDB12</color>
+    <!--积分 黄色-->
+    <color name="points_yellow_color">#fad852</color>
+    <!--积分 内圈 黄色-->
+    <color name="points_yellow_ffde5c">#ffde5c</color>
+    <!--积分 外圈 黄色-->
+    <color name="points_yellow_ccffe376">#ccffe376</color>
         <!--橙色-->
     <color name="color_orange">#FF5722</color>
     <!--蓝色 电话-->
