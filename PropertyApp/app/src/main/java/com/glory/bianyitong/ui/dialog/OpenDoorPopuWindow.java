@@ -100,7 +100,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
         // 设置SelectPicPopupWindow弹出窗体的宽
         this.setWidth(WindowManager.LayoutParams.MATCH_PARENT);
         // 设置SelectPicPopupWindow弹出窗体的高
-        this.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+        this.setHeight(WindowManager.LayoutParams.MATCH_PARENT);
         // 设置SelectPicPopupWindow弹出窗体可点击
         this.setFocusable(true);
         // 设置SelectPicPopupWindow弹出窗体动画效果

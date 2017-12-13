@@ -72,7 +72,7 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
         getMyPoint();
         initview();
     }
-    @OnClick({R.id.iv_title_back})
+    @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2})
     void onClickBtn(View view) {
         switch (view.getId()) {
             case R.id.iv_title_text_left2:
@@ -85,7 +85,7 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerview.setLayoutManager(linearLayoutManager);
-        myPonintsAdapter = new MyPonintsAdapter(this,R.layout.item_collection, list);
+        myPonintsAdapter = new MyPonintsAdapter(this,R.layout.view_item_myponintslist, list);
         recyclerview.setAdapter(myPonintsAdapter);
         myPonintsAdapter.setOnLoadMoreListener(this,recyclerview);
         onRefrush();
@@ -168,7 +168,7 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
                 public void onSuccess(String s) {
                     MyPointsInfo bean = new Gson().fromJson(s, MyPointsInfo.class);
                     if (bean.getStatusCode() == 1) {
-                        points.setText(bean.getUserPoint().getRealtimePoints());
+                        points.setText(bean.getUserPoint().getRealtimePoints()+"");
                     }else{
                         ToastUtils.showToast(getApplicationContext(),bean.getAlertMessage());
                     }

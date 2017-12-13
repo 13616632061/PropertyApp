@@ -146,10 +146,10 @@ public class KeyManagerActivity extends BaseActivity {
         left_return_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isChange) {
-                } else {
+//                if (isChange) {
+//                } else {
                     KeyManagerActivity.this.finish();
-                }
+//                }
             }
         });
         iv_title_text_right.setOnClickListener(new View.OnClickListener() {//完成
@@ -182,6 +182,7 @@ public class KeyManagerActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (isChange)
         save();
     }
 
