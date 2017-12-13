@@ -310,6 +310,8 @@ public class IndexFragment extends BaseFragment {
                                 if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
                                     if (Database.my_community_List.get(i).getApprovalStatus()==1){
                                         Database.my_community = Database.my_community_List.get(i);
+                                        mCache.put(Constant.community, new Gson().toJson(Database.my_community)); //缓存所选的社区
+                                        ad_request();
                                     }
                                 }
                             }
