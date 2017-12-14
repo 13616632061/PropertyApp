@@ -145,7 +145,6 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
 //            list.add(map);
 //        }
         request();
-        ad_request();
 
         setOnDismissListener(new OnDismissListener() {
             @Override
@@ -233,7 +232,11 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
 //                    door_name.setText(list.get(i).get("lockName").toString());
 //                }
                 if (list != null && list.get(i).getLockName() != null && list.get(i).getLockName().length() != 0) {
-                    door_name.setText(list.get(i).getLockName());
+                    try {
+                        door_name.setText(cutByteByU8(list.get(i).getLockName(),14));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 final int j = i;
@@ -356,6 +359,7 @@ private List<UserLockInfo.ListUserLockMappingBean> locklist;
 
                 @Override
                 public void onAfter() {
+                    ad_request();
                     progressDialog.dismiss();
                 }
             }).getEntityData(context, "/ApiUserKey/Query", json);

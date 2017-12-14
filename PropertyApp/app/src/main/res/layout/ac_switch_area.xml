@@ -51,12 +51,17 @@
             android:paddingRight="12dp" />
     </RelativeLayout>
 
-    <include layout="@layout/base_view_line" />
-
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white">
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+    <include layout="@layout/base_view_line" />
+
 
         <LinearLayout
             android:id="@+id/ll_area_list"
@@ -64,7 +69,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
         </LinearLayout>
-    </ScrollView>
     <include layout="@layout/base_view_line" />
 
     <LinearLayout
@@ -90,4 +94,6 @@
 
         <include layout="@layout/base_view_line"></include>
     </LinearLayout>
+    </LinearLayout>
+    </ScrollView>
 </LinearLayout>

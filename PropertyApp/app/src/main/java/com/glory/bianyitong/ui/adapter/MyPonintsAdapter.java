@@ -15,6 +15,9 @@ import com.glory.bianyitong.bean.MyPointsListInfo;
 import com.glory.bianyitong.bean.RefundInfo;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,12 +34,26 @@ public class MyPonintsAdapter extends BaseQuickAdapter<ItemMenu<MyPointsListInfo
     @Override
     protected void convert(BaseViewHolder helper, ItemMenu<MyPointsListInfo.ListUserPointDetailBean> item) {
         helper.setText(R.id.item_ca_msg_tv_title,item.getData().getChangeReason());
-        helper.setText(R.id.item_ca_msg_tv_date,item.getData().getCreateDate().replace("T"," "));
+        helper.setText(R.id.item_ca_msg_tv_date,strToDateLong(item.getData().getCreateDate().replace("T"," ")));
         if (item.getData().getChangeType()==10){
             helper.setTextColor(R.id.ponints_num,context.getResources().getColor(R.color.points_yellow_color));
         }else if (item.getData().getChangeType()==20){
             helper.setTextColor(R.id.ponints_num,context.getResources().getColor(R.color.color_gray_time));
         }
         helper.setText(R.id.ponints_num,item.getData().getChangePointsString());
+    }
+
+
+    /**
+     * 将长时间格式字符串转换为时间 yyyy-MM-dd HH:mm:ss
+     *
+     * @param strDate
+     * @return
+     */
+    public static String  strToDateLong(String strDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        ParsePosition pos = new ParsePosition(0);
+        Date strtodate = formatter.parse(strDate, pos);
+        return formatter.format(strtodate);
     }
 }

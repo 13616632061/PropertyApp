@@ -14,16 +14,40 @@
         android:layout_width="match_parent"
         android:layout_height="185dp"
         android:background="@color/points_yellow_color">
-        <TextView
-            android:id="@+id/points"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
+        <RelativeLayout
+            android:layout_width="140dp"
+            android:layout_height="140dp"
             android:background="@drawable/mypoints"
             android:layout_centerInParent="true"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="30dp"
-            android:text=""/>
+            android:orientation="horizontal"
+            >
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                >
+                <TextView
+                    android:id="@+id/points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="33sp"
+                    android:text="0"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:textColor="@color/white"
+                    android:textSize="13sp"
+                    android:layout_toRightOf="@+id/points"
+                    android:paddingTop="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="3dp"
+                    android:text="分"/>
+            </RelativeLayout>
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 
@@ -34,7 +58,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -63,7 +87,7 @@
     </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:id="@+id/recyclerview"
             android:background="@color/bggray"
             android:layout_width="match_parent"
