@@ -98,6 +98,7 @@ public class OkGoRequest {
                             if(bean.getStatusCode()==-105){
                                 Database.accessToken=null;
                                 Database.USER_MAP=null;
+
                             }
                             if (onOkGoUtilListener != null) {
                                 onOkGoUtilListener.onSuccess(s);

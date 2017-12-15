@@ -87,6 +87,7 @@ public class AddRoomActivity extends BaseActivity {
         tv_room_no.setOnClickListener(this);
         tv_submit_addarea.setOnClickListener(this);
 
+
     }
 
 

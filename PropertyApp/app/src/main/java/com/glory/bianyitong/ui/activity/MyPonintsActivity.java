@@ -1,11 +1,13 @@
 package com.glory.bianyitong.ui.activity;
 
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -16,18 +18,13 @@ import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.MyPointsInfo;
 import com.glory.bianyitong.bean.MyPointsListInfo;
-import com.glory.bianyitong.bean.RefundInfo;
 import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
-import com.glory.bianyitong.ui.adapter.CollectionAdapter;
 import com.glory.bianyitong.ui.adapter.MyPonintsAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.google.gson.Gson;
 
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -52,15 +49,20 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
     TextView titleAcText;
     @BindView(R.id.iv_title_text_right)
     TextView ivTitleTextRight;
-    @BindView(R.id.points)
-    TextView points;
+
     @BindView(R.id.recyclerview)
     RecyclerView recyclerview;
+    @BindView(R.id.mingxi)
+    LinearLayout mingxi;
 
 
-    private List<ItemMenu<MyPointsListInfo.ListUserPointDetailBean>> list=new ArrayList<>();
-    private int currentPageNumber=1;
+    private List<ItemMenu<MyPointsListInfo.ListUserPointDetailBean>> list = new ArrayList<>();
+    private int currentPageNumber = 1;
     private MyPonintsAdapter myPonintsAdapter;
+    private TextView points;
+    private LinearLayoutManager linearLayoutManager;
+    private View headView;
+    private View headview2;
 
     @Override
     protected int getContentId() {
@@ -75,7 +77,8 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
         getMyPoint();
         initview();
     }
-    @OnClick({R.id.iv_title_back,R.id.iv_title_text_left2})
+
+    @OnClick({R.id.iv_title_back, R.id.iv_title_text_left2})
     void onClickBtn(View view) {
         switch (view.getId()) {
             case R.id.iv_title_text_left2:
@@ -84,15 +87,49 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
                 break;
         }
     }
+
     private void initview() {
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerview.setLayoutManager(linearLayoutManager);
-        myPonintsAdapter = new MyPonintsAdapter(this,R.layout.view_item_myponintslist, list);
+        myPonintsAdapter = new MyPonintsAdapter(this, R.layout.view_item_myponintslist, list);
         recyclerview.setAdapter(myPonintsAdapter);
-        myPonintsAdapter.setOnLoadMoreListener(this,recyclerview);
+        myPonintsAdapter.setOnLoadMoreListener(this, recyclerview);
+        headView = getLayoutInflater().inflate(R.layout.head_mypoints, (ViewGroup) recyclerview.getParent(), false);
+        points = (TextView) headView.findViewById(R.id.points);
+        myPonintsAdapter.addHeaderView(headView);
+        headview2 = getLayoutInflater().inflate(R.layout.head_mypoints2, (ViewGroup) recyclerview.getParent(), false);
+        myPonintsAdapter.addHeaderView(headview2);
         onRefrush();
+
+        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (getScollYDistance()>=headView.getHeight()){
+                    mingxi.setVisibility(View.VISIBLE);
+                }else {
+                    mingxi.setVisibility(View.GONE);
+                }
+
+            }
+        });
     }
+    public int getScollYDistance() {
+        int position = linearLayoutManager.findFirstVisibleItemPosition();
+        View firstVisiableChildView = linearLayoutManager.findViewByPosition(position);
+        int itemHeight = firstVisiableChildView.getHeight();
+        if (position>=1){
+            return headView.getHeight()+headview2.getHeight()+(position-1) * itemHeight - firstVisiableChildView.getTop();
+        }else {
+            return (position) * itemHeight - firstVisiableChildView.getTop();
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,7 +142,7 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
 //        collectionAdapter.notifyDataSetChanged();
         try {
             Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-            map.put("currentPageNumber",currentPageNumber);
+            map.put("currentPageNumber", currentPageNumber);
             String json = new Gson().toJson(map);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
@@ -117,29 +154,29 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
                         }
                         myPonintsAdapter.notifyDataSetChanged();
 
-                        if(currentPageNumber<bean.getPageRowNumber()){
+                        if (currentPageNumber < bean.getPageRowNumber()) {
                             myPonintsAdapter.setEnableLoadMore(true);
                             myPonintsAdapter.loadMoreComplete();
-                        }else {
+                        } else {
                             myPonintsAdapter.setEnableLoadMore(false);
                             myPonintsAdapter.loadMoreEnd();
                         }
-                    }else if(bean.getStatusCode()==2){
-                        if(list.size()<=0)
+                    } else if (bean.getStatusCode() == 2) {
+                        if (list.size() <= 0)
                             myPonintsAdapter.setEmptyView(R.layout.layout_empty_wushuju);
                         else {
                             myPonintsAdapter.loadMoreEnd();
                         }
 
 //                    ToastUtils.showToast(getActivity(),entity.getAlertMessage());
-                    }else{
-                        ToastUtils.showToast(getApplicationContext(),bean.getAlertMessage());
+                    } else {
+                        ToastUtils.showToast(getApplicationContext(), bean.getAlertMessage());
                     }
                 }
 
                 @Override
                 public void onError() {
-                    ToastUtils.showToast(getApplicationContext(),getString(R.string.system_error));
+                    ToastUtils.showToast(getApplicationContext(), getString(R.string.system_error));
                 }
 
                 @Override
@@ -157,7 +194,7 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
 
                 }
             }).getEntityData(this, HttpURL.HTTP_POST_APIUSERPOINTDETAIL_QUERY, json);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
@@ -171,15 +208,15 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
                 public void onSuccess(String s) {
                     MyPointsInfo bean = new Gson().fromJson(s, MyPointsInfo.class);
                     if (bean.getStatusCode() == 1) {
-                        points.setText(bean.getUserPoint().getRealtimePoints()+"");
-                    }else{
-                        ToastUtils.showToast(getApplicationContext(),bean.getAlertMessage());
+                        points.setText(bean.getUserPoint().getRealtimePoints() + "");
+                    } else {
+                        ToastUtils.showToast(getApplicationContext(), bean.getAlertMessage());
                     }
                 }
 
                 @Override
                 public void onError() {
-                    ToastUtils.showToast(getApplicationContext(),getString(R.string.system_error));
+                    ToastUtils.showToast(getApplicationContext(), getString(R.string.system_error));
                 }
 
                 @Override
@@ -197,7 +234,7 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
 
                 }
             }).getEntityData(this, HttpURL.HTTP_POST_APIUSERPOINT_QUERY, json);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
