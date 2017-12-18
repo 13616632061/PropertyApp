@@ -742,7 +742,6 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             @Override
             public void onError() {
                 freshListFrRefresh.setRefreshing(false);
-                showShort("系统异常");
             }
 
             @Override
@@ -977,7 +976,6 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             @Override
             public void onSuccess(String s) {
                 if (TextUtil.isEmpty(s)) {
-                    showShort("系统异常");
                     return;
                 }
                 OrderNumberInfo share = new Gson().fromJson(s, OrderNumberInfo.class);

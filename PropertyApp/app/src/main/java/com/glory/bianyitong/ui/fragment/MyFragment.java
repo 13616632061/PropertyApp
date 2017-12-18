@@ -437,7 +437,6 @@ public class MyFragment extends BaseFragment {
                 @Override
                 public void onSuccess(String s) {
                     if (TextUtil.isEmpty(s)) {
-                        showShort("系统异常");
                         return;
                     }
                     ResponseShare share = new Gson().fromJson(s, ResponseShare.class);

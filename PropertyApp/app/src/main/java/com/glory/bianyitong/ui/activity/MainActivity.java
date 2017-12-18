@@ -194,7 +194,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         Intent intent=new Intent(this,MyReceiver.class);
         startService(intent);
-
+        if (getIntent().getIntExtra("tabId", -1) != -1) {
+            showFragment(getIntent().getIntExtra("tabId", -1));
+        }
         //显示标题  内容的了
         ExampleUtil.customPushNotification(this, 1,
                 R.layout.customer_notitfication_layout_one,
@@ -279,9 +281,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             });
         }
-        if (getIntent().getIntExtra("tabId", -1) != -1) {
-            showFragment(getIntent().getIntExtra("tabId", -1));
-        }
+
         super.onResume();
         if (ActivityUtils.isNetworkAvailable()) {
 //            Toast.makeText(getApplicationContext(), "当前有可用网络！", Toast.LENGTH_LONG).show();

@@ -275,7 +275,7 @@ public class NeighbourFragment extends BaseFragment {
 
             @Override
             public void onError() {
-                base_pullToRefreshView.onHeaderRefreshComplete();
+//                base_pullToRefreshView.onHeaderRefreshComplete();
                 getGoodsListStart = false;
                 if (progressDialog!=null){
                     progressDialog.dismiss();
@@ -290,7 +290,7 @@ public class NeighbourFragment extends BaseFragment {
                     progressDialog.dismiss();
 
                 }
-                base_pullToRefreshView.onHeaderRefreshComplete();
+//                base_pullToRefreshView.onHeaderRefreshComplete();
             }
 
             @Override

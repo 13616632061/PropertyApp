@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.chenenyu.router.Router;
 import com.glory.bianyitong.BuildConfig;
@@ -54,7 +55,7 @@ public class OkGoRequest {
     }
 
 
-    public void getEntityData(Context context,String url, String request) {
+    public void getEntityData(final Context context, String url, String request) {
         try {
 
 
@@ -111,7 +112,7 @@ public class OkGoRequest {
                     public void onError(Call call, Response response, Exception e) {
                         Log.i("resultString", "请求错误------");
 //                        com.github.lazylibrary.util.ToastUtils.showToast(Database.currentActivity, "未能连接到服务器");
-
+                        ToastUtils.showLong(context,"网络连接超时，请检查您的网络或稍后再试");
                         if (onOkGoUtilListener != null) {
                             onOkGoUtilListener.onError();
                         }
