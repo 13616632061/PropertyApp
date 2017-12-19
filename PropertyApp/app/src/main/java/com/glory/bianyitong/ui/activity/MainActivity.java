@@ -78,6 +78,7 @@ import com.glory.bianyitong.util.FormatNowDate;
 import com.glory.bianyitong.util.JsonHelper;
 import com.glory.bianyitong.util.LogUtils;
 import com.glory.bianyitong.util.SharedUtil;
+import com.glory.bianyitong.util.StatusBarUtils;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.widght.update.service.DownloadService;
@@ -221,7 +222,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
         //透明状态栏
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            StatusBarUtils.setWindowStatusBarColor(this,R.color.white);
+            this.getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        }else {
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+
         //透明导航栏
 //          getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
 
