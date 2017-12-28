@@ -437,6 +437,24 @@ public class ResponseQueryProductDetail extends BaseResponseBean implements Seri
             private int commentsNum;
             private int badNum;
             private List<ListEvaluationPicBean> listEvaluationPic=new ArrayList<>();
+            private String loginName;
+            private String customerPhoto;
+
+            public String getLoginName() {
+                return loginName;
+            }
+
+            public void setLoginName(String loginName) {
+                this.loginName = loginName;
+            }
+
+            public String getCustomerPhoto() {
+                return customerPhoto;
+            }
+
+            public void setCustomerPhoto(String customerPhoto) {
+                this.customerPhoto = customerPhoto;
+            }
 
             public int getEvaluationID() {
                 return evaluationID;

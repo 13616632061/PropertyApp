@@ -13,6 +13,7 @@ import com.glory.bianyitong.bean.entity.response.ResponseQueryProductDetail;
 import com.glory.bianyitong.bean.entity.response.ResponseSearchFresh;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -31,7 +32,8 @@ public class FreshShopListAdapter extends BaseQuickAdapter<ItemMenu<ResponseSear
     protected void convert(BaseViewHolder helper, ItemMenu<ResponseSearchFresh.ListfreshBean> item) {
         helper.setText(R.id.tv_list_item_goods_name,item.getData().getFreshName());
         helper.setText(R.id.tv_list_item_goods_content,item.getData().getFreshTypeLeaf());
-        helper.setText(R.id.tv_list_item_goods_price,"￥"+item.getData().getFreshPrice());
+        DecimalFormat df   = new DecimalFormat("######0.00");
+        helper.setText(R.id.tv_list_item_goods_price,"¥"+df.format(item.getData().getFreshPrice()));
         ImageView imageView=helper.getView(R.id.iv_list_item_goods_pic);
 //        ServiceDialog.setPicture(item.getData().getFreshPicture(),imageView,null);
         Glide.with(context).load(item.getData().getFreshPicture()).error(R.drawable.wait).placeholder(R.drawable.wait).into(imageView);

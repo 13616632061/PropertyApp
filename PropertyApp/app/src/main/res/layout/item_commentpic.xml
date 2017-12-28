@@ -5,8 +5,9 @@
     <ImageView
         android:id="@+id/iv_list_item_goods_pic"
         android:layout_width="100dp"
-        android:layout_height="85dp"
+        android:layout_height="70dp"
         android:layout_gravity="center_horizontal"
         android:scaleType="fitXY"
+        android:adjustViewBounds="true"
         android:src="@drawable/ic_launcher" />
 </LinearLayout>

@@ -89,6 +89,8 @@
                 android:drawablePadding="15dp"
                 android:hint="@string/please_enter_verification_code"
                 android:inputType="number"
+                android:maxLines="1"
+                android:maxLength="6"
                 android:textSize="16sp" />
             <TextView
                 android:id="@+id/text_GetCode"

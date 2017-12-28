@@ -30,6 +30,7 @@ import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.router.RouterMapping;
 import com.glory.bianyitong.sdk.share.ShareUtil;
 import com.glory.bianyitong.ui.activity.CollectionNiActivity;
+import com.glory.bianyitong.ui.activity.HtmlActivity;
 import com.glory.bianyitong.ui.activity.MyBillActivity;
 import com.glory.bianyitong.ui.activity.MyPonintsActivity;
 import com.glory.bianyitong.ui.activity.shop.RefundMoneyActivity;
@@ -187,6 +188,7 @@ public class MyFragment extends BaseFragment {
         residentialQuarters.setOnClickListener(this);
         myPoints.setOnClickListener(this);
         tvRefundSale.setOnClickListener(this);
+        tvCustomerService.setOnClickListener(this);
         getShareInfo();
     }
 
@@ -328,7 +330,15 @@ public class MyFragment extends BaseFragment {
                 case R.id.my_points://我的积分
                     startActivity(new Intent(getActivity(), MyPonintsActivity.class));
                     break;
+
             }
+        }
+        switch (view.getId()) {
+            case R.id.tv_customer_service://客服
+                Intent intent4 = new Intent(context, HtmlActivity.class);
+                intent4.putExtra("from", "kefu");
+                context.startActivity(intent4);
+                break;
         }
     }
 

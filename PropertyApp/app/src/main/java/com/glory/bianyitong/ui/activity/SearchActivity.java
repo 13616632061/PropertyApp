@@ -141,7 +141,7 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener, 
                         }
                         if (!TextUtils.isEmpty(freshName)) {
                             datas.clear();
-                            request2(index_page, freshName);
+//                            request2(index_page, freshName);
                         }
 
 
@@ -207,6 +207,9 @@ public class SearchActivity extends BaseActivity implements View.OnKeyListener, 
             localTag.addAll(list);
         }
 
+        if (localTag.size()<=0){
+            lay_search_last.setVisibility(View.GONE);
+        }
     }
 
     private void initview() {

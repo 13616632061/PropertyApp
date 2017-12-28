@@ -23,7 +23,6 @@ import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.chenenyu.router.RouteCallback;
 import com.chenenyu.router.RouteResult;
 import com.chenenyu.router.Router;
@@ -50,14 +49,12 @@ import com.glory.bianyitong.ui.adapter.CommentPicAdapter;
 import com.glory.bianyitong.ui.dialog.ServiceDialog;
 import com.glory.bianyitong.util.ActivityManager;
 import com.glory.bianyitong.util.NetworkImageHolderView;
-import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.widght.CircleImageView;
 import com.glory.bianyitong.widght.convenientbanner.ConvenientBanner;
 import com.glory.bianyitong.widght.convenientbanner.holder.CBViewHolderCreator;
 import com.glory.bianyitong.widght.convenientbanner.listener.OnItemClickListener;
 import com.google.gson.Gson;
-import com.google.gson.internal.LinkedTreeMap;
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -121,18 +118,18 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
     TextView totalEvaluation;
     @BindView(R.id.tv_percentage)
     TextView tvPercentage;
-    @BindView(R.id.iv_head_pic)//用户头像
-            CircleImageView ivHeadPic;
-    @BindView(R.id.iv_name)//用户名称
-            TextView ivName;
-    @BindView(R.id.ratingba)//评星
-            RatingBar ratingba;
-    @BindView(R.id.tv_plnr)//评论内容
-            TextView tvPlnr;
+//    @BindView(R.id.iv_head_pic)//用户头像
+//            CircleImageView ivHeadPic;
+//    @BindView(R.id.iv_name)//用户名称
+//            TextView ivName;
+//    @BindView(R.id.ratingba)//评星
+//            RatingBar ratingba;
+//    @BindView(R.id.tv_plnr)//评论内容
+//            TextView tvPlnr;
     @BindView(R.id.tv_look_all)//查看所有评论
             Button tvLookAll;
-    @BindView(R.id.rec_pic)//图片列表
-            RecyclerView rec_pic;
+//    @BindView(R.id.rec_pic)//图片列表
+//            RecyclerView rec_pic;
     @BindView(R.id.pingjia)
     LinearLayout pingjia;
     @BindView(R.id.fresh_content)
@@ -147,6 +144,8 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
     TextView tvCartNumber;
     @BindView(R.id.title_ac_text)
     TextView titleAcText;
+    @BindView(R.id.addliner)
+    LinearLayout addliner;
 
     private String[] images;
     private List<String> imageList = new ArrayList<String>();
@@ -171,7 +170,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         super.init();
         Router.injectParams(this);
 //        inintTitle(getString(R.string.product_details), true, "");//商品详情
-        ActivityManager.addActivity(this,"goodsdetailsactivity");
+        ActivityManager.addActivity(this, "goodsdetailsactivity");
         titleAcText.setText(getString(R.string.product_details));
         left_return_btn.setOnClickListener(new View.OnClickListener() { //返回
             @Override
@@ -197,7 +196,7 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
     @OnClick({R.id.detail_kefu, R.id.detail_shoucang, R.id.detail_addshopping_cart, R.id.detail_addshopping_payproduct, R.id.tv_look_all, R.id.iv_title_right})
     void onClickBtn(View view) {
-        if (Database.USER_MAP==null) {
+        if (Database.USER_MAP == null) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
         } else {
 
@@ -261,78 +260,57 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         try {
 
 
-        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        List<GodownDetailInfo.ListDetailBean> list = new ArrayList<>();
-        list.add(new GodownDetailInfo.ListDetailBean(productDetail.getFreshID(), 1));
-        map.put("listDetail", list);
-        String json = new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
-                if (detail.getStatusCode() == 1) {
-                    if (product != null) {
-                        String addressBean = new Gson().toJson(addressBeabean);
-                        Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
-                                .with("shop", new Gson().toJson(productDetail))
-                                .with("addressBean", addressBean)
-                                .with("type", 1)
-                                .go(GoodsDetailsActivity.this);
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            List<GodownDetailInfo.ListDetailBean> list = new ArrayList<>();
+            list.add(new GodownDetailInfo.ListDetailBean(productDetail.getFreshID(), 1));
+            map.put("listDetail", list);
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    ResponseQueryProductDetail detail = new Gson().fromJson(s, ResponseQueryProductDetail.class);
+                    if (detail.getStatusCode() == 1) {
+                        if (product != null) {
+                            String addressBean = new Gson().toJson(addressBeabean);
+                            Router.build(RouterMapping.ROUTER_ACTIVITY_ORDER_FIRM)
+                                    .with("shop", new Gson().toJson(productDetail))
+                                    .with("addressBean", addressBean)
+                                    .with("type", 1)
+                                    .go(GoodsDetailsActivity.this);
+                        }
+                    } else {
+                        showShort(detail.getAlertMessage());
+
                     }
-                } else {
-                    showShort(detail.getAlertMessage());
 
                 }
 
-            }
 
+                @Override
+                public void onError() {
+                    showShort("系统异常");
+                }
 
-            @Override
-            public void onError() {
-                showShort("系统异常");
-            }
+                @Override
+                public void parseError() {
 
-            @Override
-            public void parseError() {
+                }
 
-            }
+                @Override
+                public void onBefore() {
 
-            @Override
-            public void onBefore() {
+                }
 
-            }
+                @Override
+                public void onAfter() {
 
-            @Override
-            public void onAfter() {
-
-            }
-        }).getEntityData(this, HttpURL.HTTP_POST_SHOP_QUERY_GODOWNDETAIL, json);
-        }catch (Exception e){
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_SHOP_QUERY_GODOWNDETAIL, json);
+        } catch (Exception e) {
 
         }
     }
 
-    /**
-     * 动态添加布局
-     */
-    public void ScrollViewLayout(final Context context, final List<LinkedTreeMap<String, Object>> list, LinearLayout lay_gallery) {
-        lay_gallery.removeAllViews();
-        LayoutInflater mInflater = LayoutInflater.from(context);
-        if (list != null && list.size() != 0) {
-            for (int i = 0; i < list.size(); i++) {
-                final View view = mInflater.inflate(R.layout.view_item_goods_pic, lay_gallery, false);
-                final ImageView iv_goods_pic = (ImageView) view.findViewById(R.id.iv_goods_pic);
-
-                if (list != null && list.get(i).get("picturePath") != null && list.get(i).get("picturePath").toString().length() != 0 && !list.get(i).get("picturePath").toString().equals("")) {
-                    String data = list.get(i).get("picturePath").toString();
-//                    ServiceDialog.setPicture(list.get(i).get("picturePath").toString(), iv_goods_pic, null);
-                    Glide.with(context).load(data).error(R.drawable.wait).placeholder(R.drawable.wait).into(iv_goods_pic);
-                }
-
-                lay_gallery.addView(view);
-            }
-        }
-    }
 
     /**
      * 商品详情图片
@@ -379,45 +357,45 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         try {
 
 
-        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        String json = new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                if (TextUtil.isEmpty(s)) {
-                    showShort("系统异常");
-                    return;
-                }
-                OrderNumberInfo share = new Gson().fromJson(s, OrderNumberInfo.class);
-                if (share.getStatusCode() == 1) {
-                    tvCartNumber.setText(share.getOrder().getCartNum() + "");
-                    if (share.getOrder().getCartNum() == 0) {
-                        tvCartNumber.setVisibility(View.GONE);
-                    }else {
-                        tvCartNumber.setVisibility(View.VISIBLE);
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    if (TextUtil.isEmpty(s)) {
+                        showShort("系统异常");
+                        return;
                     }
-                } else {
-                    tvCartNumber.setVisibility(View.GONE);
+                    OrderNumberInfo share = new Gson().fromJson(s, OrderNumberInfo.class);
+                    if (share.getStatusCode() == 1) {
+                        tvCartNumber.setText(share.getOrder().getCartNum() + "");
+                        if (share.getOrder().getCartNum() == 0) {
+                            tvCartNumber.setVisibility(View.GONE);
+                        } else {
+                            tvCartNumber.setVisibility(View.VISIBLE);
+                        }
+                    } else {
+                        tvCartNumber.setVisibility(View.GONE);
+                    }
                 }
-            }
 
-            @Override
-            public void onError() {
-            }
+                @Override
+                public void onError() {
+                }
 
-            @Override
-            public void parseError() {
-            }
+                @Override
+                public void parseError() {
+                }
 
-            @Override
-            public void onBefore() {
-            }
+                @Override
+                public void onBefore() {
+                }
 
-            @Override
-            public void onAfter() {
-            }
-        }).getEntityData(this, HttpURL.HTTP_POST_ORDER_OTHERONE, json);
-        }catch (Exception e){
+                @Override
+                public void onAfter() {
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_ORDER_OTHERONE, json);
+        } catch (Exception e) {
 
         }
     }
@@ -449,25 +427,29 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                             freshContent.setText(detail.getListfresh().get(0).getFreshContent());
                             tv_goods_name.setText(detail.getListfresh().get(0).getFreshName()); //商品名称
                             tv_goods_price.setText("¥ " + detail.getListfresh().get(0).getFreshPrice());//商品价格
-                            tv_quick_deliver_goods.setText(detail.getListfresh().get(0).getFreshTypeName());
+                            tv_quick_deliver_goods.setText(detail.getListfresh().get(0).getFreshTypeLeaf());
                             tv_goods_weight.setText(detail.getListfresh().get(0).getWeight());//净含量
 
 //                        load(Database.goodsdetails.getFreshUrl());
                             tv_nutritiveValue.setText(detail.getListfresh().get(0).getNutritiveValue() + ""); //营养价值
                             collectionChange(productDetail.isCollectionStatu());
-                            //评论内容
-                            if (productDetail.getList_FreshEvaluation() != null) {
-                                if (productDetail.getList_FreshEvaluation().size() > 0) {
-                                    tvPlnr.setText(productDetail.getList_FreshEvaluation().get(0).getEvaluationContext());
-                                    ServiceDialog.setPicture(productDetail.getList_FreshEvaluation().get(0).getUser().getCustomerPhoto(), ivHeadPic, null);
-                                    ratingba.setRating(productDetail.getList_FreshEvaluation().get(0).getEvaluationLevel());
-                                    if (productDetail.getList_FreshEvaluation().get(0).getAnonymous() == null) {
-                                        ivName.setText(productDetail.getList_FreshEvaluation().get(0).getUser().getLoginName());
-                                    } else {
-                                        ivName.setText(productDetail.getList_FreshEvaluation().get(0).getAnonymous());
-                                    }
-                                }
+                            if (productDetail!= null) {
+                                ScrollViewLayout(GoodsDetailsActivity.this,productDetail.getList_FreshEvaluation(),addliner);
+
                             }
+//                            //评论内容
+//                            if (productDetail.getList_FreshEvaluation() != null) {
+//                                if (productDetail.getList_FreshEvaluation().size() > 0) {
+//                                    tvPlnr.setText(productDetail.getList_FreshEvaluation().get(0).getEvaluationContext());
+//                                    ServiceDialog.setPicture(productDetail.getList_FreshEvaluation().get(0).getCustomerPhoto(), ivHeadPic, null);
+//                                    ratingba.setRating(productDetail.getList_FreshEvaluation().get(0).getEvaluationLevel());
+//                                    if (productDetail.getList_FreshEvaluation().get(0).getAnonymous() == null) {
+//                                        ivName.setText(productDetail.getList_FreshEvaluation().get(0).getLoginName());
+//                                    } else {
+//                                        ivName.setText(productDetail.getList_FreshEvaluation().get(0).getAnonymous());
+//                                    }
+//                                }
+//                            }
 
                             if (productDetail.getFreshEvaluation().getTotalEvaluation() > 0) {
                                 totalEvaluation.setText("宝贝评价数量(" + productDetail.getFreshEvaluation().getTotalEvaluation() + ")");
@@ -483,22 +465,22 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                                 enable = productDetail.isEnable();
 
                                 tvPercentage.setText(result + "%");
-                                List<String> imageUrlList = new ArrayList<String>();
-
-                                //获取评论图片
-                                for (int i = 0; i < productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().size(); i++) {
-                                    imageUrlList.add(productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().get(i).getPicturePath());
-                                }
+//                                List<String> imageUrlList = new ArrayList<String>();
+//
+//                                //获取评论图片
+//                                for (int i = 0; i < productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().size(); i++) {
+//                                    imageUrlList.add(productDetail.getList_FreshEvaluation().get(0).getListEvaluationPic().get(i).getPicturePath());
+//                                }
                                 //好评中评差评数量bean
                                 freshEvaluation = productDetail.getFreshEvaluation();
 
-                                //评论图片
-                                CommentPicAdapter commentPicAdapter = new CommentPicAdapter(R.layout.item_commentpic, getApplicationContext());
-                                GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 4);
-                                rec_pic.setLayoutManager(gridLayoutManager);
-                                rec_pic.setAdapter(commentPicAdapter);
-                                commentPicAdapter.addData(imageUrlList);
-                                commentPicAdapter.notifyDataSetChanged();
+//                                //评论图片
+//                                CommentPicAdapter commentPicAdapter = new CommentPicAdapter(R.layout.item_commentpic, getApplicationContext());
+//                                GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 4);
+//                                rec_pic.setLayoutManager(gridLayoutManager);
+//                                rec_pic.setAdapter(commentPicAdapter);
+//                                commentPicAdapter.addData(imageUrlList);
+//                                commentPicAdapter.notifyDataSetChanged();
                             } else {
                                 pingjia.setVisibility(View.GONE);
                             }
@@ -562,45 +544,118 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
 
 
     /**
+     * 动态添加布局
+     */
+    public void ScrollViewLayout(final Context context, final List<ResponseQueryProductDetail.ListfreshBean.ListFreshEvaluationBean> list, LinearLayout lay_gallery) {//List<LinkedTreeMap<String, Object>> list
+        lay_gallery.removeAllViews();
+        LayoutInflater mInflater = LayoutInflater.from(context);
+        if (list != null && list.size() != 0) {
+            for (int j = 0; j < list.size(); j++) {
+
+                final View view = mInflater.inflate(R.layout.ac_goods_details_add, lay_gallery, false);
+                final TextView tvPlnr = (TextView) view.findViewById(R.id.tv_plnr);
+                final RatingBar ratingba = (RatingBar) view.findViewById(R.id.ratingba);
+                final TextView ivName = (TextView) view.findViewById(R.id.iv_name);
+                final RecyclerView rec_pic = (RecyclerView) view.findViewById(R.id.rec_pic);
+                final CircleImageView ivHeadPic = (CircleImageView) view.findViewById(R.id.iv_head_pic);
+                //评论内容
+                if (list != null) {
+                    if (list.size() > 0) {
+                        tvPlnr.setText(list.get(j).getEvaluationContext());
+                        ServiceDialog.setPicture(list.get(j).getCustomerPhoto(), ivHeadPic, null);
+                        ratingba.setRating(list.get(j).getEvaluationLevel());
+                        if (list.get(j).getAnonymous() == null) {
+                            ivName.setText(list.get(j).getLoginName());
+                        } else {
+                            ivName.setText(list.get(j).getAnonymous());
+                        }
+                    }
+                }
+                List<String> imageUrlList = new ArrayList<String>();
+
+                //获取评论图片
+                for (int i = 0; i < list.get(j).getListEvaluationPic().size(); i++) {
+                    imageUrlList.add(list.get(j).getListEvaluationPic().get(i).getPicturePath());
+                }
+//                //好评中评差评数量bean
+//                freshEvaluation = productDetail.getFreshEvaluation();
+
+                //评论图片
+                CommentPicAdapter commentPicAdapter = new CommentPicAdapter(R.layout.item_commentpic, getApplicationContext());
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(getApplicationContext(), 4);
+                rec_pic.setLayoutManager(gridLayoutManager);
+                rec_pic.setAdapter(commentPicAdapter);
+                commentPicAdapter.addData(imageUrlList);
+                commentPicAdapter.notifyDataSetChanged();
+
+
+                lay_gallery.addView(view);
+
+            }
+        }
+    }
+//    /**
+//     * 动态添加布局
+//     */
+//    public void ScrollViewLayout(final Context context, final List<LinkedTreeMap<String, Object>> list, LinearLayout lay_gallery) {
+//        lay_gallery.removeAllViews();
+//        LayoutInflater mInflater = LayoutInflater.from(context);
+//        if (list != null && list.size() != 0) {
+//            for (int i = 0; i < list.size(); i++) {
+//                final View view = mInflater.inflate(R.layout.view_item_goods_pic, lay_gallery, false);
+//                final ImageView iv_goods_pic = (ImageView) view.findViewById(R.id.iv_goods_pic);
+//
+//                if (list != null && list.get(i).get("picturePath") != null && list.get(i).get("picturePath").toString().length() != 0 && !list.get(i).get("picturePath").toString().equals("")) {
+//                    String data = list.get(i).get("picturePath").toString();
+////                    ServiceDialog.setPicture(list.get(i).get("picturePath").toString(), iv_goods_pic, null);
+//                    Glide.with(context).load(data).error(R.drawable.wait).placeholder(R.drawable.wait).into(iv_goods_pic);
+//                }
+//
+//                lay_gallery.addView(view);
+//            }
+//        }
+//    }
+
+    /**
      * 添加购物车
      */
     private void addShoppingCart() {
         try {
 
 
-        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        map.put("shoppingCart", new RequestShoppingCartAdd(productDetail.getFreshID(), productDetail.getFreshTypeID(), 1, productDetail.getFreshPrice()));
-        String json = new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
-                ToastUtils.showToast(GoodsDetailsActivity.this, bean.getAlertMessage());
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("shoppingCart", new RequestShoppingCartAdd(productDetail.getFreshID(), productDetail.getFreshTypeID(), 1, productDetail.getFreshPrice()));
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
+                    ToastUtils.showToast(GoodsDetailsActivity.this, bean.getAlertMessage());
 //                showShort(bean.getAlertMessage());
 
-            }
+                }
 
-            @Override
-            public void onError() {
+                @Override
+                public void onError() {
 
-            }
+                }
 
-            @Override
-            public void parseError() {
+                @Override
+                public void parseError() {
 
-            }
+                }
 
-            @Override
-            public void onBefore() {
+                @Override
+                public void onBefore() {
 
-            }
+                }
 
-            @Override
-            public void onAfter() {
+                @Override
+                public void onAfter() {
 
-            }
-        }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_ADD, json);
-        }catch (Exception e){
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_SHOPPINGCART_ADD, json);
+        } catch (Exception e) {
 
         }
     }
@@ -612,105 +667,106 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         try {
 
 
-        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        List<RequestCollectionAdd> list = new ArrayList<>();
-        list.add(new RequestCollectionAdd(productDetail.getFreshID(), productDetail.getFreshTypeID()));
-        map.put("listCollection", list);
-        String json = new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
-                if (bean.getStatusCode() == 1) {
-                    productDetail.setCollectionStatu(true);
-                    collectionChange(true);
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            List<RequestCollectionAdd> list = new ArrayList<>();
+            list.add(new RequestCollectionAdd(productDetail.getFreshID(), productDetail.getFreshTypeID()));
+            map.put("listCollection", list);
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
+                    if (bean.getStatusCode() == 1) {
+                        productDetail.setCollectionStatu(true);
+                        collectionChange(true);
+                    }
+                    showShort(bean.getAlertMessage());
                 }
-                showShort(bean.getAlertMessage());
-            }
 
-            @Override
-            public void onError() {
+                @Override
+                public void onError() {
 
-            }
+                }
 
-            @Override
-            public void parseError() {
+                @Override
+                public void parseError() {
 
-            }
+                }
 
-            @Override
-            public void onBefore() {
+                @Override
+                public void onBefore() {
 
-            }
+                }
 
-            @Override
-            public void onAfter() {
+                @Override
+                public void onAfter() {
 
-            }
-        }).getEntityData(this, HttpURL.HTTP_POST_COLLECTION_ADD, json);
-        }catch (Exception e){
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_COLLECTION_ADD, json);
+        } catch (Exception e) {
 
         }
     }
 
     /**
      * //默认收货地址
+     *
      * @param i
      */
     private void queryAddress(final int i) {
         try {
-        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        map.put("shippingAddress", new Object());
-        String json = new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                ResponseQueryAddress queryAddress = new Gson().fromJson(s, ResponseQueryAddress.class);
-                if (queryAddress.getStatusCode() == 1) {
-                    if (queryAddress.getListShippingAddress() != null && queryAddress.getListShippingAddress().size() > 0) {
-                        for (ResponseQueryAddress.ListShippingAddressBean bean : queryAddress.getListShippingAddress()) {
-                            if (bean.isDefaults()) {
-                                addressBeabean = bean;
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("shippingAddress", new Object());
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    ResponseQueryAddress queryAddress = new Gson().fromJson(s, ResponseQueryAddress.class);
+                    if (queryAddress.getStatusCode() == 1) {
+                        if (queryAddress.getListShippingAddress() != null && queryAddress.getListShippingAddress().size() > 0) {
+                            for (ResponseQueryAddress.ListShippingAddressBean bean : queryAddress.getListShippingAddress()) {
+                                if (bean.isDefaults()) {
+                                    addressBeabean = bean;
+                                }
+                            }
+                            if (addressBeabean == null) {
+                                showShort("请添加默认收货地址");
+                            } else {
+                                if (i == 0) {
+                                    godownFind();//
+                                } else {
+                                    Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
+                                            .go(getApplicationContext());
+                                }
                             }
                         }
-                        if (addressBeabean == null) {
-                            showShort("请添加默认收货地址");
-                        } else {
-                            if (i==0){
-                                godownFind();//
-                            }else {
-                                Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
-                                        .go(getApplicationContext());
-                            }
-                        }
+                    } else if (queryAddress.getStatusCode() == 2) {
+                        showShort("请添加默认收货地址");
+                        finish();
                     }
-                } else if (queryAddress.getStatusCode() == 2) {
-                    showShort("请添加默认收货地址");
-                    finish();
                 }
-            }
 
-            @Override
-            public void onError() {
+                @Override
+                public void onError() {
 
-            }
+                }
 
-            @Override
-            public void parseError() {
+                @Override
+                public void parseError() {
 
-            }
+                }
 
-            @Override
-            public void onBefore() {
+                @Override
+                public void onBefore() {
 
-            }
+                }
 
-            @Override
-            public void onAfter() {
+                @Override
+                public void onAfter() {
 
-            }
-        }).getEntityData(this, HttpURL.HTTP_POST_QUERY_ADDRESS, json);
-        }catch (Exception e){
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+        } catch (Exception e) {
 
         }
     }
@@ -722,44 +778,44 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
         try {
 
 
-        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        List<Integer> freshId = new ArrayList<>();
-        freshId.add(productDetail.getFreshID());
-        map.put("listFreshID", freshId);
-        String json = new Gson().toJson(map);
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
-                if (bean.getStatusCode() == 1) {
-                    productDetail.setCollectionStatu(false);
-                    collectionChange(false);
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            List<Integer> freshId = new ArrayList<>();
+            freshId.add(productDetail.getFreshID());
+            map.put("listFreshID", freshId);
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
+                    if (bean.getStatusCode() == 1) {
+                        productDetail.setCollectionStatu(false);
+                        collectionChange(false);
+
+                    }
+                    showShort(bean.getAlertMessage());
+                }
+
+                @Override
+                public void onError() {
 
                 }
-                showShort(bean.getAlertMessage());
-            }
 
-            @Override
-            public void onError() {
+                @Override
+                public void parseError() {
 
-            }
+                }
 
-            @Override
-            public void parseError() {
+                @Override
+                public void onBefore() {
 
-            }
+                }
 
-            @Override
-            public void onBefore() {
+                @Override
+                public void onAfter() {
 
-            }
-
-            @Override
-            public void onAfter() {
-
-            }
-        }).getEntityData(this, HttpURL.HTTP_POST_COLLECTION_DELETE, json);
-        }catch (Exception e){
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_COLLECTION_DELETE, json);
+        } catch (Exception e) {
 
         }
     }

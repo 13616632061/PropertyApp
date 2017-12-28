@@ -53,10 +53,7 @@
             android:text="全部"/>
     </RadioGroup>
     <include layout="@layout/base_view_line"></include>
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/fresh_list_fr_refresh"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+
         <android.support.v7.widget.RecyclerView
             android:background="@color/linegray"
             android:id="@+id/rec_right_list"
@@ -64,5 +61,9 @@
             android:layout_height="match_parent">
 
         </android.support.v7.widget.RecyclerView>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fresh_list_fr_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

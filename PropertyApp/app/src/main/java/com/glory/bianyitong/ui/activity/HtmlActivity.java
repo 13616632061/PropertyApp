@@ -72,9 +72,12 @@ public class HtmlActivity extends BaseActivity {
             title = getString(R.string.about_us);//关于我们
             url = HttpURL.HTTP_LOGIN_AREA + "/About/About.html?versionName=" + Constant.VERSIONNAME;
         } else if (from != null && from.equals("webview")) {
-            title = "广告";//关于我们
+            title = "广告";//广告
             url = getIntent().getStringExtra("url");
-        }else {
+        }else if (from != null && from.equals("kefu")) {
+            title = "客服";//客服
+            url = HttpURL.HTTP_LOGIN_AREA + "/LineService/index.html";
+        }else{
             HtmlActivity.this.finish();
             return;
         }
@@ -140,6 +143,21 @@ public class HtmlActivity extends BaseActivity {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 // TODO Auto-generated method stub
+//                view.loadUrl(url);
+                if(url == null) return false;
+                try {
+                    if(url.startsWith("weixin://") || url.startsWith("alipays://") ||
+                            url.startsWith("mailto://") || url.startsWith("tel:")
+                        //其他自定义的scheme
+                            ) {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        startActivity(intent);
+                        return true;
+                    }
+                } catch (Exception e) { //防止crash (如果手机上没有安装处理某个scheme开头的url的APP, 会导致crash)
+                    return false;
+                }
+                //处理http和https开头的url
                 view.loadUrl(url);
                 return true;
             }
@@ -160,6 +178,7 @@ public class HtmlActivity extends BaseActivity {
             public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) { //https
                 handler.proceed(); //接受证书
             }
+
         });
 
         webview.setWebChromeClient(new WebChromeClient() {
@@ -177,6 +196,14 @@ public class HtmlActivity extends BaseActivity {
                     my_progress.setSecondaryProgress(newProgress + x);
                 }
                 super.onProgressChanged(view, newProgress);
+            }
+
+            @Override
+            public void onReceivedTitle(WebView view, String title) {
+                super.onReceivedTitle(view, title);
+                if (title!=null&&from.equals("kefu")){
+                    inintTitle(title, true, "");
+                }
             }
         });
     }

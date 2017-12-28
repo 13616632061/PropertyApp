@@ -345,7 +345,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="165dp"
@@ -360,11 +360,11 @@
                         android:id="@+id/tv_nutritiveValue"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingLeft="19dp"
                         android:paddingRight="19dp"
                         android:text=""
                         android:textColor="@color/text_color_somber"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:layout_marginBottom="10dp"/>
                 </LinearLayout>
             </LinearLayout>
             <!--<LinearLayout
@@ -380,7 +380,7 @@
                 android:layout_height="wrap_content">
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="20dp"
+                    android:layout_height="40dp"
                     android:orientation="horizontal"
                     android:layout_gravity="center_horizontal"
                     >
@@ -406,6 +406,8 @@
                         android:background="@color/somber"/>
 
                 </LinearLayout>
+
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
@@ -414,6 +416,7 @@
                     android:layout_gravity="center_horizontal"
                     android:paddingBottom="5dp"
                     android:paddingTop="5dp"
+                    android:layout_marginBottom="5dp"
                     >
 
                     <TextView
@@ -450,69 +453,13 @@
                         />
 
                 </LinearLayout>
-                <include layout="@layout/base_view_line"/>
                 <LinearLayout
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
-                    android:paddingBottom="10dp"
-                    android:paddingTop="10dp"
-                    android:background="@color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <com.glory.bianyitong.widght.CircleImageView
-                        android:layout_gravity="center_vertical"
-                        android:id="@+id/iv_head_pic"
-                        android:layout_width="36dp"
-                        android:layout_height="36dp"/>
-                    <TextView
-                        android:id="@+id/iv_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingRight="10dp"
-                        android:paddingLeft="10dp"
-                        android:textColor="@color/tv_color_tab"
-                        android:text=""
-                        android:layout_gravity="center_vertical"
-                        android:textSize="15dp"
-                        />
-                    <View
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        />
-
-                    <RatingBar
-                        style="@style/MyRatingBar"
-                        android:id="@+id/ratingba"
-                        android:isIndicator="true"
-                        android:layout_gravity="center_vertical"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:rating="5"
-                        android:progress="2"/>
-                </LinearLayout>
-                <include layout="@layout/base_view_line"/>
-                <TextView
-                    android:id="@+id/tv_plnr"
-                    android:background="@color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="10dp"
-                    android:paddingLeft="10dp"
-                    android:textColor="@color/tv_color_tab"
-                    android:text=""
-                    android:layout_gravity="center_vertical"
-                    android:textSize="15dp"
-                    />
-                <android.support.v7.widget.RecyclerView
-                    android:background="@color/white"
-                    android:id="@+id/rec_pic"
+                    android:id="@+id/addliner"
+                    android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                </android.support.v7.widget.RecyclerView>
+                </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -525,15 +472,13 @@
                         android:background="@drawable/shape_look_more"
                         android:gravity="center"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="5dp"
-                        android:paddingTop="5dp"
+                        android:layout_height="24dp"
                         android:paddingRight="20dp"
                         android:paddingLeft="20dp"
                         android:textColor="@color/color_orange"
                         android:text="@string/look_more"
                         android:layout_gravity="center"
-                        android:textSize="18dp"
+                        android:textSize="15sp"
                         />
                 </LinearLayout>
             </LinearLayout>

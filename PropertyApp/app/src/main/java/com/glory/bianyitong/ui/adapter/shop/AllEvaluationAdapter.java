@@ -41,7 +41,7 @@ public class AllEvaluationAdapter extends BaseQuickAdapter<ItemMenu<AllEvaluatio
         ratingBar.setRating(item.getData().getEvaluationLevel());
 
         RecyclerView rec_pic = helper.getView(R.id.rec_pic);
-        PicAdapter adapter = new PicAdapter(R.layout.item_pic,item.getData().getListEvaluationPic());
+        PicAdapter adapter = new PicAdapter(R.layout.item_pic,item.getData().getListEvaluationPic(),context);
         GridLayoutManager linearLayout = new GridLayoutManager(context,4);
         rec_pic.setAdapter(adapter);
         rec_pic.setLayoutManager(linearLayout);
