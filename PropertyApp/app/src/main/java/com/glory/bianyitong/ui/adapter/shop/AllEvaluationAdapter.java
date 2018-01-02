@@ -34,9 +34,9 @@ public class AllEvaluationAdapter extends BaseQuickAdapter<ItemMenu<AllEvaluatio
     @Override
     protected void convert(BaseViewHolder helper, ItemMenu<AllEvaluationInfo.ListFreshEvaluationBean> item) {
         helper.setText(R.id.tv_plnr,item.getData().getEvaluationContext());
-        helper.setText(R.id.iv_name,item.getData().getUser().getLoginName());
+        helper.setText(R.id.iv_name,item.getData().getLoginName());
         CircleImageView imageView=helper.getView(R.id.iv_head_pic);
-        ServiceDialog.setPicture(item.getData().getUser().getCustomerPhoto(), imageView, null);
+        ServiceDialog.setPicture(item.getData().getCustomerPhoto(), imageView, null);
         RatingBar ratingBar=helper.getView(R.id.ratingba);
         ratingBar.setRating(item.getData().getEvaluationLevel());
 

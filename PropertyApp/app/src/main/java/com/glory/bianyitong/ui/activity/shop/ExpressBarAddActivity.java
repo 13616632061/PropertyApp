@@ -196,6 +196,7 @@ public class ExpressBarAddActivity extends BaseActivity implements BaseQuickAdap
                     }
                     addAdapter.notifyDataSetChanged();
                 }else {
+                    addAdapter.notifyDataSetChanged();
                     addAdapter.setEmptyView(R.layout.layout_empty);
                     showShort(expressBar.getAlertMessage());
                 }

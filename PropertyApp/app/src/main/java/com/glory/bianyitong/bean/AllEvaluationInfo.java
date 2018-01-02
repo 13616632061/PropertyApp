@@ -86,6 +86,24 @@ public class AllEvaluationInfo {
         private Object endEvaluationDateTime;
         private UserBean user;
         private List<ListEvaluationPicBean> listEvaluationPic;
+        private String loginName;
+        private String customerPhoto;
+
+        public String getLoginName() {
+            return loginName;
+        }
+
+        public void setLoginName(String loginName) {
+            this.loginName = loginName;
+        }
+
+        public String getCustomerPhoto() {
+            return customerPhoto;
+        }
+
+        public void setCustomerPhoto(String customerPhoto) {
+            this.customerPhoto = customerPhoto;
+        }
 
         public int getEvaluationID() {
             return evaluationID;

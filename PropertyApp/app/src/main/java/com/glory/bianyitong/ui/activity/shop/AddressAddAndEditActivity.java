@@ -104,6 +104,7 @@ public class AddressAddAndEditActivity extends BaseActivity {
 
     private void checkDataFormat() {
         String name = addressAddReceiver.getText().toString().trim();
+        addressAddReceiver.setSelection(addressAddReceiver.getText().length());
         String phone = addressAddPhone.getText().toString().trim();
         if (TextUtils.isEmpty(name)) {
             showShort("收货人名称不能为空");

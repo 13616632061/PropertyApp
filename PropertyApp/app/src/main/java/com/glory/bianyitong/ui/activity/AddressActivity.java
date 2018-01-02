@@ -120,6 +120,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
         }
     }
     private void queryAddress() {
+        data.clear();
         adapter.notifyDataSetChanged();
         try {
         Map<String, Object> map = new BaseRequestBean().getBaseRequest();
@@ -266,8 +267,9 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
                 BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
                 if(bean.getStatusCode()==1){
                     queryAddress();
+                }else {
+                    showShort(bean.getAlertMessage());
                 }
-                showShort(bean.getAlertMessage());
             }
 
             @Override
@@ -334,7 +336,7 @@ public class AddressActivity extends BaseActivity implements BaseQuickAdapter.On
 
             case R.id.iv_button://设置默认地址
                 this.adapter.setPosition(position);
-                showShort(bean.getFreshCabinet().getCommunityName()+bean.getFreshCabinet().getCabinetName()+"设置默认地址");
+//                showShort(bean.getFreshCabinet().getCommunityName()+bean.getFreshCabinet().getCabinetName()+"设置默认地址");
                 setInitAddress(bean.getAddressID(),true);
                 break;
             case R.id.lay_list_item_goods:
