@@ -7,6 +7,7 @@ import android.view.View;
 
 import com.glory.bianyitong.util.ACache;
 import com.glory.bianyitong.util.ToastUtils;
+import com.umeng.analytics.MobclickAgent;
 
 /**
  * Created by lucy on 2016/11/21.
@@ -61,6 +62,13 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
 
     }
-
+    public void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("MainScreen"); //统计页面，"MainScreen"为页面名称，可自定义
+    }
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("MainScreen");
+    }
 
 }

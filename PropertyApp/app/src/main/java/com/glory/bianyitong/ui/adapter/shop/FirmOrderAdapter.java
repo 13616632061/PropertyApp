@@ -3,6 +3,7 @@ package com.glory.bianyitong.ui.adapter.shop;
 import android.content.Context;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -34,9 +35,10 @@ public class FirmOrderAdapter extends BaseQuickAdapter<ItemMenu<ResponseShopping
         int position=helper.getAdapterPosition();
         ImageView imageView=helper.getView(R.id.iv_list_item_goods_pic);
 //        ServiceDialog.setPicture(item.getData().getFresh().getFreshPicture(),imageView,null);
-        Glide.with(context).load(item.getData().getFresh().getFreshPicture()).error(R.drawable.wait).placeholder(R.drawable.wait).into(imageView);
+        Log.v("123",item.getData().getFresh().getFreshPicture()+"---");
+        Glide.with(context).load(item.getData().getFresh().getFreshPicture()).placeholder(R.drawable.wait).into(imageView);
         helper.setText(R.id.tv_list_item_goods_name,item.getData().getFresh().getFreshName());
-        helper.setText(R.id.tv_list_item_goods_content,item.getData().getFresh().getFreshTypeName());
+        helper.setText(R.id.tv_list_item_goods_content,item.getData().getFresh().getFreshTypeLeaf());
         helper.setText(R.id.tv_list_item_goods_price,"￥"+item.getData().getPrice());
         AmountView amountView=helper.getView(R.id.amount_view);
         amountView.setGoods_storage(item.getData().getFresh().getGodownNumber());

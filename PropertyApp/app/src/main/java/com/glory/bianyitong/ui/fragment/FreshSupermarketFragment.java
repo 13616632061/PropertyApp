@@ -230,14 +230,18 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                     if (queryAddress.getStatusCode() == 1) {
                         if (queryAddress.getListShippingAddress() != null && queryAddress.getListShippingAddress().size() > 0) {
                             if (queryAddress.getListShippingAddress() == null&&queryAddress.getListShippingAddress().size()<=0) {
-                                showShort("请添加默认收货地址");
+                                showShort("请先添加收货地址");
+                                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
+                                        .go(getActivity());
                             } else {
                                 Router.build(RouterMapping.ROUTER_ACTIVITY_SHOPPINGCART)
                                         .go(getActivity());
                             }
                         }
                     } else if (queryAddress.getStatusCode() == 2) {
-                        showShort("请添加默认收货地址");
+                        showShort("请先添加收货地址");
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
+                                .go(getActivity());
                     }
                 }
 

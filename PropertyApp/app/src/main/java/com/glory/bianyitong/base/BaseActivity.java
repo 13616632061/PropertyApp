@@ -26,6 +26,7 @@ import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.ScreenUtil;
 import com.glory.bianyitong.util.StatusBarUtils;
 import com.glory.bianyitong.util.ToastUtils;
+import com.umeng.analytics.MobclickAgent;
 
 import java.net.Inet4Address;
 import java.net.InetAddress;
@@ -50,6 +51,7 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
         Database.currentActivity = this;
         ButterKnife.bind(this);  //自动化声明控件
         Database.ip=getIPAddress(this);
+
 
 //       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
 //            Window window = getWindow();
@@ -237,7 +239,21 @@ public abstract class BaseActivity extends AppCompatActivity implements View.OnC
 
     }
 
-//    //任意点击其他隐藏输入法
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart("SplashScreen"); //统计页面(仅有Activity的应用中SDK自动调用，不需要单独写。"SplashScreen"为页面名称，可自定义)
+        MobclickAgent.onResume(this);          //统计时长
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd("SplashScreen"); // （仅有Activity的应用中SDK自动调用，不需要单独写）保证 onPageEnd 在onPause 之前调用,因为 onPause 中会保存信息。"SplashScreen"为页面名称，可自定义
+        MobclickAgent.onPause(this);
+    }
+
+    //    //任意点击其他隐藏输入法
 //    @Override
 //    public boolean onTouchEvent(MotionEvent event) {
 //        // TODO Auto-generated method stub

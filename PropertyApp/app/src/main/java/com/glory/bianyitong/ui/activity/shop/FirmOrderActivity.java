@@ -192,7 +192,13 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
                 bean.setFresh(new ResponseShoppingCart.ListShoppingCartBean.ListShoppingBean.FreshBean(freshBean.getFreshPicture(),freshBean.getMerchant_ID()));
                 bean.setPrice(freshBean.getFreshPrice());
                 bean.getFresh().setFreshName(freshBean.getFreshName());
+                try {
+                    bean.getFresh().setFreshPicture(freshBean.getFreshPicture());
+                }catch (Exception e){
+
+                }
                 bean.getFresh().setFreshTypeName(freshBean.getFreshTypeName());
+                bean.getFresh().setFreshTypeLeaf(freshBean.getFreshTypeLeaf());
                 bean.getFresh().setFreshTypeID(freshBean.getFreshTypeID());
                 bean.setFreshID(freshBean.getFreshID());
                 bean.getFresh().setGodownNumber(freshBean.getGodownNumber());
@@ -222,7 +228,67 @@ public class FirmOrderActivity extends BaseActivity implements AmountView.OnAmou
 //        SpannableString spannable=new SpannableString(addressBean.getFreshCabinet().getUsed()+"/"+addressBean.getFreshCabinet().getNum());
 //        spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 //        txtNumber.setText(spannable);
-        getOrderCommit();
+//        getOrderCommit();
+        queryAddress();
+    }
+
+    /**
+     * //默认收货地址
+     *
+     */
+    private void queryAddress() {
+        try {
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("shippingAddress", new Object());
+            String json = new Gson().toJson(map);
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    ResponseQueryAddress queryAddress = new Gson().fromJson(s, ResponseQueryAddress.class);
+                    if (queryAddress.getStatusCode() == 1) {
+                        if (queryAddress.getListShippingAddress() != null && queryAddress.getListShippingAddress().size() > 0) {
+                            for (ResponseQueryAddress.ListShippingAddressBean bean : queryAddress.getListShippingAddress()) {
+                                if (bean.isDefaults()) {
+                                    TextView txtName=ButterKnife.findById(addressInitView,R.id.firm_order_item_name);
+                                    TextView txtNumber=ButterKnife.findById(addressInitView,R.id.firm_order_item_number);
+                                    TextView txtAddress=ButterKnife.findById(addressInitView,R.id.address_list_address);
+                                    TextView name_and_phone = ButterKnife.findById(addressInitView, R.id.name_and_phone);
+                                    name_and_phone.setText(addressBean.getHarvesterName()+"  "+addressBean.getHarvestePhone());
+                                    txtName.setText(bean.getFreshCabinet().getCommunityName()+bean.getFreshCabinet().getCabinetName());
+                                    txtAddress.setText(bean.getFreshCabinet().getCommunity().getProvinceName()+bean.getFreshCabinet().getCommunity().getCityName()+bean.getFreshCabinet().getCommunity().getDistrictName()+bean.getFreshCabinet().getCommunity().getStreet());
+                                    SpannableString spannable=new SpannableString(bean.getFreshCabinet().getUsed()+"/"+bean.getFreshCabinet().getNum());
+                                    spannable.setSpan(new ForegroundColorSpan(Color.parseColor("#eb0002")),0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                                    txtNumber.setText(spannable);
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                @Override
+                public void onError() {
+
+                }
+
+                @Override
+                public void parseError() {
+
+                }
+
+                @Override
+                public void onBefore() {
+
+                }
+
+                @Override
+                public void onAfter() {
+
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_QUERY_ADDRESS, json);
+        } catch (Exception e) {
+
+        }
     }
     /**
      * 获取地址信息

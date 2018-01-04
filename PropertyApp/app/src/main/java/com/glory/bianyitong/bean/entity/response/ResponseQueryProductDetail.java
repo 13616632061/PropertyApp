@@ -97,6 +97,8 @@ public class ResponseQueryProductDetail extends BaseResponseBean implements Seri
         private List<ListfreshPictureBean> listfreshPicture;
         private List<ListFreshEvaluationBean> list_FreshEvaluation;
 
+
+
         public int getFreshID() {
             return freshID;
         }

@@ -730,7 +730,9 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                                 }
                             }
                             if (addressBeabean == null) {
-                                showShort("请添加默认收货地址");
+                                showShort("请先添加收货地址");
+                                Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
+                                        .go(GoodsDetailsActivity.this);
                             } else {
                                 if (i == 0) {
                                     godownFind();//
@@ -741,8 +743,9 @@ public class GoodsDetailsActivity extends BaseActivity implements RouteCallback 
                             }
                         }
                     } else if (queryAddress.getStatusCode() == 2) {
-                        showShort("请添加默认收货地址");
-                        finish();
+                        showShort("请先添加收货地址");
+                        Router.build(RouterMapping.ROUTER_ACTIVITY_MY_ADDRESS_MANAGER)
+                                .go(GoodsDetailsActivity.this);
                     }
                 }
 

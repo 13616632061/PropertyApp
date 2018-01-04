@@ -64,6 +64,8 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.umeng.analytics.MobclickAgent;
+import com.umeng.commonsdk.UMConfigure;
 
 import java.util.Map;
 
@@ -139,7 +141,8 @@ public class MyApplication extends Application {
                 map.put("ROUTER_ACTIVITY_COLLECTION_LIST", CollectionActivity.class);
             }
         });
-
+        MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL );
+        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE,null);
         //极光推送
         JPushInterface.setDebugMode(true);    // 设置开启日志,发布时请关闭日志
         JPushInterface.init(this);// 初始化 JPush

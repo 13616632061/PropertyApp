@@ -86,6 +86,7 @@ import com.glory.bianyitong.widght.update.utils.UPVersion;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.umeng.commonsdk.UMConfigure;
 
 import org.json.JSONException;
 import org.json.JSONObject;
