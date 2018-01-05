@@ -83,6 +83,8 @@ public class HttpURL {
     public static String HTTP_POST_APIFRESHEVALUATION_ADD="/ApiFreshEvaluation/Add";
     //记录退出应用日志
     public static String HTTP_POST_LOGIN_EXIT="/ApiLogin/AppExit";
+    //获取用户身份列表
+    public static String HTTP_POST_QUERY_USER_IDENTITY="/ApiUserIdentity/Query";
 
     /**
      * 社区

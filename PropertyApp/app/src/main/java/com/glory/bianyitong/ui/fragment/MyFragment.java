@@ -21,7 +21,9 @@ import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseFragment;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.OrderNumberInfo;
+import com.glory.bianyitong.bean.entity.request.RequestQueryUserInfo;
 import com.glory.bianyitong.bean.entity.response.ResponseQueryAddress;
+import com.glory.bianyitong.bean.entity.response.ResponseQueryUserById;
 import com.glory.bianyitong.bean.entity.response.ResponseShare;
 import com.glory.bianyitong.constants.Constant;
 import com.glory.bianyitong.constants.Database;
@@ -160,6 +162,8 @@ public class MyFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        user_request();
+
         headPortraitCiv = (CircleImageView) view.findViewById(R.id.cim_my_head_portrait);
         headPortraitCiv.setOnClickListener(this);
         text_user_name.setOnClickListener(this);
@@ -390,21 +394,54 @@ public class MyFragment extends BaseFragment {
         }
     }
 
+    private void user_request() { //获取个人信息
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("user", new RequestQueryUserInfo((String) (map.get("userID"))));
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                ResponseQueryUserById responseQueryUserById = new Gson().fromJson(s, ResponseQueryUserById.class);
+                if (responseQueryUserById.getStatusCode() == 1) {
+                    text_user_name.setText(responseQueryUserById.getListUser().get(0).getLoginName());
+                } else {
+                }
+
+            }
+
+            @Override
+            public void onError() {
+            }
+
+            @Override
+            public void parseError() {
+            }
+
+            @Override
+            public void onBefore() {
+            }
+
+            @Override
+            public void onAfter() {
+            }
+        }).getEntityData(getActivity(), HttpURL.HTTP_POST_QUERY_USER_INFO, json);
+    }
+
 
     @Override
     public void onStart() {
         super.onStart();
         if (Database.USER_MAP != null && Database.accessToken != null) { //登录
-            //用户名
-            if (Database.accessToken != null && Database.USER_MAP != null) {
-                String name1 = text_user_name.getText().toString();
-                String name2 = Database.USER_MAP.getLoginName();
-                if (!name1.equals(name2)) {
-                    text_user_name.setText(name2);
-                }
-            } else {
-                text_user_name.setText("");
-            }
+//            //用户名
+//            if (Database.accessToken != null && Database.USER_MAP != null) {
+//                String name1 = text_user_name.getText().toString();
+//                String name2 = Database.USER_MAP.getLoginName();
+//                if (!name1.equals(name2)) {
+//                    text_user_name.setText(name2);
+//                }
+//            } else {
+//                text_user_name.setText("");
+//            }
             //头像
             if (Database.accessToken != null && Database.USER_MAP != null) {
                 String pic = Database.USER_MAP.getCustomerPhoto();

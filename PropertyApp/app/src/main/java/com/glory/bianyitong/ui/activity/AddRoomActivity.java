@@ -4,16 +4,20 @@ package com.glory.bianyitong.ui.activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chenenyu.router.annotation.Route;
 import com.glory.bianyitong.R;
 import com.glory.bianyitong.base.BaseActivity;
 import com.glory.bianyitong.bean.BaseRequestBean;
 import com.glory.bianyitong.bean.BaseResponseBean;
+import com.glory.bianyitong.bean.MyUserIdentityInfo;
 import com.glory.bianyitong.bean.entity.request.RequestApplyArea;
 import com.glory.bianyitong.bean.entity.request.RequestCommunityRoom;
 import com.glory.bianyitong.bean.entity.request.RequestCommunityUnit;
@@ -27,13 +31,15 @@ import com.glory.bianyitong.http.HttpURL;
 import com.glory.bianyitong.http.OkGoRequest;
 import com.glory.bianyitong.http.RequestUtil;
 import com.glory.bianyitong.router.RouterMapping;
+import com.glory.bianyitong.ui.adapter.MyUserIdentityAdapter;
 import com.glory.bianyitong.util.ActivityManager;
-import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -44,7 +50,7 @@ import butterknife.ButterKnife;
  * 添加小区
  */
 @Route(value = RouterMapping.ROUTER_ACTIVITY_AREA_ADD, interceptors = RouterMapping.INTERCEPTOR_LOGIN)
-public class AddRoomActivity extends BaseActivity {
+public class AddRoomActivity extends BaseActivity implements BaseQuickAdapter.OnItemChildClickListener {
     @BindView(R.id.left_return_btn)
     RelativeLayout left_return_btn;
 
@@ -58,10 +64,14 @@ public class AddRoomActivity extends BaseActivity {
             TextView tv_submit_addarea;
     @BindView(R.id.real_name)
     EditText realName;
+    @BindView(R.id.user_identity)
+    RecyclerView userIdentity;
     private String userID = "";
     private ProgressDialog progressDialog = null;
     private String userName;
     private String loginName;
+    private MyUserIdentityAdapter myUserIdentityAdapter;
+    private List<MyUserIdentityInfo.ListUserIdentityBean> list=new ArrayList<>();
 
     @Override
     protected int getContentId() {
@@ -87,9 +97,15 @@ public class AddRoomActivity extends BaseActivity {
         tv_room_no.setOnClickListener(this);
         tv_submit_addarea.setOnClickListener(this);
 
-
+        myUserIdentityAdapter = new MyUserIdentityAdapter(R.layout.item_adduser,list );
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3);
+        userIdentity.setLayoutManager(gridLayoutManager);
+        userIdentity.setAdapter(myUserIdentityAdapter);
+        myUserIdentityAdapter.bindToRecyclerView(userIdentity);
+        myUserIdentityAdapter.setOnItemChildClickListener(this);
+        myUserIdentityAdapter.notifyDataSetChanged();
+        user_Identity();
     }
-
 
 
     private void user_request() { //获取个人信息
@@ -103,7 +119,7 @@ public class AddRoomActivity extends BaseActivity {
                 if (responseQueryUserById.getStatusCode() == 1) {
                     userName = responseQueryUserById.getListUser().get(0).getUserName();
                     loginName = responseQueryUserById.getListUser().get(0).getLoginName();
-                    if (userName!=null){
+                    if (userName != null) {
                         realName.setText(userName);
                         realName.setSelection(realName.getText().length());
                     }
@@ -128,6 +144,41 @@ public class AddRoomActivity extends BaseActivity {
             public void onAfter() {
             }
         }).getEntityData(this, HttpURL.HTTP_POST_QUERY_USER_INFO, json);
+    }
+
+    private void user_Identity() { //获取用户身份列表
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        String json = new Gson().toJson(map);
+        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+            @Override
+            public void onSuccess(String s) {
+                MyUserIdentityInfo info = new Gson().fromJson(s, MyUserIdentityInfo.class);
+                if (info.getStatusCode() == 1) {
+                    for (MyUserIdentityInfo.ListUserIdentityBean enty:info.getListUserIdentity()){
+                        list.add(enty);
+                    }
+                    myUserIdentityAdapter.notifyDataSetChanged();
+                } else {
+                }
+
+            }
+
+            @Override
+            public void onError() {
+            }
+
+            @Override
+            public void parseError() {
+            }
+
+            @Override
+            public void onBefore() {
+            }
+
+            @Override
+            public void onAfter() {
+            }
+        }).getEntityData(this, HttpURL.HTTP_POST_QUERY_USER_IDENTITY, json);
     }
 
     @Override
@@ -157,16 +208,26 @@ public class AddRoomActivity extends BaseActivity {
 
                 break;
             case R.id.tv_submit_addarea: //提交
-                if (realName.getText().toString().trim().equals("")){
+                boolean check=false;
+                int userIDentityID=0;
+                for (int i=0;i<list.size();i++){
+                    if (list.get(i).isCheck()){
+                        userIDentityID=list.get(i).getUserIDentityID();
+                        check=true;
+                    }
+                }
+                if (realName.getText().toString().trim().equals("")) {
                     showShort("请填写真实姓名");
+                } else if (!check){
+                    showShort("请选择用户身份");
                 }else if (Database.roomID != 0) {
-                    if (realName.getText().toString().trim().equals(userName)){
+                    if (realName.getText().toString().trim().equals(userName)) {
                         progressDialog = ProgressDialog.show(this, "", "加载中", true);
                         progressDialog.setCanceledOnTouchOutside(true);
                         request_submit(Database.communityID, Database.communityName, Database.id_province, Database.str_province, Database.id_city, Database.str_city
-                                , Database.buildingID, Database.buildingName, Database.roomID, Database.roomName, Database.unitID, Database.unitName);
-                    }else {
-                        save(realName.getText().toString().trim());
+                                , Database.buildingID, Database.buildingName, Database.roomID, Database.roomName, Database.unitID, Database.unitName,userIDentityID);
+                    } else {
+                        save(realName.getText().toString().trim(),userIDentityID);
                     }
 
                 } else {
@@ -177,31 +238,31 @@ public class AddRoomActivity extends BaseActivity {
     }
 
     //保存
-    private void save(final String desc) {
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        Map<String,Object> map2=new HashMap<>();
-        map2.put("userName",desc);
-        map2.put("loginName",loginName);
-        map.put("user",map2);
+    private void save(final String desc, final int userIDentityID) {
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        Map<String, Object> map2 = new HashMap<>();
+        map2.put("userName", desc);
+        map2.put("loginName", loginName);
+        map.put("user", map2);
 //        map.put("user",new RequestUserBean(desc));
-        String json=new Gson().toJson(map);
-        progressDialog = ProgressDialog.show(this, "","加载中", true);
+        String json = new Gson().toJson(map);
+        progressDialog = ProgressDialog.show(this, "", "加载中", true);
         progressDialog.setCanceledOnTouchOutside(true);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
-                if(TextUtil.isEmpty(s)){
+                if (TextUtil.isEmpty(s)) {
                     showShort("系统异常");
                     return;
                 }
-                BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
-                if(bean.getStatusCode()==1){
+                BaseResponseBean bean = new Gson().fromJson(s, BaseResponseBean.class);
+                if (bean.getStatusCode() == 1) {
                     request_submit(Database.communityID, Database.communityName, Database.id_province, Database.str_province, Database.id_city, Database.str_city
-                            , Database.buildingID, Database.buildingName, Database.roomID, Database.roomName, Database.unitID, Database.unitName);
+                            , Database.buildingID, Database.buildingName, Database.roomID, Database.roomName, Database.unitID, Database.unitName,userIDentityID);
                     progressDialog.dismiss();
-                }else {
+                } else {
                     progressDialog.dismiss();
-                    ToastUtils.showToast(AddRoomActivity.this,bean.getAlertMessage());//修改失败
+                    ToastUtils.showToast(AddRoomActivity.this, bean.getAlertMessage());//修改失败
                 }
             }
 
@@ -221,7 +282,7 @@ public class AddRoomActivity extends BaseActivity {
             @Override
             public void onAfter() {
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_MY_EDITUSERINFO,json);
+        }).getEntityData(this, HttpURL.HTTP_POST_MY_EDITUSERINFO, json);
 
     }
 
@@ -435,52 +496,53 @@ public class AddRoomActivity extends BaseActivity {
      * @param unitName
      */
     private void request_submit(int communityID, String communityName, int provinceID, String provinceName, int cityID, String cItyName
-            , int buildingID, String buildingName, int roomID, String roomName, int unitID, String unitName) { //提交
-        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
-        map.put("userCommnunityMapping", new RequestApplyArea(provinceID, cityID, communityID, buildingID, unitID, roomID));
-        String json = new Gson().toJson(map);
+            , int buildingID, String buildingName, int roomID, String roomName, int unitID, String unitName,int userIDentityID) { //提交
 
-        OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
-            @Override
-            public void onSuccess(String s) {
-                if (TextUtil.isEmpty(s)) {
-                    showShort("系统异常");
-                    return;
-                }
-                BaseResponseBean responseBean = new Gson().fromJson(s, BaseResponseBean.class);
-                showShort(responseBean.getAlertMessage());
-                if (responseBean.getStatusCode() == 1) {
-                    Database.isAddarea = true;
+            Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+            map.put("userCommnunityMapping", new RequestApplyArea(provinceID, cityID, communityID, buildingID, unitID, roomID,userIDentityID));
+            String json = new Gson().toJson(map);
+
+            OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
+                @Override
+                public void onSuccess(String s) {
+                    if (TextUtil.isEmpty(s)) {
+                        showShort("系统异常");
+                        return;
+                    }
+                    BaseResponseBean responseBean = new Gson().fromJson(s, BaseResponseBean.class);
+                    showShort(responseBean.getAlertMessage());
+                    if (responseBean.getStatusCode() == 1) {
+                        Database.isAddarea = true;
 //                    Router.build(RouterMapping.ROUTER_ACTIVITY_AUTHAREA)//认证
 //                            .go(AddRoomActivity.this);
-                    ActivityManager.removeAllActivity();
-                    AddRoomActivity.this.finish();
-                }
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onError() {
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void parseError() {
-                progressDialog.dismiss();
-            }
-
-            @Override
-            public void onBefore() {
-            }
-
-            @Override
-            public void onAfter() {
-                if (progressDialog != null) {
+                        ActivityManager.removeAllActivity();
+                        AddRoomActivity.this.finish();
+                    }
                     progressDialog.dismiss();
-                    progressDialog = null;
                 }
-            }
-        }).getEntityData(this, HttpURL.HTTP_POST_LOCAL_AREA_ADD_COMMNUNITY, json);
+
+                @Override
+                public void onError() {
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void parseError() {
+                    progressDialog.dismiss();
+                }
+
+                @Override
+                public void onBefore() {
+                }
+
+                @Override
+                public void onAfter() {
+                    if (progressDialog != null) {
+                        progressDialog.dismiss();
+                        progressDialog = null;
+                    }
+                }
+            }).getEntityData(this, HttpURL.HTTP_POST_LOCAL_AREA_ADD_COMMNUNITY, json);
     }
 
     @Override
@@ -513,5 +575,18 @@ public class AddRoomActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
+    }
+
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        switch (view.getId()){
+            case R.id.check:
+                for (int i=0;i<list.size();i++){
+                    list.get(i).setCheck(false);
+                }
+                list.get(position).setCheck(true);
+                myUserIdentityAdapter.notifyDataSetChanged();
+                break;
+        }
     }
 }
