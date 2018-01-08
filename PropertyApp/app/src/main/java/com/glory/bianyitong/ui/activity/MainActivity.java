@@ -85,6 +85,7 @@ import com.glory.bianyitong.widght.update.service.DownloadService;
 import com.glory.bianyitong.widght.update.utils.UPVersion;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tencent.bugly.Bugly;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.umeng.commonsdk.UMConfigure;
 
@@ -504,6 +505,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
                                     if (Database.my_community_List.get(i).getApprovalStatus()==1){
                                         Database.my_community = Database.my_community_List.get(i);
+                                        break;
                                     }
                                 }
                             }
@@ -512,6 +514,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
                                         == Database.my_community.getUserCommunityID()) {
                                     Database.my_community = Database.my_community_List.get(i);
+                                    break;
                                 }
                             }
                         }
@@ -570,7 +573,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, new TypeToken<LoginUserInfo>(){}.getType());
             Database.USER_MAP = userInfo.getUser();
             Database.accessToken=userInfo.getAccessToken();
-
+            Bugly.setUserId(this,Database.USER_MAP.getUserID());
             if(!(userInfo.getUserCommnunity()==null)){
                 DataUtils.getUesrCommunity(userInfo);//社区列表
                 DataUtils.my_community(MainActivity.this);

@@ -162,7 +162,6 @@ public class MyFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        user_request();
 
         headPortraitCiv = (CircleImageView) view.findViewById(R.id.cim_my_head_portrait);
         headPortraitCiv.setOnClickListener(this);
@@ -431,6 +430,8 @@ public class MyFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
+        user_request();
+
         if (Database.USER_MAP != null && Database.accessToken != null) { //登录
 //            //用户名
 //            if (Database.accessToken != null && Database.USER_MAP != null) {

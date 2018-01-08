@@ -27,7 +27,7 @@ public class DataUtils {
         ACache cache=ACache.get(context);
         String communityID_str = cache.getAsString(Constant.communityID);
         int communityID = 0;
-        if (communityID_str != null) {
+        if (!TextUtil.isEmpty(communityID_str)) {
             communityID = Double.valueOf(communityID_str).intValue();
         }
         if (communityID != 0) { //有缓存
@@ -40,6 +40,7 @@ public class DataUtils {
                     if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0
                             && Database.my_community_List.get(i).getCommunityID() == communityID) {
                         Database.my_community = Database.my_community_List.get(i);
+                        break;
                     }
                 }
                 if (Database.my_community == null) { //没找到 缓存失效
@@ -50,6 +51,7 @@ public class DataUtils {
                         if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
                             if (Database.my_community_List.get(i).getApprovalStatus()==1){
                                 Database.my_community = Database.my_community_List.get(i);
+                                break;
                             }
                         }
                     }
@@ -64,6 +66,7 @@ public class DataUtils {
                     if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
                         if (Database.my_community_List.get(i).getApprovalStatus()==1){
                             Database.my_community = Database.my_community_List.get(i);
+                            break;
                         }
                     }
                 }
