@@ -203,7 +203,7 @@ public class StewardActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case 1:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length>0&&grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     CallPhoneDialog calldialog = CallPhoneDialog.createDialog(StewardActivity.this, phone_str);
                     calldialog.show();
                 } else {

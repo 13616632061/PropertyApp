@@ -103,7 +103,9 @@ public class MessageDetailsActivity extends BaseActivity {
             List<String> messageRead = SharedUtil.getDataList("messageRead");
             messageRead.add(PushID+"");
             SharedUtil.setDataList("messageRead",messageRead);
-            IndexFragment.callBack.notifyNum();
+            if (IndexFragment.callBack!=null){
+                IndexFragment.callBack.notifyNum();
+            }
         }
     }
 

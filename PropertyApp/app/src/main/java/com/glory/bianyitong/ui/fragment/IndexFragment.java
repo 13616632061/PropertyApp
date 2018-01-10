@@ -312,6 +312,7 @@ public class IndexFragment extends BaseFragment {
                                         Database.my_community = Database.my_community_List.get(i);
                                         mCache.put(Constant.community, new Gson().toJson(Database.my_community)); //缓存所选的社区
                                         ad_request();
+                                        break;
                                     }
                                 }
                             }
@@ -819,11 +820,13 @@ public class IndexFragment extends BaseFragment {
                                     if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
                                             == Database.my_community.getUserCommunityID()) {
                                         Database.my_community = Database.my_community_List.get(i);
+
                                         if (Database.my_community.getApprovalStatus() == 1) {
                                             startac(from);
                                         } else {
 //                                            ToastUtils.showToast(context, "该小区还在审核中");
                                         }
+                                        break;
                                     }
                                 }
                             } else {

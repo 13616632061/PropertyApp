@@ -451,6 +451,7 @@ public class LoginActivity extends BaseActivity {
                     if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0
                             && Database.my_community_List.get(i).getCommunityID() != communityID) {
                         Database.my_community = Database.my_community_List.get(i);
+                        break;
                     }
                 }
                 if (Database.my_community == null) { //没找到 缓存失效
@@ -461,6 +462,7 @@ public class LoginActivity extends BaseActivity {
                         if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
                             if (Database.my_community_List.get(i).getApprovalStatus() == 1) {
                                 Database.my_community = Database.my_community_List.get(i);
+                                break;
                             }
                         }
                     }
@@ -475,6 +477,7 @@ public class LoginActivity extends BaseActivity {
                     if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
                         if (Database.my_community_List.get(i).getApprovalStatus() == 1) {
                             Database.my_community = Database.my_community_List.get(i);
+                            break;
                         }
                     }
                 }

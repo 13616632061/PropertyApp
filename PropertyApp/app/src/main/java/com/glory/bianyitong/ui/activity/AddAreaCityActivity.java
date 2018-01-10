@@ -157,6 +157,8 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
         ActivityManager.addActivity(this, "addareacityactivity");
         initview();
         userID = RequestUtil.getuserid();
+        progressDialog = ProgressDialog.show(AddAreaCityActivity.this, "","加载中", true);
+        progressDialog.setCanceledOnTouchOutside(true);
         //定位
         initLocalData();
         mhandler = new Handler() {
@@ -304,8 +306,6 @@ public class AddAreaCityActivity extends BaseActivity implements BDLocationListe
             map.put("currentPageNumber",currentPageNumber);
             map.put("community", new RequestLocalAreaBean(longitude, latitude));
             String json = new Gson().toJson(map);
-            progressDialog = ProgressDialog.show(this, "","加载中", true);
-            progressDialog.setCanceledOnTouchOutside(true);
             OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
                 @Override
                 public void onSuccess(String s) {

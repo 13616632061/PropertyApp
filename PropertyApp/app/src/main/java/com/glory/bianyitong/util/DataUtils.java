@@ -38,7 +38,7 @@ public class DataUtils {
 //                        Database.my_community = Database.my_community_List.get(i);
 //                    }
                     if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0
-                            && Database.my_community_List.get(i).getCommunityID() == communityID) {
+                            && Database.my_community_List.get(i).getUserCommunityID() == communityID) {
                         Database.my_community = Database.my_community_List.get(i);
                         break;
                     }

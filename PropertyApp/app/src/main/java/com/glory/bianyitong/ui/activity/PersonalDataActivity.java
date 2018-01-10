@@ -424,7 +424,7 @@ public class PersonalDataActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case 1:
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length>0&&grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     picPopuWindow = new PhotoPopuWindow(PersonalDataActivity.this, 1);
                     // 显示窗口
                     picPopuWindow.showAtLocation(PersonalDataActivity.this.findViewById(R.id.lay_personal),

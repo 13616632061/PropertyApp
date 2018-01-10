@@ -174,7 +174,9 @@ public class MessageActivity extends BaseActivity {
 //                    Database.notreadmessageidSize=0;
                 }
                 Log.v("sadasdasdaww",Database.notreadmessageidSize+"");
-                adapter.notifyDataSetChanged();
+                if (adapter!=null){
+                    adapter.notifyDataSetChanged();
+                }
 //                if (message_List != null && message_List.size() > 0) {
 //                    if (isDoMore) {//编辑
 //                        adapter.setIsDoMore(false);
