@@ -54,6 +54,7 @@ import com.glory.bianyitong.ui.adapter.shop.FreshShopListAdapter;
 import com.glory.bianyitong.ui.adapter.shop.FreshSuperMarketTypeAdapter;
 import com.glory.bianyitong.ui.adapter.shop.ItemMenu;
 import com.glory.bianyitong.util.SharedUtil;
+import com.glory.bianyitong.util.Solve7PopupWindow;
 import com.glory.bianyitong.util.TextUtil;
 import com.google.gson.Gson;
 import com.yanzhenjie.permission.AndPermission;
@@ -105,7 +106,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
     private LocationClient client;
     private ResponseQueryMyLocal myLocal = null;//定位信息
-    private PopupWindow popupWindowSort;
+    private Solve7PopupWindow popupWindowSort;
     private boolean isAll = true;
     private int orderType = 0;
     private int currentPageNumber = 1;
@@ -462,15 +463,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         if (popupWindowSort == null) {
             LayoutInflater inflater = LayoutInflater.from(getActivity());
             final View pView = inflater.inflate(R.layout.pop_fresh_sort, null);
-            popupWindowSort = new PopupWindow(pView, getActivity().getWindowManager().getDefaultDisplay().getWidth() - rlAddress.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
-//            //获取控件宽度
-//            int w = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
-//            int h = View.MeasureSpec.makeMeasureSpec(0,View.MeasureSpec.UNSPECIFIED);
-//            rlAddress.measure(w, h);
-//            int width =rlAddress.getMeasuredWidth();
-            //设置popwindow显示宽度
-//            popupWindowSort.setWidth(getActivity().getWindowManager().getDefaultDisplay().getWidth()-width);
-//            popupWindowSort.setHeight(ViewGroup.LayoutParams.MATCH_PARENT);
+            popupWindowSort = new Solve7PopupWindow(pView, getActivity().getWindowManager().getDefaultDisplay().getWidth() - rlAddress.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
             popupWindowSort.setFocusable(true);
             popupWindowSort.setOutsideTouchable(true);
             //综合排序
@@ -486,7 +479,6 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             });
         } else {
             if (!popupWindowSort.isShowing()) {
-//                popupWindowSort.showAtLocation(rlZonghe, Gravity.LEFT|Gravity.RIGHT,0,0);
                 popupWindowSort.showAsDropDown(rlZonghe);
             }
         }
