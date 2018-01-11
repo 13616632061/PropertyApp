@@ -96,7 +96,7 @@ public class OkGoRequest {
                             onOkGoUtilListener.onError();
                         }else {
                             BaseResponseBean bean=new Gson().fromJson(s,BaseResponseBean.class);
-                            if(bean.getStatusCode()==-105){
+                            if(bean.getStatusCode()==-105&&bean.getStatusCode()==-104){
                                 Database.accessToken=null;
                                 Database.USER_MAP=null;
 
