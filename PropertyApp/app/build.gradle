@@ -42,6 +42,15 @@ android {
         }
     }
     productFlavors {
+        huawei {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "huawei"]
+        }
+        yingyongbao {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "yingyongbao"]
+        }
+        ceshi {
+            manifestPlaceholders = [UMENG_CHANNEL_VALUE: "ceshi"]
+        }
     }
     lintOptions {
         checkReleaseBuilds false

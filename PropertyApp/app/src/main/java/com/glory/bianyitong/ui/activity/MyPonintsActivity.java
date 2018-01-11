@@ -100,6 +100,7 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
         myPonintsAdapter.addHeaderView(headView);
         headview2 = getLayoutInflater().inflate(R.layout.head_mypoints2, (ViewGroup) recyclerview.getParent(), false);
         myPonintsAdapter.addHeaderView(headview2);
+        myPonintsAdapter.notifyDataSetChanged();
         onRefrush();
 
         recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -162,8 +163,9 @@ public class MyPonintsActivity extends BaseActivity implements BaseQuickAdapter.
                             myPonintsAdapter.loadMoreEnd();
                         }
                     } else if (bean.getStatusCode() == 2) {
-                        if (list.size() <= 0)
-                            myPonintsAdapter.setEmptyView(R.layout.layout_empty_wushuju);
+                        if (list.size() <= 0){
+
+                        }
                         else {
                             myPonintsAdapter.loadMoreEnd();
                         }
