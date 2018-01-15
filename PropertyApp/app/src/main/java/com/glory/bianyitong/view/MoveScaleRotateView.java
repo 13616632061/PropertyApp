@@ -102,8 +102,9 @@ public class MoveScaleRotateView extends RelativeLayout {
                         break;
                     case MotionEvent.ACTION_MOVE:
                         if ( mEvent != null ) {
-                            float x1 = mEvent.getX(mEvent.findPointerIndex(mChildPtrID1));
-                            float y1 = mEvent.getY(mEvent.findPointerIndex(mChildPtrID1));
+//                            try {
+                                float x1 = mEvent.getX(mEvent.findPointerIndex(mChildPtrID1));
+                                float y1 = mEvent.getY(mEvent.findPointerIndex(mChildPtrID1));
                             if (x1 - mChildActionDownX<=0){
                                 view.setX(0);
                             }else if (x1 - mChildActionDownX>=dm.widthPixels-30){
@@ -123,10 +124,11 @@ public class MoveScaleRotateView extends RelativeLayout {
                             lastX = (event.getRawX());
                             lastY = (event.getRawY());
                             Log.v("sadadas",lastX+"--"+lastY+"--"+x1+"--"+y1);
-
+//                            }catch (Exception e){}
                         }else {
                             return false;
                         }
+
                         break;
                     case MotionEvent.ACTION_UP:
                         mChildPtrID1 = INVALID_POINTER_ID;
@@ -157,7 +159,10 @@ public class MoveScaleRotateView extends RelativeLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        return super.onInterceptTouchEvent(ev);
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
