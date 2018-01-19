@@ -488,7 +488,7 @@ public class DynamicDetailsActivity extends BaseActivity implements View.OnLongC
         }
 
         if (neighborhood != null) {//评论数
-            dynamic_tv_comment_number.setText(getString(R.string.comment) + " " + neighborhood.getCommentCount());
+            dynamic_tv_comment_number.setText("\""+getString(R.string.comment) + " " + neighborhood.getCommentCount()+"\"");
         }
         if (neighborhood != null) {//点赞数
             tv_likeNumber.setText(getString(R.string.praise) + " " + neighborhood.getLikeCount());

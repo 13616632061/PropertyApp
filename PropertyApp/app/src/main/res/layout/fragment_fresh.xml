@@ -42,7 +42,7 @@
             android:layout_marginRight="5dp"
             android:paddingLeft="12dp"
             android:paddingRight="15dp"
-            android:src="@mipmap/gouwuche" />
+            android:src="@drawable/gouwuche" />
         <TextView
             android:id="@+id/tv_cart_number"
             android:layout_width="15dp"
@@ -130,7 +130,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:src="@mipmap/crosshigh"
+            android:src="@drawable/crosshigh"
             android:gravity="center"/>
     </LinearLayout>
     <include layout="@layout/base_view_line"></include>

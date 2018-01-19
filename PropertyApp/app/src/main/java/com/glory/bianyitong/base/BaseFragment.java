@@ -9,6 +9,10 @@ import com.glory.bianyitong.util.ACache;
 import com.glory.bianyitong.util.ToastUtils;
 import com.umeng.analytics.MobclickAgent;
 
+import org.greenrobot.eventbus.EventBus;
+
+import butterknife.OnClick;
+
 /**
  * Created by lucy on 2016/11/21.
  */
@@ -71,4 +75,8 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
         MobclickAgent.onPageEnd("MainScreen");
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
 }

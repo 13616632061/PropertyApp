@@ -226,7 +226,7 @@ public class IndexFragment extends BaseFragment {
     }
 
 
-    private void initView() {
+   public void initView() {
         villageName.setOnClickListener(this);
         lay_home_message.setOnClickListener(this);
     }

@@ -69,7 +69,7 @@
     <string name="pull_to_refresh_refreshing_label">刷新中\u2026</string>
     <string name="pull_to_refresh_footer_release_label">松开后加载</string>
     <string name="pull_to_refresh_footer_pull_label">上拉加载更多</string>
-    <string name="no_more_data">已经没有更多数据了</string>
+    <string name="no_more_data">没有更多数据了</string>
     <string name="goods_loading_in">加载中\u2026</string>
 
     <string name="installation_failed">安装未完成</string>
@@ -109,7 +109,7 @@
     <string name="this_user_already_has_this_permission">该用户已有此权限</string>
     <string name="fail_to_edit">修改失败</string>
     <string name="add_failed">添加失败</string>
-    <string name="neighborhood_comments">近邻评论</string>
+    <string name="neighborhood_comments">评论</string>
     <string name="release">发布</string>
     <string name="cancel">取消</string>
     <string name="comments_can_not_be_empty">评论不能为空</string>
@@ -127,7 +127,7 @@
     <string name="audit_failure">审核失败</string>
     <string name="get_community_failure">获取社区失败</string>
     <string name="obtain">获取</string>
-    <string name="dynamic_text">动态正文</string>
+    <string name="dynamic_text">动态详情</string>
     <string name="has_been_praised">已点赞</string>
     <string name="cancel_the_point_of_praise">取消点赞</string>
     <string name="comment">评论</string>

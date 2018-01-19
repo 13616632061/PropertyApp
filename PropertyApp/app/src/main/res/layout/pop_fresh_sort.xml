@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:id="@+id/pop_fresh_sort"
+    android:layout_height="wrap_content">
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/linegray"></View>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/linegray"></View>
     <RadioGroup
         android:id="@+id/tabs_rg"
         android:layout_width="match_parent"
@@ -36,10 +45,13 @@
             android:textColor="@drawable/selector_fresh_type_txt"/>
 
     </RadioGroup>
+    </LinearLayout>
     <include layout="@layout/base_view_line"></include>
+
     <View
         android:id="@+id/pop_dismis"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="59dp"
         android:background="@color/popwindow_background"/>
 </LinearLayout>

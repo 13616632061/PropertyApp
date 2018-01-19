@@ -28,7 +28,8 @@
     <color name="tv_color_go">#848285</color>
     <!-- 灰色 首页 近邻 开门 -->
     <color name="tv_color_tab">#2B2B2B</color>
-
+    <!--背景色-->
+    <color name="background_color">#f2f2f2</color>
 
     <!--浅黑-->
     <color name="somber">#999999</color>

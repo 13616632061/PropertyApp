@@ -3,7 +3,6 @@ package com.glory.bianyitong.ui.activity;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,19 +11,12 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -39,12 +31,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.baidu.location.BDLocation;
-import com.baidu.location.BDLocationListener;
-import com.baidu.location.LocationClient;
-import com.baidu.location.LocationClientOption;
-import com.baidu.location.Poi;
 import com.chenenyu.router.Router;
 import com.chenenyu.router.annotation.InjectParam;
 import com.chenenyu.router.annotation.Route;
@@ -71,7 +57,6 @@ import com.glory.bianyitong.ui.fragment.IndexFragment;
 import com.glory.bianyitong.ui.fragment.MyFragment;
 import com.glory.bianyitong.ui.fragment.NeighbourFragment;
 import com.glory.bianyitong.ui.fragment.OpenTheDoorFragment;
-import com.glory.bianyitong.util.ACache;
 import com.glory.bianyitong.util.ActivityUtils;
 import com.glory.bianyitong.util.DataUtils;
 import com.glory.bianyitong.util.FormatNowDate;
@@ -81,26 +66,21 @@ import com.glory.bianyitong.util.SharedUtil;
 import com.glory.bianyitong.util.StatusBarUtils;
 import com.glory.bianyitong.util.TextUtil;
 import com.glory.bianyitong.util.ToastUtils;
+import com.glory.bianyitong.widght.photoViewUtil.ClipImageBorderView;
 import com.glory.bianyitong.widght.update.service.DownloadService;
 import com.glory.bianyitong.widght.update.utils.UPVersion;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.tencent.bugly.Bugly;
-import com.tencent.bugly.crashreport.CrashReport;
-import com.umeng.commonsdk.UMConfigure;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -146,15 +126,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     ImageView iv_open_the_door;
     @BindView(R.id.iv_pickup)
     RelativeLayout iv_pickup;
+    @BindView(R.id.main_bottom_rl)
+    RelativeLayout mainBottomRl;
 
     private int lastIndex = default_index;
     private int currentIndex = default_index;
     private OpenDoorPopuWindow picPopuWindow;//开门框
     private Handler mhandler;
-    @InjectParam(key = "TypeID" )
-     int TypeID; //推送来的
-    @InjectParam(key = "PushID" )
-     int PushID;
+    @InjectParam(key = "TypeID")
+    int TypeID; //推送来的
+    @InjectParam(key = "PushID")
+    int PushID;
 
     //for receive customer msg from jpush server
     private MessageReceiver mMessageReceiver;
@@ -180,22 +162,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
         }
 
-        FormatNowDate formatNowDate=new FormatNowDate();
-        Log.v("sadawwwwasd",formatNowDate.refFormatNowDate());
+        FormatNowDate formatNowDate = new FormatNowDate();
+        Log.v("sadawwwwasd", formatNowDate.refFormatNowDate());
         Database.registrationId = JPushInterface.getRegistrationID(getApplicationContext());
         JPushInterface.setDebugMode(true);//测试版为true
         JPushInterface.init(this);
-        if (SharedUtil.getString("jgPushID")!=null){
-            Log.i("jgpushid",SharedUtil.getString("jgPushID"));
+        if (SharedUtil.getString("jgPushID") != null) {
+            Log.i("jgpushid", SharedUtil.getString("jgPushID"));
             //设置别名Alia
             JPushInterface.setAlias(this, SharedUtil.getString("jgPushID"), new TagAliasCallback() {
                 @Override
                 public void gotResult(int i, String s, Set<String> set) {
-                    Log.d("123123","set Alias result is"+i);
+                    Log.d("123123", "set Alias result is" + i);
                 }
             });
         }
-        Intent intent=new Intent(this,MyReceiver.class);
+        Intent intent = new Intent(this, MyReceiver.class);
         startService(intent);
         if (getIntent().getIntExtra("tabId", -1) != -1) {
             showFragment(getIntent().getIntExtra("tabId", -1));
@@ -225,9 +207,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         //透明状态栏
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            StatusBarUtils.setWindowStatusBarColor(this,R.color.white);
-            this.getWindow().getDecorView().setSystemUiVisibility( View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN|View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
-        }else {
+            StatusBarUtils.setWindowStatusBarColor(this, R.color.white);
+            this.getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        } else {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
 
@@ -280,13 +262,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         isForeground = true;
         super.onResume();
-        if (SharedUtil.getString("jgPushID")!=null){
-            Log.i("jgpushid",SharedUtil.getString("jgPushID"));
+        if (SharedUtil.getString("jgPushID") != null) {
+            Log.i("jgpushid", SharedUtil.getString("jgPushID"));
             //设置别名Alia
             JPushInterface.setAlias(this, SharedUtil.getString("jgPushID"), new TagAliasCallback() {
                 @Override
                 public void gotResult(int i, String s, Set<String> set) {
-                    Log.d("123123","set Alias result is"+i);
+                    Log.d("123123", "set Alias result is" + i);
                 }
             });
         }
@@ -298,11 +280,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.now_no_network), Toast.LENGTH_LONG).show();
         }
     }
+
     private void request() { //注册极光推送标签
-        final Set<String> set=new HashSet<>();
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("userCommnunityMapping",new Object());
-        String jsons=new Gson().toJson(map);
+        final Set<String> set = new HashSet<>();
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("userCommnunityMapping", new Object());
+        String jsons = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -311,9 +294,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     AuthAreaInfo areaInfo = new Gson().fromJson(jo.toString(), AuthAreaInfo.class);
 
                     if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
-                        for (int i=0;i<areaInfo.getListUserCommnunityMapping().size();i++){
-                            if (areaInfo.getListUserCommnunityMapping().get(i).getApprovalStatus()==1){
-                                set.add("CommunityID"+areaInfo.getListUserCommnunityMapping().get(i).getCommunityID());
+                        for (int i = 0; i < areaInfo.getListUserCommnunityMapping().size(); i++) {
+                            if (areaInfo.getListUserCommnunityMapping().get(i).getApprovalStatus() == 1) {
+                                set.add("CommunityID" + areaInfo.getListUserCommnunityMapping().get(i).getCommunityID());
                             }
 
                         }
@@ -338,16 +321,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
 
             @Override
-            public void onError() {}
+            public void onError() {
+            }
+
             @Override
-            public void parseError() {}
+            public void parseError() {
+            }
+
             @Override
             public void onBefore() {
             }
+
             @Override
             public void onAfter() {
             }
-        }).getEntityData(this,"/ApiUserCommnunity/Query", jsons);
+        }).getEntityData(this, "/ApiUserCommnunity/Query", jsons);
 
     }
 
@@ -408,25 +396,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         iv_open_the_door.setOnClickListener(this);
 
-            iv_pickup.setOnClickListener(this);
+        iv_pickup.setOnClickListener(this);
 
 
     }
 
     @Override
     public void onClick(View view) {
-        if (Database.USER_MAP==null){
+        if (Database.USER_MAP == null) {
             Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN).requestCode(10).go(this);
-        }else {
-        switch (view.getId()) {
-            case R.id.iv_open_the_door: //开门
-                if (!SharedUtil.getBoolean("welcome2")&&Database.my_community==null){
-                    startActivity(Welcome2Activity.class);
-                    SharedUtil.putBoolean("welcome2",true);
-                }else {
-                    SharedUtil.putBoolean("welcome2",true);
-                if (Database.USER_MAP != null) {
-                    if (Database.my_community != null && Database.my_community_List != null) {
+        } else {
+            switch (view.getId()) {
+                case R.id.iv_open_the_door: //开门
+                    if (!SharedUtil.getBoolean("welcome2") && Database.my_community == null) {
+                        startActivity(Welcome2Activity.class);
+                        SharedUtil.putBoolean("welcome2", true);
+                    } else {
+                        SharedUtil.putBoolean("welcome2", true);
+                        if (Database.USER_MAP != null) {
+                            if (Database.my_community != null && Database.my_community_List != null) {
 //                        if (Database.my_community.get("approvalStatus") != null
 //                                && Double.valueOf(Database.my_community.get("approvalStatus").toString()).intValue() == 1) {
 //                            if (picPopuWindow == null) {
@@ -439,14 +427,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                            requestlist();
 //                        }
 
-                        if (!TextUtils.isEmpty(RequestUtil.getcommunityid()+"")){
-                            if (picPopuWindow == null) {
-                                picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
-                            }
-                            // 显示窗口
-                            picPopuWindow.showAtLocation(MainActivity.this.findViewById(R.id.lay_activity_main),
-                                    Gravity.NO_GRAVITY, 0, 0); // 设置layout在PopupWindow中显示的位置
-                        }
+                                if (!TextUtils.isEmpty(RequestUtil.getcommunityid() + "")) {
+                                    if (picPopuWindow == null) {
+                                        picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
+                                    }
+                                    // 显示窗口
+                                    picPopuWindow.showAtLocation(MainActivity.this.findViewById(R.id.lay_activity_main),
+                                            Gravity.NO_GRAVITY, 0, 0); // 设置layout在PopupWindow中显示的位置
+                                }
 
 //                        if (Database.my_community.getApprovalStatus() == 1) {//已审核
 //                            if (picPopuWindow == null) {
@@ -458,38 +446,38 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                        } else {
 //                            requestlist();
 //                        }
-                    } else {//没有小区
-                        requestSQ();
+                            } else {//没有小区
+                                requestSQ();
 //                        showShort("请添加或等待小区审核通过后才可开锁");
 //                        Intent intent = new Intent(MainActivity.this, AuthAreaActivity.class); //
 //                        intent.putExtra("from", "");
 //                        startActivity(intent);
-                    }
+                            }
 
-                } else {//登录
-                    Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
-                            .go(this);
+                        } else {//登录
+                            Router.build(RouterMapping.ROUTER_ACTIVITY_LOGIN)
+                                    .go(this);
 //                    Intent intent_login = new Intent();
 //                    intent_login.setClass(MainActivity.this, LoginActivity.class);
 //                    startActivity(intent_login);
-                }
-                }
+                        }
+                    }
 
-                break;
-            case R.id.iv_pickup: //取件
-                Router.build(RouterMapping.ROUTER_ACTIVITY_PICKUP)
-                        .go(this);
+                    break;
+                case R.id.iv_pickup: //取件
+                    Router.build(RouterMapping.ROUTER_ACTIVITY_PICKUP)
+                            .go(this);
 //                Intent intent = new Intent(this, PickupActivity.class);
 //                startActivity(intent);
-                break;
-        }
+                    break;
+            }
         }
     }
 
     private void requestSQ() { //社区
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("userCommnunityMapping",new Object());
-        String jsons=new Gson().toJson(map);
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("userCommnunityMapping", new Object());
+        String jsons = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -500,16 +488,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     if (areaInfo != null && areaInfo.getListUserCommnunityMapping() != null) {
                         DataUtils.getUesrCommunity2(areaInfo.getListUserCommnunityMapping());
 //                        DataUtils.saveSharePreToolsKits(getActivity());
-                        if (Database.my_community==null){
-                            for (int i=0;i<Database.my_community_List.size();i++){
+                        if (Database.my_community == null) {
+                            for (int i = 0; i < Database.my_community_List.size(); i++) {
                                 if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getCommunityID() != 0) {
-                                    if (Database.my_community_List.get(i).getApprovalStatus()==1){
+                                    if (Database.my_community_List.get(i).getApprovalStatus() == 1) {
                                         Database.my_community = Database.my_community_List.get(i);
                                         break;
                                     }
                                 }
                             }
-                        }else {
+                        } else {
                             for (int i = 0; i < Database.my_community_List.size(); i++) {
                                 if (Database.my_community_List.get(i) != null && Database.my_community_List.get(i).getUserCommunityID()
                                         == Database.my_community.getUserCommunityID()) {
@@ -518,7 +506,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 }
                             }
                         }
-
 
 
                     } else {
@@ -531,22 +518,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
 
             @Override
-            public void onError() {}
+            public void onError() {
+            }
+
             @Override
-            public void parseError() {}
+            public void parseError() {
+            }
+
             @Override
             public void onBefore() {
             }
+
             @Override
             public void onAfter() {
-                if (Database.my_community == null ) {
+                if (Database.my_community == null) {
                     showShort("请添加或等待小区审核通过后才可开锁");
                     Intent intent = new Intent(MainActivity.this, AuthAreaActivity.class); //
                     intent.putExtra("from", "");
                     startActivity(intent);
-                }else {
-                    IndexFragment.callBack.notifyVillName(Database.my_community.getCommunityName()+"("+getString(R.string.audited)+")");
-                    if (!TextUtils.isEmpty(RequestUtil.getcommunityid()+"")){
+                } else {
+                    IndexFragment.callBack.notifyVillName(Database.my_community.getCommunityName() + "(" + getString(R.string.audited) + ")");
+                    if (!TextUtils.isEmpty(RequestUtil.getcommunityid() + "")) {
                         if (picPopuWindow == null) {
                             picPopuWindow = new OpenDoorPopuWindow(MainActivity.this, mhandler);
                         }
@@ -556,7 +548,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     }
                 }
             }
-        }).getEntityData(this,"/ApiUserCommnunity/Query", jsons);
+        }).getEntityData(this, "/ApiUserCommnunity/Query", jsons);
 
     }
 
@@ -565,22 +557,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void getUser() {
-        if(TextUtil.isEmpty(Database.login_return)){
+        if (TextUtil.isEmpty(Database.login_return)) {
 //            ACache cache=ACache.get(this);
             Database.login_return = mCache.getAsString(Constant.user);
         }
-        if(!TextUtil.isEmpty(Database.login_return)){
-            LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, new TypeToken<LoginUserInfo>(){}.getType());
+        if (!TextUtil.isEmpty(Database.login_return)) {
+            LoginUserInfo userInfo = new Gson().fromJson(Database.login_return, new TypeToken<LoginUserInfo>() {
+            }.getType());
             Database.USER_MAP = userInfo.getUser();
-            Database.accessToken=userInfo.getAccessToken();
-            Bugly.setUserId(this,Database.USER_MAP.getUserID());
-            if(!(userInfo.getUserCommnunity()==null)){
+            Database.accessToken = userInfo.getAccessToken();
+            Bugly.setUserId(this, Database.USER_MAP.getUserID());
+            if (!(userInfo.getUserCommnunity() == null)) {
                 DataUtils.getUesrCommunity(userInfo);//社区列表
                 DataUtils.my_community(MainActivity.this);
             }
         }
 //        if (!TextUtil.isEmpty(mCache.getAsString(Constant.community))){
-            Database.my_community=new Gson().fromJson(mCache.getAsString(Constant.community),new TypeToken<CommnunityInfo>(){}.getType());
+        Database.my_community = new Gson().fromJson(mCache.getAsString(Constant.community), new TypeToken<CommnunityInfo>() {
+        }.getType());
 //        }
 //        getWeiXin();
     }
@@ -589,7 +583,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         String userID = RequestUtil.getuserid();
         String json = "{\"settingkey\": \"WeiXinAppSecret\",\"controllerName\": \"\",\"actionName\": \"\",\"nowpagenum\": \"\",\"pagerownum\": \"\"," +
                 "\"userID\": \"" + userID + "\"}";
-        String url ="/Setting/SelectByKey";
+        String url = "/Setting/SelectByKey";
 
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
@@ -619,13 +613,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onAfter() {
             }
-        }).getEntityData(this,url, json);
+        }).getEntityData(this, url, json);
     }
 
     private void requestlist() { //获取社区
-        Map<String,Object> map=new BaseRequestBean().getBaseRequest();
-        map.put("userCommnunityMapping",new Object());
-        String jsons=new Gson().toJson(map);
+        Map<String, Object> map = new BaseRequestBean().getBaseRequest();
+        map.put("userCommnunityMapping", new Object());
+        String jsons = new Gson().toJson(map);
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -678,7 +672,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             public void onAfter() {
 
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA,jsons);
+        }).getEntityData(this, HttpURL.HTTP_POST_LOCAL_AREA_QUERY_AREA, jsons);
     }
 
     @Override
@@ -742,7 +736,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Database.list_neighbour=null;
+        Database.list_neighbour = null;
+        EventBus.getDefault().unregister(this);
     }
 
     public void registerMessageReceiver() {
@@ -760,7 +755,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //        String json = "{\"version\":{},\"controllerName\": \"Version\",\"actionName\": \"StructureQuery\"," +
 //                "\"userID\": \"" + RequestUtil.getuserid() + "\",\"datetime\": \"" + RequestUtil.getCurrentTime() + "\"}";
 //        String url = "/Version/StructureQuery";
-        String jsons=new Gson().toJson(new BaseRequestBean());
+        String jsons = new Gson().toJson(new BaseRequestBean());
         OkGoRequest.getRequest().setOnOkGoUtilListener(new OkGoRequest.OnOkGoUtilListener() {
             @Override
             public void onSuccess(String s) {
@@ -771,17 +766,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     JSONObject jo = new JSONObject(s);
                     final UPVersionInfo upVersionInfo = new Gson().fromJson(jo.toString(), UPVersionInfo.class);
                     Log.i("resultString", "upVersionInfo.getListVersion()-------" + upVersionInfo.getVersion());
-                    if (upVersionInfo.getVersion() != null ) {
+                    if (upVersionInfo.getVersion() != null) {
                         if (upVersionInfo.getVersion().getUpdatePath() != null) {
                             UPVersion.url = upVersionInfo.getVersion().getUpdatePath();
                         }
                         if (upVersionInfo.getVersion().getImprint() != null) {
                             UPVersion.info = upVersionInfo.getVersion().getImprint();
                         }
-                            UPVersion.versionCode = Integer.valueOf(upVersionInfo.getVersion().getVersionCode());
+                        UPVersion.versionCode = Integer.valueOf(upVersionInfo.getVersion().getVersionCode());
 
-                        if (upVersionInfo.getVersion().getUpdatePath()!=null){
-                            Database.DOWN_APK_URL=upVersionInfo.getVersion().getUpdatePath();
+                        if (upVersionInfo.getVersion().getUpdatePath() != null) {
+                            Database.DOWN_APK_URL = upVersionInfo.getVersion().getUpdatePath();
                         }
 
                         if (UPVersion.versionCode > Integer.valueOf(Constant.VERSIONCODE)) {
@@ -789,7 +784,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             View view = View.inflate(MainActivity.this, R.layout.download_layout, null);
                             final Dialog dialog = new AlertDialog.Builder(MainActivity.this).create();
                             dialog.show();
-
 
 
                             dialog.setContentView(view);
@@ -805,10 +799,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                                        SPUtils.put(MainActivity.this, SPUtils.APK_VERSION, "1.2.0");
 //                                    }
                                     //Log.e("TAG","isCheck == " + isCheck);
-                                    if (upVersionInfo.getVersion().isPrerequisite()){
+                                    if (upVersionInfo.getVersion().isPrerequisite()) {
                                         showShort("请下载最新版本!");
                                         finish();
-                                    }else {
+                                    } else {
                                         dialog.dismiss();
                                     }
                                 }
@@ -818,7 +812,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             Sure.setOnClickListener(new View.OnClickListener() {
                                 @Override
                                 public void onClick(View v) {
-                                    if (Database.DOWN_APK_URL!=null){
+                                    if (Database.DOWN_APK_URL != null) {
                                         startService(new Intent(MainActivity.this, DownloadService.class));
                                         //startService(new Intent(MainActivity.this, DownloadService2.class));
                                         //当true时 保存版本信息
@@ -826,20 +820,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                                        SPUtils.put(MainActivity.this, SPUtils.APK_VERSION, "1.2.0");
 //                                    }
 //                                        dialog.dismiss();
-                                        if (upVersionInfo.getVersion().isPrerequisite()){
+                                        if (upVersionInfo.getVersion().isPrerequisite()) {
                                             showShort("正在后台下载，请稍等");
-                                        }else {
+                                        } else {
                                             showShort("正在后台下载，请稍等");
                                             dialog.dismiss();
                                         }
-                                    }else {
+                                    } else {
                                         showShort("服务器下载地址出现错误，请到应用商店下载！");
                                     }
 
                                 }
                             });
 
-                            if (upVersionInfo.getVersion().isPrerequisite()){//强制更新
+                            if (upVersionInfo.getVersion().isPrerequisite()) {//强制更新
                                 dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                                     @Override
                                     public void onDismiss(DialogInterface dialog) {
@@ -871,7 +865,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             @Override
             public void onAfter() {
             }
-        }).getEntityData(this,HttpURL.HTTP_POST_APIVERSION_QUERY, jsons);
+        }).getEntityData(this, HttpURL.HTTP_POST_APIVERSION_QUERY, jsons);
 
     }
 
@@ -894,25 +888,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if(keyCode==KeyEvent.KEYCODE_BACK){
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
             exitByDoubleClick();
         }
         return false;
     }
-    boolean isExit=false;
+
+    boolean isExit = false;
+
     private void exitByDoubleClick() {
-        Timer tExit=null;
-        if(!isExit){
-            isExit=true;
-            Toast.makeText(MainActivity.this,"再按一次退出程序",Toast.LENGTH_SHORT).show();
-            tExit=new Timer();
+        Timer tExit = null;
+        if (!isExit) {
+            isExit = true;
+            Toast.makeText(MainActivity.this, "再按一次退出程序", Toast.LENGTH_SHORT).show();
+            tExit = new Timer();
             tExit.schedule(new TimerTask() {
                 @Override
                 public void run() {
-                    isExit=false;//取消退出
+                    isExit = false;//取消退出
                 }
-            },2000);// 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
-        }else{
+            }, 2000);// 如果2秒钟内没有按下返回键，则启动定时器取消掉刚才执行的任务
+        } else {
             finish();
             System.exit(0);
         }

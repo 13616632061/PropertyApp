@@ -5,10 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -60,6 +63,10 @@ import com.google.gson.Gson;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionNo;
 import com.yanzhenjie.permission.PermissionYes;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,6 +144,8 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     private double latitude;
     private double longitude;
     private boolean isOne = true;
+    private   int w=0;
+    private int h=0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -188,6 +197,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
             case R.id.iv_rec_line://切换列表样式
                 listModel = !listModel;
                 if (listModel) {//列表
+                    ivRecLine.setImageResource(R.drawable.crosshigh);
                     shopListAdapter = new FreshShopListAdapter(R.layout.item_fresh_list, shopData, getActivity());
                     shopListAdapter.setOnLoadMoreListener(this);
                     shopListAdapter.setOnItemClickListener(this);
@@ -201,6 +211,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                     shopListAdapter.notifyDataSetChanged();
 
                 } else {
+                    ivRecLine.setImageResource(R.drawable.grid);
                     shopListAdapter = new FreshShopListAdapter(R.layout.item_fresh_list_v, shopData, getActivity());
                     shopListAdapter.setOnLoadMoreListener(this);
                     shopListAdapter.setOnItemClickListener(this);
@@ -272,8 +283,14 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     }
 
     private void initView() {
+        rlAddress.post(new Runnable() {
+            @Override
+            public void run() {
+                w= rlAddress.getWidth(); //height is ready
+            }
+        });
         getShowNumber();
-        initPopupWindowSort();
+//        initPopupWindowSort();
         freshListFrRefresh.setOnRefreshListener(this);
         client = new LocationClient(getActivity());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -461,11 +478,14 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
     //综合排序弹出窗口
     private void initPopupWindowSort() {
         if (popupWindowSort == null) {
-            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            LayoutInflater inflater = LayoutInflater.from(getContext());
             final View pView = inflater.inflate(R.layout.pop_fresh_sort, null);
-            popupWindowSort = new Solve7PopupWindow(pView, getActivity().getWindowManager().getDefaultDisplay().getWidth() - rlAddress.getWidth(), ViewGroup.LayoutParams.WRAP_CONTENT);
+            popupWindowSort = new Solve7PopupWindow(pView, getActivity().getWindowManager().getDefaultDisplay().getWidth()-w, WindowManager.LayoutParams.WRAP_CONTENT);
             popupWindowSort.setFocusable(true);
             popupWindowSort.setOutsideTouchable(true);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                popupWindowSort.showAsDropDown(rlZonghe,w,0);
+            }
             //综合排序
             RadioGroup radioGroup = (RadioGroup) pView.findViewById(R.id.tabs_rg);
             radioGroup.setOnCheckedChangeListener(this);
@@ -477,11 +497,19 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
                     popupWindowSort.dismiss();
                 }
             });
+            pView.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                            popupWindowSort.dismiss();
+                    return true;
+                }
+            });
         } else {
             if (!popupWindowSort.isShowing()) {
-                popupWindowSort.showAsDropDown(rlZonghe);
+                popupWindowSort.showAsDropDown(rlZonghe,w,0);
             }
         }
+
     }
 
 
@@ -880,7 +908,7 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
 
         switch (checkedId) {
             case R.id.rb_tab_1://综合搜索
-                tvFreshSort.setText("综合搜索");
+                tvFreshSort.setText("综合排序");
                 orderBy = "";
                 break;
             case R.id.rb_tab_2://价格最低
@@ -1010,4 +1038,5 @@ public class FreshSupermarketFragment extends BaseFragment implements BDLocation
         super.onPause();
         isGetData = false;
     }
+
 }

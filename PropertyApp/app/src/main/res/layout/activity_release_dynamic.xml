@@ -18,8 +18,9 @@
             android:id="@+id/et_release_dynamic"
             android:layout_width="match_parent"
             android:layout_height="120dp"
-            android:background="@null"
+            android:background="@color/background_color"
             android:gravity="top"
+            android:hint="说点什么..."
             android:padding="12dp"
             android:textSize="15sp" />
     </RelativeLayout>

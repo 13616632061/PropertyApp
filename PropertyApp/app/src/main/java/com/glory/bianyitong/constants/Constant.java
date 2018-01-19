@@ -49,6 +49,7 @@ public class Constant {
               public static final int STATUS_PAY_REFUNDED=-2;
               public static final int STATUS_PAY_EXIT=-3;
        }
+       public static String statusCode;//1  消息处理成功,2  暂无数据,-105  登录失效，请重新登录！,-104  AccessToken未找到
 }
 
 

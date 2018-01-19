@@ -30,6 +30,8 @@ import com.glory.bianyitong.util.ToastUtils;
 import com.glory.bianyitong.view.NewPullToRefreshView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.crashreport.CrashReport;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

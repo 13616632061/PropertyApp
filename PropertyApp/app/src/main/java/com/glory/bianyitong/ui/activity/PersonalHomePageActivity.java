@@ -172,13 +172,23 @@ public class PersonalHomePageActivity extends BaseActivity {
                     if (list_dongtai != null && list_dongtai.size() != 0) {
                         if (mMainAdapter == null || isrefresh) {
                             have_GoodsList = true;
-                            mMainAdapter = new PersionInfoAdapter(PersonalHomePageActivity.this, list_dongtai, "personal");
-                            base_listView.setAdapter(mMainAdapter);
-                            noGoods.setVisibility(View.GONE);
+                            if(mMainAdapter == null){
+                                mMainAdapter = new PersionInfoAdapter(PersonalHomePageActivity.this, list_dongtai, "personal");
+                                base_listView.setAdapter(mMainAdapter);
+                            }
+                            if(list_dongtai.size()<20){
+                                noGoods.setVisibility(View.VISIBLE);
+                            }else {
+                                noGoods.setVisibility(View.GONE);
+                            }
                         } else if (have_GoodsList) {
-                            base_listView.requestLayout();
+//                            base_listView.requestLayout();
                             mMainAdapter.notifyDataSetChanged();
-                            noGoods.setVisibility(View.GONE);
+                            if(list_dongtai.size()<20){
+                                noGoods.setVisibility(View.VISIBLE);
+                            }else {
+                                noGoods.setVisibility(View.GONE);
+                            }
                         } else {
                             noGoods.setVisibility(View.VISIBLE);
                         }
@@ -188,8 +198,13 @@ public class PersonalHomePageActivity extends BaseActivity {
                         have_GoodsList = false;
                     }
                 } else {
-                    mMainAdapter = new PersionInfoAdapter(PersonalHomePageActivity.this, list_dongtai, "personal");
-                    base_listView.setAdapter(mMainAdapter);
+                    if(mMainAdapter == null){
+                        mMainAdapter = new PersionInfoAdapter(PersonalHomePageActivity.this, list_dongtai, "personal");
+                        base_listView.setAdapter(mMainAdapter);
+                    }else {
+                        mMainAdapter.notifyDataSetChanged();
+                    }
+
                     if (Database.list_news != null && Database.list_news.size() > 0) { //分页加载无数据
 
                     } else { //加载无数据

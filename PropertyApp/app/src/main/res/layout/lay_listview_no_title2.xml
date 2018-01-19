@@ -3,13 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="@color/background_color"
     android:orientation="vertical">
 
 
     <ListView
         android:id="@+id/base_listView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:divider="@null"
         android:listSelector="@android:color/transparent" />
    <!-- android:layoutAnimation="@anim/navagation_gridview_anim"-->
